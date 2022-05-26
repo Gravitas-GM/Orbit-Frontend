@@ -1,0 +1,101 @@
+import {ObjectId} from '..';
+import {pointTrackingClient} from '../..';
+
+export interface PointsEndpoints {
+	'/points/users/:user': {
+		PUT: {
+			body: PointItemCreatePayloadNormalized;
+			response: void;
+		};
+
+		GET: {
+			response: UserPoints;
+		};
+
+		DELETE: {
+			response: void;
+		};
+	};
+
+	'/points/users/:user/:claim': {
+		DELETE: {
+			response: void;
+		};
+	};
+
+	'/points/users/:user/total': {
+		GET: {
+			response: UserPointsSummary;
+		};
+	};
+
+	'/points/account/:account': {
+		GET: {
+			response: UserPoints[];
+		};
+	};
+}
+
+interface BaseUserPoints {
+	user_id: number;
+	user_name: string;
+}
+
+export interface UserPoints extends BaseUserPoints {
+	points: PointItem[];
+}
+
+export interface UserPointsSummary extends BaseUserPoints {
+	points: number;
+}
+
+export interface PointItem {
+	id: ObjectId;
+	timestamp: Date;
+	point_value: number;
+	source: string;
+	description?: string;
+}
+
+export type PointItemCreatePayload = Omit<PointItem, 'id'>;
+type PointItemCreatePayloadNormalized = Omit<PointItemCreatePayload, 'timestamp'> & {
+	timestamp: string;
+};
+
+export class PointsApi {
+	public static create(userId: number, payload: PointItemCreatePayload) {
+		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
+			...payload,
+			timestamp: payload.timestamp.toISOString(),
+		});
+	}
+
+	public static async getFull(userId: number) {
+		const response = await pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`);
+
+		response.data.points = response.data.points.map(item => {
+			if (typeof item.timestamp !== 'object')
+				item.timestamp = new Date(item.timestamp);
+
+			return item;
+		});
+
+		return response;
+	}
+
+	public static getSummary(userId: number) {
+		return pointTrackingClient.get<'/points/users/:user/total'>(`/points/users/${userId}/total`);
+	}
+
+	public static getAll(accountId: number) {
+		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
+	}
+
+	public static deleteAll(userId: number) {
+		return pointTrackingClient.delete<'/points/users/:user'>(`/points/users/${userId}`);
+	}
+
+	public static delete(userId: number, claimId: ObjectId) {
+		return pointTrackingClient.delete<'/points/users/:user/:claim'>(`/points/users/${userId}/${claimId.$oid}`);
+	}
+}
