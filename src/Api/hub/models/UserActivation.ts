@@ -26,7 +26,7 @@ export type UserActivatePayload = {
 };
 
 export class UserActivationApi {
-	public static activation(payload: UserActivationStartPayload) {
+	public static startActivation(payload: UserActivationStartPayload) {
 		return hubApiClient.post('/public/users/activation/start', payload);
 	}
 
