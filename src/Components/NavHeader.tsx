@@ -20,7 +20,7 @@ export const NavHeader: React.FC<IProps> = props => (
 
 				<Menu>
 					<MenuItem
-						text="Test Item"
+						text="Settings"
 						icon="person"
 					/>
 
