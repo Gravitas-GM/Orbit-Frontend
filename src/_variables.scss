@@ -1,0 +1,31 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+
+$pt-intent-primary: $gold3;
+$pt-app-background-color: $blue4;
+
+$button-box-shadow: none;
+$button-box-shadow-active: none;
+$button-intent-box-shadow: none;
+$button-intent-box-shadow-active: none;
+
+$button-intents: (
+	'primary': ($pt-intent-primary, $gold2, $gold1),
+	'success': ($pt-intent-success, $green2, $green1),
+	'warning': ($pt-intent-warning, $orange2, $orange1),
+	'danger': ($pt-intent-danger, $red2, $red1),
+);
+
+$gm-nav-header-padding: 20px;
+$gm-nav-header-font-size: 20px;
+$gm-nav-header-height: $gm-nav-header-font-size * $pt-line-height + $gm-nav-header-padding * 2;
+
+$gm-main-frame-height: calc(100vh - #{$gm-nav-header-height});
+
+$gm-content-padding-vertical: 20px;
+$gm-content-padding-horizontal: 30px;
+$gm-content-padding: $gm-content-padding-vertical $gm-content-padding-horizontal;
+
+$gm-border-color: $light-gray2;
+
+$gm-main-frame-background-color: $light-gray1;
+$gm-border-color: $blue5;
