@@ -1,5 +1,7 @@
 import * as React from 'react';
+import {Route, Router, Switch} from 'react-router';
 import {Layout} from './Components/Layout';
+import {history} from './history';
 
 interface IState {
 	loading: boolean;
@@ -13,7 +15,13 @@ export class App extends React.PureComponent<{}, IState> {
 	public render(): JSX.Element {
 		return (
 			<div id="app-root">
-				<Layout loading={this.state.loading} />
+				<Router history={history}>
+					<Switch>
+						<Route path="/">
+							<Layout loading={this.state.loading} />
+						</Route>
+					</Switch>
+				</Router>
 			</div>
 		);
 	}
