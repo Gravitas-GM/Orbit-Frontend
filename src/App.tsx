@@ -1,12 +1,19 @@
 import * as React from 'react';
+import {Layout} from './Components/Layout';
 
-export class App extends React.PureComponent {
+interface IState {
+	loading: boolean;
+}
+
+export class App extends React.PureComponent<{}, IState> {
+	public state: Readonly<IState> = {
+		loading: false,
+	};
+
 	public render(): JSX.Element {
 		return (
 			<div id="app-root">
-				<p>
-					Happy Orbit
-				</p>
+				<Layout loading={this.state.loading} />
 			</div>
 		);
 	}

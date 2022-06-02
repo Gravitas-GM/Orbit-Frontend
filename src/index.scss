@@ -1,0 +1,27 @@
+@import './variables';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+	margin: 0;
+	max-height: 100vh;
+	overflow: hidden;
+}
+
+#app-root {
+	font-family: 'Roboto', sans-serif;
+	margin: 0 auto;
+	min-height: 100vh;
+	position: relative;
+	display: flex;
+	background-color: #{$pt-app-background-color};
+
+
+	.main-frame {
+		background-color: $gm-main-frame-background-color;
+		height: $gm-main-frame-height;
+	}
+
+	.content {
+		padding: #{$gm-content-padding-vertical} #{$gm-content-padding-horizontal};
+	}
+}
