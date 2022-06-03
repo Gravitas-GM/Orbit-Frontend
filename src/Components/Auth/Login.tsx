@@ -4,7 +4,7 @@ import {Redirect, RouteComponentProps, withRouter} from 'react-router';
 import {isAuthenticated, login, tokenStorage} from '../../Api';
 import {ApiError} from '../../Api/errors';
 import {User, UserModel} from '../../Api/Hub/Models/Users';
-import * as toaster from '../Toaster';
+import * as toaster from '../../Toaster';
 import {getPreviousPathFromState} from '../Utility/router';
 import './Login.scss';
 
