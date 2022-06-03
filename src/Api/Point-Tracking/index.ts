@@ -1,6 +1,6 @@
 import axios, { TypedAxiosInstance } from 'restyped-axios';
-import { PointsEndpoints } from './models/Points';
-import { PointSourceEndpoints } from './models/Sources';
+import { PointsEndpoints } from './Models/Points';
+import { PointSourceEndpoints } from './Models/Sources';
 
 type Endpoints = PointsEndpoints & PointSourceEndpoints;
 

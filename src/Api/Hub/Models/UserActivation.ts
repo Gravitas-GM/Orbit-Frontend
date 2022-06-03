@@ -25,7 +25,7 @@ export type UserActivatePayload = {
 	password: string;
 };
 
-export class UserActivationApi {
+export class UserActivationModel {
 	public static startActivation(payload: UserActivationStartPayload) {
 		return hubApiClient.post('/public/users/activation/start', payload);
 	}

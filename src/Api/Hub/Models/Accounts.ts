@@ -22,7 +22,7 @@ export interface Account {
 
 export type AccountCreatePayload = Omit<Account, 'id'>;
 
-export class AccountApi {
+export class AccountModel {
 	public static create(payload: AccountCreatePayload) {
 		return hubApiClient.put('/accounts', payload);
 	}

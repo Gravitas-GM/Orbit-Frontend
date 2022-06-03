@@ -62,7 +62,7 @@ type PointItemCreatePayloadNormalized = Omit<PointItemCreatePayload, 'timestamp'
 	timestamp: string;
 };
 
-export class PointsApi {
+export class PointsModel {
 	public static create(userId: number, payload: PointItemCreatePayload) {
 		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
 			...payload,
