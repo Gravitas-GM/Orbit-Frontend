@@ -4,6 +4,7 @@ import {User} from './Api/Hub/Models/Users';
 import {Login} from './Components/Auth/Login';
 import {Layout} from './Components/Layout';
 import {history} from './history';
+import {UserContext} from './Session';
 
 interface IState {
 	loading: boolean;
@@ -19,17 +20,19 @@ export class App extends React.PureComponent<{}, IState> {
 	public render(): JSX.Element {
 		return (
 			<div id="app-root">
-				<Router history={history}>
-					<Switch>
-						<Route path="/login">
-							<Login onLoginSuccess={this.onUserChange} />
-						</Route>
+				<UserContext.Provider value={this.state.user}>
+					<Router history={history}>
+						<Switch>
+							<Route path="/login">
+								<Login onLoginSuccess={this.onUserChange} />
+							</Route>
 
-						<Route path="/">
-							<Layout loading={this.state.loading} />
-						</Route>
-					</Switch>
-				</Router>
+							<Route path="/">
+								<Layout loading={this.state.loading} />
+							</Route>
+						</Switch>
+					</Router>
+				</UserContext.Provider>
 			</div>
 		);
 	}
