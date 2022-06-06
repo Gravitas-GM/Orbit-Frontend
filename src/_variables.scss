@@ -8,13 +8,6 @@ $button-box-shadow-active: none;
 $button-intent-box-shadow: none;
 $button-intent-box-shadow-active: none;
 
-$button-intents: (
-	'primary': ($pt-intent-primary, $gold2, $gold1),
-	'success': ($pt-intent-success, $green2, $green1),
-	'warning': ($pt-intent-warning, $orange2, $orange1),
-	'danger': ($pt-intent-danger, $red2, $red1),
-);
-
 $gm-nav-header-padding: 20px;
 $gm-nav-header-font-size: 20px;
 $gm-nav-header-height: $gm-nav-header-font-size * $pt-line-height + $gm-nav-header-padding * 2;
