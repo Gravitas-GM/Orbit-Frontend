@@ -1,7 +1,18 @@
 import * as React from 'react';
-import {Button, Intent, Menu, MenuDivider, MenuItem, Popover, Spinner} from '@blueprintjs/core';
+import {
+	Alignment,
+	Button,
+	Icon,
+	Intent,
+	Menu,
+	MenuDivider,
+	MenuItem,
+	Navbar,
+	Popover,
+	Spinner,
+} from '@blueprintjs/core';
+import { Link } from 'react-router-dom';
 import './NavHeader.scss';
-import {Link} from 'react-router-dom';
 
 interface IProps {
 	loading: boolean;
@@ -11,43 +22,41 @@ export const NavHeader: React.FC<IProps> = props => (
 	props.loading ? (
 		<Spinner intent={Intent.PRIMARY} />
 	) : (
-		<div id="nav-header">
-			<div style={{flex: 8}}>
-				<Link to="/" style={{color: 'white', paddingRight: 100}}>
-					Happy Orbit
-				</Link>
+		<Navbar id="nav-header" className="bp4-navbar bp4-dark">
+			<Navbar.Group align={Alignment.LEFT}>
+				<Navbar.Heading>
+					<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
+				</Navbar.Heading>
 
-				<Link to="/users" className="nav-link">
-					Users
-				</Link>
+				<Navbar.Divider />
 
-				<Link to="/sources" className="nav-link">
-					Sources
-				</Link>
+				<Link to="/users" className="nav-link"><Icon icon={'user'}/> Users</Link>
 
-				<Link to="/point-summary" className="nav-link">
-					Point Summary
-				</Link>
-			</div>
+				<Link to="/sources" className="nav-link"><Icon icon={'bank-account'}/> Sources</Link>
 
-			<Popover>
-				<Button text={'Welcome'} rightIcon={'caret-down'} minimal={true} style={{color: 'white'}} />
+				<Link to="/point-summary" className="nav-link"><Icon icon={'properties'}/> Point Summary</Link>
+			</Navbar.Group>
 
-				<Menu>
-					<MenuItem
-						text="Settings"
-						icon="person"
-					/>
+			<Navbar.Group align={Alignment.RIGHT}>
+				<Popover>
+					<Button text={'Welcome'} rightIcon={'caret-down'} minimal={true} style={{color: 'white'}} />
 
-					<MenuDivider />
+					<Menu>
+						<MenuItem
+							text="Settings"
+							icon="person"
+						/>
 
-					<MenuItem
-						text="Log Out"
-						icon="log-out"
-					/>
-				</Menu>
-			</Popover>
-		</div>
+						<MenuDivider />
+
+						<MenuItem
+							text="Log Out"
+							icon="log-out"
+						/>
+					</Menu>
+				</Popover>
+			</Navbar.Group>
+		</Navbar>
 	)
 );
 

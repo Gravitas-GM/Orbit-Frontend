@@ -1,14 +1,9 @@
 @import '../variables';
 
 #nav-header {
-	display: flex;
-	padding: $gm-nav-header-padding;
-	font-size: $gm-nav-header-font-size;
-	background-color: $pt-app-background-color;
-
 	.nav-link {
-		padding: 0 25px 0 25px;
 		color: $white;
-		font-size: 18px;
+		padding: 0 10px 0 10px;
+		text-decoration: none;
 	}
 }
