@@ -9,7 +9,6 @@ body {
 
 #app-root {
 	font-family: 'Roboto', sans-serif;
-	margin: 0 auto;
 	min-height: 100vh;
 	position: relative;
 	display: flex;
@@ -19,9 +18,5 @@ body {
 	.main-frame {
 		background-color: $gm-main-frame-background-color;
 		height: $gm-main-frame-height;
-	}
-
-	.content {
-		padding: #{$gm-content-padding-vertical} #{$gm-content-padding-horizontal};
 	}
 }

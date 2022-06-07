@@ -99,8 +99,6 @@ class Login extends React.PureComponent<IProps, IState> {
 			.then(() => {
 				const userId = tokenStorage.getToken()?.body.sub;
 
-				// This _should_ never happen, since the only reason we'd end up without a user ID at this point is
-				// if the request failed, which should be caught be the `.catch()` block below.
 				if (!userId) {
 					console.error('Login completed, but no user ID was available');
 
