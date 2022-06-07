@@ -13,8 +13,20 @@ export const NavHeader: React.FC<IProps> = props => (
 	) : (
 		<div id="nav-header">
 			<div style={{flex: 8}}>
-				<Link to="/" style={{color: 'white'}}>
+				<Link to="/" style={{color: 'white', paddingRight: 100}}>
 					Happy Orbit
+				</Link>
+
+				<Link to="/users" className="nav-link">
+					Users
+				</Link>
+
+				<Link to="/sources" className="nav-link">
+					Sources
+				</Link>
+
+				<Link to="/point-summary" className="nav-link">
+					Point Summary
 				</Link>
 			</div>
 

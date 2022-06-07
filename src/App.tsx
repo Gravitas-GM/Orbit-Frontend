@@ -28,9 +28,9 @@ export class App extends React.PureComponent<{}, IState> {
 								<Login onLoginSuccess={this.onUserChange} />
 							</Route>
 
-							<Route path="/">
+							<PrivateRoute path="/">
 								<Layout loading={this.state.loading} />
-							</Route>
+							</PrivateRoute>
 						</Switch>
 					</Router>
 				</UserContext.Provider>

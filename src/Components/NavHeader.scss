@@ -1,9 +1,14 @@
 @import '../variables';
 
 #nav-header {
-	color: $light-gray1;
 	display: flex;
 	padding: $gm-nav-header-padding;
 	font-size: $gm-nav-header-font-size;
 	background-color: $pt-app-background-color;
+
+	.nav-link {
+		padding: 0 25px 0 25px;
+		color: $white;
+		font-size: 18px;
+	}
 }
