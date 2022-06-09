@@ -28,3 +28,13 @@ export function error(message: string) {
 		message,
 	});
 }
+
+// region Error Messages
+export function showUnhandledErrorMessage() {
+	error('An error occurred while processing your request. Please try again.');
+}
+
+export function showValidationFailedErrorMessage() {
+	error('One or more fields did not pass validation.');
+}
+// endregion
