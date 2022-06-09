@@ -17,7 +17,7 @@ export interface UserActivationEndpoints {
 }
 
 export type UserActivationStartPayload = {
-	user: number;
+	userEmailAddress: string;
 	activationUrlTemplate: string;
 };
 
