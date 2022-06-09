@@ -77,8 +77,11 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 		});
 
 		try {
-			//TODO: send real user data in request /larry
-			await UserActivationModel.startActivation({user: 1, activationUrlTemplate: 'happyorbit.com/activate/:code'});
+			await UserActivationModel.startActivation(
+				{
+					userEmailAddress: this.state.emailAddress,
+					activationUrlTemplate: 'happyorbit.com/activate/:code'
+				});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
