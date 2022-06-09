@@ -65,8 +65,10 @@ export class TokenStorage {
 }
 
 interface JWTBody {
-	displayName: string;
 	exp: number;
+	iat: number;
+	roles: string[];
+	userIdentifier: string;
 	sub: number;
 }
 
