@@ -7,6 +7,7 @@ import {User, UserModel} from '../../Api/Hub/Models/Users';
 import * as toaster from '../../Toaster';
 import {getPreviousPathFromState} from '../Utility/router';
 import './Login.scss';
+import {StartActivationDialog} from './StartActivationDialog';
 
 interface IProps extends RouteComponentProps {
 	onLoginSuccess: (user: User) => void;
@@ -17,6 +18,7 @@ interface IState {
 	password: string;
 	processing: boolean;
 	redirect: boolean;
+	showActivationDialog: boolean;
 }
 
 class Login extends React.PureComponent<IProps, IState> {
@@ -25,6 +27,7 @@ class Login extends React.PureComponent<IProps, IState> {
 		password: '',
 		processing: false,
 		redirect: false,
+		showActivationDialog: false,
 	};
 
 	public render(): JSX.Element {
@@ -59,6 +62,10 @@ class Login extends React.PureComponent<IProps, IState> {
 						</div>
 					</div>
 				</form>
+
+				{this.state.showActivationDialog && (
+					<StartActivationDialog onClose={this.onActivationDialogClose} />
+				)}
 			</div>
 		);
 	}
@@ -74,6 +81,10 @@ class Login extends React.PureComponent<IProps, IState> {
 
 	private onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		password: event.currentTarget.value,
+	});
+
+	private onActivationDialogClose = () => this.setState({
+		showActivationDialog: false,
 	});
 
 	private onLoginSubmit = async (event: React.SyntheticEvent<any>) => {
