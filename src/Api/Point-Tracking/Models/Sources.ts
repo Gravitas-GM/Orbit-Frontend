@@ -4,21 +4,25 @@ import { pointTrackingClient } from "../..";
 export interface PointSourceEndpoints {
 	'/sources/account/:account': {
 		POST: {
+			params: number;
 			body: PointSourceItemSetPayload;
 			response: void;
 		};
 
 		GET: {
+			params: number;
 			response: PointSourceItem[];
 		};
 
 		DELETE: {
+			params: number;
 			response: void;
 		};
 	};
 
 	'/sources/:source': {
 		DELETE: {
+			params: number;
 			response: void;
 		};
 	};

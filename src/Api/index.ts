@@ -5,6 +5,20 @@ import {Token, TokenStorage} from './jwt';
 import * as pointTrackingApi from "./Point-Tracking";
 import {history} from '../history';
 
+export interface QueryDocument {
+	[key: string]: string | number | boolean | null | Array<any> | QueryDocument | QueryDocument[];
+}
+
+export type Projection = { [key: string]: true } | { [key: string]: false };
+
+export type Queryable = {
+	q?: QueryDocument;
+};
+
+export type Projectable = {
+	p?: Projection;
+};
+
 export const hubApiClient = hubApi.init();
 export const pointTrackingClient = pointTrackingApi.init();
 
