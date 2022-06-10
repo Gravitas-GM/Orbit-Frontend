@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Route, Router, Switch} from 'react-router';
 import {User} from './Api/Hub/Models/Users';
+import {Activate} from './Components/Auth/Activate';
 import {Login} from './Components/Auth/Login';
 import {Layout} from './Components/Layout';
 import {history} from './history';
@@ -26,6 +27,10 @@ export class App extends React.PureComponent<{}, IState> {
 						<Switch>
 							<Route path="/login">
 								<Login onLoginSuccess={this.onUserChange} />
+							</Route>
+
+							<Route path="/activate">
+								<Activate />
 							</Route>
 
 							<PrivateRoute path="/">
