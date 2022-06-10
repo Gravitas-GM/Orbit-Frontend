@@ -30,11 +30,7 @@ export class UserActivationModel {
 		return hubApiClient.post('/public/users/activation/start', payload);
 	}
 
-	public static activate(payload: UserActivatePayload, token: string) {
-		return hubApiClient.post(
-			'/users/activation/activate',
-			payload,
-			{headers: {'Authorization': `Bearer ${token}`}},
-		);
+	public static activate(payload: UserActivatePayload) {
+		return hubApiClient.post('/users/activation/activate', payload);
 	}
 }

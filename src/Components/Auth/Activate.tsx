@@ -1,7 +1,7 @@
 import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
-import {isAuthenticated} from '../../Api';
+import {tokenStorage} from '../../Api';
 import {ApiError} from '../../Api/errors';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
@@ -32,20 +32,11 @@ export class Activate extends React.PureComponent<{}, IState> {
 		if (!urlParams.has('token'))
 			return;
 
-		const jwt = urlParams.get('token');
-
-		const token = new Token(jwt!);
-
-		if (!token.isValid())
-			return;
-
-		this.setState({
-			token: jwt,
-		})
+		tokenStorage.setToken(new Token(urlParams.get('token')!));
 	}
 
 	public render(): JSX.Element {
-		if (this.state.redirect || isAuthenticated())
+		if (this.state.redirect)
 			return <Redirect to={"/"} />;
 
 		return (
@@ -113,7 +104,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		UserActivationModel.activate({password: this.state.password}, this.state.token)
+		UserActivationModel.activate({password: this.state.password})
 			.then(() => {
 				toaster.show({
 					intent: Intent.SUCCESS,
