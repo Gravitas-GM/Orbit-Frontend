@@ -60,6 +60,8 @@ class Login extends React.PureComponent<IProps, IState> {
 								loading={this.state.processing}
 							/>
 						</div>
+
+						<Button text="Start Activation" onClick={this.onStartActivationButtonClick} />
 					</div>
 				</form>
 
@@ -81,6 +83,10 @@ class Login extends React.PureComponent<IProps, IState> {
 
 	private onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		password: event.currentTarget.value,
+	});
+
+	private onStartActivationButtonClick = () => this.setState({
+		showActivationDialog: true,
 	});
 
 	private onActivationDialogClose = () => this.setState({
