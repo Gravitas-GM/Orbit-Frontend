@@ -108,7 +108,7 @@ class Login extends React.PureComponent<IProps, IState> {
 
 		login(this.state.emailAddress, this.state.password)
 			.then(() => {
-				const userId = tokenStorage.getToken()?.body.sub;
+				const userId = tokenStorage.getToken()?.body.id;
 
 				if (!userId) {
 					console.error('Login completed, but no user ID was available');
