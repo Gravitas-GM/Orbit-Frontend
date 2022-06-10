@@ -13,6 +13,7 @@ import {
 } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
 import './NavHeader.scss';
+import {logout} from '../Api';
 
 interface IProps {
 	loading: boolean;
@@ -52,6 +53,7 @@ export const NavHeader: React.FC<IProps> = props => (
 						<MenuItem
 							text="Log Out"
 							icon="log-out"
+							onClick={logout}
 						/>
 					</Menu>
 				</Popover>
