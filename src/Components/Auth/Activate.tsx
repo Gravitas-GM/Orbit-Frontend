@@ -4,6 +4,7 @@ import {Redirect} from 'react-router';
 import {isAuthenticated} from '../../Api';
 import {ApiError} from '../../Api/errors';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
+import {Token} from '../../Api/jwt';
 import * as toaster from '../../Toaster';
 import './Activate.scss';
 
@@ -11,6 +12,7 @@ interface IState {
 	password: string;
 	processing: boolean;
 	redirect: boolean;
+	token: string | null;
 }
 
 export class Activate extends React.PureComponent<{}, IState> {
@@ -18,7 +20,28 @@ export class Activate extends React.PureComponent<{}, IState> {
 		password: '',
 		processing: false,
 		redirect: false,
+		token: null,
 	};
+
+	public componentDidMount() {
+		if (window.location.search) {
+			const urlParams = new URLSearchParams(window.location.search);
+
+			if (!urlParams.has('token'))
+				return;
+
+			const jwt = urlParams.get('token');
+
+			const token = new Token(jwt!);
+
+			if (!token.isValid())
+				return;
+
+			this.setState({
+				token: jwt,
+			})
+		}
+	}
 
 	public render(): JSX.Element {
 		if (this.state.redirect || isAuthenticated())
@@ -67,6 +90,15 @@ export class Activate extends React.PureComponent<{}, IState> {
 		if (this.state.processing)
 			return;
 
+		if (!this.state.token) {
+			toaster.show({
+				intent: Intent.DANGER,
+				message: 'Invalid token. Please request a new activation email.',
+			});
+
+			return;
+		}
+
 		if (!this.state.password) {
 			toaster.show({
 				intent: Intent.DANGER,
@@ -80,7 +112,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		UserActivationModel.activate({password: this.state.password})
+		UserActivationModel.activate({password: this.state.password}, this.state.token)
 			.then(() => {
 				toaster.show({
 					intent: Intent.SUCCESS,
