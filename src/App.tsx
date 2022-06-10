@@ -43,10 +43,9 @@ export class App extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onUserChange = (newUser: User) => {
+	private onUserChange = (user: User) => {
 		this.setState({
-			user: newUser,
-			loading: true,
+			user,
 		});
 	};
 }
