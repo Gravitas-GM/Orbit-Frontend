@@ -1,17 +1,19 @@
-import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
+import {Button, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
-import {ApiError} from '../../Api/errors';
+import {ApiError, isValidationFailureError, ValidationFailures} from '../../Api/errors';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
 import * as toaster from '../../Toaster';
 import './Activate.scss';
+import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 
 interface IState {
 	password: string;
 	processing: boolean;
 	redirect: boolean;
+	validationFailures: ValidationFailures | null;
 }
 
 export class Activate extends React.PureComponent<{}, IState> {
@@ -19,6 +21,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 		password: '',
 		processing: false,
 		redirect: false,
+		validationFailures: null,
 	};
 
 	public componentDidMount() {
@@ -46,9 +49,13 @@ export class Activate extends React.PureComponent<{}, IState> {
 				</div>
 
 				<form method="post" onSubmit={this.onSubmit} onKeyDown={this.onFormKeyDown}>
-					<FormGroup label="Create Password">
+					<ValidationAwareFormGroup
+						label="Create Password"
+						labelFor="password"
+						failures={this.state.validationFailures}
+					>
 						<InputGroup type="password" value={this.state.password} onChange={this.onPasswordChange} />
-					</FormGroup>
+					</ValidationAwareFormGroup>
 
 					<div style={{display: 'flex'}}>
 						<div style={{flex: 1}}>
@@ -104,13 +111,15 @@ export class Activate extends React.PureComponent<{}, IState> {
 					redirect: true,
 				});
 			})
-			.catch(err => {
-				toaster.show({
-					intent: Intent.DANGER,
-					message: err instanceof ApiError ?
-						err.message :
-						'An error occurred while attempting to activate your account. Please try again.',
-				});
+			.catch(error => {
+				if (isValidationFailureError(error)) {
+					toaster.showValidationFailedErrorMessage();
+
+					this.setState({
+						validationFailures: error.context.failures,
+					});
+				} else
+					toaster.showUnhandledErrorMessage();
 
 				this.setState({
 					processing: false,
