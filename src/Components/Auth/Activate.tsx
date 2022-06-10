@@ -35,7 +35,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to={"/"} />;
+			return <Redirect to={"/login"} />;
 
 		return (
 			<div id="activate">

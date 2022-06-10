@@ -30,8 +30,14 @@ class Login extends React.PureComponent<IProps, IState> {
 		showActivationDialog: false,
 	};
 
+	public componentDidMount() {
+		if (isAuthenticated()) {
+			this.getUser();
+		}
+	}
+
 	public render(): JSX.Element {
-		if (this.state.redirect || isAuthenticated())
+		if (this.state.redirect)
 			return <Redirect to={getPreviousPathFromState()} />;
 
 		return (
@@ -114,25 +120,7 @@ class Login extends React.PureComponent<IProps, IState> {
 
 		login(this.state.emailAddress, this.state.password)
 			.then(() => {
-				const userId = tokenStorage.getToken()?.body.id;
-
-				if (!userId) {
-					console.error('Login completed, but no user ID was available');
-
-					return;
-				}
-
-				UserModel.read(userId)
-					.then(response => {
-						toaster.show({
-							intent: Intent.SUCCESS,
-							message: 'You have been logged in successfully.',
-						});
-
-						this.setState({
-							redirect: true,
-						}, () => this.props.onLoginSuccess(response.data));
-					});
+				this.getUser();
 			})
 			.catch(err => {
 				toaster.show({
@@ -147,6 +135,30 @@ class Login extends React.PureComponent<IProps, IState> {
 				});
 			});
 	};
+
+	private getUser = () => {
+		const userId = tokenStorage.getToken()?.body.id;
+
+		console.log(tokenStorage.getToken()?.body);
+
+		if (!userId) {
+			console.error('Login completed, but no user ID was available');
+
+			return;
+		}
+
+		UserModel.read(userId)
+			.then(response => {
+				toaster.show({
+					intent: Intent.SUCCESS,
+					message: 'You have been logged in successfully.',
+				});
+
+				this.setState({
+					redirect: true,
+				}, () => this.props.onLoginSuccess(response.data));
+			});
+	}
 }
 
 const WrappedLogin = withRouter(Login);
