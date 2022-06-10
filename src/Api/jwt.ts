@@ -69,7 +69,9 @@ interface JWTBody {
 	iat: number;
 	roles: string[];
 	userIdentifier: string;
-	sub: number;
+	id: number;
+	accountId: number;
+	permissions: string[];
 }
 
 export class Token {
