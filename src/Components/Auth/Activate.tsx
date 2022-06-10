@@ -2,7 +2,7 @@ import {Button, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
-import {ApiError, isValidationFailureError, ValidationFailures} from '../../Api/errors';
+import {isValidationFailureError, ValidationFailures} from '../../Api/errors';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
 import * as toaster from '../../Toaster';
