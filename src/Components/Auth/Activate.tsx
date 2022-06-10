@@ -24,23 +24,24 @@ export class Activate extends React.PureComponent<{}, IState> {
 	};
 
 	public componentDidMount() {
-		if (window.location.search) {
-			const urlParams = new URLSearchParams(window.location.search);
+		if (!window.location.search)
+			return;
 
-			if (!urlParams.has('token'))
-				return;
+		const urlParams = new URLSearchParams(window.location.search);
 
-			const jwt = urlParams.get('token');
+		if (!urlParams.has('token'))
+			return;
 
-			const token = new Token(jwt!);
+		const jwt = urlParams.get('token');
 
-			if (!token.isValid())
-				return;
+		const token = new Token(jwt!);
 
-			this.setState({
-				token: jwt,
-			})
-		}
+		if (!token.isValid())
+			return;
+
+		this.setState({
+			token: jwt,
+		})
 	}
 
 	public render(): JSX.Element {
