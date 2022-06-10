@@ -12,7 +12,6 @@ interface IState {
 	password: string;
 	processing: boolean;
 	redirect: boolean;
-	token: string | null;
 }
 
 export class Activate extends React.PureComponent<{}, IState> {
@@ -20,7 +19,6 @@ export class Activate extends React.PureComponent<{}, IState> {
 		password: '',
 		processing: false,
 		redirect: false,
-		token: null,
 	};
 
 	public componentDidMount() {
@@ -81,15 +79,6 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 		if (this.state.processing)
 			return;
-
-		if (!this.state.token) {
-			toaster.show({
-				intent: Intent.DANGER,
-				message: 'Invalid token. Please request a new activation email.',
-			});
-
-			return;
-		}
 
 		if (!this.state.password) {
 			toaster.show({
