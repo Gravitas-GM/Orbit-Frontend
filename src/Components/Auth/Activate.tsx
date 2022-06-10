@@ -97,7 +97,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 			.then(() => {
 				toaster.show({
 					intent: Intent.SUCCESS,
-					message: 'Your account has been activated and you can now log in.',
+					message: 'Your account has been activated!',
 				});
 
 				this.setState({
