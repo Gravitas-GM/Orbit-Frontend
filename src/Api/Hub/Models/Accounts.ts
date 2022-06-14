@@ -1,8 +1,9 @@
-import { hubApiClient } from "../..";
+import {hubApiClient, Projectable, Projection} from '../..';
 
 export interface AccountEndpoints {
 	'/accounts': {
 		PUT: {
+			query: Projectable;
 			body: AccountCreatePayload;
 			response: Account;
 		};
@@ -10,6 +11,7 @@ export interface AccountEndpoints {
 
 	'/accounts/:account': {
 		DELETE: {
+			params: number;
 			response: void;
 		};
 	};
@@ -22,9 +24,13 @@ export interface Account {
 
 export type AccountCreatePayload = Omit<Account, 'id'>;
 
-export class AccountApi {
-	public static create(payload: AccountCreatePayload) {
-		return hubApiClient.put('/accounts', payload);
+export class AccountModel {
+	public static create(payload: AccountCreatePayload, projection?: Projection) {
+		return hubApiClient.put('/accounts', payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static delete(id: number) {

@@ -4,33 +4,39 @@ import {pointTrackingClient} from '../..';
 export interface PointsEndpoints {
 	'/points/users/:user': {
 		PUT: {
+			params: number;
 			body: PointItemCreatePayloadNormalized;
 			response: void;
 		};
 
 		GET: {
+			params: number;
 			response: UserPoints;
 		};
 
 		DELETE: {
+			params: number;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/:claim': {
 		DELETE: {
+			params: number;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/total': {
 		GET: {
+			params: number;
 			response: UserPointsSummary;
 		};
 	};
 
 	'/points/account/:account': {
 		GET: {
+			params: number;
 			response: UserPoints[];
 		};
 	};
@@ -62,7 +68,7 @@ type PointItemCreatePayloadNormalized = Omit<PointItemCreatePayload, 'timestamp'
 	timestamp: string;
 };
 
-export class PointsApi {
+export class PointsModel {
 	public static create(userId: number, payload: PointItemCreatePayload) {
 		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
 			...payload,
