@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
 	Alignment,
 	Button,
-	Icon,
 	Intent,
 	Menu,
 	MenuDivider,
@@ -14,6 +13,7 @@ import {
 import {Link} from 'react-router-dom';
 import './NavHeader.scss';
 import {logout} from '../Api';
+import {history} from '../history';
 import {UserContext} from '../Session';
 
 interface IProps {
@@ -31,11 +31,26 @@ export const NavHeader: React.FC<IProps> = props => (
 
 					<Navbar.Divider />
 
-					<Link to="/users" className="nav-link"><Icon icon={'user'} /> Users</Link>
+					<Button
+						icon='user'
+						text='Users'
+						minimal={true}
+						onClick={() => history.push(`/users`)}
+					/>
 
-					<Link to="/sources" className="nav-link"><Icon icon={'bank-account'} /> Sources</Link>
+					<Button
+						icon='bank-account'
+						text='Sources'
+						minimal={true}
+						onClick={() => history.push(`/sources`)}
+					/>
 
-					<Link to="/point-summary" className="nav-link"><Icon icon={'properties'} /> Point Summary</Link>
+					<Button
+						icon='properties'
+						text='Point Summary'
+						minimal={true}
+						onClick={() => history.push(`/point-summary`)}
+					/>
 				</Navbar.Group>
 
 				<Navbar.Group align={Alignment.RIGHT}>
