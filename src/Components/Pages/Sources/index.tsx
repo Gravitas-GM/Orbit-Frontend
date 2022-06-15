@@ -54,8 +54,8 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					<tbody>
 						{this.state.sources.map(source => (
 							<tr>
-								<td>${ucwords(source.name)}</td>
-								<td>${formatNumber(source.point_value)}</td>
+								<td>{ucwords(source.name)}</td>
+								<td>{formatNumber(source.point_value)}</td>
 								<td><Icon icon={'edit'} /></td>
 							</tr>
 						))}
