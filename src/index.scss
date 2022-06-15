@@ -24,4 +24,16 @@ body {
 	.bp4-html-table-striped {
 		width: 100%;
 	}
+
+	.settings-title-container {
+		display: flex;
+
+		H2 {
+			flex: 1;
+		}
+
+		Button {
+			height: 30px;
+		}
+	}
 }

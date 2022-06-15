@@ -1,9 +1,10 @@
-import {H2, HTMLTable, Icon} from '@blueprintjs/core';
+import {Button, H2, HTMLTable, Icon} from '@blueprintjs/core';
 import * as React from 'react';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
@@ -18,7 +19,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		sources: [],
 		loading: true,
-	}
+	};
 
 	public async componentDidMount() {
 		let sources: PointSourceItem[] = [];
@@ -32,7 +33,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		this.setState({
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
-		})
+		});
 	}
 
 	public render() {
@@ -41,7 +42,15 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		return (
 			<>
-				<H2>Sources</H2>
+				<div className={classNames('settings-title-container')}>
+					<H2>Sources</H2>
+
+					<Button
+						text="Add"
+						icon="plus"
+						intent="primary"
+					/>
+				</div>
 
 				<HTMLTable className={'bp4-html-table-striped'}>
 					<thead>
