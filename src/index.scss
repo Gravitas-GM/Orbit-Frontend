@@ -18,5 +18,10 @@ body {
 	.main-frame {
 		background-color: $gm-main-frame-background-color;
 		height: $gm-main-frame-height;
+		padding: $gm-content-padding;
+	}
+
+	.bp4-html-table-striped {
+		width: 100%;
 	}
 }
