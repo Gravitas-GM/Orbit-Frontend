@@ -1,4 +1,15 @@
-import {Button, H2, HTMLTable, Icon} from '@blueprintjs/core';
+import {
+	Button,
+	Classes,
+	Dialog,
+	FormGroup,
+	H2,
+	HTMLTable,
+	Icon,
+	InputGroup,
+	Intent,
+	NumericInput,
+} from '@blueprintjs/core';
 import * as React from 'react';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
@@ -9,7 +20,11 @@ import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
 	sources: PointSourceItem[];
+	sourceName: string;
+	pointValue: number;
+	showAddDialog: boolean;
 	loading: boolean;
+	processing: boolean;
 }
 
 export class SourcesList extends React.PureComponent<{}, IState> {
@@ -18,7 +33,11 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	public state: Readonly<IState> = {
 		sources: [],
+		sourceName: '',
+		pointValue: 0,
+		showAddDialog: false,
 		loading: true,
+		processing: false,
 	};
 
 	public async componentDidMount() {
@@ -45,11 +64,11 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				<div className={classNames('settings-title-container')}>
 					<H2>Sources</H2>
 
-					{/*TODO: add onClick handler /larry*/}
 					<Button
 						text="Add"
 						icon="plus"
 						intent="primary"
+						onClick={() => this.onAddButtonClick()}
 					/>
 				</div>
 
@@ -71,7 +90,79 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						))}
 					</tbody>
 				</HTMLTable>
+
+				{this.state.showAddDialog && (
+					<Dialog onClose={this.onAddDialogClose} isOpen={true} title="Add Source">
+						<div className={Classes.DIALOG_BODY}>
+							<form onSubmit={this.onAddDialogSubmit}>
+								<FormGroup
+									label="Source Name"
+									labelFor="sourceName"
+								>
+									<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} />
+								</FormGroup>
+
+								<FormGroup
+									label="Point Value"
+									labelFor="pointValue"
+								>
+									<NumericInput
+										min={0}
+										name="pointValue"
+										onValueChange={this.onPointValueChange}
+										value={this.state.pointValue}
+									/>
+								</FormGroup>
+							</form>
+						</div>
+
+						<div className={Classes.DIALOG_FOOTER}>
+							<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+								<Button
+									text="Cancel"
+									onClick={this.onAddDialogClose}
+									disabled={this.state.processing}
+								/>
+
+								<Button
+									intent={Intent.PRIMARY}
+									text="Submit"
+									onClick={this.onAddDialogSubmit}
+									loading={this.state.processing}
+								/>
+							</div>
+						</div>
+					</Dialog>
+				)}
 			</>
 		);
 	}
+
+	private onAddButtonClick = () => this.setState({
+		showAddDialog: true,
+	});
+
+	private onAddDialogClose = () => this.setState({
+		showAddDialog: false,
+		sourceName: '',
+		pointValue: 0,
+	});
+
+	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		sourceName: event.currentTarget.value,
+	});
+
+	private onPointValueChange = (pointValue: number) => this.setState({
+		pointValue,
+	});
+
+	private onAddDialogSubmit = () => {
+		//TODO: add source through api /larry
+
+		this.setState({
+			showAddDialog: false,
+			sourceName: '',
+			pointValue: 0,
+		});
+	};
 }
