@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Route, Router, Switch} from 'react-router';
-import {User} from './Api/Hub/Models/Users';
+import {tokenStorage} from './Api';
+import {User, UserModel} from './Api/Hub/Models/Users';
 import {Activate} from './Components/Auth/Activate';
 import {Login} from './Components/Auth/Login';
 import {Layout} from './Components/Layout';
@@ -15,9 +16,28 @@ interface IState {
 
 export class App extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
-		loading: false,
+		loading: true,
 		user: null,
 	};
+
+	public componentDidMount() {
+		const userId = tokenStorage.getToken()?.body.id;
+
+		if (!userId) {
+			this.setState({
+				loading: false,
+			});
+
+			return;
+		}
+
+		UserModel.read(userId).then(response => {
+			this.setState({
+				user: response.data,
+				loading: false,
+			});
+		});
+	}
 
 	public render(): JSX.Element {
 		return (
@@ -43,9 +63,7 @@ export class App extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onUserChange = (user: User) => {
-		this.setState({
-			user,
-		});
-	};
+	private onUserChange = (user: User) => this.setState({
+		user,
+	});
 }
