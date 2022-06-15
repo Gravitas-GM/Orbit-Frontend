@@ -53,7 +53,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					</thead>
 					<tbody>
 						{this.state.sources.map(source => (
-							<tr>
+							<tr key={`source-${source.id}`}>
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
 								<td><Icon icon={'edit'} /></td>

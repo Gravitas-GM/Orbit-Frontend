@@ -59,7 +59,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 					</thead>
 					<tbody>
 						{this.state.users.map(user => (
-							<tr>
+							<tr key={`user-${user.id}`}>
 								<td>{ucwords(user.firstName ?? '')}  {ucwords(user.lastName ?? '')}</td>
 								<td>{user.emailAddress}</td>
 								<td>{user.admin ? 'Yes' : 'No'}</td>
