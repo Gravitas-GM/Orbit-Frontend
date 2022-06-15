@@ -156,13 +156,49 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		pointValue,
 	});
 
-	private onAddDialogSubmit = () => {
-		//TODO: add source through api /larry
+	private onAddDialogSubmit = async (event: React.SyntheticEvent<any>) => {
+		event.preventDefault();
+
+		if (this.state.processing)
+			return;
+
+		if (this.state.sourceName === '') {
+			toaster.error('Please set a Source Name.');
+
+			return;
+		}
 
 		this.setState({
+			processing: true,
+		});
+
+		let source: PointSourceItem;
+
+		try {
+			source = await PointSourceModel.set(this.context!.account.id, {
+				name: this.state.sourceName,
+				point_value: this.state.pointValue,
+			}).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		toaster.success(
+			'Source created.',
+		);
+
+		this.setState(state => ({
+			sources: [...state.sources, source].sort((a, b) => a.name.localeCompare(b.name)),
 			showAddDialog: false,
 			sourceName: '',
 			pointValue: 0,
-		});
+			processing: false,
+		}));
 	};
 }

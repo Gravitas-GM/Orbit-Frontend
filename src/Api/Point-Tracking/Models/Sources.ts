@@ -6,7 +6,7 @@ export interface PointSourceEndpoints {
 		POST: {
 			params: number;
 			body: PointSourceItemSetPayload;
-			response: void;
+			response: PointSourceItem;
 		};
 
 		GET: {
