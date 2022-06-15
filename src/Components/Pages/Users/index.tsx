@@ -1,9 +1,10 @@
-import {H2, HTMLTable, Icon} from '@blueprintjs/core';
+import {Button, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {compareStrings, ucwords} from '../../Utility/string';
+import {history} from '../../../history';
 
 interface IState {
 	users: User[];
@@ -23,7 +24,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		users: [],
 		loading: true,
-	}
+	};
 
 	public async componentDidMount() {
 		let users: User[] = [];
@@ -37,7 +38,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 		this.setState({
 			users: users.sort(sortUsers),
 			loading: false,
-		})
+		});
 	}
 
 	public render() {
@@ -60,10 +61,16 @@ export class UsersList extends React.PureComponent<{}, IState> {
 					<tbody>
 						{this.state.users.map(user => (
 							<tr key={`user-${user.id}`}>
-								<td>{ucwords(user.firstName ?? '')}  {ucwords(user.lastName ?? '')}</td>
+								<td>{ucwords(user.firstName ?? '')} {ucwords(user.lastName ?? '')}</td>
 								<td>{user.emailAddress}</td>
 								<td>{user.admin ? 'Yes' : 'No'}</td>
-								<td><Icon icon={'edit'} /></td>
+								<td>
+									<Button
+										icon='edit'
+										minimal={true}
+										onClick={() => history.push(`/users/${user.id}`)}
+									/>
+								</td>
 							</tr>
 						))}
 					</tbody>
