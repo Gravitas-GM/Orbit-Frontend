@@ -4,6 +4,7 @@ import {Route, Switch} from 'react-router';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
+import {PointSummary} from './Pages/PointSummary';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 
@@ -27,6 +28,8 @@ export const Layout: React.FC<IProps> = props => (
 					<Route path="/users" component={UsersList} exact={true} />
 
 					<Route path="/sources" component={SourcesList} exact={true} />
+
+					<Route path="/point-summary" component={PointSummary} exact={true} />
 
 					<Route component={PageNotFound} />
 				</Switch>

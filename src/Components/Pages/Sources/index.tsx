@@ -53,7 +53,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					/>
 				</div>
 
-				<HTMLTable className={'bp4-html-table-striped'}>
+				<HTMLTable className={classNames('bp4-html-table-striped')}>
 					<thead>
 						<tr>
 							<th>Name</th>

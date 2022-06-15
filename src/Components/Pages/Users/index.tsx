@@ -3,6 +3,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {classNames} from '../../Utility/dom';
 import {compareStrings, ucwords} from '../../Utility/string';
 import {history} from '../../../history';
 
@@ -49,7 +50,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			<>
 				<H2>Users</H2>
 
-				<HTMLTable className={'bp4-html-table-striped'}>
+				<HTMLTable className={classNames('bp4-html-table-striped')}>
 					<thead>
 						<tr>
 							<th>Name</th>
