@@ -45,6 +45,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				<div className={classNames('settings-title-container')}>
 					<H2>Sources</H2>
 
+					{/*TODO: add onClick handler /larry*/}
 					<Button
 						text="Add"
 						icon="plus"
