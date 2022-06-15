@@ -5,10 +5,9 @@ import {
 	FormGroup,
 	H2,
 	HTMLTable,
-	Icon,
 	InputGroup,
-	Intent,
-	NumericInput,
+	Intent, Menu, MenuItem,
+	NumericInput, Popover,
 } from '@blueprintjs/core';
 import * as React from 'react';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
@@ -85,7 +84,35 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 							<tr key={`source-${source.id}`}>
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
-								<td><Icon icon={'edit'} /></td>
+								<td>
+									<Popover>
+										<Button
+											icon="cog"
+											minimal={true}
+										/>
+
+										<Menu>
+											<MenuItem
+												text="Assign Points"
+												icon="plus"
+												onClick={() => this.onAssignPointsClick(source)}
+											/>
+
+											<MenuItem
+												text="Edit"
+												icon="edit"
+												onClick={() => this.onEditClick(source)}
+											/>
+
+											<MenuItem
+												text="Delete"
+												icon="delete"
+												intent={Intent.DANGER}
+												onClick={() => this.onDeleteClick(source)}
+											/>
+										</Menu>
+									</Popover>
+								</td>
 							</tr>
 						))}
 					</tbody>
@@ -156,6 +183,14 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		pointValue,
 	});
 
+	private onAssignPointsClick = (source: PointSourceItem) => {
+		//TODO: implement assign points click /larry
+	};
+
+	private onEditClick = (source: PointSourceItem) => {
+		//TODO: implement edit click /larry
+	};
+
 	private onAddDialogSubmit = async (event: React.SyntheticEvent<any>) => {
 		event.preventDefault();
 
@@ -200,5 +235,9 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			pointValue: 0,
 			processing: false,
 		}));
+	};
+
+	private onDeleteClick = (source: PointSourceItem) => {
+		//TODO: implement delete click /larry
 	};
 }
