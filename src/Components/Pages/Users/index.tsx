@@ -3,7 +3,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {compareStrings} from '../../Utility/string';
+import {compareStrings, ucwords} from '../../Utility/string';
 
 interface IState {
 	users: User[];
@@ -60,9 +60,9 @@ export class UsersList extends React.PureComponent<{}, IState> {
 					<tbody>
 						{this.state.users.map(user => (
 							<tr>
-								<td>`${user.firstName}  ${user.lastName}`</td>
-								<td>${user.emailAddress}</td>
-								<td>${user.admin ? 'Yes' : 'No'}</td>
+								<td>{ucwords(user.firstName ?? '')}  {ucwords(user.lastName ?? '')}</td>
+								<td>{user.emailAddress}</td>
+								<td>{user.admin ? 'Yes' : 'No'}</td>
 								<td><Icon icon={'edit'} /></td>
 							</tr>
 						))}
