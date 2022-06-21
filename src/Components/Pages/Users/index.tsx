@@ -1,11 +1,9 @@
-import {Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {compareStrings, ucwords} from '../../Utility/string';
-import {history} from '../../../history';
 
 interface IState {
 	users: User[];
@@ -50,26 +48,27 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			<>
 				<H2>Users</H2>
 
-				<HTMLTable className={classNames('bp4-html-table-striped')}>
+				<HTMLTable striped={true}>
 					<thead>
 						<tr>
 							<th>Name</th>
 							<th>Email</th>
 							<th>Admin</th>
-							<th>Edit</th>
+							<th style={{textAlign: 'right'}}>Edit</th>
 						</tr>
 					</thead>
+
 					<tbody>
 						{this.state.users.map(user => (
 							<tr key={`user-${user.id}`}>
 								<td>{ucwords(user.firstName ?? '')} {ucwords(user.lastName ?? '')}</td>
 								<td>{user.emailAddress}</td>
 								<td>{user.admin ? 'Yes' : 'No'}</td>
-								<td>
-									<Button
+								<td style={{width: 100, textAlign: 'right'}}>
+									<AnchorButton
 										icon='edit'
 										minimal={true}
-										onClick={() => history.push(`/users/${user.id}`)}
+										href={`/users/${user.id}`}
 									/>
 								</td>
 							</tr>
