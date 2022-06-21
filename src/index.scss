@@ -15,12 +15,24 @@ body {
 	.settings-title-container {
 		display: flex;
 
-		H2 {
+		h2 {
 			flex: 1;
 		}
 
-		Button {
+		button {
 			height: 30px;
 		}
+	}
+
+	.main-frame {
+		padding: 10px 20px;
+	}
+}
+
+table.#{$ns}-html-table {
+	width: 100%;
+
+	td {
+		vertical-align: middle;
 	}
 }
