@@ -1,10 +1,12 @@
-@import './variables';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import './variables';
 
 body {
 	margin: 0;
-	max-height: 100vh;
-	overflow: hidden;
+
+	&.#{$ns}-dark {
+		background-color: $pt-dark-app-background-color;
+	}
 }
 
 #app-root {
