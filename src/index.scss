@@ -9,21 +9,6 @@ body {
 
 #app-root {
 	font-family: 'Roboto', sans-serif;
-	min-height: 100vh;
-	position: relative;
-	display: flex;
-	background-color: #{$pt-app-background-color};
-
-
-	.main-frame {
-		background-color: $gm-main-frame-background-color;
-		height: $gm-main-frame-height;
-		padding: $gm-content-padding;
-	}
-
-	.bp4-html-table-striped {
-		width: 100%;
-	}
 
 	.settings-title-container {
 		display: flex;
