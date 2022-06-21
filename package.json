@@ -37,14 +37,14 @@
     ]
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.5",
-    "sass": "^1.52.1",
-    "typescript": "^4.7.2",
     "@types/jest": "^27.5.1",
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.5",
     "@types/react-router": "^5.1.18",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "parcel-bundler": "^1.12.5",
+    "sass": "^1.52.1",
+    "typescript": "^4.7.2"
   }
 }
