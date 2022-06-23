@@ -32,6 +32,8 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			users = await UserModel.list().then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
+
+			return;
 		}
 
 		this.setState({
