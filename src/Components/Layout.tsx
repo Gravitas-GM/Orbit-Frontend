@@ -7,6 +7,7 @@ import {PageNotFound} from './PageNotFound';
 import {PointSummary} from './Pages/PointSummary';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
+import {UserEditor} from './Pages/Users/UserEditor';
 
 interface IProps {
 	loading: boolean;
@@ -26,6 +27,7 @@ export const Layout: React.FC<IProps> = props => (
 					<Route path="/" component={Home} exact={true} />
 
 					<Route path="/users" component={UsersList} exact={true} />
+					<Route path="/users/:user(\d+)" component={UserEditor} exact={true} />
 
 					<Route path="/sources" component={SourcesList} exact={true} />
 
