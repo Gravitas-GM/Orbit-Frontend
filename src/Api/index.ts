@@ -19,6 +19,8 @@ export type Projectable = {
 	p?: Projection;
 };
 
+export type Id = string | number;
+
 export const hubApiClient = hubApi.init();
 export const pointTrackingClient = pointTrackingApi.init();
 
