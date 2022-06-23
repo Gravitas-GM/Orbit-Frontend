@@ -1,4 +1,4 @@
-import {hubApiClient, Projectable, Projection, Queryable, QueryDocument} from '../..';
+import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../..';
 import {Account} from './Accounts';
 
 export interface UserEndpoints {
@@ -63,11 +63,11 @@ export class UserModel {
 		});
 	}
 
-	public static read(id: number) {
+	public static read(id: Id) {
 		return hubApiClient.get<'/users/:id'>(`/users/${id}`);
 	}
 
-	public static update(id: number, payload: UserUpdatePayload) {
+	public static update(id: Id, payload: UserUpdatePayload) {
 		return hubApiClient.patch<'/users/:id'>(`/users/${id}`, payload);
 	}
 }

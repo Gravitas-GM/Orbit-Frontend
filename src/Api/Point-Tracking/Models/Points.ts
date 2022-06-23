@@ -1,5 +1,5 @@
 import {ObjectId} from '..';
-import {pointTrackingClient} from '../..';
+import {Id, pointTrackingClient} from '../..';
 
 export interface PointsEndpoints {
 	'/points/users/:user': {
@@ -69,14 +69,14 @@ type PointItemCreatePayloadNormalized = Omit<PointItemCreatePayload, 'timestamp'
 };
 
 export class PointsModel {
-	public static create(userId: number, payload: PointItemCreatePayload) {
+	public static create(userId: Id, payload: PointItemCreatePayload) {
 		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
 			...payload,
 			timestamp: payload.timestamp.toISOString(),
 		});
 	}
 
-	public static async getFull(userId: number) {
+	public static async getFull(userId: Id) {
 		const response = await pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`);
 
 		response.data.points = response.data.points.map(item => {
@@ -89,19 +89,22 @@ export class PointsModel {
 		return response;
 	}
 
-	public static getSummary(userId: number) {
+	public static getSummary(userId: Id) {
 		return pointTrackingClient.get<'/points/users/:user/total'>(`/points/users/${userId}/total`);
 	}
 
-	public static getAll(accountId: number) {
+	public static getAll(accountId: Id) {
 		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
 	}
 
-	public static deleteAll(userId: number) {
+	public static deleteAll(userId: Id) {
 		return pointTrackingClient.delete<'/points/users/:user'>(`/points/users/${userId}`);
 	}
 
-	public static delete(userId: number, claimId: ObjectId) {
+	public static delete(userId: Id, claimId: ObjectId) {
 		return pointTrackingClient.delete<'/points/users/:user/:claim'>(`/points/users/${userId}/${claimId.$oid}`);
+	}
+
+	protected static denormalizeSummary(summary: UserPointsSummary) {
 	}
 }
