@@ -4,11 +4,13 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {ObjectId} from '../../../Api/Point-Tracking';
 import {PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
+import {SelectSourceDialog} from './SelectSourceDialog';
 
 interface IRouteProps {
 	user: string;
@@ -18,8 +20,11 @@ interface IState {
 	user: User | null;
 	userPoints: UserPoints | null;
 	loading: boolean;
+	processing: boolean;
 	redirect: boolean;
-	showGivePointsDialog: boolean;
+	showSelectSourceDialog: boolean;
+	selectedSource: PointSourceItem | null;
+	sources: PointSourceItem[];
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -30,8 +35,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		user: null,
 		userPoints: null,
 		loading: true,
+		processing: false,
 		redirect: false,
-		showGivePointsDialog: false,
+		showSelectSourceDialog: false,
+		selectedSource: null,
+		sources: [],
 	};
 
 	public async componentDidMount() {
@@ -65,9 +73,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return;
 		}
 
+		let sources: PointSourceItem[] = [];
+
+		try {
+			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+		}
+
 		this.setState({
 			user,
 			userPoints,
+			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
 	}
@@ -104,10 +121,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					<H2>Points</H2>
 
 					<Button
-						text="Give Points"
+						text="Add Points"
 						icon="plus"
 						intent="primary"
-						onClick={() => this.onGivePointsClick()}
+						onClick={() => this.onAddPointsClick()}
 					/>
 				</div>
 
@@ -141,19 +158,99 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						))}
 					</tbody>
 				</HTMLTable>
+
+				{this.state.showSelectSourceDialog && (
+					<SelectSourceDialog
+						sources={this.state.sources}
+						onClose={this.onSelectSourceDialogClose}
+						onSubmit={this.onSelectSourceDialogSubmit}
+						onSelectSource={this.onSelectSource}
+					/>
+				)}
 			</>
 		);
 	}
 
-	private onGivePointsClick = () => this.setState({
-		showGivePointsDialog: true,
+	private onAddPointsClick = () => this.setState({
+		showSelectSourceDialog: true,
 	});
 
-	private onGivePointsDialogClose = () => this.setState({
-		showGivePointsDialog: false,
+	private onSelectSourceDialogClose = () => this.setState({
+		selectedSource: null,
+		showSelectSourceDialog: false,
 	});
 
-	private onDeleteClick = (pointItem: ObjectId) => {
-		// TODO: send api call to delete point item /larry
+	private onSelectSource = (selectedSource: PointSourceItem) => this.setState({
+		selectedSource,
+	});
+
+	private onDeleteClick = async (pointItem: ObjectId) => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		let userPoints = this.state.userPoints;
+
+		try {
+			await PointsModel.delete(this.state.user!.id, pointItem);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		userPoints?.points.filter(item => item.id !== pointItem);
+
+		this.setState({
+			userPoints,
+			processing: false,
+		});
+	};
+
+	private onSelectSourceDialogSubmit = async () => {
+		this.setState({
+			showSelectSourceDialog: false,
+		});
+
+		if (this.state.loading || !this.state.selectedSource)
+			return;
+
+		this.setState({
+			loading: true,
+		});
+
+		//TODO: need the point item back to add it to the list /larry
+		try {
+			await PointsModel.create(this.state.user!.id, {
+				timestamp: new Date(),
+				point_value: this.state.selectedSource.point_value,
+				source: this.state.selectedSource.name,
+			});
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				loading: false,
+				selectedSource: null,
+			});
+
+			return;
+		}
+
+		toaster.success(
+			'Points added.',
+		);
+
+		this.setState({
+			loading: false,
+			selectedSource: null,
+		});
 	};
 }
