@@ -10,7 +10,13 @@ import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
-import {SelectSourceDialog} from './SelectSourceDialog';
+import {AddPointsDialog} from './AddPointsDialog';
+
+export type DialogPointItem = {
+	pointValue: number;
+	sourceName: string;
+	description?: string;
+}
 
 interface IRouteProps {
 	user: string;
@@ -22,8 +28,7 @@ interface IState {
 	loading: boolean;
 	processing: boolean;
 	redirect: boolean;
-	showSelectSourceDialog: boolean;
-	selectedSource: PointSourceItem | null;
+	showAddPointsDialog: boolean;
 	sources: PointSourceItem[];
 }
 
@@ -37,8 +42,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		loading: true,
 		processing: false,
 		redirect: false,
-		showSelectSourceDialog: false,
-		selectedSource: null,
+		showAddPointsDialog: false,
 		sources: [],
 	};
 
@@ -159,12 +163,12 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</tbody>
 				</HTMLTable>
 
-				{this.state.showSelectSourceDialog && (
-					<SelectSourceDialog
+				{this.state.showAddPointsDialog && (
+					<AddPointsDialog
 						sources={this.state.sources}
-						onClose={this.onSelectSourceDialogClose}
-						onSubmit={this.onSelectSourceDialogSubmit}
-						onSelectSource={this.onSelectSource}
+						processing={this.state.processing}
+						onClose={this.onAddPointsDialogClose}
+						onSubmit={this.onAddPointsDialogSubmit}
 					/>
 				)}
 			</>
@@ -172,16 +176,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	}
 
 	private onAddPointsClick = () => this.setState({
-		showSelectSourceDialog: true,
+		showAddPointsDialog: true,
 	});
 
-	private onSelectSourceDialogClose = () => this.setState({
-		selectedSource: null,
-		showSelectSourceDialog: false,
-	});
-
-	private onSelectSource = (selectedSource: PointSourceItem) => this.setState({
-		selectedSource,
+	private onAddPointsDialogClose = () => this.setState({
+		showAddPointsDialog: false,
 	});
 
 	private onDeleteClick = async (pointItem: ObjectId) => {
@@ -214,31 +213,27 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 	};
 
-	private onSelectSourceDialogSubmit = async () => {
-		this.setState({
-			showSelectSourceDialog: false,
-		});
-
-		if (this.state.loading || !this.state.selectedSource)
+	private onAddPointsDialogSubmit = async (dialogPointItem: DialogPointItem) => {
+		if (this.state.processing)
 			return;
 
 		this.setState({
-			loading: true,
+			processing: true,
 		});
 
 		//TODO: need the point item back to add it to the list /larry
 		try {
 			await PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
-				point_value: this.state.selectedSource.point_value,
-				source: this.state.selectedSource.name,
+				point_value: dialogPointItem.pointValue,
+				source: dialogPointItem.sourceName,
+				description: dialogPointItem.description,
 			});
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loading: false,
-				selectedSource: null,
+				processing: false,
 			});
 
 			return;
@@ -249,8 +244,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		);
 
 		this.setState({
-			loading: false,
-			selectedSource: null,
+			processing: false,
+			showAddPointsDialog: false,
 		});
 	};
 }

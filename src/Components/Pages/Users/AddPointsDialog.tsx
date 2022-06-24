@@ -1,0 +1,155 @@
+import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
+import {Select2} from '@blueprintjs/select';
+import * as React from 'react';
+import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
+import {SelectItemRenderer} from '../../SelectItemRenderer';
+import {DialogPointItem} from './UserEditor';
+import * as toaster from '../../../Toaster';
+
+interface IProps {
+	sources: PointSourceItem[];
+	processing: boolean;
+	onClose: () => void;
+	onSubmit: (dialogPointItem: DialogPointItem) => void;
+}
+
+interface IState {
+	description: string;
+	pointValue: number;
+	showCustomSourceForm: boolean;
+	showSourceForm: boolean;
+	selectedSource: PointSourceItem | null;
+}
+
+export class AddPointsDialog extends React.PureComponent<IProps, IState> {
+	public constructor(props: IProps) {
+		super(props);
+
+		this.state = {
+			description: '',
+			pointValue: 0,
+			showCustomSourceForm: false,
+			showSourceForm: false,
+			selectedSource: null,
+		};
+	}
+
+	public render() {
+		return (
+			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points">
+				<div className={Classes.DIALOG_BODY}>
+					<p className={Classes.RUNNING_TEXT}>
+						Select a point source to give user.
+					</p>
+
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button
+							intent={Intent.SUCCESS}
+							text="Preset Source"
+							onClick={this.onShowSourceFormClick}
+							disabled={this.props.processing}
+						/>
+
+						<Button
+							intent={Intent.SUCCESS}
+							text="Custom Source"
+							onClick={this.onShowCustomSourceFormClick}
+							disabled={this.props.processing}
+						/>
+					</div>
+
+					{this.state.showSourceForm && (
+						<form>
+							<FormGroup
+								label="Source"
+							>
+								<Select2
+									items={this.props.sources}
+									itemRenderer={item => (
+										<SelectItemRenderer label={item.name} />
+									)}
+									onItemSelect={this.onSelectedSourceChange}
+								/>
+							</FormGroup>
+						</form>
+					)}
+
+					{this.state.showCustomSourceForm && (
+						<form>
+							<FormGroup label="Point Value">
+								<NumericInput
+									min={0}
+									name="pointValue"
+									onValueChange={this.onPointValueChange}
+									value={this.state.pointValue}
+								/>
+							</FormGroup>
+
+							<FormGroup label="Description">
+								<InputGroup value={this.state.description} onChange={this.onDescriptionChange} />
+							</FormGroup>
+						</form>
+					)}
+				</div>
+
+				<div className={Classes.DIALOG_FOOTER}>
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button text="Cancel" onClick={this.props.onClose} disabled={this.props.processing} />
+
+						<Button
+							intent={Intent.PRIMARY}
+							text="Submit"
+							onClick={this.onSubmitClick}
+							loading={this.props.processing}
+						/>
+					</div>
+				</div>
+			</Dialog>
+		);
+	}
+
+	private onShowCustomSourceFormClick = () => this.setState({
+		showCustomSourceForm: true,
+		showSourceForm: false,
+	});
+
+	private onShowSourceFormClick = () => this.setState({
+		showCustomSourceForm: false,
+		showSourceForm: true,
+	});
+
+	private onSelectedSourceChange = (selectedSource: PointSourceItem) => this.setState({
+		selectedSource,
+	});
+
+	private onPointValueChange = (pointValue: number) => this.setState({
+		pointValue,
+	});
+
+	private onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		description: event.currentTarget.value,
+	});
+
+	private onSubmitClick = () => {
+		if (this.state.showSourceForm) {
+			if (!this.state.selectedSource) {
+				toaster.error('Please select a source.');
+
+				return;
+			}
+
+			this.props.onSubmit({
+				sourceName: this.state.selectedSource.name,
+				pointValue: this.state.selectedSource.point_value,
+			});
+
+			return;
+		}
+
+		this.props.onSubmit({
+			sourceName: 'Custom',
+			pointValue: this.state.pointValue,
+			description: this.state.description,
+		});
+	};
+}
