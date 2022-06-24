@@ -13,7 +13,7 @@ interface IProps {
 
 export const SelectSourceDialog: React.FC<IProps> = (props) => {
 	return (
-		<Dialog onClose={props.onClose} isOpen={true} title="Give Points">
+		<Dialog onClose={props.onClose} isOpen={true} title="Select Source">
 			<div className={Classes.DIALOG_BODY}>
 				<p className={Classes.RUNNING_TEXT}>
 					Select a point source to give user.
