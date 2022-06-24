@@ -154,6 +154,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 										text="Delete"
 										icon="delete"
 										intent={Intent.DANGER}
+										loading={this.state.processing}
 										onClick={() => this.onDeleteClick(item)}
 									/>
 								</td>
@@ -216,14 +217,15 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		//TODO: need the point item back to add it to the list /larry
+		let pointItem: PointItem;
+
 		try {
-			await PointsModel.create(this.state.user!.id, {
+			pointItem = await PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
 				point_value: dialogPointItem.pointValue,
 				source: dialogPointItem.sourceName,
 				description: dialogPointItem.description,
-			});
+			}).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -238,9 +240,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			'Points added.',
 		);
 
-		this.setState({
+		this.setState(state => ({
 			processing: false,
 			showAddPointsDialog: false,
-		});
+			pointItems: [...state.pointItems, pointItem],
+		}));
 	};
 }

@@ -6,7 +6,7 @@ export interface PointsEndpoints {
 		PUT: {
 			params: number;
 			body: PointItemCreatePayloadNormalized;
-			response: void;
+			response: PointItem;
 		};
 
 		GET: {
