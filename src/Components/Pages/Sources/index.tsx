@@ -16,8 +16,10 @@ import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
+import {AssignPointsDialog} from './AssignPointsDialog';
 
 interface IState {
+	selectedSource: PointSourceItem | null;
 	sources: PointSourceItem[];
 	sourceName: string;
 	pointValue: number;
@@ -31,6 +33,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
+		selectedSource: null,
 		sources: [],
 		sourceName: '',
 		pointValue: 0,
@@ -161,6 +164,13 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						</div>
 					</Dialog>
 				)}
+
+				{this.state.selectedSource && (
+					<AssignPointsDialog
+						source={this.state.selectedSource}
+						onClose={this.onAssignPointsDialogClose}
+					/>
+				)}
 			</>
 		);
 	}
@@ -183,9 +193,13 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		pointValue,
 	});
 
-	private onAssignPointsClick = (source: PointSourceItem) => {
-		//TODO: implement assign points click /larry
-	};
+	private onAssignPointsClick = (selectedSource: PointSourceItem) => this.setState({
+		selectedSource,
+	});
+
+	private onAssignPointsDialogClose = () => this.setState({
+		selectedSource: null,
+	});
 
 	private onEditClick = (source: PointSourceItem) => {
 		//TODO: implement edit click /larry
