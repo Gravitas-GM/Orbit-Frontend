@@ -237,7 +237,29 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		}));
 	};
 
-	private onDeleteClick = (source: PointSourceItem) => {
-		//TODO: implement delete click /larry
+	private onDeleteClick = async (source: PointSourceItem) => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		try {
+			await PointSourceModel.delete(source.id);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		this.setState(state => ({
+			sources: state.sources.filter(item => item !== source),
+			processing: false,
+		}));
 	};
 }
