@@ -183,6 +183,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private onAddButtonClick = () => this.setState({
 		showSourceDialog: true,
+		isEditSource: false,
 	});
 
 	private onSourceDialogClose = () => this.setState({
