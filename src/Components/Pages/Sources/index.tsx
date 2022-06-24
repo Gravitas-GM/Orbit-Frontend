@@ -19,11 +19,12 @@ import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 
 interface IState {
+	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
 	sources: PointSourceItem[];
 	sourceName: string;
 	pointValue: number;
-	showAddDialog: boolean;
+	showSourceDialog: boolean;
 	loading: boolean;
 	processing: boolean;
 }
@@ -33,11 +34,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
+		isEditSource: false,
 		selectedSource: null,
 		sources: [],
 		sourceName: '',
 		pointValue: 0,
-		showAddDialog: false,
+		showSourceDialog: false,
 		loading: true,
 		processing: false,
 	};
@@ -121,10 +123,14 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					</tbody>
 				</HTMLTable>
 
-				{this.state.showAddDialog && (
-					<Dialog onClose={this.onAddDialogClose} isOpen={true} title="Add Source">
+				{this.state.showSourceDialog && (
+					<Dialog
+						onClose={this.onSourceDialogClose}
+						isOpen={true}
+						title={this.state.isEditSource ? 'Edit Source' : 'Add Source'}
+					>
 						<div className={Classes.DIALOG_BODY}>
-							<form onSubmit={this.onAddDialogSubmit}>
+							<form onSubmit={this.onSourceDialogSubmit}>
 								<FormGroup
 									label="Source Name"
 									labelFor="sourceName"
@@ -150,14 +156,14 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 							<div className={Classes.DIALOG_FOOTER_ACTIONS}>
 								<Button
 									text="Cancel"
-									onClick={this.onAddDialogClose}
+									onClick={this.onSourceDialogClose}
 									disabled={this.state.processing}
 								/>
 
 								<Button
 									intent={Intent.PRIMARY}
 									text="Submit"
-									onClick={this.onAddDialogSubmit}
+									onClick={this.onSourceDialogSubmit}
 									loading={this.state.processing}
 								/>
 							</div>
@@ -176,11 +182,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	}
 
 	private onAddButtonClick = () => this.setState({
-		showAddDialog: true,
+		showSourceDialog: true,
 	});
 
-	private onAddDialogClose = () => this.setState({
-		showAddDialog: false,
+	private onSourceDialogClose = () => this.setState({
+		showSourceDialog: false,
+		isEditSource: false,
 		sourceName: '',
 		pointValue: 0,
 	});
@@ -201,11 +208,14 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		selectedSource: null,
 	});
 
-	private onEditClick = (source: PointSourceItem) => {
-		//TODO: implement edit click /larry
-	};
+	private onEditClick = (selectedSource: PointSourceItem) => this.setState({
+		isEditSource: true,
+		showSourceDialog: true,
+		sourceName: selectedSource.name,
+		pointValue: selectedSource.point_value,
+	});
 
-	private onAddDialogSubmit = async (event: React.SyntheticEvent<any>) => {
+	private onSourceDialogSubmit = async (event: React.SyntheticEvent<any>) => {
 		event.preventDefault();
 
 		if (this.state.processing)
@@ -232,19 +242,20 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
+				isEditSource: false,
+				showSourceDialog: false,
 				processing: false,
 			});
 
 			return;
 		}
 
-		toaster.success(
-			'Source created.',
-		);
+		toaster.success(this.state.isEditSource ? 'Source edited.' : 'Source created.');
 
 		this.setState(state => ({
+			isEditSource: false,
 			sources: [...state.sources, source].sort((a, b) => a.name.localeCompare(b.name)),
-			showAddDialog: false,
+			showSourceDialog: false,
 			sourceName: '',
 			pointValue: 0,
 			processing: false,
