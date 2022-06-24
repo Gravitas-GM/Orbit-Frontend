@@ -2,8 +2,7 @@ import {Button, H2, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {ObjectId} from '../../../Api/Point-Tracking';
-import {PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
+import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -24,8 +23,8 @@ interface IRouteProps {
 
 interface IState {
 	user: User | null;
-	userPoints: UserPoints | null;
 	loading: boolean;
+	pointItems: PointItem[];
 	processing: boolean;
 	redirect: boolean;
 	showAddPointsDialog: boolean;
@@ -38,8 +37,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	public state: Readonly<IState> = {
 		user: null,
-		userPoints: null,
 		loading: true,
+		pointItems: [],
 		processing: false,
 		redirect: false,
 		showAddPointsDialog: false,
@@ -87,7 +86,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		this.setState({
 			user,
-			userPoints,
+			pointItems: userPoints.points,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
@@ -144,18 +143,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</thead>
 
 					<tbody>
-						{this.state.userPoints!.points.map(points => (
-							<tr key={`point-item-${points.id}`}>
-								<td>{ucwords(points.source)}</td>
-								<td>{formatNumber(points.point_value)}</td>
+						{this.state.pointItems.map(item => (
+							<tr key={`point-item-${item.id}`}>
+								<td>{ucwords(item.source)}</td>
+								<td>{formatNumber(item.point_value)}</td>
 								<td>{new Date().toDateString()}</td>
-								<td>{points.description}</td>
+								<td>{item.description}</td>
 								<td style={{width: 100, textAlign: 'right'}}>
 									<Button
 										text="Delete"
 										icon="delete"
 										intent={Intent.DANGER}
-										onClick={() => this.onDeleteClick(points.id)}
+										onClick={() => this.onDeleteClick(item)}
 									/>
 								</td>
 							</tr>
@@ -183,7 +182,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showAddPointsDialog: false,
 	});
 
-	private onDeleteClick = async (pointItem: ObjectId) => {
+	private onDeleteClick = async (pointItem: PointItem) => {
 		if (this.state.processing)
 			return;
 
@@ -191,10 +190,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		let userPoints = this.state.userPoints;
-
 		try {
-			await PointsModel.delete(this.state.user!.id, pointItem);
+			await PointsModel.delete(this.state.user!.id, pointItem.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -205,12 +202,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return;
 		}
 
-		userPoints?.points.filter(item => item.id !== pointItem);
-
-		this.setState({
-			userPoints,
+		this.setState(state => ({
+			pointItems: state.pointItems.filter(item => item !== pointItem),
 			processing: false,
-		});
+		}));
 	};
 
 	private onAddPointsDialogSubmit = async (dialogPointItem: DialogPointItem) => {
