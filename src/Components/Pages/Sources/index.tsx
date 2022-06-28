@@ -97,6 +97,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 										<Button
 											icon="cog"
 											minimal={true}
+											disabled={this.state.processing}
 										/>
 
 										<Menu>
