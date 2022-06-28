@@ -81,6 +81,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 								itemRenderer={item => (
 									<SelectItemRenderer
 										label={`${ucwords(item.firstName ?? '')} ${ucwords(item.lastName ?? '')}`}
+										key={`select-${item.id}`}
 									/>
 								)}
 							/>

@@ -66,7 +66,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								<Select2
 									items={this.props.sources}
 									itemRenderer={item => (
-										<SelectItemRenderer label={item.name} />
+										<SelectItemRenderer label={item.name} key={item.id.$oid} />
 									)}
 									onItemSelect={this.onSelectedSourceChange}
 								/>
