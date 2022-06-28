@@ -14,6 +14,7 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {replace} from '../../Utility/array';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
@@ -21,6 +22,7 @@ import {AssignPointsDialog} from './AssignPointsDialog';
 interface IState {
 	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
+	showAsssignPointsDialog: boolean;
 	sources: PointSourceItem[];
 	sourceName: string;
 	pointValue: number;
@@ -36,6 +38,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		isEditSource: false,
 		selectedSource: null,
+		showAsssignPointsDialog: false,
 		sources: [],
 		sourceName: '',
 		pointValue: 0,
@@ -175,7 +178,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					</Dialog>
 				)}
 
-				{this.state.selectedSource && (
+				{this.state.showAsssignPointsDialog && this.state.selectedSource && (
 					<AssignPointsDialog
 						source={this.state.selectedSource}
 						onClose={this.onAssignPointsDialogClose}
@@ -207,13 +210,16 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private onAssignPointsClick = (selectedSource: PointSourceItem) => this.setState({
 		selectedSource,
+		showAsssignPointsDialog: true,
 	});
 
 	private onAssignPointsDialogClose = () => this.setState({
 		selectedSource: null,
+		showAsssignPointsDialog: false,
 	});
 
 	private onEditClick = (selectedSource: PointSourceItem) => this.setState({
+		selectedSource,
 		isEditSource: true,
 		showSourceDialog: true,
 		sourceName: selectedSource.name,
@@ -250,6 +256,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				isEditSource: false,
 				showSourceDialog: false,
 				processing: false,
+				selectedSource: null,
 			});
 
 			return;
@@ -257,14 +264,22 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		toaster.success(this.state.isEditSource ? 'Source edited.' : 'Source created.');
 
-		this.setState(state => ({
+		let sources: PointSourceItem[];
+
+		if (this.state.isEditSource)
+			sources = replace(this.state.sources, this.state.selectedSource!, source);
+		else
+			sources = [...this.state.sources, source].sort((a, b) => a.name.localeCompare(b.name));
+
+		this.setState({
+			sources,
+			selectedSource: null,
 			isEditSource: false,
-			sources: [...state.sources, source].sort((a, b) => a.name.localeCompare(b.name)),
 			showSourceDialog: false,
 			sourceName: '',
 			pointValue: 0,
 			processing: false,
-		}));
+		});
 	};
 
 	private onDeleteClick = async (source: PointSourceItem) => {
