@@ -135,7 +135,11 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									label="Source Name"
 									labelFor="sourceName"
 								>
-									<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} />
+									<InputGroup
+										value={this.state.sourceName}
+										onChange={this.onSourceNameChange}
+										disabled={this.state.isEditSource}
+									/>
 								</FormGroup>
 
 								<FormGroup
