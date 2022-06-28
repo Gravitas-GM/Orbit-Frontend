@@ -66,6 +66,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 						<FormGroup
 							label="Select Users"
 							labelFor="selectedUsers"
+							style={{display: 'flex'}}
 						>
 							<MultiSelect
 								selectedItems={this.state.selectedUsers}
@@ -75,6 +76,23 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 								tagRenderer={renderUserName}
 								itemRenderer={this.selectItemRenderer}
 							/>
+
+							<div style={{paddingTop: 10}}>
+								<Button
+									text="Select All"
+									icon="plus"
+									intent="none"
+									onClick={() => this.onSelectAllClick()}
+									style={{marginRight: 10}}
+								/>
+
+								<Button
+									text="Clear"
+									icon="minus"
+									intent="none"
+									onClick={() => this.onClearClick()}
+								/>
+							</div>
 						</FormGroup>
 					</form>
 				</div>
@@ -102,6 +120,14 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 	private onUserRemove = (user: User) => this.setState(state => ({
 		selectedUsers: state.selectedUsers.filter(item => item !== user),
 	}));
+
+	private onSelectAllClick = () => this.setState(state => ({
+		selectedUsers: state.users,
+	}));
+
+	private onClearClick = () => this.setState({
+		selectedUsers: [],
+	});
 
 	private onSubmit = async (event: React.SyntheticEvent<any>) => {
 		event.preventDefault();
