@@ -144,7 +144,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 					<tbody>
 						{this.state.pointItems.map(item => (
-							<tr key={`point-item-${item.id}`}>
+							<tr key={`point-item-${item.id.$oid}`}>
 								<td>{ucwords(item.source)}</td>
 								<td>{formatNumber(item.point_value)}</td>
 								<td>{new Date().toDateString()}</td>
