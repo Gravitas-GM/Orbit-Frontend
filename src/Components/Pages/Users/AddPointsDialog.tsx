@@ -42,12 +42,13 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 						Select a point source to give user.
 					</p>
 
-					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+					<div style={{display: 'flex', justifyContent: 'center', paddingBottom: 15}}>
 						<Button
 							intent={Intent.SUCCESS}
 							text="Preset Source"
 							onClick={this.onShowSourceFormClick}
 							disabled={this.props.processing}
+							style={{marginRight: 10}}
 						/>
 
 						<Button
