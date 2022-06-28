@@ -15,6 +15,7 @@ import './NavHeader.scss';
 import {logout} from '../Api';
 import {history} from '../history';
 import {UserContext} from '../Session';
+import {renderUserName} from './Utility/string';
 
 interface IProps {
 	loading: boolean;
@@ -57,7 +58,7 @@ export const NavHeader: React.FC<IProps> = props => (
 					{user ? (
 						<Popover>
 							<Button
-								text={`Welcome, ${user.firstName}`}
+								text={`Welcome, ${renderUserName(user)}`}
 								rightIcon={'caret-down'}
 								minimal={true}
 								style={{color: 'white'}}

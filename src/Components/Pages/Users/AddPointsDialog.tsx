@@ -1,8 +1,8 @@
-import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
-import {Select2} from '@blueprintjs/select';
+import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, MenuItem, NumericInput} from '@blueprintjs/core';
+import {ItemRenderer, Select} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
-import {SelectItemRenderer} from '../../SelectItemRenderer';
+import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
 import * as toaster from '../../../Toaster';
 
@@ -38,10 +38,6 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		return (
 			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points">
 				<div className={Classes.DIALOG_BODY}>
-					<p className={Classes.RUNNING_TEXT}>
-						Select a point source to give user.
-					</p>
-
 					<div style={{display: 'flex', justifyContent: 'center', paddingBottom: 15}}>
 						<Button
 							intent={Intent.SUCCESS}
@@ -64,13 +60,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							<FormGroup
 								label="Source"
 							>
-								<Select2
+								<Select
 									items={this.props.sources}
-									itemRenderer={item => (
-										<SelectItemRenderer label={item.name} key={item.id.$oid} />
-									)}
+									itemRenderer={this.selectItemRenderer}
 									onItemSelect={this.onSelectedSourceChange}
-								/>
+									filterable={false}
+								>
+									<Button text={this.state.selectedSource?.name ?? 'Select a source'} rightIcon="caret-down" />
+								</Select>
 							</FormGroup>
 						</form>
 					)}
@@ -152,5 +149,20 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			pointValue: this.state.pointValue,
 			description: this.state.description,
 		});
+	};
+
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers}) => {
+		if (!modifiers.matchesPredicate) {
+			return null;
+		}
+
+		return (
+			<MenuItem
+				active={modifiers.active}
+				key={`selectItem-${item.id.$oid}`}
+				text={ucwords(item.name)}
+				onClick={handleClick}
+			/>
+		);
 	};
 }

@@ -8,7 +8,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
-import {formatNumber, ucwords} from '../../Utility/string';
+import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
 
 export type DialogPointItem = {
@@ -112,7 +112,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					<tbody>
 						<tr>
 							<td>
-								{ucwords(this.state.user!.firstName ?? '')} {ucwords(this.state.user!.lastName ?? '')}
+								{renderUserName(this.state.user!)}
 							</td>
 							<td>{this.state.user!.emailAddress}</td>
 							<td>{this.state.user!.admin ? 'Yes' : 'No'}</td>

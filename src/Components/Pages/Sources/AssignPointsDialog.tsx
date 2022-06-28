@@ -1,13 +1,12 @@
-import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
-import {MultiSelect2} from '@blueprintjs/select';
+import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
+import {ItemRenderer, MultiSelect} from '@blueprintjs/select';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import * as toaster from '../../../Toaster';
-import {SelectItemRenderer} from '../../SelectItemRenderer';
 import {allSettled} from '../../Utility/promise';
-import {compareStrings, ucwords} from '../../Utility/string';
+import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
 
 interface IProps {
 	source: PointSourceItem;
@@ -63,27 +62,18 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		return (
 			<Dialog onClose={this.props.onClose} isOpen={true} title="Assign Points">
 				<div className={Classes.DIALOG_BODY}>
-					<p className={Classes.RUNNING_TEXT}>
-						Select users to assign points from this source to.
-					</p>
-
 					<form>
 						<FormGroup
-							label="Users"
+							label="Select Users"
 							labelFor="selectedUsers"
 						>
-							<MultiSelect2
+							<MultiSelect
 								selectedItems={this.state.selectedUsers}
 								items={this.state.users}
 								onItemSelect={this.onUserSelect}
 								onRemove={this.onUserRemove}
-								tagRenderer={item => item.emailAddress}
-								itemRenderer={item => (
-									<SelectItemRenderer
-										label={`${ucwords(item.firstName ?? '')} ${ucwords(item.lastName ?? '')}`}
-										key={`select-${item.id}`}
-									/>
-								)}
+								tagRenderer={renderUserName}
+								itemRenderer={this.selectItemRenderer}
 							/>
 						</FormGroup>
 					</form>
@@ -160,5 +150,20 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		});
 
 		this.props.onClose();
+	};
+
+	private selectItemRenderer: ItemRenderer<User> = (item, { handleClick, modifiers}) => {
+		if (!modifiers.matchesPredicate) {
+			return null;
+		}
+
+		return (
+			<MenuItem
+				active={modifiers.active}
+				key={`selectItem-${item.id}`}
+				text={renderUserName(item)}
+				onClick={handleClick}
+			/>
+		);
 	};
 }

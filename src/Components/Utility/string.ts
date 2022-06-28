@@ -1,3 +1,5 @@
+import {User} from '../../Api/Hub/Models/Users';
+
 export function ucfirst(value: string) {
 	if (!value.length)
 		return value;
@@ -20,4 +22,8 @@ export function formatNumber(number: number | null | undefined) {
 
 export function compareStrings(a: string, b: string) {
 	return a.localeCompare(b, undefined, {sensitivity: 'base'});
+}
+
+export function renderUserName(user: User) {
+	return `${ucwords(user.firstName ?? '')} ${ucwords(user.lastName ?? '')}`;
 }
