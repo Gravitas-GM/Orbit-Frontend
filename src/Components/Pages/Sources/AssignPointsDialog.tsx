@@ -81,7 +81,6 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 								<Button
 									text="Select All"
 									icon="plus"
-									intent="none"
 									onClick={() => this.onSelectAllClick()}
 									style={{marginRight: 10}}
 								/>
@@ -89,7 +88,6 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 								<Button
 									text="Clear"
 									icon="minus"
-									intent="none"
 									onClick={() => this.onClearClick()}
 								/>
 							</div>
