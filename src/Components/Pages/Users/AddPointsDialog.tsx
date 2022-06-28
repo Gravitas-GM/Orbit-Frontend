@@ -66,7 +66,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 									onItemSelect={this.onSelectedSourceChange}
 									filterable={false}
 								>
-									<Button text={this.state.selectedSource?.name ?? 'Select a source'} rightIcon="caret-down" />
+									<Button
+										text={(
+											this.state.selectedSource?.name
+												? ucwords(this.state.selectedSource.name)
+												: 'Select a Source'
+										)}
+										rightIcon="caret-down"
+									/>
 								</Select>
 							</FormGroup>
 						</form>
