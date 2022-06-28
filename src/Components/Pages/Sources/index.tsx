@@ -86,7 +86,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					</thead>
 					<tbody>
 						{this.state.sources.map(source => (
-							<tr key={`source-${source.id}`}>
+							<tr key={`source-${source.id.$oid}`}>
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
 								<td>
