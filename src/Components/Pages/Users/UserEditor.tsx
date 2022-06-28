@@ -120,7 +120,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</tbody>
 				</HTMLTable>
 
-				<div className={classNames('settings-title-container')}>
+				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
 					<H2>Points</H2>
 
 					<Button
@@ -149,10 +149,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 								<td>{formatNumber(item.point_value)}</td>
 								<td>{new Date().toDateString()}</td>
 								<td>{item.description}</td>
-								<td style={{width: 100, textAlign: 'right'}}>
+								<td style={{width: 100}}>
 									<Button
-										text="Delete"
 										icon="delete"
+										minimal={true}
 										intent={Intent.DANGER}
 										loading={this.state.processing}
 										onClick={() => this.onDeleteClick(item)}
