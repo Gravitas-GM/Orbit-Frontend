@@ -10,6 +10,7 @@ import {formatNumber, ucwords} from '../../Utility/string';
 interface IState {
 	userPoints: UserPointsSummary[];
 	loading: boolean;
+	processing: boolean;
 }
 
 export class PointSummary extends React.PureComponent<{}, IState> {
@@ -19,6 +20,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		userPoints: [],
 		loading: true,
+		processing: false,
 	};
 
 	public async componentDidMount() {
@@ -49,6 +51,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 						text="Download"
 						icon="download"
 						intent="primary"
+						loading={this.state.processing}
 						onClick={this.onDownloadClick}
 					/>
 				</div>
@@ -75,6 +78,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	}
 
 	private onDownloadClick = () => {
+		if (this.state.processing)
+			return;
+
 		//TODO: implement download csv /larry
 	};
 }
