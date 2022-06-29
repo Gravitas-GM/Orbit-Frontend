@@ -1,5 +1,6 @@
 import {ObjectId} from '..';
 import {Id, pointTrackingClient} from '../..';
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 
 export interface PointsEndpoints {
 	'/points/users/:user': {
@@ -83,17 +84,12 @@ export class PointsModel {
 		});
 	}
 
-	public static async getFull(userId: Id) {
-		const response = await pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`);
+	public static getFull(userId: Id) {
+		return pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`).then(response => {
+			response.data.points = response.data.points.map(this.denormalizePointItem);
 
-		response.data.points = response.data.points.map(item => {
-			if (typeof item.timestamp !== 'object')
-				item.timestamp = new Date(item.timestamp);
-
-			return item;
+			return response;
 		});
-
-		return response;
 	}
 
 	public static getSummary(userId: Id) {
@@ -101,7 +97,15 @@ export class PointsModel {
 	}
 
 	public static getAll(accountId: Id) {
-		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
+		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`).then(response => {
+			response.data = response.data.map(userPoints => {
+				userPoints.points = userPoints.points.map(this.denormalizePointItem);
+
+				return userPoints;
+			});
+
+			return response;
+		});
 	}
 
 	public static getAllSummary(accountId: Id) {
@@ -116,6 +120,9 @@ export class PointsModel {
 		return pointTrackingClient.delete<'/points/users/:user/:claim'>(`/points/users/${userId}/${claimId.$oid}`);
 	}
 
-	protected static denormalizeSummary(summary: UserPointsSummary) {
+	private static denormalizePointItem(pointItem: PointItem) {
+		pointItem.timestamp = parseApiTimestamp(pointItem.timestamp);
+
+		return pointItem;
 	}
 }
