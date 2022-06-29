@@ -157,7 +157,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						text="Add Points"
 						icon="plus"
 						intent="primary"
-						onClick={() => this.onAddPointsClick()}
+						onClick={this.onAddPointsClick}
 					/>
 				</div>
 
