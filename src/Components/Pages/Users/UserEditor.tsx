@@ -1,4 +1,14 @@
-import {Button, H2, HTMLTable, Intent} from '@blueprintjs/core';
+import {
+	Button,
+	Classes,
+	Dialog,
+	FormGroup,
+	H2,
+	HTMLTable,
+	InputGroup,
+	Intent,
+	Switch,
+} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
@@ -23,11 +33,15 @@ interface IRouteProps {
 
 interface IState {
 	user: User | null;
+	firstName: string;
+	lastName: string;
+	isAdmin: boolean;
 	loading: boolean;
 	pointItems: PointItem[];
 	processing: boolean;
 	redirect: boolean;
 	showAddPointsDialog: boolean;
+	showEditDialog: boolean;
 	sources: PointSourceItem[];
 }
 
@@ -37,11 +51,15 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	public state: Readonly<IState> = {
 		user: null,
+		firstName: '',
+		lastName: '',
+		isAdmin: false,
 		loading: true,
 		pointItems: [],
 		processing: false,
 		redirect: false,
 		showAddPointsDialog: false,
+		showEditDialog: false,
 		sources: [],
 	};
 
@@ -86,6 +104,9 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		this.setState({
 			user,
+			firstName: user.firstName ?? '',
+			lastName: user.lastName ?? '',
+			isAdmin: user.admin,
 			pointItems: userPoints.points,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
@@ -106,6 +127,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							<th>Name</th>
 							<th>Email</th>
 							<th>Admin</th>
+							<th>Edit</th>
 						</tr>
 					</thead>
 
@@ -116,6 +138,14 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							</td>
 							<td>{this.state.user!.emailAddress}</td>
 							<td>{this.state.user!.admin ? 'Yes' : 'No'}</td>
+							<td style={{width: 100}}>
+								<Button
+									icon="edit"
+									minimal={true}
+									loading={this.state.processing}
+									onClick={this.onEditClick}
+								/>
+							</td>
 						</tr>
 					</tbody>
 				</HTMLTable>
@@ -163,6 +193,65 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</tbody>
 				</HTMLTable>
 
+				{this.state.showEditDialog && (
+					<Dialog
+						onClose={this.onEditDialogClose}
+						isOpen={true}
+						title="Edit User Details"
+					>
+						<div className={Classes.DIALOG_BODY}>
+							<form onSubmit={this.onEditDialogSubmit}>
+								<FormGroup
+									label="First Name"
+									labelFor="firstName"
+								>
+									<InputGroup
+										value={this.state.firstName}
+										onChange={this.onFirstNameChange}
+									/>
+								</FormGroup>
+
+								<FormGroup
+									label="Last Name"
+									labelFor="lastName"
+								>
+									<InputGroup
+										value={this.state.lastName}
+										onChange={this.onLastNameChange}
+									/>
+								</FormGroup>
+
+								<FormGroup
+									label="Admin"
+									labelFor="isAdmin"
+								>
+									<Switch
+										checked={this.state.isAdmin}
+										onChange={this.onIsAdminChange}
+									/>
+								</FormGroup>
+							</form>
+						</div>
+
+						<div className={Classes.DIALOG_FOOTER}>
+							<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+								<Button
+									text="Cancel"
+									onClick={this.onEditDialogClose}
+									disabled={this.state.processing}
+								/>
+
+								<Button
+									intent={Intent.PRIMARY}
+									text="Submit"
+									onClick={this.onEditDialogSubmit}
+									loading={this.state.processing}
+								/>
+							</div>
+						</div>
+					</Dialog>
+				)}
+
 				{this.state.showAddPointsDialog && (
 					<AddPointsDialog
 						sources={this.state.sources}
@@ -175,6 +264,26 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		);
 	}
 
+	private onEditClick = () => this.setState({
+		showEditDialog: true,
+	});
+
+	private onEditDialogClose = () => this.setState({
+		showEditDialog: false,
+	});
+
+	private onFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		firstName: event.currentTarget.value,
+	});
+
+	private onLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		lastName: event.currentTarget.value,
+	});
+
+	private onIsAdminChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		isAdmin: event.currentTarget.checked,
+	});
+
 	private onAddPointsClick = () => this.setState({
 		showAddPointsDialog: true,
 	});
@@ -182,6 +291,40 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	private onAddPointsDialogClose = () => this.setState({
 		showAddPointsDialog: false,
 	});
+
+	private onEditDialogSubmit = async () => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		let user: User;
+
+		try {
+			user = await UserModel.update(this.state.user!.id, {
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
+				admin: this.state.isAdmin,
+			}).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		toaster.success('User updated.');
+
+		this.setState({
+			user,
+			processing: false,
+		});
+	};
 
 	private onDeleteClick = async (pointItem: PointItem) => {
 		if (this.state.processing)
