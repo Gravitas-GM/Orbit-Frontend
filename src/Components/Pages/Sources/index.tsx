@@ -75,7 +75,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						text="Add"
 						icon="plus"
 						intent="primary"
-						onClick={() => this.onAddButtonClick()}
+						onClick={this.onAddButtonClick}
 					/>
 				</div>
 
