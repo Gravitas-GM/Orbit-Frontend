@@ -150,7 +150,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</tbody>
 				</HTMLTable>
 
-				<div className={classNames('settings-title-container')}>
+				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
 					<H2>Points</H2>
 
 					<Button
