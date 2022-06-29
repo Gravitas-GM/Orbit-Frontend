@@ -1,4 +1,4 @@
-import {H2, HTMLTable} from '@blueprintjs/core';
+import {Button, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {UserContext} from '../../../Session';
@@ -42,7 +42,16 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 		return (
 			<>
-				<H2>Point Summary</H2>
+				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
+					<H2>Point Summary</H2>
+
+					<Button
+						text="Download"
+						icon="download"
+						intent="primary"
+						onClick={this.onDownloadClick}
+					/>
+				</div>
 
 				<HTMLTable className={classNames('bp4-html-table-striped')}>
 					<thead>
@@ -64,4 +73,8 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 			</>
 		);
 	}
+
+	private onDownloadClick = () => {
+		//TODO: implement download csv /larry
+	};
 }
