@@ -44,7 +44,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 		return (
 			<>
-				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
+				<div className={classNames('settings-title-container')}>
 					<H2>Point Summary</H2>
 
 					<Button
