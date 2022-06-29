@@ -1,28 +1,28 @@
 import { ObjectId } from "..";
-import { pointTrackingClient } from "../..";
+import {Id, pointTrackingClient} from '../..';
 
 export interface PointSourceEndpoints {
 	'/sources/account/:account': {
 		POST: {
-			params: number;
+			params: Id;
 			body: PointSourceItemSetPayload;
 			response: PointSourceItem;
 		};
 
 		GET: {
-			params: number;
+			params: Id;
 			response: PointSourceItem[];
 		};
 
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
 
 	'/sources/:source': {
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
@@ -37,11 +37,11 @@ export interface PointSourceItem {
 export type PointSourceItemSetPayload = Omit<PointSourceItem, 'id'>;
 
 export class PointSourceModel {
-	public static set(accountId: number, payload: PointSourceItemSetPayload) {
+	public static set(accountId: Id, payload: PointSourceItemSetPayload) {
 		return pointTrackingClient.post<'/sources/account/:account'>(`/sources/account/${accountId}`, payload);
 	}
 
-	public static list(accountId: number) {
+	public static list(accountId: Id) {
 		return pointTrackingClient.get<'/sources/account/:account'>(`/sources/account/${accountId}`);
 	}
 
@@ -49,7 +49,7 @@ export class PointSourceModel {
 		return pointTrackingClient.delete<'/sources/:source'>(`/sources/${sourceId.$oid}`);
 	}
 
-	public static clear(accountId: number) {
+	public static clear(accountId: Id) {
 		return pointTrackingClient.delete<'/sources/account/:account'>(`/sources/account/${accountId}`);
 	}
 }

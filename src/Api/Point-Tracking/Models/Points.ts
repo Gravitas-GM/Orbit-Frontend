@@ -4,41 +4,48 @@ import {Id, pointTrackingClient} from '../..';
 export interface PointsEndpoints {
 	'/points/users/:user': {
 		PUT: {
-			params: number;
+			params: Id;
 			body: PointItemCreatePayloadNormalized;
 			response: PointItem;
 		};
 
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPoints;
 		};
 
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/:claim': {
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/total': {
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPointsSummary;
 		};
 	};
 
 	'/points/account/:account': {
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPoints[];
 		};
+	};
+
+	'/points/account/:account/total': {
+		GET: {
+			params: Id;
+			response: UserPointsSummary[];
+		}
 	};
 }
 
@@ -94,6 +101,10 @@ export class PointsModel {
 	}
 
 	public static getAll(accountId: Id) {
+		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
+	}
+
+	public static getAllSummary(accountId: Id) {
 		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
 	}
 

@@ -17,12 +17,12 @@ export interface UserEndpoints {
 
 	'/users/:id': {
 		GET: {
-			params: number;
+			params: Id;
 			response: User;
 		};
 
 		PATCH: {
-			params: number;
+			params: Id;
 			body: UserUpdatePayload;
 			response: User;
 		};
@@ -63,11 +63,11 @@ export class UserModel {
 		});
 	}
 
-	public static read(id: Id) {
-		return hubApiClient.get<'/users/:id'>(`/users/${id}`);
+	public static read(user: Id) {
+		return hubApiClient.get<'/users/:id'>(`/users/${user}`);
 	}
 
-	public static update(id: Id, payload: UserUpdatePayload) {
-		return hubApiClient.patch<'/users/:id'>(`/users/${id}`, payload);
+	public static update(user: Id, payload: UserUpdatePayload) {
+		return hubApiClient.patch<'/users/:id'>(`/users/${user}`, payload);
 	}
 }
