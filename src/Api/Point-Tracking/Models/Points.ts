@@ -105,7 +105,7 @@ export class PointsModel {
 	}
 
 	public static getAllSummary(accountId: Id) {
-		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
+		return pointTrackingClient.get<'/points/account/:account/total'>(`/points/account/${accountId}/total`);
 	}
 
 	public static deleteAll(userId: Id) {
