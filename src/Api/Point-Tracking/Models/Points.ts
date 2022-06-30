@@ -51,7 +51,7 @@ export interface PointsEndpoints {
 }
 
 interface BaseUserPoints {
-	user_id: number;
+	id: number;
 	user_name: string;
 }
 

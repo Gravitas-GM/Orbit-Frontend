@@ -66,7 +66,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 					<tbody>
 						{this.state.userPoints.map(item => (
-							<tr key={`point-summary-${item.user_id}`}>
+							<tr key={`point-summary-${item.id}`}>
 								<td>{ucwords(item.user_name)}</td>
 								<td>{formatNumber(item.points)}</td>
 							</tr>
