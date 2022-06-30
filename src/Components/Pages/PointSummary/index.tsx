@@ -33,7 +33,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		}
 
 		this.setState({
-			userPoints: userPoints.sort((a, b) => a.points - b.points),
+			userPoints: userPoints.sort((a, b) => b.points - a.points),
 			loading: false,
 		});
 	}
