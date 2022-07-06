@@ -5,7 +5,6 @@ import {
 	FormGroup,
 	H2,
 	HTMLTable,
-	InputGroup,
 	Intent,
 	Switch,
 } from '@blueprintjs/core';
@@ -33,8 +32,6 @@ interface IRouteProps {
 
 interface IState {
 	user: User | null;
-	firstName: string;
-	lastName: string;
 	isAdmin: boolean;
 	loading: boolean;
 	pointItems: PointItem[];
@@ -51,8 +48,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	public state: Readonly<IState> = {
 		user: null,
-		firstName: '',
-		lastName: '',
 		isAdmin: false,
 		loading: true,
 		pointItems: [],
@@ -104,8 +99,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		this.setState({
 			user,
-			firstName: user.firstName ?? '',
-			lastName: user.lastName ?? '',
 			isAdmin: user.admin,
 			pointItems: userPoints.points,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
@@ -202,26 +195,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						<div className={Classes.DIALOG_BODY}>
 							<form onSubmit={this.onEditDialogSubmit}>
 								<FormGroup
-									label="First Name"
-									labelFor="firstName"
-								>
-									<InputGroup
-										value={this.state.firstName}
-										onChange={this.onFirstNameChange}
-									/>
-								</FormGroup>
-
-								<FormGroup
-									label="Last Name"
-									labelFor="lastName"
-								>
-									<InputGroup
-										value={this.state.lastName}
-										onChange={this.onLastNameChange}
-									/>
-								</FormGroup>
-
-								<FormGroup
 									label="Admin"
 									labelFor="isAdmin"
 								>
@@ -272,14 +245,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showEditDialog: false,
 	});
 
-	private onFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
-		firstName: event.currentTarget.value,
-	});
-
-	private onLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
-		lastName: event.currentTarget.value,
-	});
-
 	private onIsAdminChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		isAdmin: event.currentTarget.checked,
 	});
@@ -304,8 +269,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		try {
 			user = await UserModel.update(this.state.user!.id, {
-				firstName: this.state.firstName,
-				lastName: this.state.lastName,
 				admin: this.state.isAdmin,
 			}).then(response => response.data);
 		} catch (_) {
