@@ -1,5 +1,6 @@
-import {Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
+import {tokenStorage} from '../../../Api';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -10,7 +11,6 @@ import {formatNumber, ucwords} from '../../Utility/string';
 interface IState {
 	userPoints: UserPointsSummary[];
 	loading: boolean;
-	processing: boolean;
 }
 
 export class PointSummary extends React.PureComponent<{}, IState> {
@@ -20,7 +20,6 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		userPoints: [],
 		loading: true,
-		processing: false,
 	};
 
 	public async componentDidMount() {
@@ -47,12 +46,12 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 				<div className={classNames('settings-title-container')}>
 					<H2>Point Summary</H2>
 
-					<Button
+					<AnchorButton
 						text="Download"
 						icon="download"
 						intent="primary"
-						loading={this.state.processing}
-						onClick={this.onDownloadClick}
+						href={`https://points.api.happyorbit.com/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
+						target="_blank"
 					/>
 				</div>
 
@@ -76,11 +75,4 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 			</>
 		);
 	}
-
-	private onDownloadClick = () => {
-		if (this.state.processing)
-			return;
-
-		//TODO: implement download csv /larry
-	};
 }

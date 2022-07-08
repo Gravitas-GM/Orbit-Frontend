@@ -19,7 +19,7 @@ body {
 			flex: 1;
 		}
 
-		button {
+		.#{$ns}-button {
 			height: 30px;
 		}
 	}
