@@ -1,4 +1,4 @@
-import {Button, Classes, Dialog, FormGroup, H2, HTMLTable, Intent, Switch} from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, H2, H5, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {Permission, User, UserModel} from '../../../Api/Hub/Models/Users';
@@ -105,34 +105,27 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		return (
 			<>
-				<HTMLTable className={classNames('bp4-html-table-striped')}>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Admin</th>
-							<th>Edit</th>
-						</tr>
-					</thead>
+				<div className={classNames('settings-title-container')}>
+					<H2>{renderUserName(this.state.user!)}</H2>
 
-					<tbody>
-						<tr>
-							<td>
-								{renderUserName(this.state.user!)}
-							</td>
-							<td>{this.state.user!.emailAddress}</td>
-							<td>{this.state.user!.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
-							<td style={{width: 100}}>
-								<Button
-									icon="edit"
-									minimal={true}
-									loading={this.state.processing}
-									onClick={this.onEditClick}
-								/>
-							</td>
-						</tr>
-					</tbody>
-				</HTMLTable>
+					<Button
+						text="Edit"
+						icon="edit"
+						loading={this.state.processing}
+						onClick={this.onEditClick}
+					/>
+				</div>
+
+				<div style={{display: 'flex'}}>
+					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
+
+					{this.state.user!.permissions.includes(Permission.ADMIN) && (
+						<H6 style={{paddingLeft: 10}}>
+							<Icon icon={'person'} style={{paddingRight: 5}} intent="warning" />
+							Admin
+						</H6>
+					)}
+				</div>
 
 				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
 					<H2>Points</H2>
@@ -186,13 +179,19 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						<div className={Classes.DIALOG_BODY}>
 							<form onSubmit={this.onEditDialogSubmit}>
 								<FormGroup
-									label="Admin"
 									labelFor="isAdmin"
 								>
-									<Switch
-										checked={this.state.isAdmin}
-										onChange={this.onIsAdminChange}
-									/>
+									<div className="settings-switch-container">
+										<span>
+											Admin
+										</span>
+
+										<Switch
+											checked={this.state.isAdmin}
+											onChange={this.onIsAdminChange}
+											large={true}
+										/>
+									</div>
 								</FormGroup>
 							</form>
 						</div>

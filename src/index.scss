@@ -36,3 +36,21 @@ table.#{$ns}-html-table {
 		vertical-align: middle;
 	}
 }
+
+.settings-switch-container {
+	display: flex;
+	align-items: center;
+
+	span {
+		flex: 1;
+		padding-right: 20px;
+	}
+
+	.#{$ns}-switch {
+		margin: 10px 0 10px 0;
+
+		.#{$ns}-control-indicator {
+			padding-bottom: 20px;
+		}
+	}
+}
