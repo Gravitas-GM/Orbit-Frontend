@@ -16,6 +16,7 @@ interface IProps {
 interface IState {
 	description: string;
 	pointValue: number;
+	sourceName: string;
 	showCustomSourceForm: boolean;
 	showSourceForm: boolean;
 	selectedSource: PointSourceItem | null;
@@ -28,6 +29,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		this.state = {
 			description: '',
 			pointValue: 0,
+			sourceName: '',
 			showCustomSourceForm: false,
 			showSourceForm: false,
 			selectedSource: null,
@@ -81,6 +83,10 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 					{this.state.showCustomSourceForm && (
 						<form>
+							<FormGroup label="Name">
+								<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} />
+							</FormGroup>
+
 							<FormGroup label="Point Value">
 								<NumericInput
 									min={0}
@@ -131,6 +137,10 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		pointValue,
 	});
 
+	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		sourceName: event.currentTarget.value,
+	});
+
 	private onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		description: event.currentTarget.value,
 	});
@@ -151,8 +161,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
+		if (this.state.sourceName === '') {
+			toaster.error('Please set a Source Name.');
+
+			return;
+		}
+
 		this.props.onSubmit({
-			sourceName: 'Custom',
+			sourceName: this.state.sourceName,
 			pointValue: this.state.pointValue,
 			description: this.state.description,
 		});
