@@ -29,21 +29,27 @@ export interface UserEndpoints {
 	};
 }
 
+export enum Permission {
+	ADMIN = 'admin',
+}
+
 export interface User {
 	id: number;
 	account: Pick<Account, 'id'>;
 	emailAddress: string;
-	admin: boolean;
+	permissions: Permission[];
 	firstName?: string | null;
 	lastName?: string | null;
 }
 
-export type UserCreatePayload = Omit<User, 'id' | 'account' | 'admin'> & {
+export type UserCreatePayload = Omit<User, 'id' | 'account' | 'permissions'> & {
 	account: number;
 	admin?: boolean;
 };
 
-export type UserUpdatePayload = Partial<Omit<User, 'id' | 'account'>>;
+export type UserUpdatePayload = Partial<Omit<User, 'id' | 'account' | 'permissions'> & {
+	admin?: boolean;
+}>;
 
 export class UserModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
