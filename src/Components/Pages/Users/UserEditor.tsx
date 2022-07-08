@@ -277,6 +277,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		this.setState({
 			user,
 			processing: false,
+			showEditDialog: false,
 		});
 	};
 
