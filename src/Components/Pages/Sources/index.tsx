@@ -155,6 +155,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 										name="pointValue"
 										onValueChange={this.onPointValueChange}
 										value={this.state.pointValue}
+										fill={true}
 									/>
 								</FormGroup>
 							</form>
