@@ -1,5 +1,5 @@
 import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer, MultiSelect} from '@blueprintjs/select';
+import {ItemRenderer, MultiSelect, MultiSelect2} from '@blueprintjs/select';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
@@ -68,13 +68,18 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 							labelFor="selectedUsers"
 							style={{display: 'flex'}}
 						>
-							<MultiSelect
+							<MultiSelect2
 								selectedItems={this.state.selectedUsers}
 								items={this.state.users}
 								onItemSelect={this.onUserSelect}
 								onRemove={this.onUserRemove}
 								tagRenderer={renderUserName}
 								itemRenderer={this.selectItemRenderer}
+								fill={true}
+								popoverProps={{
+									matchTargetWidth: true,
+									minimal: true,
+								}}
 							/>
 
 							<div style={{paddingTop: 10}}>
