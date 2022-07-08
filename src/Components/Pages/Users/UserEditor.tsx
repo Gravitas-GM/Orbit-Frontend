@@ -154,7 +154,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							<tr key={`point-item-${item.id.$oid}`}>
 								<td>{ucwords(item.source)}</td>
 								<td>{formatNumber(item.point_value)}</td>
-								<td>{new Date(item.timestamp).toDateString()}</td>
+								<td>{new Date(item.timestamp).toLocaleString()}</td>
 								<td>{item.description}</td>
 								<td style={{width: 100}}>
 									<Button
