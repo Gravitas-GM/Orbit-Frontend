@@ -1,9 +1,9 @@
 import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Permission, User, UserModel} from '../../../Api/Hub/Models/Users';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
+import {compareStrings, renderUserName} from '../../Utility/string';
 
 interface IState {
 	users: User[];
@@ -65,7 +65,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 							<tr key={`user-${user.id}`}>
 								<td>{renderUserName(user)}</td>
 								<td>{user.emailAddress}</td>
-								<td>{user.admin ? 'Yes' : 'No'}</td>
+								<td>{user.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
 								<td style={{width: 100, textAlign: 'right'}}>
 									<AnchorButton
 										icon='edit'

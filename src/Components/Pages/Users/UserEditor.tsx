@@ -1,16 +1,7 @@
-import {
-	Button,
-	Classes,
-	Dialog,
-	FormGroup,
-	H2,
-	HTMLTable,
-	Intent,
-	Switch,
-} from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, H2, HTMLTable, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Permission, User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
@@ -99,7 +90,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		this.setState({
 			user,
-			isAdmin: user.admin,
+			isAdmin: user.permissions.includes(Permission.ADMIN),
 			pointItems: userPoints.points,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
@@ -130,7 +121,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 								{renderUserName(this.state.user!)}
 							</td>
 							<td>{this.state.user!.emailAddress}</td>
-							<td>{this.state.user!.admin ? 'Yes' : 'No'}</td>
+							<td>{this.state.user!.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
 							<td style={{width: 100}}>
 								<Button
 									icon="edit"
@@ -337,6 +328,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 			this.setState({
 				processing: false,
+				showAddPointsDialog: false,
 			});
 
 			return;
