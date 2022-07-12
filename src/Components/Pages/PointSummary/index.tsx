@@ -1,7 +1,8 @@
 import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
+import csv from 'csvtojson/index';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
-import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
+import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
@@ -9,7 +10,7 @@ import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
-	userPoints: UserPointsSummary[];
+	summary: any[];
 	loading: boolean;
 }
 
@@ -18,21 +19,25 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		userPoints: [],
+		summary: [],
 		loading: true,
 	};
 
 	public async componentDidMount() {
-		let userPoints: UserPointsSummary[] = [];
+		let csvFile = '';
 
 		try {
-			userPoints = await PointsModel.getAllSummary(this.context!.account.id).then(response => response.data);
+			csvFile = await PointsModel.getSummaryCSV(this.context!.account.id).then(reponse => reponse.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
+
+			return;
 		}
 
+		const summary = await csv().fromString(csvFile);
+
 		this.setState({
-			userPoints: userPoints.sort((a, b) => b.points - a.points),
+			summary,
 			loading: false,
 		});
 	}
@@ -58,16 +63,18 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 				<HTMLTable className={classNames('bp4-html-table-striped')}>
 					<thead>
 						<tr>
-							<th>Name</th>
-							<th>Total Points</th>
+							{Object.keys(this.state.summary[0]).map(key => (
+								<th key={`header-${key}`}>{ucwords(key)}</th>
+							))}
 						</tr>
 					</thead>
 
 					<tbody>
-						{this.state.userPoints.map(item => (
-							<tr key={`point-summary-${item.id}`}>
-								<td>{ucwords(item.user_name)}</td>
-								<td>{formatNumber(item.points)}</td>
+						{this.state.summary.map((item, index) => (
+							<tr key={`row-${index}`}>
+								{Object.keys(item).map((key, index) => (
+									<td key={`cell-${index}`}>{this.renderCell(item[key])}</td>
+								))}
 							</tr>
 						))}
 					</tbody>
@@ -75,4 +82,13 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 			</>
 		);
 	}
+
+	private renderCell = (input: string) => {
+		const parsedInput = parseInt(input, 10);
+
+		if (isNaN(parsedInput))
+			return ucwords(input);
+
+		return formatNumber(parsedInput);
+	};
 }
