@@ -48,6 +48,13 @@ export interface PointsEndpoints {
 			response: UserPointsSummary[];
 		}
 	};
+
+	'/points/account/:account/total.csv': {
+		GET: {
+			params: Id;
+			response: string;
+		}
+	};
 }
 
 interface BaseUserPoints {
@@ -110,6 +117,10 @@ export class PointsModel {
 
 	public static getAllSummary(accountId: Id) {
 		return pointTrackingClient.get<'/points/account/:account/total'>(`/points/account/${accountId}/total`);
+	}
+
+	public static getSummaryCSV(accountId: Id) {
+		return pointTrackingClient.get<'/points/account/:account/total.csv'>(`/points/account/${accountId}/total.csv`);
 	}
 
 	public static deleteAll(userId: Id) {
