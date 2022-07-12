@@ -60,7 +60,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 						text="Download"
 						icon="download"
 						intent="primary"
-						href={`https://points.api.happyorbit.com/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
+						href={`${process.env.POINT_TRACKING_URL}/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
 						target="_blank"
 					/>
 				</div>
