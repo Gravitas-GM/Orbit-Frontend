@@ -9,8 +9,13 @@ import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
+interface summaryItem {
+	key: string;
+	value: string;
+}
+
 interface IState {
-	summary: any[];
+	summary: summaryItem[];
 	loading: boolean;
 }
 
@@ -72,8 +77,8 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 					<tbody>
 						{this.state.summary.map((item, index) => (
 							<tr key={`row-${index}`}>
-								{Object.keys(item).map((key, index) => (
-									<td key={`cell-${index}`}>{this.renderCell(item[key])}</td>
+								{Object.values(item).map((value, index) => (
+									<td key={`cell-${index}`}>{this.renderCell(value)}</td>
 								))}
 							</tr>
 						))}
