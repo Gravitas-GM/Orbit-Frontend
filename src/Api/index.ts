@@ -3,6 +3,7 @@ import * as hubApi from "./Hub";
 import {AuthenticationModel} from './Hub/Models/Authentication';
 import {Token, TokenStorage} from './jwt';
 import * as pointTrackingApi from "./Point-Tracking";
+import * as gameStateApi from "./Game-State";
 import {history} from '../history';
 
 export interface QueryDocument {
@@ -23,6 +24,7 @@ export type Id = string | number;
 
 export const hubApiClient = hubApi.init();
 export const pointTrackingClient = pointTrackingApi.init();
+export const gameStateClient = gameStateApi.init();
 
 export const tokenStorage = new TokenStorage();
 tokenStorage.initialize();
