@@ -59,6 +59,7 @@ export interface PointsEndpoints {
 
 interface BaseUserPoints {
 	id: number;
+	account_id: number;
 	user_name: string;
 }
 
@@ -67,7 +68,14 @@ export interface UserPoints extends BaseUserPoints {
 }
 
 export interface UserPointsSummary extends BaseUserPoints {
+	points: PointSummaryItem[];
+	total_points: number;
+}
+
+export interface PointSummaryItem {
+	count: number;
 	points: number;
+	source: string;
 }
 
 export interface PointItem {
