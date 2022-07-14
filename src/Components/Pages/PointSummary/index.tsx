@@ -1,21 +1,17 @@
 import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
-import csv from 'csvtojson/index';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
-import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
+import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
-interface summaryItem {
-	key: string;
-	value: string;
-}
-
 interface IState {
-	summary: summaryItem[];
+	sources: PointSourceItem[];
+	userPoints: UserPointsSummary[];
 	loading: boolean;
 }
 
@@ -24,25 +20,30 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		summary: [],
+		sources: [],
+		userPoints: [],
 		loading: true,
 	};
 
 	public async componentDidMount() {
-		let csvFile = '';
+		let userPoints: UserPointsSummary[] = [];
+		let sources: PointSourceItem[] = [];
 
 		try {
-			csvFile = await PointsModel.getSummaryCSV(this.context!.account.id).then(reponse => reponse.data);
+			userPoints = await PointsModel.getAllSummary(this.context!.account.id).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
-
-			return;
 		}
 
-		const summary = await csv().fromString(csvFile);
+		try {
+			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+		}
 
 		this.setState({
-			summary,
+			userPoints: userPoints.sort((a, b) => b.total_points - a.total_points),
+			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
 	}
@@ -60,7 +61,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 						text="Download"
 						icon="download"
 						intent="primary"
-						href={`${process.env.POINT_TRACKING_URL}/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
+						href={`https://points.api.happyorbit.com/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
 						target="_blank"
 					/>
 				</div>
@@ -68,18 +69,24 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 				<HTMLTable className={classNames('bp4-html-table-striped')}>
 					<thead>
 						<tr>
-							{Object.keys(this.state.summary[0]).map(key => (
-								<th key={`header-${key}`}>{ucwords(key)}</th>
+							<th>Name</th>
+
+							{this.state.sources.map(item => (
+								<th key={item.id.$oid}>{ucwords(item.name)}</th>
 							))}
+
+							<th>Total Points</th>
 						</tr>
 					</thead>
 
 					<tbody>
-						{this.state.summary.map((item, index) => (
-							<tr key={`row-${index}`}>
-								{Object.values(item).map((value, index) => (
-									<td key={`cell-${index}`}>{this.renderCell(value)}</td>
-								))}
+						{this.state.userPoints.map(item => (
+							<tr key={`point-summary-${item.id}`}>
+								<td>{ucwords(item.user_name)}</td>
+
+								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
+
+								<td>{formatNumber(item.total_points)}</td>
 							</tr>
 						))}
 					</tbody>
@@ -88,12 +95,16 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private renderCell = (input: string) => {
-		const parsedInput = parseInt(input, 10);
+	private renderSummaryCell = (summary: UserPointsSummary, source: PointSourceItem) => {
+		let output = 0;
 
-		if (isNaN(parsedInput))
-			return ucwords(input);
+		for (const points of summary.points) {
+			if (points.source.toLowerCase() === source.name.toLowerCase())
+				output = points.points;
+		}
 
-		return formatNumber(parsedInput);
-	};
+		return (
+			<td key={`points-${summary.id}-${source.id.$oid}`}>{formatNumber(output)}</td>
+		);
+	}
 }
