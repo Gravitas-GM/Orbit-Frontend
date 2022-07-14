@@ -25,7 +25,7 @@ export interface PlayerState {
 	current_points: number,
 }
 
-export  interface Board {
+export interface Board {
 	id: Id,
 	name: string,
 	sequence: number,
