@@ -39,19 +39,30 @@ export const NavHeader: React.FC<IProps> = props => (
 						onClick={() => history.push(`/users`)}
 					/>
 
-					<Button
-						icon='bank-account'
-						text='Sources'
-						minimal={true}
-						onClick={() => history.push(`/sources`)}
-					/>
+					<Popover>
+						<Button
+							text='Points'
+							icon='properties'
+							minimal={true}
+							style={{color: 'white'}}
+						/>
 
-					<Button
-						icon='properties'
-						text='Point Summary'
-						minimal={true}
-						onClick={() => history.push(`/point-summary`)}
-					/>
+						<Menu>
+							<MenuItem
+								icon='bank-account'
+								text='Sources'
+								onClick={() => history.push(`/sources`)}
+							/>
+
+							<MenuDivider />
+
+							<MenuItem
+								icon='properties'
+								text='Point Summary'
+								onClick={() => history.push(`/point-summary`)}
+							/>
+						</Menu>
+					</Popover>
 				</Navbar.Group>
 
 				<Navbar.Group align={Alignment.RIGHT}>
