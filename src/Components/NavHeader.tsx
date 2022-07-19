@@ -54,8 +54,6 @@ export const NavHeader: React.FC<IProps> = props => (
 								onClick={() => history.push(`/sources`)}
 							/>
 
-							<MenuDivider />
-
 							<MenuItem
 								icon='properties'
 								text='Point Summary'
