@@ -126,6 +126,6 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	private renderStageCell = (summary: UserPointsSummary) => {
 		let player = this.state.players.find(item => item.hub_id === summary.id);
 
-		return ucwords(player?.current_stage_name ?? '');
+		return player?.current_stage_name ? ucwords(player.current_stage_name) : <>&mdash;</>;
 	}
 }
