@@ -6,18 +6,21 @@ import {Activate} from './Components/Auth/Activate';
 import {Login} from './Components/Auth/Login';
 import {Layout} from './Components/Layout';
 import {history} from './history';
+import {isGranted, Permission, PermissionCheckCallback, PermissionContext} from './Permission';
 import {PrivateRoute} from './PrivateRoute';
 import {UserContext} from './Session';
 
 interface IState {
 	loading: boolean;
 	user: User | null;
+	permissions: Set<Permission>;
 }
 
 export class App extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		user: null,
+		permissions: new Set<Permission>(),
 	};
 
 	public componentDidMount() {
@@ -36,6 +39,8 @@ export class App extends React.PureComponent<{}, IState> {
 				user: response.data,
 				loading: false,
 			});
+
+			this.initPermissions(response.data);
 		});
 	}
 
@@ -43,27 +48,56 @@ export class App extends React.PureComponent<{}, IState> {
 		return (
 			<div id="app-root">
 				<UserContext.Provider value={this.state.user}>
-					<Router history={history}>
-						<Switch>
-							<Route path="/login">
-								<Login onLoginSuccess={this.onUserChange} />
-							</Route>
+					<PermissionContext.Provider value={[this.isPermissionGranted, this.state.permissions]}>
+						<Router history={history}>
+							<Switch>
+								<Route path="/login">
+									<Login onLoginSuccess={this.onUserChange} />
+								</Route>
 
-							<Route path="/activate">
-								<Activate />
-							</Route>
+								<Route path="/activate">
+									<Activate />
+								</Route>
 
-							<PrivateRoute path="/">
-								<Layout loading={this.state.loading} />
-							</PrivateRoute>
-						</Switch>
-					</Router>
+								<PrivateRoute path="/">
+									<Layout loading={this.state.loading} />
+								</PrivateRoute>
+							</Switch>
+						</Router>
+					</PermissionContext.Provider>
 				</UserContext.Provider>
 			</div>
 		);
 	}
 
-	private onUserChange = (user: User) => this.setState({
-		user,
-	});
+	private onUserChange = (user: User) => {
+		this.setState({
+			user,
+			loading: true,
+		});
+
+		this.initPermissions(user);
+	};
+
+	private isPermissionGranted: PermissionCheckCallback = (match) => isGranted(this.state.permissions, match);
+
+	private initPermissions = (user: User) => {
+		const permissions = new Set<Permission>();
+
+		for (const permission of (user.permissions)) {
+			if (permission === Permission.ADMIN) {
+				permissions.clear();
+				permissions.add(permission);
+
+				break;
+			}
+
+			permissions.add(permission);
+		}
+
+		this.setState({
+			permissions,
+			loading: false,
+		});
+	};
 }

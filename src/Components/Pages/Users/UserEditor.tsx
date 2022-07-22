@@ -1,9 +1,10 @@
 import {Button, Classes, Dialog, FormGroup, H2, H5, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
-import {Permission, User, UserModel} from '../../../Api/Hub/Models/Users';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';

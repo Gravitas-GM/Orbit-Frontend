@@ -1,4 +1,5 @@
 import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../..';
+import {Permission} from '../../../Permission';
 import {Account} from './Accounts';
 
 export interface UserEndpoints {
@@ -27,10 +28,6 @@ export interface UserEndpoints {
 			response: User;
 		};
 	};
-}
-
-export enum Permission {
-	ADMIN = 'admin',
 }
 
 export interface User {

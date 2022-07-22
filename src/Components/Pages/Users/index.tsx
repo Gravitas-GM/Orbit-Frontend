@@ -1,6 +1,7 @@
 import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
-import {Permission, User, UserModel} from '../../../Api/Hub/Models/Users';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Permission} from '../../../Permission';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {compareStrings, renderUserName} from '../../Utility/string';
