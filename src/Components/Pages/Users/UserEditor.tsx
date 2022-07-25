@@ -1,4 +1,4 @@
-import {Button, Classes, Dialog, FormGroup, H2, H5, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, H2, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
@@ -7,6 +7,7 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
+import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
@@ -32,6 +33,7 @@ interface IState {
 	showAddPointsDialog: boolean;
 	showEditDialog: boolean;
 	sources: PointSourceItem[];
+	deleteTarget: PointItem | null,
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -48,6 +50,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showAddPointsDialog: false,
 		showEditDialog: false,
 		sources: [],
+		deleteTarget: null,
 	};
 
 	public async componentDidMount() {
@@ -163,13 +166,20 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 										minimal={true}
 										intent={Intent.DANGER}
 										loading={this.state.processing}
-										onClick={() => this.onDeleteClick(item)}
+										onClick={() => this.onBeginDeleteButtonClick(item)}
 									/>
 								</td>
 							</tr>
 						))}
 					</tbody>
 				</HTMLTable>
+
+				<DeleteDialog
+					isOpen={this.state.deleteTarget !== null}
+					subject={this.state.deleteTarget?.source}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+				/>
 
 				{this.state.showEditDialog && (
 					<Dialog
@@ -281,8 +291,21 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 	};
 
-	private onDeleteClick = async (pointItem: PointItem) => {
+	private onBeginDeleteButtonClick = (item: PointItem) => this.setState({
+		deleteTarget: item,
+	});
+
+	private onDeleteCancel = () => this.setState({
+		deleteTarget: null,
+	});
+
+	private onDeleteConfirm = async () => {
 		if (this.state.processing)
+			return;
+
+		let target = this.state.deleteTarget;
+
+		if (!target)
 			return;
 
 		this.setState({
@@ -290,7 +313,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 
 		try {
-			await PointsModel.delete(this.state.user!.id, pointItem.id);
+			await PointsModel.delete(this.state.user!.id, target.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -302,7 +325,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		}
 
 		this.setState(state => ({
-			pointItems: state.pointItems.filter(item => item !== pointItem),
+			pointItems: state.pointItems.filter(item => item !== target),
+			deleteTarget: null,
 			processing: false,
 		}));
 	};
