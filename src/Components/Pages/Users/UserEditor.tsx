@@ -146,7 +146,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							<th>Point Value</th>
 							<th>Timestamp</th>
 							<th>Description</th>
-							<th>Delete</th>
+							<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 						</tr>
 					</thead>
 
@@ -157,7 +157,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 								<td>{formatNumber(item.point_value)}</td>
 								<td>{new Date(item.timestamp).toLocaleString()}</td>
 								<td>{item.description}</td>
-								<td style={{width: 100}}>
+								<td style={{textAlign: 'center'}}>
 									<Button
 										icon="delete"
 										minimal={true}

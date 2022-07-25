@@ -84,7 +84,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						<tr>
 							<th>Name</th>
 							<th>Value</th>
-							<th>Edit</th>
+							<th style={{width: 100, textAlign: 'center'}}>Edit</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -92,7 +92,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 							<tr key={`source-${source.id.$oid}`}>
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
-								<td>
+								<td style={{textAlign: 'center'}}>
 									<Popover>
 										<Button
 											icon="cog"

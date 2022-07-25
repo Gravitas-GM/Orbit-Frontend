@@ -57,7 +57,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 							<th>Name</th>
 							<th>Email</th>
 							<th>Admin</th>
-							<th style={{textAlign: 'right'}}>Edit</th>
+							<th style={{textAlign: 'center', width: 100}}>Edit</th>
 						</tr>
 					</thead>
 
@@ -67,7 +67,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 								<td>{renderUserName(user)}</td>
 								<td>{user.emailAddress}</td>
 								<td>{user.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
-								<td style={{width: 100, textAlign: 'right'}}>
+								<td style={{textAlign: 'center'}}>
 									<AnchorButton
 										icon='edit'
 										minimal={true}
