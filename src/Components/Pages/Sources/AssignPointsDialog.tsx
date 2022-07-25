@@ -1,12 +1,12 @@
 import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer, MultiSelect, MultiSelect2} from '@blueprintjs/select';
+import {ItemRenderer, MultiSelect2} from '@blueprintjs/select';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import * as toaster from '../../../Toaster';
 import {allSettled} from '../../Utility/promise';
-import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
+import {compareStrings, renderUserName} from '../../Utility/string';
 
 interface IProps {
 	source: PointSourceItem;
@@ -116,9 +116,17 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		);
 	}
 
-	private onUserSelect = (user: User) => this.setState(state => ({
-		selectedUsers: [...state.selectedUsers, user],
-	}));
+	private onUserSelect = (user: User) => this.setState(state => {
+		if (state.selectedUsers.includes(user)) {
+			return {
+				selectedUsers: state.selectedUsers.filter(item => item !== user),
+			};
+		} else {
+			return {
+				selectedUsers: [...state.selectedUsers, user],
+			};
+		}
+	});
 
 	private onUserRemove = (user: User) => this.setState(state => ({
 		selectedUsers: state.selectedUsers.filter(item => item !== user),
@@ -181,10 +189,11 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		this.props.onClose();
 	};
 
-	private selectItemRenderer: ItemRenderer<User> = (item, { handleClick, modifiers}) => {
-		if (!modifiers.matchesPredicate) {
+	private selectItemRenderer: ItemRenderer<User> = (item, {handleClick, modifiers}) => {
+		if (!modifiers.matchesPredicate)
 			return null;
-		}
+
+		const selected = this.state.selectedUsers.includes(item);
 
 		return (
 			<MenuItem
@@ -192,6 +201,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 				key={`selectItem-${item.id}`}
 				text={renderUserName(item)}
 				onClick={handleClick}
+				icon={selected ? 'small-tick' : 'blank'}
 			/>
 		);
 	};
