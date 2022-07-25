@@ -235,7 +235,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			return;
 
 		if (this.state.sourceName === '') {
-			toaster.error('Please set a Source Name.');
+			toaster.error('Please set a source name.');
 
 			return;
 		}
