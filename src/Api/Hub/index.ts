@@ -1,4 +1,5 @@
 import axios, { TypedAxiosInstance } from 'restyped-axios';
+import { Config } from '../../config';
 import { AccountEndpoints } from './Models/Accounts';
 import {AuthenticationEndpoints} from './Models/Authentication';
 import {UserActivationEndpoints} from './Models/UserActivation';
@@ -8,6 +9,6 @@ type Endpoints = UserEndpoints & AccountEndpoints & AuthenticationEndpoints & Us
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	return axios.create<Endpoints>({
-		baseURL: process.env.HUB_URL ?? 'https://hub.api.happyorbit.com',
+		baseURL: Config.api.hub_url,
 	});
 }
