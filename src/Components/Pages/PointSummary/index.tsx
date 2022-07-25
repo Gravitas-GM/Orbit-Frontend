@@ -37,6 +37,8 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
+		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
+
 		return (
 			<>
 				<div className="settings-title-container">
@@ -46,7 +48,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 						text="Download"
 						icon="download"
 						intent="primary"
-						href={`https://points.api.happyorbit.com/points/account/${this.context!.account.id}/total.csv?token=${tokenStorage.getToken()?.jwt}`}
+						href={downloadUrl.toString()}
 						target="_blank"
 					/>
 				</div>

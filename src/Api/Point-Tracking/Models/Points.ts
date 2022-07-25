@@ -1,6 +1,7 @@
 import {ObjectId} from '..';
 import {Id, pointTrackingClient} from '../..';
 import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {Config} from '../../../config';
 
 export interface PointsEndpoints {
 	'/points/users/:user': {
@@ -127,12 +128,11 @@ export class PointsModel {
 		return pointTrackingClient.get<'/points/account/:account/total'>(`/points/account/${accountId}/total`);
 	}
 
-	public static getSummaryCSV(accountId: Id) {
-		return pointTrackingClient.get<'/points/account/:account/total.csv'>(`/points/account/${accountId}/total.csv`);
-	}
+	public static getSummaryCsvUrl(accountId: Id, token: string) {
+		const url = new URL(`/points/account/${accountId}/total.csv`, Config.api.point_tracking_url);
+		url.searchParams.set('token', token);
 
-	public static deleteAll(userId: Id) {
-		return pointTrackingClient.delete<'/points/users/:user'>(`/points/users/${userId}`);
+		return url;
 	}
 
 	public static delete(userId: Id, claimId: ObjectId) {
