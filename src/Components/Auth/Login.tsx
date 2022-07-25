@@ -78,9 +78,9 @@ class Login extends React.PureComponent<IProps, IState> {
 		);
 	}
 
-	private onFormKeyDown = (event: React.KeyboardEvent) => {
-		if (event.keyCode === 13)
-			this.onLoginSubmit(event);
+	private onFormKeyDown = async (event: React.KeyboardEvent) => {
+		if (event.code === 'KeyEnter')
+			await this.onLoginSubmit(event);
 	};
 
 	private onEmailAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
@@ -138,8 +138,6 @@ class Login extends React.PureComponent<IProps, IState> {
 
 	private getUser = () => {
 		const userId = tokenStorage.getToken()?.body.id;
-
-		console.log(tokenStorage.getToken()?.body);
 
 		if (!userId) {
 			console.error('Login completed, but no user ID was available');

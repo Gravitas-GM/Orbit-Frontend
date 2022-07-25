@@ -1,4 +1,4 @@
-import {hubApiClient} from './index';
+import {hubApiClient, pointTrackingClient} from './index';
 
 export class TokenStorage {
 	protected storageKey: string;
@@ -31,7 +31,9 @@ export class TokenStorage {
 			this.clearRefreshTask();
 
 			delete hubApiClient.defaults.headers.authorization;
+			delete pointTrackingClient.defaults.headers.authorization;
 		} else {
+			hubApiClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 			hubApiClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 
 			window.localStorage.setItem(this.storageKey, token.jwt);

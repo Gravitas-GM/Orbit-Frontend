@@ -1,22 +1,56 @@
-@import './variables';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import './variables';
 
 body {
 	margin: 0;
-	max-height: 100vh;
-	overflow: hidden;
+
+	&.#{$ns}-dark {
+		background-color: $pt-dark-app-background-color;
+	}
 }
 
 #app-root {
 	font-family: 'Roboto', sans-serif;
-	min-height: 100vh;
-	position: relative;
-	display: flex;
-	background-color: #{$pt-app-background-color};
 
+	.settings-title-container {
+		display: flex;
+
+		h2 {
+			flex: 1;
+		}
+
+		.#{$ns}-button {
+			height: 30px;
+		}
+	}
 
 	.main-frame {
-		background-color: $gm-main-frame-background-color;
-		height: $gm-main-frame-height;
+		padding: 10px 20px;
+	}
+}
+
+table.#{$ns}-html-table {
+	width: 100%;
+
+	td {
+		vertical-align: middle;
+	}
+}
+
+.settings-switch-container {
+	display: flex;
+	align-items: center;
+
+	span {
+		flex: 1;
+		padding-right: 20px;
+	}
+
+	.#{$ns}-switch {
+		margin: 10px 0 10px 0;
+
+		.#{$ns}-control-indicator {
+			padding-bottom: 20px;
+		}
 	}
 }

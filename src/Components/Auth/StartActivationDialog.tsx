@@ -62,7 +62,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 		);
 	}
 
-	private onEmailAddressChange = async (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+	private onEmailAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		emailAddress: event.currentTarget.value,
 	});
 

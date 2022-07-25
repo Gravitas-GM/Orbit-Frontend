@@ -1,4 +1,5 @@
 import axios, { TypedAxiosInstance } from 'restyped-axios';
+import { Config } from '../../config';
 import { PointsEndpoints } from './Models/Points';
 import { PointSourceEndpoints } from './Models/Sources';
 
@@ -10,6 +11,6 @@ export interface ObjectId {
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	return axios.create<Endpoints>({
-		baseURL: process.env.POINT_TRACKING_URL ?? 'https://points.api.happyorbit.com',
+		baseURL: Config.api.point_tracking_url,
 	});
 }

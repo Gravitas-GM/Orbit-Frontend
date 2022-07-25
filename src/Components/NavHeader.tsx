@@ -1,20 +1,12 @@
+import {Alignment, Button, Intent, Menu, MenuDivider, MenuItem, Navbar, Popover, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
-import {
-	Alignment,
-	Button,
-	Icon,
-	Intent,
-	Menu,
-	MenuDivider,
-	MenuItem,
-	Navbar,
-	Popover,
-	Spinner,
-} from '@blueprintjs/core';
 import {Link} from 'react-router-dom';
-import './NavHeader.scss';
 import {logout} from '../Api';
+import {history} from '../history';
+import {Permission, PermissionContext} from '../Permission';
 import {UserContext} from '../Session';
+import './NavHeader.scss';
+import {renderUserName} from './Utility/string';
 
 interface IProps {
 	loading: boolean;
@@ -23,49 +15,81 @@ interface IProps {
 export const NavHeader: React.FC<IProps> = props => (
 	<UserContext.Consumer>
 		{user => (
-			<Navbar id="nav-header" className="bp4-navbar bp4-dark">
-				<Navbar.Group align={Alignment.LEFT}>
-					<Navbar.Heading>
-						<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
-					</Navbar.Heading>
+			<PermissionContext.Consumer>
+				{([isGranted]) => (
+					<Navbar id="nav-header" className="bp4-navbar bp4-dark">
+						<Navbar.Group align={Alignment.LEFT}>
+							<Navbar.Heading>
+								<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
+							</Navbar.Heading>
 
-					<Navbar.Divider />
+							<Navbar.Divider />
 
-					<Link to="/users" className="nav-link"><Icon icon={'user'} /> Users</Link>
+							{isGranted(Permission.ADMIN) && (
+								<Button
+									icon="user"
+									text="Users"
+									minimal={true}
+									onClick={() => history.push(`/users`)}
+								/>
+							)}
 
-					<Link to="/sources" className="nav-link"><Icon icon={'bank-account'} /> Sources</Link>
-
-					<Link to="/point-summary" className="nav-link"><Icon icon={'properties'} /> Point Summary</Link>
-				</Navbar.Group>
-
-				<Navbar.Group align={Alignment.RIGHT}>
-					{user ? (
-						<Popover>
-							<Button
-								text={`Welcome, ${user.firstName}`}
-								rightIcon={'caret-down'}
-								minimal={true}
-								style={{color: 'white'}}
-							/>
-
-							<Menu>
-								<MenuItem
-									text="Settings"
-									icon="person"
+							<Popover>
+								<Button
+									text="Points"
+									icon="properties"
+									minimal={true}
+									style={{color: 'white'}}
 								/>
 
-								<MenuDivider />
+								<Menu>
+									{isGranted(Permission.ADMIN) && (
+										<MenuItem
+											icon="bank-account"
+											text="Sources"
+											onClick={() => history.push(`/sources`)}
+										/>
+									)}
 
-								<MenuItem
-									text="Log Out"
-									icon="log-out"
-									onClick={logout}
-								/>
-							</Menu>
-						</Popover>
-					) : <Spinner size={20} intent={Intent.PRIMARY} />}
-				</Navbar.Group>
-			</Navbar>
+									<MenuItem
+										icon="properties"
+										text="Point Summary"
+										onClick={() => history.push(`/point-summary`)}
+									/>
+								</Menu>
+							</Popover>
+						</Navbar.Group>
+
+						<Navbar.Group align={Alignment.RIGHT}>
+							{user ? (
+								<Popover>
+									<Button
+										text={`Welcome, ${renderUserName(user)}`}
+										rightIcon={'caret-down'}
+										minimal={true}
+										style={{color: 'white'}}
+									/>
+
+									<Menu>
+										<MenuItem
+											text="Settings"
+											icon="person"
+										/>
+
+										<MenuDivider />
+
+										<MenuItem
+											text="Log Out"
+											icon="log-out"
+											onClick={logout}
+										/>
+									</Menu>
+								</Popover>
+							) : <Spinner size={20} intent={Intent.PRIMARY} />}
+						</Navbar.Group>
+					</Navbar>
+				)}
+			</PermissionContext.Consumer>
 		)}
 	</UserContext.Consumer>
 );

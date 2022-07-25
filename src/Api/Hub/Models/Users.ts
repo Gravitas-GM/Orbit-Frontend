@@ -1,4 +1,5 @@
-import {hubApiClient, Projectable, Projection, Queryable, QueryDocument} from '../..';
+import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../..';
+import {Permission} from '../../../Permission';
 import {Account} from './Accounts';
 
 export interface UserEndpoints {
@@ -17,12 +18,12 @@ export interface UserEndpoints {
 
 	'/users/:id': {
 		GET: {
-			params: number;
+			params: Id;
 			response: User;
 		};
 
 		PATCH: {
-			params: number;
+			params: Id;
 			body: UserUpdatePayload;
 			response: User;
 		};
@@ -33,17 +34,19 @@ export interface User {
 	id: number;
 	account: Pick<Account, 'id'>;
 	emailAddress: string;
-	admin: boolean;
+	permissions: Permission[];
 	firstName?: string | null;
 	lastName?: string | null;
 }
 
-export type UserCreatePayload = Omit<User, 'id' | 'account' | 'admin'> & {
+export type UserCreatePayload = Omit<User, 'id' | 'account' | 'permissions'> & {
 	account: number;
 	admin?: boolean;
 };
 
-export type UserUpdatePayload = Partial<Omit<User, 'id' | 'account'>>;
+export type UserUpdatePayload = Partial<Omit<User, 'id' | 'account' | 'permissions'> & {
+	admin?: boolean;
+}>;
 
 export class UserModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -63,11 +66,11 @@ export class UserModel {
 		});
 	}
 
-	public static read(id: number) {
-		return hubApiClient.get<'/users/:id'>(`/users/${id}`);
+	public static read(user: Id) {
+		return hubApiClient.get<'/users/:id'>(`/users/${user}`);
 	}
 
-	public static update(id: number, payload: UserUpdatePayload) {
-		return hubApiClient.patch<'/users/:id'>(`/users/${id}`, payload);
+	public static update(user: Id, payload: UserUpdatePayload) {
+		return hubApiClient.patch<'/users/:id'>(`/users/${user}`, payload);
 	}
 }

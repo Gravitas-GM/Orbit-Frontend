@@ -72,9 +72,9 @@ export class Activate extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onFormKeyDown = (event: React.KeyboardEvent) => {
-		if (event.keyCode === 13)
-			this.onSubmit(event);
+	private onFormKeyDown = async (event: React.KeyboardEvent) => {
+		if (event.code === 'KeyEnter')
+			await this.onSubmit(event);
 	};
 
 	private onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({

@@ -1,49 +1,66 @@
 import {ObjectId} from '..';
-import {pointTrackingClient} from '../..';
+import {Id, pointTrackingClient} from '../..';
+import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {Config} from '../../../config';
 
 export interface PointsEndpoints {
 	'/points/users/:user': {
 		PUT: {
-			params: number;
+			params: Id;
 			body: PointItemCreatePayloadNormalized;
-			response: void;
+			response: PointItem;
 		};
 
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPoints;
 		};
 
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/:claim': {
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
 
 	'/points/users/:user/total': {
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPointsSummary;
 		};
 	};
 
 	'/points/account/:account': {
 		GET: {
-			params: number;
+			params: Id;
 			response: UserPoints[];
 		};
+	};
+
+	'/points/account/:account/total': {
+		GET: {
+			params: Id;
+			response: UserPointsSummary[];
+		}
+	};
+
+	'/points/account/:account/total.csv': {
+		GET: {
+			params: Id;
+			response: string;
+		}
 	};
 }
 
 interface BaseUserPoints {
-	user_id: number;
+	id: number;
+	account_id: number;
 	user_name: string;
 }
 
@@ -52,7 +69,14 @@ export interface UserPoints extends BaseUserPoints {
 }
 
 export interface UserPointsSummary extends BaseUserPoints {
+	points: PointSummaryItem[];
+	total_points: number;
+}
+
+export interface PointSummaryItem {
+	count: number;
 	points: number;
+	source: string;
 }
 
 export interface PointItem {
@@ -69,39 +93,55 @@ type PointItemCreatePayloadNormalized = Omit<PointItemCreatePayload, 'timestamp'
 };
 
 export class PointsModel {
-	public static create(userId: number, payload: PointItemCreatePayload) {
+	public static create(userId: Id, payload: PointItemCreatePayload) {
 		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
 			...payload,
 			timestamp: payload.timestamp.toISOString(),
 		});
 	}
 
-	public static async getFull(userId: number) {
-		const response = await pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`);
+	public static getFull(userId: Id) {
+		return pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`).then(response => {
+			response.data.points = response.data.points.map(this.denormalizePointItem);
 
-		response.data.points = response.data.points.map(item => {
-			if (typeof item.timestamp !== 'object')
-				item.timestamp = new Date(item.timestamp);
-
-			return item;
+			return response;
 		});
-
-		return response;
 	}
 
-	public static getSummary(userId: number) {
+	public static getSummary(userId: Id) {
 		return pointTrackingClient.get<'/points/users/:user/total'>(`/points/users/${userId}/total`);
 	}
 
-	public static getAll(accountId: number) {
-		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`);
+	public static getAll(accountId: Id) {
+		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`).then(response => {
+			response.data = response.data.map(userPoints => {
+				userPoints.points = userPoints.points.map(this.denormalizePointItem);
+
+				return userPoints;
+			});
+
+			return response;
+		});
 	}
 
-	public static deleteAll(userId: number) {
-		return pointTrackingClient.delete<'/points/users/:user'>(`/points/users/${userId}`);
+	public static getAllSummary(accountId: Id) {
+		return pointTrackingClient.get<'/points/account/:account/total'>(`/points/account/${accountId}/total`);
 	}
 
-	public static delete(userId: number, claimId: ObjectId) {
+	public static getSummaryCsvUrl(accountId: Id, token: string) {
+		const url = new URL(`/points/account/${accountId}/total.csv`, Config.api.point_tracking_url);
+		url.searchParams.set('token', token);
+
+		return url;
+	}
+
+	public static delete(userId: Id, claimId: ObjectId) {
 		return pointTrackingClient.delete<'/points/users/:user/:claim'>(`/points/users/${userId}/${claimId.$oid}`);
+	}
+
+	private static denormalizePointItem(pointItem: PointItem) {
+		pointItem.timestamp = parseApiTimestamp(pointItem.timestamp);
+
+		return pointItem;
 	}
 }

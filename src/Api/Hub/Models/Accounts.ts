@@ -1,4 +1,4 @@
-import {hubApiClient, Projectable, Projection} from '../..';
+import {hubApiClient, Id, Projectable, Projection} from '../..';
 
 export interface AccountEndpoints {
 	'/accounts': {
@@ -11,7 +11,7 @@ export interface AccountEndpoints {
 
 	'/accounts/:account': {
 		DELETE: {
-			params: number;
+			params: Id;
 			response: void;
 		};
 	};
@@ -33,7 +33,7 @@ export class AccountModel {
 		});
 	}
 
-	public static delete(id: number) {
-		return hubApiClient.delete<'/accounts/:account'>(`/accounts/${id}`);
+	public static delete(account: Id) {
+		return hubApiClient.delete<'/accounts/:account'>(`/accounts/${account}`);
 	}
 }
