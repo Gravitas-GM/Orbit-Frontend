@@ -109,6 +109,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Submit"
 							onClick={this.onSubmit}
 							loading={this.state.processing}
+							disabled={this.state.selectedUsers.length === 0}
 						/>
 					</div>
 				</div>
@@ -144,6 +145,9 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		event.preventDefault();
 
 		if (this.state.processing)
+			return;
+
+		if (this.state.selectedUsers.length === 0)
 			return;
 
 		this.setState({
