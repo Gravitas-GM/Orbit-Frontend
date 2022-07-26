@@ -13,6 +13,7 @@ import * as React from 'react';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
+import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {replace} from '../../Utility/array';
 import {classNames} from '../../Utility/dom';
@@ -20,6 +21,7 @@ import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 
 interface IState {
+	deleteTarget: PointSourceItem | null;
 	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
 	showAsssignPointsDialog: boolean;
@@ -36,6 +38,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
+		deleteTarget: null,
 		isEditSource: false,
 		selectedSource: null,
 		showAsssignPointsDialog: false,
@@ -117,7 +120,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 												text="Delete"
 												icon="delete"
 												intent={Intent.DANGER}
-												onClick={() => this.onDeleteClick(source)}
+												onClick={() => this.onBeginDeleteButtonClick(source)}
 											/>
 										</Menu>
 									</Popover>
@@ -178,6 +181,15 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 							</div>
 						</div>
 					</Dialog>
+				)}
+
+				{this.state.deleteTarget !== null && (
+					<DeleteDialog
+						isOpen={true}
+						subject={this.state.deleteTarget.name}
+						onConfirm={this.onDeleteConfirm}
+						onCancel={this.onDeleteCancel}
+					/>
 				)}
 
 				{this.state.showAsssignPointsDialog && this.state.selectedSource && (
@@ -284,8 +296,21 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private onDeleteClick = async (source: PointSourceItem) => {
+	private onBeginDeleteButtonClick = (item: PointSourceItem) => this.setState({
+		deleteTarget: item,
+	});
+
+	private onDeleteCancel = () => this.setState({
+		deleteTarget: null,
+	});
+
+	private onDeleteConfirm = async () => {
 		if (this.state.processing)
+			return;
+
+		let target = this.state.deleteTarget;
+
+		if (!target)
 			return;
 
 		this.setState({
@@ -293,7 +318,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			await PointSourceModel.delete(source.id);
+			await PointSourceModel.delete(target.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -305,7 +330,8 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		}
 
 		this.setState(state => ({
-			sources: state.sources.filter(item => item !== source),
+			deleteTarget: null,
+			sources: state.sources.filter(item => item !== target),
 			processing: false,
 		}));
 	};
