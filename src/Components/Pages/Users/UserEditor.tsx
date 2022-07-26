@@ -9,7 +9,6 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
 
@@ -109,7 +108,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		return (
 			<>
-				<div className={classNames('settings-title-container')}>
+				<div className={'settings-title-container'}>
 					<H2>{renderUserName(this.state.user!)}</H2>
 
 					<Button
@@ -131,7 +130,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className={classNames('settings-title-container')} style={{paddingTop: 25}}>
+				<div className={'settings-title-container'} style={{paddingTop: 25}}>
 					<H2>Points</H2>
 
 					<Button
@@ -142,7 +141,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<HTMLTable className={classNames('bp4-html-table-striped')}>
+				<HTMLTable className={'bp4-html-table-striped'}>
 					<thead>
 						<tr>
 							<th>Source</th>

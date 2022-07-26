@@ -8,7 +8,6 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
@@ -53,7 +52,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 					/>
 				</div>
 
-				<HTMLTable className={classNames('bp4-html-table-striped')}>
+				<HTMLTable className={'bp4-html-table-striped'}>
 					<thead>
 						<tr>
 							<th>Name</th>
