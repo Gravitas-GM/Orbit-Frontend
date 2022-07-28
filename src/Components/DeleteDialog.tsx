@@ -52,7 +52,7 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, onConfirm, onCa
 						text="Confirm"
 						intent={Intent.WARNING}
 						onClick={onConfirmCallback}
-						disabled={subject?.toLowerCase() !== confirmText.toLowerCase()}
+						disabled={subject !== confirmText}
 					/>
 				</div>
 			</div>
