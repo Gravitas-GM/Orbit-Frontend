@@ -41,7 +41,7 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, onConfirm, onCa
 					To confirm, please type "{subject}" in the box below, then click "Confirm."
 				</p>
 
-				<InputGroup value={confirmText} onChange={onConfirmTextChange} />
+				<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
 			</div>
 
 			<div className={Classes.DIALOG_FOOTER}>
