@@ -182,14 +182,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					</Dialog>
 				)}
 
-				{this.state.deleteTarget !== null && (
-					<DeleteDialog
-						isOpen={true}
-						subject={this.state.deleteTarget.name}
-						onConfirm={this.onDeleteConfirm}
-						onCancel={this.onDeleteCancel}
-					/>
-				)}
+				<DeleteDialog
+					isOpen={this.state.deleteTarget !== null}
+					subject={this.state.deleteTarget?.name}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+				/>
 
 				{this.state.showAsssignPointsDialog && this.state.selectedSource && (
 					<AssignPointsDialog

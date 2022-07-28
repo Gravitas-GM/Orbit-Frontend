@@ -173,14 +173,12 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					</tbody>
 				</HTMLTable>
 
-				{this.state.deleteTarget !== null && (
-					<DeleteDialog
-						isOpen={true}
-						subject={this.state.deleteTarget.source}
-						onConfirm={this.onDeleteConfirm}
-						onCancel={this.onDeleteCancel}
-					/>
-				)}
+				<DeleteDialog
+					isOpen={this.state.deleteTarget !== null}
+					subject={this.state.deleteTarget?.source}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+				/>
 
 				{this.state.showEditDialog && (
 					<Dialog
