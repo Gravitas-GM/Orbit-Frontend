@@ -53,7 +53,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 					/>
 				</div>
 
-				<HTMLTable className={Classes.HTML_TABLE_STRIPED}>
+				<HTMLTable striped={true}>
 					<thead>
 						<tr>
 							<th>Name</th>

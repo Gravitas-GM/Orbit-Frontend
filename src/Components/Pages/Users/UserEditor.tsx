@@ -142,7 +142,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<HTMLTable className={Classes.HTML_TABLE_STRIPED}>
+				<HTMLTable striped={true}>
 					<thead>
 						<tr>
 							<th>Source</th>
