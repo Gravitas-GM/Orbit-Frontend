@@ -11,11 +11,26 @@ interface IProps {
 export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, onConfirm, onCancel}) => {
 	let [confirmText, setConfirmText] = React.useState('');
 
+	let onCancelCallback = React.useCallback(() => {
+		setConfirmText('');
+		onCancel();
+	}, [onCancel, setConfirmText]);
+
+	let onConfirmCallback = React.useCallback(() => {
+		setConfirmText('');
+		onConfirm();
+	}, [onConfirm, setConfirmText]);
+
+	let onConfirmTextChange = React.useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => setConfirmText(event.currentTarget.value),
+		[setConfirmText],
+	);
+
 	return (
 		<Dialog
 			isOpen={isOpen}
 			title="Confirm Delete"
-			onClose={onCancel}
+			onClose={onCancelCallback}
 		>
 			<div className={Classes.DIALOG_BODY}>
 				<p>
@@ -26,17 +41,17 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, onConfirm, onCa
 					To confirm, please type "{subject}" in the box below, then click "Confirm."
 				</p>
 
-				<InputGroup value={confirmText} onChange={event => setConfirmText(event.currentTarget.value)} />
+				<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
 			</div>
 
 			<div className={Classes.DIALOG_FOOTER}>
 				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button text="Cancel" onClick={onCancel} />
+					<Button text="Cancel" onClick={onCancelCallback} />
 
 					<Button
 						text="Confirm"
 						intent={Intent.WARNING}
-						onClick={onConfirm}
+						onClick={onConfirmCallback}
 						disabled={subject !== confirmText}
 					/>
 				</div>

@@ -1,4 +1,4 @@
-import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, Classes, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import {isAxiosErrorResponse} from '../../../Api/errors';
@@ -53,7 +53,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 					/>
 				</div>
 
-				<HTMLTable className={classNames('bp4-html-table-striped')}>
+				<HTMLTable striped={true}>
 					<thead>
 						<tr>
 							<th>Name</th>
