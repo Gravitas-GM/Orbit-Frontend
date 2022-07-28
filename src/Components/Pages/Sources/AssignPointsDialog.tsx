@@ -147,7 +147,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		if (this.state.processing)
 			return;
 
-		if (this.state.selectedUsers.length === 0)
+		else if (this.state.selectedUsers.length === 0)
 			return;
 
 		this.setState({
