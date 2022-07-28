@@ -16,6 +16,7 @@ import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {replace} from '../../Utility/array';
+import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 
@@ -70,7 +71,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		return (
 			<>
-				<div className={'settings-title-container'}>
+				<div className="settings-title-container">
 					<H2>Sources</H2>
 
 					<Button
@@ -81,7 +82,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 					/>
 				</div>
 
-				<HTMLTable className={'bp4-html-table-striped'}>
+				<HTMLTable className={Classes.HTML_TABLE_STRIPED}>
 					<thead>
 						<tr>
 							<th>Name</th>
