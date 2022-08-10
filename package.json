@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "parcel -p 8000 ./src/index.html",
+	"build": "parcel build --no-source-maps --no-autoinstall ./src/index.html",
 	"deploy": "./bin/deploy.sh"
   },
   "eslintConfig": {
