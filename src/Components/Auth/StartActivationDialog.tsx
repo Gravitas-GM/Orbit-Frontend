@@ -80,7 +80,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 			await UserActivationModel.startActivation(
 				{
 					userEmailAddress: this.state.emailAddress,
-					activationUrlTemplate: 'happyorbit.com/activate?token=:code'
+					activationUrlTemplate: 'https://app.happyorbit.com/activate?token=:code'
 				});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
