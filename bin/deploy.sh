@@ -78,7 +78,7 @@ fi
 
 echo
 echo -e "\e[4m\e[1mPre-Build Checklist\e[0m"
-echo -e "\u2714 Verify that the deploy target should be '${bucket}'"
+echo -e "\u2714 Verify that the target bucket name should be '${bucket}'"
 
 if [[ -z "${distribution}" ]]; then
     echo
