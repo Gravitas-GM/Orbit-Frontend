@@ -110,7 +110,7 @@ fi
 
 echo
 echo "Building project files..."
-yarn build --log-level 1
+NODE_ENV=production yarn build --log-level 1
 
 bucketUrl="s3://${bucket}"
 
