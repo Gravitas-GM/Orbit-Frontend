@@ -54,11 +54,15 @@ while [[ $# > 0 ]]; do
             ;;
 
 		--bucket|-b)
-			bucket="$value"
+			bucket="$1"
+			shift
+
 			;;
 
 		--distribution|-d)
-			distribution="$value"
+			distribution="$1"
+			shift
+
 			;;
 
         --help|-h)
