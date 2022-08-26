@@ -6,92 +6,113 @@ import {history} from '../history';
 import {Permission, PermissionContext} from '../Permission';
 import {UserContext} from '../Session';
 import './NavHeader.scss';
+import {UserClaimPointsDialog} from './Pages/UserClaimPointsDialog';
 import {renderUserName} from './Utility/string';
 
 interface IProps {
 	loading: boolean;
 }
 
-export const NavHeader: React.FC<IProps> = props => (
-	<UserContext.Consumer>
-		{user => (
-			<PermissionContext.Consumer>
-				{([isGranted]) => (
-					<Navbar id="nav-header" className="bp4-navbar bp4-dark">
-						<Navbar.Group align={Alignment.LEFT}>
-							<Navbar.Heading>
-								<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
-							</Navbar.Heading>
+export const NavHeader: React.FC<IProps> = props => {
+	let [showDialog, setShowDialog] = React.useState(false);
 
-							<Navbar.Divider />
+	const onShowDialogChange = (showDialog: boolean) => {
+		setShowDialog(showDialog);
+	};
 
-							{isGranted(Permission.ADMIN) && (
-								<Button
-									icon="user"
-									text="Users"
-									minimal={true}
-									onClick={() => history.push(`/users`)}
-								/>
-							)}
+	return (
+		<UserContext.Consumer>
+			{user => (
+				<PermissionContext.Consumer>
+					{([isGranted]) => (
+						<>
+							<Navbar id="nav-header" className="bp4-navbar bp4-dark">
+								<Navbar.Group align={Alignment.LEFT}>
+									<Navbar.Heading>
+										<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
+									</Navbar.Heading>
 
-							<Popover>
-								<Button
-									text="Points"
-									icon="properties"
-									minimal={true}
-									style={{color: 'white'}}
-								/>
+									<Navbar.Divider />
 
-								<Menu>
 									{isGranted(Permission.ADMIN) && (
-										<MenuItem
-											icon="bank-account"
-											text="Sources"
-											onClick={() => history.push(`/sources`)}
+										<Button
+											icon="user"
+											text="Users"
+											minimal={true}
+											onClick={() => history.push(`/users`)}
 										/>
 									)}
 
-									<MenuItem
-										icon="properties"
-										text="Point Summary"
-										onClick={() => history.push(`/point-summary`)}
-									/>
-								</Menu>
-							</Popover>
-						</Navbar.Group>
-
-						<Navbar.Group align={Alignment.RIGHT}>
-							{user ? (
-								<Popover>
-									<Button
-										text={`Welcome, ${renderUserName(user)}`}
-										rightIcon={'caret-down'}
-										minimal={true}
-										style={{color: 'white'}}
-									/>
-
-									<Menu>
-										<MenuItem
-											text="Settings"
-											icon="person"
+									<Popover>
+										<Button
+											text="Points"
+											icon="properties"
+											minimal={true}
+											style={{color: 'white'}}
 										/>
 
-										<MenuDivider />
+										<Menu>
+											{isGranted(Permission.ADMIN) && (
+												<MenuItem
+													icon="bank-account"
+													text="Sources"
+													onClick={() => history.push(`/sources`)}
+												/>
+											)}
 
-										<MenuItem
-											text="Log Out"
-											icon="log-out"
-											onClick={logout}
-										/>
-									</Menu>
-								</Popover>
-							) : <Spinner size={20} intent={Intent.PRIMARY} />}
-						</Navbar.Group>
-					</Navbar>
-				)}
-			</PermissionContext.Consumer>
-		)}
-	</UserContext.Consumer>
-);
+											<MenuItem
+												icon="properties"
+												text="Point Summary"
+												onClick={() => history.push(`/point-summary`)}
+											/>
+
+											<MenuItem
+												icon="plus"
+												text="Claim Points"
+												onClick={() => onShowDialogChange(true)}
+											/>
+										</Menu>
+									</Popover>
+								</Navbar.Group>
+
+								<Navbar.Group align={Alignment.RIGHT}>
+									{user ? (
+										<Popover>
+											<Button
+												text={`Welcome, ${renderUserName(user)}`}
+												rightIcon={'caret-down'}
+												minimal={true}
+												style={{color: 'white'}}
+											/>
+
+											<Menu>
+												<MenuItem
+													text="Settings"
+													icon="person"
+												/>
+
+												<MenuDivider />
+
+												<MenuItem
+													text="Log Out"
+													icon="log-out"
+													onClick={logout}
+												/>
+											</Menu>
+										</Popover>
+									) : <Spinner size={20} intent={Intent.PRIMARY} />}
+								</Navbar.Group>
+							</Navbar>
+
+							{showDialog && (
+								<UserClaimPointsDialog onClose={() => onShowDialogChange(false)} />
+							)}
+						</>
+					)}
+				</PermissionContext.Consumer>
+			)}
+		</UserContext.Consumer>
+	);
+};
 
 NavHeader.displayName = 'NavHeader';
