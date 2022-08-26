@@ -1,4 +1,4 @@
-import {AnchorButton, Button, Classes, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import {isAxiosErrorResponse} from '../../../Api/errors';
@@ -139,6 +139,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		try {
 			players = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data.players);
 		} catch (error) {
+			if (isAxiosErrorResponse(error) && error.response?.status === 404)
+				players = [];
+
 			// The GameState API can return a response with a 404 status code if a game does not exist for the
 			// account. In those cases, just silently ignore the error.
 			if (!isAxiosErrorResponse(error) || error.response?.status !== 404)
