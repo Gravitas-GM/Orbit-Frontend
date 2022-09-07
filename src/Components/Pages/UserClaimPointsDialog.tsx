@@ -96,6 +96,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Submit"
 							onClick={this.onSubmit}
 							loading={this.state.processing}
+							disabled={this.state.selectedSources.length === 0}
 						/>
 					</div>
 				</div>
