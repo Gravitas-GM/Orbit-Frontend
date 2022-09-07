@@ -1,11 +1,11 @@
 import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer, Select2} from '@blueprintjs/select';
+import {ItemRenderer, MultiSelect2} from '@blueprintjs/select';
 import * as React from 'react';
-import {User, UserModel} from '../../Api/Hub/Models/Users';
 import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../Session';
 import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
+import {allSettled} from '../Utility/promise';
 import {ucwords} from '../Utility/string';
 import * as toaster from '../../Toaster';
 
@@ -14,9 +14,8 @@ interface IProps {
 }
 
 interface IState {
-	selectedSource: PointSourceItem | null;
-	user: User | null;
 	sources: PointSourceItem[];
+	selectedSources: PointSourceItem[];
 	loading: boolean;
 	processing: boolean;
 }
@@ -29,8 +28,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		super(props);
 
 		this.state = {
-			selectedSource: null,
-			user: null,
+			selectedSources: [],
 			sources: [],
 			loading: true,
 			processing: false,
@@ -38,16 +36,6 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 	}
 
 	public async componentDidMount() {
-		let user: User;
-
-		try {
-			user = await UserModel.read(this.context!.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			return;
-		}
-
 		let sources: PointSourceItem[] = [];
 
 		try {
@@ -57,7 +45,6 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		}
 
 		this.setState({
-			user,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
@@ -70,30 +57,31 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 					{this.state.loading ? <FrameLoadingSpinner /> : (
 						<form>
 							<FormGroup
-								label="Source"
+								label="Select Sources"
+								labelFor="selectedSources"
+								style={{display: 'flex'}}
 							>
-								<Select2
+								<MultiSelect2
+									selectedItems={this.state.selectedSources}
 									items={this.state.sources}
+									onItemSelect={this.onSourceSelect}
+									onRemove={this.onSourceRemove}
+									tagRenderer={(item) => ucwords(item.name)}
 									itemRenderer={this.selectItemRenderer}
-									onItemSelect={this.onSelectedSourceChange}
-									filterable={false}
 									fill={true}
 									popoverProps={{
 										matchTargetWidth: true,
 										minimal: true,
 									}}
-								>
+								/>
+
+								<div style={{paddingTop: 10}}>
 									<Button
-										text={(
-											this.state.selectedSource?.name
-												? ucwords(this.state.selectedSource.name)
-												: 'Select a Source'
-										)}
-										rightIcon="caret-down"
-										fill={true}
-										alignText="left"
+										text="Clear"
+										icon="minus"
+										onClick={this.onClearClick}
 									/>
-								</Select2>
+								</div>
 							</FormGroup>
 						</form>
 					)}
@@ -106,7 +94,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 						<Button
 							intent={Intent.PRIMARY}
 							text="Submit"
-							onClick={this.onSubmitClick}
+							onClick={this.onSubmit}
 							loading={this.state.processing}
 						/>
 					</div>
@@ -115,36 +103,69 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		);
 	}
 
-	private onSelectedSourceChange = (selectedSource: PointSourceItem) => this.setState({
-		selectedSource,
+	private onSourceSelect = (source: PointSourceItem) => this.setState(state => {
+		if (state.selectedSources.includes(source)) {
+			return {
+				selectedSources: state.selectedSources.filter(item => item !== source),
+			};
+		} else {
+			return {
+				selectedSources: [...state.selectedSources, source],
+			};
+		}
 	});
 
-	private onSubmitClick = async () => {
-		if (this.state.processing || !this.state.selectedSource)
+	private onSourceRemove = (source: PointSourceItem) => this.setState(state => ({
+		selectedSources: state.selectedSources.filter(item => item !== source),
+	}));
+
+	private onClearClick = () => this.setState({
+		selectedSources: [],
+	});
+
+	private onSubmit = async (event: React.SyntheticEvent<any>) => {
+		event.preventDefault();
+
+		if (this.state.processing)
+			return;
+
+		else if (this.state.selectedSources.length === 0)
 			return;
 
 		this.setState({
 			processing: true,
 		});
 
+		const failed: PointSourceItem[] = [];
+
 		try {
-			await PointsModel.create(this.state.user!.id, {
-				timestamp: new Date(),
-				point_value: this.state.selectedSource.point_value,
-				source: this.state.selectedSource.name,
-			}).then(response => response.data);
+			await allSettled(this.state.selectedSources.map(async source => {
+				try {
+					await PointsModel.create(this.context!.id, {
+						timestamp: new Date(),
+						point_value: source.point_value,
+						source: source.name,
+					});
+				} catch (error) {
+					failed.push(source);
+
+					throw error;
+				}
+			}));
 		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+			toaster.error(`Failed claiming ${failed.length} of the selected sources.`);
 
 			this.setState({
 				processing: false,
 			});
 
+			this.props.onClose();
+
 			return;
 		}
 
 		toaster.success(
-			'Points added.',
+			'Points claimed.',
 		);
 
 		this.setState({
