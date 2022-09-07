@@ -57,7 +57,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 					{this.state.loading ? <FrameLoadingSpinner /> : (
 						<form>
 							<FormGroup
-								label="Select Sources"
+								label="Select Point Sources"
 								labelFor="selectedSources"
 								style={{display: 'flex'}}
 							>
