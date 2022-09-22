@@ -1,14 +1,17 @@
-import {AnchorButton, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, H2, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Permission} from '../../../Permission';
 import * as toaster from '../../../Toaster';
+import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {compareStrings, renderUserName} from '../../Utility/string';
 
 interface IState {
 	users: User[];
 	loading: boolean;
+	processing: boolean;
+	deleteTarget: User | null;
 }
 
 function sortUsers(a: User, b: User) {
@@ -24,6 +27,8 @@ export class UsersList extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		users: [],
 		loading: true,
+		processing: false,
+		deleteTarget: null,
 	};
 
 	public async componentDidMount() {
@@ -58,6 +63,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 							<th>Email</th>
 							<th>Admin</th>
 							<th style={{textAlign: 'center', width: 100}}>Edit</th>
+							<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 						</tr>
 					</thead>
 
@@ -74,11 +80,67 @@ export class UsersList extends React.PureComponent<{}, IState> {
 										href={`/users/${user.id}`}
 									/>
 								</td>
+								<td style={{textAlign: 'center'}}>
+									<Button
+										icon="delete"
+										minimal={true}
+										intent={Intent.DANGER}
+										loading={this.state.processing}
+										onClick={() => this.onBeginDeleteButtonClick}
+									/>
+								</td>
 							</tr>
 						))}
 					</tbody>
 				</HTMLTable>
+
+				<DeleteDialog
+					isOpen={this.state.deleteTarget !== null}
+					subject={this.state.deleteTarget ? renderUserName(this.state.deleteTarget) : undefined}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+				/>
 			</>
 		);
 	}
+
+	private onBeginDeleteButtonClick = (item: User) => this.setState({
+		deleteTarget: item,
+	});
+
+	private onDeleteCancel = () => this.setState({
+		deleteTarget: null,
+	});
+
+	private onDeleteConfirm = async () => {
+		if (this.state.processing)
+			return;
+
+		let target = this.state.deleteTarget;
+
+		if (!target)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		try {
+			await UserModel.delete(target.id);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		this.setState(state => ({
+			users: state.users.filter(item => item !== target),
+			deleteTarget: null,
+			processing: false,
+		}));
+	};
 }
