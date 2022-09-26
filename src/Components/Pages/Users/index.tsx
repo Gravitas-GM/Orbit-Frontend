@@ -116,9 +116,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 		if (this.state.processing)
 			return;
 
-		let target = this.state.deleteTarget;
-
-		if (!target)
+		if (!this.state.deleteTarget)
 			return;
 
 		this.setState({
@@ -126,7 +124,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			await UserModel.delete(target.id);
+			await UserModel.delete(this.state.deleteTarget.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -138,7 +136,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 		}
 
 		this.setState(state => ({
-			users: state.users.filter(item => item !== target),
+			users: state.users.filter(item => item !== this.state.deleteTarget),
 			deleteTarget: null,
 			processing: false,
 		}));
