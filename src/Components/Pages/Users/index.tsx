@@ -86,7 +86,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 										minimal={true}
 										intent={Intent.DANGER}
 										loading={this.state.processing}
-										onClick={() => this.onBeginDeleteButtonClick}
+										onClick={() => this.onBeginDeleteButtonClick(user)}
 									/>
 								</td>
 							</tr>
