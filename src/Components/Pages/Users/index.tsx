@@ -96,7 +96,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 
 				<DeleteDialog
 					isOpen={this.state.deleteTarget !== null}
-					subject={this.state.deleteTarget ? renderUserName(this.state.deleteTarget) : undefined}
+					subject={renderUserName(this.state.deleteTarget)}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				/>
