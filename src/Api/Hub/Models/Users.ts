@@ -31,7 +31,7 @@ export interface UserEndpoints {
 		DELETE: {
 			params: Id;
 			response: void;
-		}
+		};
 	};
 }
 
