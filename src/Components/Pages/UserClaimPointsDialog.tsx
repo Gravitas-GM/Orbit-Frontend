@@ -33,7 +33,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			sources: [],
 			loading: true,
 			processing: false,
-		}
+		};
 	}
 
 	public async componentDidMount() {
