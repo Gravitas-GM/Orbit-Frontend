@@ -128,10 +128,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 	private onSubmit = async (event: React.SyntheticEvent<any>) => {
 		event.preventDefault();
 
-		if (this.state.processing)
-			return;
-
-		else if (this.state.selectedSources.length === 0)
+		if (this.state.processing || this.state.selectedSources.length === 0)
 			return;
 
 		this.setState({
