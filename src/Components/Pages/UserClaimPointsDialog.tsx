@@ -182,7 +182,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		return (
 			<MenuItem
 				active={modifiers.active}
-				key={`selectItem-${item.id.$oid}`}
+				key={item.id.$oid}
 				text={ucwords(item.name)}
 				onClick={handleClick}
 			/>
