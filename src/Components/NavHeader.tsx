@@ -13,7 +13,6 @@ import {
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {logout} from '../Api';
-import {history} from '../history';
 import {Permission, PermissionContext} from '../Permission';
 import {UserContext} from '../Session';
 import './NavHeader.scss';
@@ -46,12 +45,13 @@ export const NavHeader: React.FC<IProps> = props => {
 									<Navbar.Divider />
 
 									{isGranted(Permission.ADMIN) && (
-										<Button
-											icon="user"
-											text="Users"
-											minimal={true}
-											onClick={() => history.push(`/users`)}
-										/>
+										<Link to="/users">
+											<Button
+												icon="user"
+												text="Users"
+												minimal={true}
+											/>
+										</Link>
 									)}
 
 									<Popover>
@@ -64,18 +64,20 @@ export const NavHeader: React.FC<IProps> = props => {
 
 										<Menu>
 											{isGranted(Permission.ADMIN) && (
-												<MenuItem
-													icon="bank-account"
-													text="Sources"
-													onClick={() => history.push(`/sources`)}
-												/>
+												<Link to="/sources" style={{color: 'white', textDecoration: 'none'}}>
+													<MenuItem
+														icon="bank-account"
+														text="Sources"
+													/>
+												</Link>
 											)}
 
-											<MenuItem
-												icon="properties"
-												text="Point Summary"
-												onClick={() => history.push(`/point-summary`)}
-											/>
+											<Link to="/point-summary" style={{color: 'white', textDecoration: 'none'}}>
+												<MenuItem
+													icon="properties"
+													text="Point Summary"
+												/>
+											</Link>
 
 											<MenuItem
 												icon="plus"
