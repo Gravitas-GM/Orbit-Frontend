@@ -11,6 +11,7 @@ import * as toaster from '../../Toaster';
 
 interface IProps {
 	onClose: () => void;
+	isOpen: boolean;
 }
 
 interface IState {
@@ -52,7 +53,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points">
+			<Dialog onClose={this.props.onClose} isOpen={this.props.isOpen} title="Add Points">
 				<div className={Classes.DIALOG_BODY}>
 					{this.state.loading ? <FrameLoadingSpinner /> : (
 						<form>

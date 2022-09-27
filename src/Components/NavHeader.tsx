@@ -117,9 +117,7 @@ export const NavHeader: React.FC<IProps> = props => {
 								</Navbar.Group>
 							</Navbar>
 
-							{showDialog && (
-								<UserClaimPointsDialog onClose={() => onShowDialogChange(false)} />
-							)}
+							<UserClaimPointsDialog onClose={() => onShowDialogChange(false)} isOpen={showDialog} />
 						</>
 					)}
 				</PermissionContext.Consumer>
