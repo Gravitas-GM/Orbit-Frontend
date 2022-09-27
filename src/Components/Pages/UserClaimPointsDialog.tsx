@@ -135,8 +135,6 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			processing: true,
 		});
 
-		const failed: PointSourceItem[] = [];
-
 		try {
 			await allSettled(this.state.selectedSources.map(async source => {
 				try {
@@ -146,14 +144,12 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 						source: source.name,
 					});
 				} catch (error) {
-					failed.push(source);
+					toaster.error(`Failed claiming points for ${ucwords(source.name)}.`);
 
 					throw error;
 				}
 			}));
 		} catch (_) {
-			toaster.error(`Failed claiming ${failed.length} of the selected sources.`);
-
 			this.setState({
 				processing: false,
 			});
