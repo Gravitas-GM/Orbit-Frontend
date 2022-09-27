@@ -1,4 +1,15 @@
-import {Alignment, Button, Intent, Menu, MenuDivider, MenuItem, Navbar, Popover, Spinner} from '@blueprintjs/core';
+import {
+	Alignment,
+	Button,
+	Classes,
+	Intent,
+	Menu,
+	MenuDivider,
+	MenuItem,
+	Navbar,
+	Popover,
+	Spinner,
+} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {logout} from '../Api';
@@ -26,7 +37,7 @@ export const NavHeader: React.FC<IProps> = props => {
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
 						<>
-							<Navbar id="nav-header" className="bp4-navbar bp4-dark">
+							<Navbar id="nav-header" className={Classes.NAVBAR}>
 								<Navbar.Group align={Alignment.LEFT}>
 									<Navbar.Heading>
 										<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
