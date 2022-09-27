@@ -56,7 +56,12 @@ export class Activate extends React.PureComponent<{}, IState> {
 						labelFor="password"
 						failures={this.state.validationFailures}
 					>
-						<InputGroup type="password" value={this.state.password} onChange={this.onPasswordChange} />
+						<InputGroup
+							type="password"
+							name="password"
+							value={this.state.password}
+							onChange={this.onPasswordChange}
+						/>
 					</ValidationAwareFormGroup>
 
 					<FormGroup
@@ -65,6 +70,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 					>
 						<InputGroup
 							type="password"
+							name="confirmPassword"
 							value={this.state.confirmPassword}
 							onChange={this.onConfirmPasswordChange}
 						/>
