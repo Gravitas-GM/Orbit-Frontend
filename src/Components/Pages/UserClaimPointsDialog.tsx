@@ -1,5 +1,5 @@
 import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer, MultiSelect2} from '@blueprintjs/select';
+import {ItemRenderer, MultiSelect2 as MultiSelect} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
@@ -62,12 +62,12 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 								labelFor="selectedSources"
 								style={{display: 'flex'}}
 							>
-								<MultiSelect2
+								<MultiSelect
 									selectedItems={this.state.selectedSources}
 									items={this.state.sources}
 									onItemSelect={this.onSourceSelect}
 									onRemove={this.onSourceRemove}
-									tagRenderer={(item) => ucwords(item.name)}
+									tagRenderer={this.tagRenderer}
 									itemRenderer={this.selectItemRenderer}
 									fill={true}
 									popoverProps={{
@@ -169,6 +169,10 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 
 		this.props.onClose();
 	};
+
+	private tagRenderer = (source: PointSourceItem) => {
+		return ucwords(source.name);
+	}
 
 	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers}) => {
 		if (!modifiers.matchesPredicate) {
