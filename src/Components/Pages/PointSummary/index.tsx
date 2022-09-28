@@ -8,7 +8,6 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
@@ -139,9 +138,6 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		try {
 			players = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data.players);
 		} catch (error) {
-			if (isAxiosErrorResponse(error) && error.response?.status === 404)
-				players = [];
-
 			// The GameState API can return a response with a 404 status code if a game does not exist for the
 			// account. In those cases, just silently ignore the error.
 			if (!isAxiosErrorResponse(error) || error.response?.status !== 404)
