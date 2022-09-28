@@ -125,7 +125,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		selectedSources: [],
 	});
 
-	private onSubmit = async (event: React.SyntheticEvent<any>) => {
+	private onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
 		event.preventDefault();
 
 		if (this.state.processing || this.state.selectedSources.length === 0)
