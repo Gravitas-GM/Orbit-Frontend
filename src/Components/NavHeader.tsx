@@ -10,6 +10,7 @@ import {
 	Popover,
 	Spinner,
 } from '@blueprintjs/core';
+import {useCallback} from 'react';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {logout} from '../Api';
@@ -26,9 +27,7 @@ interface IProps {
 export const NavHeader: React.FC<IProps> = props => {
 	let [showDialog, setShowDialog] = React.useState(false);
 
-	const onShowDialogChange = (showDialog: boolean) => {
-		setShowDialog(showDialog);
-	};
+	const showDialogHandler = useCallback(() => setShowDialog(!showDialog), [showDialog]);
 
 	return (
 		<UserContext.Consumer>
@@ -82,7 +81,7 @@ export const NavHeader: React.FC<IProps> = props => {
 											<MenuItem
 												icon="plus"
 												text="Claim Points"
-												onClick={() => onShowDialogChange(true)}
+												onClick={showDialogHandler}
 											/>
 										</Menu>
 									</Popover>
@@ -117,7 +116,7 @@ export const NavHeader: React.FC<IProps> = props => {
 								</Navbar.Group>
 							</Navbar>
 
-							<UserClaimPointsDialog onClose={() => onShowDialogChange(false)} isOpen={showDialog} />
+							<UserClaimPointsDialog onClose={showDialogHandler} isOpen={showDialog} />
 						</>
 					)}
 				</PermissionContext.Consumer>
