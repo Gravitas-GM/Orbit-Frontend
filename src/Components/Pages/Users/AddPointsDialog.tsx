@@ -1,5 +1,5 @@
 import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, MenuItem, NumericInput} from '@blueprintjs/core';
-import {ItemRenderer, Select2} from '@blueprintjs/select';
+import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords} from '../../Utility/string';
@@ -62,7 +62,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							<FormGroup
 								label="Source"
 							>
-								<Select2
+								<Select
 									items={this.props.sources}
 									itemRenderer={this.selectItemRenderer}
 									onItemSelect={this.onSelectedSourceChange}
@@ -83,7 +83,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 										fill={true}
 										alignText="left"
 									/>
-								</Select2>
+								</Select>
 							</FormGroup>
 						</form>
 					)}
