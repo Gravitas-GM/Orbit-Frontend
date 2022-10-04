@@ -58,7 +58,6 @@ export const NavHeader: React.FC<IProps> = props => {
 											text="Points"
 											icon="properties"
 											minimal={true}
-											style={{color: 'white'}}
 										/>
 
 										<Menu>
@@ -94,7 +93,6 @@ export const NavHeader: React.FC<IProps> = props => {
 												text={`Welcome, ${renderUserName(user)}`}
 												rightIcon={'caret-down'}
 												minimal={true}
-												style={{color: 'white'}}
 											/>
 
 											<Menu>
