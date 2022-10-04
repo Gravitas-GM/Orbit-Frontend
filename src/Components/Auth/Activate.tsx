@@ -1,4 +1,4 @@
-import {Button, H1, InputGroup, Intent} from '@blueprintjs/core';
+import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
@@ -11,6 +11,7 @@ import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 
 interface IState {
 	password: string;
+	confirmPassword: string;
 	processing: boolean;
 	redirect: boolean;
 	validationFailures: ValidationFailures | null;
@@ -19,6 +20,7 @@ interface IState {
 export class Activate extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		password: '',
+		confirmPassword: '',
 		processing: false,
 		redirect: false,
 		validationFailures: null,
@@ -38,7 +40,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to={"/login"} />;
+			return <Redirect to="/login" />;
 
 		return (
 			<div id="activate">
@@ -54,8 +56,25 @@ export class Activate extends React.PureComponent<{}, IState> {
 						labelFor="password"
 						failures={this.state.validationFailures}
 					>
-						<InputGroup type="password" value={this.state.password} onChange={this.onPasswordChange} />
+						<InputGroup
+							type="password"
+							name="password"
+							value={this.state.password}
+							onChange={this.onPasswordChange}
+						/>
 					</ValidationAwareFormGroup>
+
+					<FormGroup
+						label="Confirm Password"
+						labelFor="confirmPassword"
+					>
+						<InputGroup
+							type="password"
+							name="confirmPassword"
+							value={this.state.confirmPassword}
+							onChange={this.onConfirmPasswordChange}
+						/>
+					</FormGroup>
 
 					<div style={{display: 'flex'}}>
 						<div style={{flex: 1}}>
@@ -81,6 +100,10 @@ export class Activate extends React.PureComponent<{}, IState> {
 		password: event.currentTarget.value,
 	});
 
+	private onConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		confirmPassword: event.currentTarget.value,
+	});
+
 	private onSubmit = async (event: React.SyntheticEvent<any>) => {
 		event.preventDefault();
 
@@ -91,6 +114,15 @@ export class Activate extends React.PureComponent<{}, IState> {
 			toaster.show({
 				intent: Intent.DANGER,
 				message: 'Please provide a password.',
+			});
+
+			return;
+		}
+
+		if (this.state.password !== this.state.confirmPassword) {
+			toaster.show({
+				intent: Intent.DANGER,
+				message: 'Passwords do not match.',
 			});
 
 			return;

@@ -24,6 +24,9 @@ export function compareStrings(a: string, b: string) {
 	return a.localeCompare(b, undefined, {sensitivity: 'base'});
 }
 
-export function renderUserName(user: User) {
+export function renderUserName(user: User | null) {
+	if (!user)
+		return 'User';
+
 	return `${ucwords(user.firstName ?? '')} ${ucwords(user.lastName ?? '')}`;
 }

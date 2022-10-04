@@ -1,4 +1,4 @@
-import {AnchorButton, Button, Classes, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import {isAxiosErrorResponse} from '../../../Api/errors';
@@ -8,7 +8,6 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface IState {
