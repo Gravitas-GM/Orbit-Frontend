@@ -38,7 +38,7 @@ export const NavHeader: React.FC<IProps> = props => {
 							<Navbar id="nav-header" className={Classes.NAVBAR}>
 								<Navbar.Group align={Alignment.LEFT}>
 									<Navbar.Heading>
-										<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
+										<Link to="/" className="plain-link">Happy Orbit</Link>
 									</Navbar.Heading>
 
 									<Navbar.Divider />
@@ -63,7 +63,7 @@ export const NavHeader: React.FC<IProps> = props => {
 
 										<Menu>
 											{isGranted(Permission.ADMIN) && (
-												<Link to="/sources" style={{color: 'white', textDecoration: 'none'}}>
+												<Link to="/sources" className="plain-link">
 													<MenuItem
 														icon="bank-account"
 														text="Sources"
@@ -71,7 +71,7 @@ export const NavHeader: React.FC<IProps> = props => {
 												</Link>
 											)}
 
-											<Link to="/point-summary" style={{color: 'white', textDecoration: 'none'}}>
+											<Link to="/point-summary" className="plain-link">
 												<MenuItem
 													icon="properties"
 													text="Point Summary"
