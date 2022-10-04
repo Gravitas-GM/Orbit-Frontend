@@ -27,7 +27,7 @@ interface IProps {
 export const NavHeader: React.FC<IProps> = props => {
 	let [showDialog, setShowDialog] = React.useState(false);
 
-	const showDialogHandler = useCallback(() => setShowDialog(!showDialog), [showDialog]);
+	const toggleShowDialog = useCallback(() => setShowDialog(show => !show), []);
 
 	return (
 		<UserContext.Consumer>
@@ -81,7 +81,7 @@ export const NavHeader: React.FC<IProps> = props => {
 											<MenuItem
 												icon="plus"
 												text="Claim Points"
-												onClick={showDialogHandler}
+												onClick={toggleShowDialog}
 											/>
 										</Menu>
 									</Popover>
@@ -116,7 +116,7 @@ export const NavHeader: React.FC<IProps> = props => {
 								</Navbar.Group>
 							</Navbar>
 
-							<UserClaimPointsDialog onClose={showDialogHandler} isOpen={showDialog} />
+							<UserClaimPointsDialog onClose={toggleShowDialog} isOpen={showDialog} />
 						</>
 					)}
 				</PermissionContext.Consumer>
