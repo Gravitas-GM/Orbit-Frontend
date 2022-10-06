@@ -27,7 +27,7 @@ interface IProps {
 export const NavHeader: React.FC<IProps> = props => {
 	let [showDialog, setShowDialog] = React.useState(false);
 
-	const showDialogHandler = useCallback(() => setShowDialog(!showDialog), [showDialog]);
+	const toggleShowDialog = useCallback(() => setShowDialog(show => !show), []);
 
 	return (
 		<UserContext.Consumer>
@@ -38,7 +38,7 @@ export const NavHeader: React.FC<IProps> = props => {
 							<Navbar id="nav-header" className={Classes.NAVBAR}>
 								<Navbar.Group align={Alignment.LEFT}>
 									<Navbar.Heading>
-										<Link to="/" style={{color: 'white', textDecoration: 'none'}}>Happy Orbit</Link>
+										<Link to="/" className="plain-link">Happy Orbit</Link>
 									</Navbar.Heading>
 
 									<Navbar.Divider />
@@ -58,12 +58,11 @@ export const NavHeader: React.FC<IProps> = props => {
 											text="Points"
 											icon="properties"
 											minimal={true}
-											style={{color: 'white'}}
 										/>
 
 										<Menu>
 											{isGranted(Permission.ADMIN) && (
-												<Link to="/sources" style={{color: 'white', textDecoration: 'none'}}>
+												<Link to="/sources" className="plain-link">
 													<MenuItem
 														icon="bank-account"
 														text="Sources"
@@ -71,7 +70,7 @@ export const NavHeader: React.FC<IProps> = props => {
 												</Link>
 											)}
 
-											<Link to="/point-summary" style={{color: 'white', textDecoration: 'none'}}>
+											<Link to="/point-summary" className="plain-link">
 												<MenuItem
 													icon="properties"
 													text="Point Summary"
@@ -81,7 +80,7 @@ export const NavHeader: React.FC<IProps> = props => {
 											<MenuItem
 												icon="plus"
 												text="Claim Points"
-												onClick={showDialogHandler}
+												onClick={toggleShowDialog}
 											/>
 										</Menu>
 									</Popover>
@@ -94,7 +93,6 @@ export const NavHeader: React.FC<IProps> = props => {
 												text={`Welcome, ${renderUserName(user)}`}
 												rightIcon={'caret-down'}
 												minimal={true}
-												style={{color: 'white'}}
 											/>
 
 											<Menu>
@@ -116,7 +114,7 @@ export const NavHeader: React.FC<IProps> = props => {
 								</Navbar.Group>
 							</Navbar>
 
-							<UserClaimPointsDialog onClose={showDialogHandler} isOpen={showDialog} />
+							<UserClaimPointsDialog onClose={toggleShowDialog} isOpen={showDialog} />
 						</>
 					)}
 				</PermissionContext.Consumer>

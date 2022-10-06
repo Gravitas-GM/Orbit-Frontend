@@ -27,6 +27,11 @@ export interface UserEndpoints {
 			body: UserUpdatePayload;
 			response: User;
 		};
+
+		DELETE: {
+			params: Id;
+			response: void;
+		};
 	};
 }
 
@@ -72,5 +77,9 @@ export class UserModel {
 
 	public static update(user: Id, payload: UserUpdatePayload) {
 		return hubApiClient.patch<'/users/:id'>(`/users/${user}`, payload);
+	}
+
+	public static delete(user: Id) {
+		return hubApiClient.delete<'/users/:id'>(`/users/${user}`);
 	}
 }

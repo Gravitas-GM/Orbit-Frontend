@@ -1,4 +1,4 @@
-import {hubApiClient, pointTrackingClient} from './index';
+import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} from './index';
 
 export class TokenStorage {
 	protected storageKey: string;
@@ -26,15 +26,20 @@ export class TokenStorage {
 
 		this.token = token;
 
+		// TODO: Move this somewhere better - need to minimize places where clients are modified
 		if (!token) {
 			window.localStorage.removeItem(this.storageKey);
 			this.clearRefreshTask();
 
 			delete hubApiClient.defaults.headers.authorization;
 			delete pointTrackingClient.defaults.headers.authorization;
+			delete gameStateClient.defaults.headers.authorization;
+			delete gameCatalogClient.defaults.headers.authorization;
 		} else {
 			hubApiClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
-			hubApiClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
+			pointTrackingClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
+			gameStateClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
+			gameCatalogClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 
 			window.localStorage.setItem(this.storageKey, token.jwt);
 			this.scheduleRefreshTask();

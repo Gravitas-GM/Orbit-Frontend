@@ -54,3 +54,14 @@ table.#{$ns}-html-table {
 		}
 	}
 }
+
+a.plain-link {
+	text-decoration: none;
+	color: inherit;
+
+	&:hover, &:active, &:focus {
+		text-decoration: none;
+		color: inherit;
+		outline: none;
+	}
+}
