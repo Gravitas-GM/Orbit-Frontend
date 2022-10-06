@@ -66,6 +66,7 @@ export const NavHeader: React.FC<IProps> = props => {
 													<MenuItem
 														icon="bank-account"
 														text="Sources"
+														tagName="span"
 													/>
 												</Link>
 											)}
@@ -74,6 +75,7 @@ export const NavHeader: React.FC<IProps> = props => {
 												<MenuItem
 													icon="properties"
 													text="Point Summary"
+													tagName="span"
 												/>
 											</Link>
 
