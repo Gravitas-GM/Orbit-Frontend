@@ -65,3 +65,8 @@ a.plain-link {
 		outline: none;
 	}
 }
+
+.#{$ns}-popover2 {
+	max-height: 300px;
+	overflow-y: auto;
+}
