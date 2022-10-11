@@ -1,6 +1,7 @@
 import {Button, Classes, Dialog, FormGroup, H2, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {isAxiosErrorResponse} from '../../../Api/errors';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
@@ -70,18 +71,15 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return;
 		}
 
-		let userPoints: UserPoints;
+		let userPoints: UserPoints | null = null;
 
 		try {
 			userPoints = await PointsModel.getFull(idParam).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
+		} catch (error) {
+			// The Points API can return a response with a 404 status code if a user does not exist in the Points API.
+			// In those cases, just silently ignore the error.
+			if (!isAxiosErrorResponse(error) || error.response?.status !== 404)
+				toaster.showUnhandledErrorMessage();
 		}
 
 		let sources: PointSourceItem[] = [];
@@ -95,7 +93,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		this.setState({
 			user,
 			isAdmin: user.permissions.includes(Permission.ADMIN),
-			pointItems: userPoints.points,
+			pointItems: userPoints?.points ?? [],
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
