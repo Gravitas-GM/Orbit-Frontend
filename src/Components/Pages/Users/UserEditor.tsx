@@ -9,7 +9,6 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
 
@@ -232,6 +231,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						processing={this.state.processing}
 						onClose={this.onAddPointsDialogClose}
 						onSubmit={this.onAddPointsDialogSubmit}
+						onSubmitMultiple={this.onAddPointsDialogSubmitMultiple}
 					/>
 				)}
 			</>
@@ -367,6 +367,47 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: false,
 			showAddPointsDialog: false,
 			pointItems: [...state.pointItems, pointItem],
+		}));
+	};
+	private onAddPointsDialogSubmitMultiple = (dialogPointItems: DialogPointItem[]) => {
+		if (this.state.processing)
+			return;
+		this.setState({
+			processing: true,
+		});
+
+		let pointItem: PointItem;
+
+		dialogPointItems.forEach(
+			async (item: DialogPointItem) => {
+				try {
+					pointItem = await PointsModel.create(this.state.user!.id, {
+						timestamp: new Date(),
+						point_value: item.pointValue,
+						source: item.sourceName,
+						description: item.description,
+					}).then(response => response.data);
+				} catch (_) {
+					toaster.showUnhandledErrorMessage();
+					this.setState({
+						processing: false,
+						showAddPointsDialog: false,
+					});
+					return
+				} finally {
+					this.setState((state) => ({
+						pointItems: [...state.pointItems, pointItem]
+					}));
+				}
+			}
+		)
+		toaster.success(
+			'Points added.',
+		);
+
+		this.setState(() => ({
+			processing: false,
+			showAddPointsDialog: false
 		}));
 	};
 }
