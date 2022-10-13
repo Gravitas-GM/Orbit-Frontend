@@ -63,7 +63,6 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							<FormGroup
 								label="Source"
 							>
-
 								<MultiSelect
 									selectedItems={this.state.selectedSources}
 									items={this.props.sources}
@@ -149,13 +148,16 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 				return;
 			}
+
 			const dialogPointItems = this.state.selectedSources.map((source: PointSourceItem) => (
 				{
 					sourceName: source.name,
 					pointValue: source.point_value
 				})
 			);
+
 			this.props.onSubmit(dialogPointItems);
+
 			return;
 		}
 
@@ -200,6 +202,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			};
 		}
 	});
+
 	private onRemoveSourceItem = (item: PointSourceItem) => {
 		this.setState((state) => {
 			return {
