@@ -335,54 +335,47 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
 		if (this.state.processing)
 			return;
+
 		this.setState({
 			processing: true,
 		});
 
-		try {
-			await allSettled(dialogPointItems.map(async (item) => {
-				try {
-					await PointsModel.create(this.state.user!.id, {
-						timestamp: new Date(),
-						point_value: item.pointValue,
-						source: item.sourceName,
-						description: item.description,
-					}).then((response) => {
-						this.setState((state) => ({
-							pointItems: [...state.pointItems, response.data]
-						}))
-					}
-					);
-				} catch (error) {
-					throw error
-				}
-			})
-			).then((results) => {
-				const success = results.filter(result => result.status === "fulfilled");
-				if (success.length === results.length) {
-					toaster.success(
-						'Points Added'
-					)
-					return
-				} else if (success.length > 0) {
-					toaster.info(
-						"Some points couldn't be added"
-					)
-					return
-				}
-				toaster.error(
-					'Failed to add points.',
-				);
-			});
-		} catch {
-			toaster.error(
-				'Failed to add points.',
-			);
-		} finally {
-			this.setState({
-				processing: false,
-				showAddPointsDialog: false
-			});
+		const results = await allSettled(dialogPointItems.map(async item => {
+			return await PointsModel.create(this.state.user!.id, {
+				timestamp: new Date(),
+				point_value: item.pointValue,
+				source: item.sourceName,
+				description: item.description,
+			}).then(r => r.data);
+		}));
+
+		let failureCount = 0;
+		let newItems: PointItem[] = [];
+
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				++failureCount;
+
+				continue;
+			}
+
+			newItems.push(result.value);
 		}
+
+		this.setState(state => ({
+			pointItems: [...state.pointItems, ...newItems],
+		}));
+
+		if (failureCount === 0) // complete success, no failures
+			toaster.success('Points Added');
+		else if (failureCount !== results.length) // some failures, but fewer than the number of requests we sent
+			toaster.warning('Some points couldn\'t be added');
+		else // complete failure
+			toaster.error('Failed to add points.');
+
+		this.setState({
+			processing: false,
+			showAddPointsDialog: false,
+		});
 	};
 }
