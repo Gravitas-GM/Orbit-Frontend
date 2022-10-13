@@ -9,6 +9,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {allSettled} from '../../Utility/promise';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
 
@@ -231,7 +232,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						processing={this.state.processing}
 						onClose={this.onAddPointsDialogClose}
 						onSubmit={this.onAddPointsDialogSubmit}
-						onSubmitMultiple={this.onAddPointsDialogSubmitMultiple}
 					/>
 				)}
 			</>
@@ -331,83 +331,57 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		}));
 	};
 
-	private onAddPointsDialogSubmit = async (dialogPointItem: DialogPointItem) => {
+	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
 		if (this.state.processing)
 			return;
-
 		this.setState({
 			processing: true,
 		});
-
-		let pointItem: PointItem;
 
 		try {
-			pointItem = await PointsModel.create(this.state.user!.id, {
-				timestamp: new Date(),
-				point_value: dialogPointItem.pointValue,
-				source: dialogPointItem.sourceName,
-				description: dialogPointItem.description,
-			}).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				processing: false,
-				showAddPointsDialog: false,
-			});
-
-			return;
-		}
-
-		toaster.success(
-			'Points added.',
-		);
-
-		this.setState(state => ({
-			processing: false,
-			showAddPointsDialog: false,
-			pointItems: [...state.pointItems, pointItem],
-		}));
-	};
-	private onAddPointsDialogSubmitMultiple = (dialogPointItems: DialogPointItem[]) => {
-		if (this.state.processing)
-			return;
-		this.setState({
-			processing: true,
-		});
-
-		let pointItem: PointItem;
-
-		dialogPointItems.forEach(
-			async (item: DialogPointItem) => {
+			await allSettled(dialogPointItems.map(async (item) => {
 				try {
-					pointItem = await PointsModel.create(this.state.user!.id, {
+					await PointsModel.create(this.state.user!.id, {
 						timestamp: new Date(),
 						point_value: item.pointValue,
 						source: item.sourceName,
 						description: item.description,
-					}).then(response => response.data);
-				} catch (_) {
-					toaster.showUnhandledErrorMessage();
-					this.setState({
-						processing: false,
-						showAddPointsDialog: false,
-					});
-					return
-				} finally {
-					this.setState((state) => ({
-						pointItems: [...state.pointItems, pointItem]
-					}));
+					}).then((response) => {
+						this.setState((state) => ({
+							pointItems: [...state.pointItems, response.data]
+						}))
+					}
+					);
+				} catch (error) {
+					throw error
 				}
-			}
-		)
-		toaster.success(
-			'Points added.',
-		);
-
-		this.setState(() => ({
-			processing: false,
-			showAddPointsDialog: false
-		}));
+			})
+			).then((results) => {
+				const success = results.filter(result => result.status === "fulfilled");
+				if (success.length === results.length) {
+					toaster.success(
+						'Points Added'
+					)
+					return
+				} else if (success.length > 0) {
+					toaster.info(
+						"Some points couldn't be added"
+					)
+					return
+				}
+				toaster.error(
+					'Failed to add points.',
+				);
+			});
+		} catch {
+			toaster.error(
+				'Failed to add points.',
+			);
+		} finally {
+			this.setState(() => ({
+				processing: false,
+				showAddPointsDialog: false
+			}));
+		}
 	};
 }

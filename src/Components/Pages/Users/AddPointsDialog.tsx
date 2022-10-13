@@ -10,8 +10,7 @@ interface IProps {
 	sources: PointSourceItem[];
 	processing: boolean;
 	onClose: () => void;
-	onSubmit: (dialogPointItem: DialogPointItem) => void;
-	onSubmitMultiple: (dialogPointItems: DialogPointItem[]) => void;
+	onSubmit: (dialogPointItem: DialogPointItem[]) => void;
 }
 
 interface IState {
@@ -157,7 +156,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					pointValue: source.point_value
 				})
 			);
-			this.props.onSubmitMultiple(dialogPointItems);
+			this.props.onSubmit(dialogPointItems);
 			return;
 		}
 
@@ -167,11 +166,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		this.props.onSubmit({
+		this.props.onSubmit([{
 			sourceName: this.state.sourceName,
 			pointValue: this.state.pointValue,
 			description: this.state.description,
-		});
+		}]);
 	};
 
 	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers }) => {
@@ -189,9 +188,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		);
 	};
 
-	private tagItemRenderer(item: PointSourceItem) {
-		return item.name
-	}
+	private tagItemRenderer = (item: PointSourceItem) => item.name;
 
 	private onSelectSourceItem = (item: PointSourceItem) => this.setState(state => {
 		if (state.selectedSources.includes(item)) {
@@ -204,12 +201,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			};
 		}
 	});
-
-
-
 	private onRemoveSourceItem = (item: PointSourceItem) => {
 		this.setState((state) => {
-			return { selectedSources: state.selectedSources.filter(((filterItem: PointSourceItem) => filterItem !== item)) }
+			return {
+				selectedSources: state.selectedSources.filter(((filterItem: PointSourceItem) => filterItem !== item))
+			}
 		});
-	}
+	};
 }
