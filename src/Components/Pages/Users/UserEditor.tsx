@@ -378,10 +378,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 				'Failed to add points.',
 			);
 		} finally {
-			this.setState(() => ({
+			this.setState({
 				processing: false,
 				showAddPointsDialog: false
-			}));
+			});
 		}
 	};
 }
