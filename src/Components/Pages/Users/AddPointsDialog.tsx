@@ -187,7 +187,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		);
 	};
 
-	private tagItemRenderer = (item: PointSourceItem) => item.name;
+	private tagItemRenderer = (item: PointSourceItem) => ucwords(item.name);
 
 	private onSelectSourceItem = (item: PointSourceItem) => this.setState(state => {
 		if (state.selectedSources.includes(item)) {
