@@ -79,7 +79,7 @@ class Login extends React.PureComponent<IProps, IState> {
 	}
 
 	private onFormKeyDown = async (event: React.KeyboardEvent) => {
-		if (event.code === 'KeyEnter')
+		if (event.code === 'Enter')
 			await this.onLoginSubmit(event);
 	};
 
