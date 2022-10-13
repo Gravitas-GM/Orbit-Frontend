@@ -20,7 +20,6 @@ interface IState {
 	sourceName: string;
 	showCustomSourceForm: boolean;
 	showSourceForm: boolean;
-	selectedSource: PointSourceItem | null;
 	selectedSources: PointSourceItem[];
 }
 
@@ -34,7 +33,6 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			sourceName: '',
 			showCustomSourceForm: false,
 			showSourceForm: false,
-			selectedSource: null,
 			selectedSources: [],
 		};
 	}
