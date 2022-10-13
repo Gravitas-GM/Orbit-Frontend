@@ -9,8 +9,7 @@ import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
 import { DeleteDialog } from '../../DeleteDialog';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { partition } from '../../Utility/array';
-import { allSettled, isFulfilledResult, isRejectedResult } from '../../Utility/promise';
+import { allSettled, isRejectedResult } from '../../Utility/promise';
 import { formatNumber, renderUserName, ucwords } from '../../Utility/string';
 import { AddPointsDialog } from './AddPointsDialog';
 
