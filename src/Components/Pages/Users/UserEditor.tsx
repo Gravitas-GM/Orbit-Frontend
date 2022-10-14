@@ -9,10 +9,11 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {allSettled, isRejectedResult} from '../../Utility/promise';
 import {NoData} from '../../NoData';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
+
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -122,12 +123,12 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<div style={{display: 'flex'}}>
-					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
+				<div style={{ display: 'flex' }}>
+					<H6 style={{ flex: 1 }}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
-						<H6 style={{paddingLeft: 10}}>
-							<Icon icon={'person'} style={{paddingRight: 5}} intent="warning" />
+						<H6 style={{ paddingLeft: 10 }}>
+							<Icon icon={'person'} style={{ paddingRight: 5 }} intent="warning" />
 							Admin
 						</H6>
 					)}
@@ -337,7 +338,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		}));
 	};
 
-	private onAddPointsDialogSubmit = async (dialogPointItem: DialogPointItem) => {
+	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
 		if (this.state.processing)
 			return;
 
@@ -345,34 +346,42 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		let pointItem: PointItem;
-
-		try {
-			pointItem = await PointsModel.create(this.state.user!.id, {
+		const results = await allSettled(dialogPointItems.map(async item => {
+			return await PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
-				point_value: dialogPointItem.pointValue,
-				source: dialogPointItem.sourceName,
-				description: dialogPointItem.description,
-			}).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+				point_value: item.pointValue,
+				source: item.sourceName,
+				description: item.description,
+			}).then(r => r.data);
+		}));
 
-			this.setState({
-				processing: false,
-				showAddPointsDialog: false,
-			});
+		let failureCount = 0;
+		let newItems: PointItem[] = [];
 
-			return;
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				++failureCount;
+
+				continue;
+			}
+
+			newItems.push(result.value);
 		}
 
-		toaster.success(
-			'Points added.',
-		);
-
 		this.setState(state => ({
+			pointItems: [...state.pointItems, ...newItems],
+		}));
+
+		if (failureCount === 0) // complete success, no failures
+			toaster.success('Points Added');
+		else if (failureCount !== results.length) // some failures, but fewer than the number of requests we sent
+			toaster.warning('Some points couldn\'t be added');
+		else // complete failure
+			toaster.error('Failed to add points.');
+
+		this.setState({
 			processing: false,
 			showAddPointsDialog: false,
-			pointItems: [...state.pointItems, pointItem],
-		}));
+		});
 	};
 }
