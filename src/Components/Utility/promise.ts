@@ -8,6 +8,14 @@ interface PromiseRejectedResult {
 	reason: any;
 }
 
+export function isFulfilledResult<T>(result: any): result is PromiseFulfilledResult<T> {
+	return typeof result === 'object' && result.status === 'fulfilled';
+}
+
+export function isRejectedResult(result: any): result is PromiseRejectedResult {
+	return typeof result === 'object' && result.status === 'rejected';
+}
+
 type PromiseSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
 type AllSettledResult<T> = Array<PromiseSettledResult<T extends PromiseLike<infer U> ? U : T>>;
 

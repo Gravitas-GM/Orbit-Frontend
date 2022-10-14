@@ -1,17 +1,17 @@
-import {Button, Classes, Dialog, FormGroup, H2, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
+import { Button, Classes, Dialog, FormGroup, H2, H6, HTMLTable, Icon, Intent, Switch } from '@blueprintjs/core';
 import * as React from 'react';
-import {Redirect, RouteComponentProps} from 'react-router';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
-import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
-import {Permission} from '../../../Permission';
-import {UserContext} from '../../../Session';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { User, UserModel } from '../../../Api/Hub/Models/Users';
+import { PointItem, PointsModel, UserPoints } from '../../../Api/Point-Tracking/Models/Points';
+import { PointSourceItem, PointSourceModel } from '../../../Api/Point-Tracking/Models/Sources';
+import { Permission } from '../../../Permission';
+import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
-import {DeleteDialog} from '../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {classNames} from '../../Utility/dom';
-import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
-import {AddPointsDialog} from './AddPointsDialog';
+import { DeleteDialog } from '../../DeleteDialog';
+import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
+import { allSettled, isRejectedResult } from '../../Utility/promise';
+import { formatNumber, renderUserName, ucwords } from '../../Utility/string';
+import { AddPointsDialog } from './AddPointsDialog';
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -120,18 +120,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<div style={{display: 'flex'}}>
-					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
+				<div style={{ display: 'flex' }}>
+					<H6 style={{ flex: 1 }}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
-						<H6 style={{paddingLeft: 10}}>
-							<Icon icon={'person'} style={{paddingRight: 5}} intent="warning" />
+						<H6 style={{ paddingLeft: 10 }}>
+							<Icon icon={'person'} style={{ paddingRight: 5 }} intent="warning" />
 							Admin
 						</H6>
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{paddingTop: 25}}>
+				<div className="settings-title-container" style={{ paddingTop: 25 }}>
 					<H2>Points</H2>
 
 					<Button
@@ -149,7 +149,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							<th>Point Value</th>
 							<th>Timestamp</th>
 							<th>Description</th>
-							<th style={{width: 100, textAlign: 'center'}}>Delete</th>
+							<th style={{ width: 100, textAlign: 'center' }}>Delete</th>
 						</tr>
 					</thead>
 
@@ -160,7 +160,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 								<td>{formatNumber(item.point_value)}</td>
 								<td>{new Date(item.timestamp).toLocaleString()}</td>
 								<td>{item.description ?? <>&mdash;</>}</td>
-								<td style={{textAlign: 'center'}}>
+								<td style={{ textAlign: 'center' }}>
 									<Button
 										icon="delete"
 										minimal={true}
@@ -331,7 +331,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		}));
 	};
 
-	private onAddPointsDialogSubmit = async (dialogPointItem: DialogPointItem) => {
+	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
 		if (this.state.processing)
 			return;
 
@@ -339,34 +339,42 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		let pointItem: PointItem;
-
-		try {
-			pointItem = await PointsModel.create(this.state.user!.id, {
+		const results = await allSettled(dialogPointItems.map(async item => {
+			return await PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
-				point_value: dialogPointItem.pointValue,
-				source: dialogPointItem.sourceName,
-				description: dialogPointItem.description,
-			}).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+				point_value: item.pointValue,
+				source: item.sourceName,
+				description: item.description,
+			}).then(r => r.data);
+		}));
 
-			this.setState({
-				processing: false,
-				showAddPointsDialog: false,
-			});
+		let failureCount = 0;
+		let newItems: PointItem[] = [];
 
-			return;
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				++failureCount;
+
+				continue;
+			}
+
+			newItems.push(result.value);
 		}
 
-		toaster.success(
-			'Points added.',
-		);
-
 		this.setState(state => ({
+			pointItems: [...state.pointItems, ...newItems],
+		}));
+
+		if (failureCount === 0) // complete success, no failures
+			toaster.success('Points Added');
+		else if (failureCount !== results.length) // some failures, but fewer than the number of requests we sent
+			toaster.warning('Some points couldn\'t be added');
+		else // complete failure
+			toaster.error('Failed to add points.');
+
+		this.setState({
 			processing: false,
 			showAddPointsDialog: false,
-			pointItems: [...state.pointItems, pointItem],
-		}));
+		});
 	};
 }

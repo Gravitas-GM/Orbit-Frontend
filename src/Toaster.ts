@@ -29,6 +29,13 @@ export function error(message: string) {
 	});
 }
 
+export function warning(message: string) {
+	show({
+		intent: Intent.WARNING,
+		message,
+	});
+}
+
 // region Error Messages
 export function showUnhandledErrorMessage() {
 	error('An error occurred while processing your request. Please try again.');
