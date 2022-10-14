@@ -204,9 +204,9 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 	});
 
 	private onRemoveSourceItem = (item: PointSourceItem) => {
-		this.setState((state) => {
+		this.setState(state => {
 			return {
-				selectedSources: state.selectedSources.filter(((filterItem: PointSourceItem) => filterItem !== item))
+				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item))
 			}
 		});
 	};
