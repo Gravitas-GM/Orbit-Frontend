@@ -81,7 +81,6 @@ export class Activate extends React.PureComponent<{}, IState> {
 							<Button
 								type="submit"
 								text="Submit"
-								onSubmit={this.onSubmit}
 								intent={Intent.PRIMARY}
 								loading={this.state.processing}
 							/>

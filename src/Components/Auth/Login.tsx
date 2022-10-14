@@ -62,7 +62,6 @@ class Login extends React.PureComponent<IProps, IState> {
 							<Button
 								type="submit"
 								text="Submit"
-								onSubmit={this.onLoginSubmit}
 								intent={Intent.PRIMARY}
 								loading={this.state.processing}
 							/>
