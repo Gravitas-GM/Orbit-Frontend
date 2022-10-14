@@ -10,10 +10,9 @@ import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {NoData} from '../../NoData';
+import {NonIdealState} from '../../NonIdealState';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
-
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -102,9 +101,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			loading: false,
 		});
 	}
-	public render() {
-		const AddPointsButton = () => <Button text="Add Points" icon="plus"	intent="primary" onClick={this.onAddPointsClick} />;
 
+	public render() {
 		if (this.state.redirect)
 			return <Redirect to="/users" />;
 		else if (this.state.loading)
@@ -134,52 +132,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				{this.state.pointItems.length === 0 ?
-					<NoData
-						icon="wind"
-						title={'This user doesn\'t have points assigned'}
-						description='You can start assigning points by clicking the button below'
-						action={<AddPointsButton />}
-					/> :
-					<>
-						<div className="settings-title-container" style={{paddingTop: 25}}>
-							<H2>Points</H2>
-							<AddPointsButton />
-						</div>
+				<div className="settings-title-container" style={{paddingTop: 25}}>
+					<H2>Points</H2>
 
-						<HTMLTable striped={true}>
-							<thead>
-								<tr>
-									<th>Source</th>
-									<th>Point Value</th>
-									<th>Timestamp</th>
-									<th>Description</th>
-									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
-								</tr>
-							</thead>
+					<Button
+						text="Add Points"
+						icon="plus"
+						intent="primary"
+						onClick={this.onAddPointsClick}
+					/>
+				</div>
 
-							<tbody>
-								{this.state.pointItems.map(item => (
-									<tr key={`point-item-${item.id.$oid}`}>
-										<td>{ucwords(item.source)}</td>
-										<td>{formatNumber(item.point_value)}</td>
-										<td>{new Date(item.timestamp).toLocaleString()}</td>
-										<td>{item.description ?? <>&mdash;</>}</td>
-										<td style={{textAlign: 'center'}}>
-											<Button
-												icon="delete"
-												minimal={true}
-												intent={Intent.DANGER}
-												loading={this.state.processing}
-												onClick={() => this.onBeginDeleteButtonClick(item)}
-											/>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</HTMLTable>
-					</>
-				}
+				{this.renderPointsTable()}
 
 				<DeleteDialog
 					isOpen={this.state.deleteTarget !== null}
@@ -244,6 +208,60 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			</>
 		);
 	}
+
+	private renderPointsTable = () => {
+		if (this.state.pointItems.length === 0) {
+			return (
+				<NonIdealState
+					title="This user doesn't have any points assigned"
+					description="You can start assigning points using the button below"
+					action={(
+						<Button
+							icon="plus"
+							text="Add Points"
+							onClick={this.onAddPointsClick}
+							outlined={true}
+							intent={Intent.PRIMARY}
+						/>
+					)}
+				/>
+			);
+		}
+
+		return (
+			<HTMLTable striped={true}>
+				<thead>
+					<tr>
+						<th>Source</th>
+						<th>Point Value</th>
+						<th>Timestamp</th>
+						<th>Description</th>
+						<th style={{width: 100, textAlign: 'center'}}>Delete</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{this.state.pointItems.map(item => (
+						<tr key={`point-item-${item.id.$oid}`}>
+							<td>{ucwords(item.source)}</td>
+							<td>{formatNumber(item.point_value)}</td>
+							<td>{new Date(item.timestamp).toLocaleString()}</td>
+							<td>{item.description ?? <>&mdash;</>}</td>
+							<td style={{textAlign: 'center'}}>
+								<Button
+									icon="delete"
+									minimal={true}
+									intent={Intent.DANGER}
+									loading={this.state.processing}
+									onClick={() => this.onBeginDeleteButtonClick(item)}
+								/>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</HTMLTable>
+		);
+	};
 
 	private onEditClick = () => this.setState({
 		showEditDialog: true,
