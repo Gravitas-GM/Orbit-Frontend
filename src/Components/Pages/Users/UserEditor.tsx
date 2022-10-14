@@ -9,6 +9,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {NoData} from '../../NoData';
 import {classNames} from '../../Utility/dom';
 import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
@@ -100,8 +101,9 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			loading: false,
 		});
 	}
-
 	public render() {
+		const AddPointsButton = () => <Button text="Add Points" icon="plus"	intent="primary" onClick={this.onAddPointsClick} />;
+
 		if (this.state.redirect)
 			return <Redirect to="/users" />;
 		else if (this.state.loading)
@@ -131,48 +133,52 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{paddingTop: 25}}>
-					<H2>Points</H2>
+				{this.state.pointItems.length === 0 ?
+					<NoData
+						icon="wind"
+						title={'This user doesn\'t have points assigned'}
+						description='You can start assigning points by clicking the button below'
+						action={<AddPointsButton />}
+					/> :
+					<>
+						<div className="settings-title-container" style={{paddingTop: 25}}>
+							<H2>Points</H2>
+							<AddPointsButton />
+						</div>
 
-					<Button
-						text="Add Points"
-						icon="plus"
-						intent="primary"
-						onClick={this.onAddPointsClick}
-					/>
-				</div>
+						<HTMLTable striped={true}>
+							<thead>
+								<tr>
+									<th>Source</th>
+									<th>Point Value</th>
+									<th>Timestamp</th>
+									<th>Description</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
+								</tr>
+							</thead>
 
-				<HTMLTable striped={true}>
-					<thead>
-						<tr>
-							<th>Source</th>
-							<th>Point Value</th>
-							<th>Timestamp</th>
-							<th>Description</th>
-							<th style={{width: 100, textAlign: 'center'}}>Delete</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						{this.state.pointItems.map(item => (
-							<tr key={`point-item-${item.id.$oid}`}>
-								<td>{ucwords(item.source)}</td>
-								<td>{formatNumber(item.point_value)}</td>
-								<td>{new Date(item.timestamp).toLocaleString()}</td>
-								<td>{item.description ?? <>&mdash;</>}</td>
-								<td style={{textAlign: 'center'}}>
-									<Button
-										icon="delete"
-										minimal={true}
-										intent={Intent.DANGER}
-										loading={this.state.processing}
-										onClick={() => this.onBeginDeleteButtonClick(item)}
-									/>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</HTMLTable>
+							<tbody>
+								{this.state.pointItems.map(item => (
+									<tr key={`point-item-${item.id.$oid}`}>
+										<td>{ucwords(item.source)}</td>
+										<td>{formatNumber(item.point_value)}</td>
+										<td>{new Date(item.timestamp).toLocaleString()}</td>
+										<td>{item.description ?? <>&mdash;</>}</td>
+										<td style={{textAlign: 'center'}}>
+											<Button
+												icon="delete"
+												minimal={true}
+												intent={Intent.DANGER}
+												loading={this.state.processing}
+												onClick={() => this.onBeginDeleteButtonClick(item)}
+											/>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</HTMLTable>
+					</>
+				}
 
 				<DeleteDialog
 					isOpen={this.state.deleteTarget !== null}
