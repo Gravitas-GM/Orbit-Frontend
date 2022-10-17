@@ -48,7 +48,7 @@ class Login extends React.PureComponent<IProps, IState> {
 					</H1>
 				</div>
 
-				<form method="post" onSubmit={this.onLoginSubmit} onKeyDown={this.onFormKeyDown}>
+				<form method="post" onSubmit={this.onLoginSubmit}>
 					<FormGroup label="Email Address">
 						<InputGroup value={this.state.emailAddress} onChange={this.onEmailAddressChange} />
 					</FormGroup>
@@ -60,8 +60,8 @@ class Login extends React.PureComponent<IProps, IState> {
 					<div style={{display: 'flex'}}>
 						<div style={{flex: 1}}>
 							<Button
+								type="submit"
 								text="Submit"
-								onClick={this.onLoginSubmit}
 								intent={Intent.PRIMARY}
 								loading={this.state.processing}
 							/>
@@ -77,11 +77,6 @@ class Login extends React.PureComponent<IProps, IState> {
 			</div>
 		);
 	}
-
-	private onFormKeyDown = async (event: React.KeyboardEvent) => {
-		if (event.code === 'KeyEnter')
-			await this.onLoginSubmit(event);
-	};
 
 	private onEmailAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		emailAddress: event.currentTarget.value,

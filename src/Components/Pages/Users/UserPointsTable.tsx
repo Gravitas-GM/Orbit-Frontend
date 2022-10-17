@@ -61,7 +61,7 @@ export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, onDelete })
 			<td>{ucwords(item.source)}</td>
 			<td>{formatNumber(item.point_value)}</td>
 			<td>{new Date(item.timestamp).toLocaleString()}</td>
-			<td>{item.description ?? <>&mdash;</>}</td>
+			<td>{item.description ?? <>—</>}</td>
 			<td style={{ textAlign: 'center' }}>
 				<Button
 					icon="delete"

@@ -50,7 +50,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 					</H1>
 				</div>
 
-				<form method="post" onSubmit={this.onSubmit} onKeyDown={this.onFormKeyDown}>
+				<form method="post" onSubmit={this.onSubmit}>
 					<ValidationAwareFormGroup
 						label="Create Password"
 						labelFor="password"
@@ -79,8 +79,8 @@ export class Activate extends React.PureComponent<{}, IState> {
 					<div style={{display: 'flex'}}>
 						<div style={{flex: 1}}>
 							<Button
+								type="submit"
 								text="Submit"
-								onClick={this.onSubmit}
 								intent={Intent.PRIMARY}
 								loading={this.state.processing}
 							/>
@@ -90,11 +90,6 @@ export class Activate extends React.PureComponent<{}, IState> {
 			</div>
 		);
 	}
-
-	private onFormKeyDown = async (event: React.KeyboardEvent) => {
-		if (event.code === 'KeyEnter')
-			await this.onSubmit(event);
-	};
 
 	private onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		password: event.currentTarget.value,
