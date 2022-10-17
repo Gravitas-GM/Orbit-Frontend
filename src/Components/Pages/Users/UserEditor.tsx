@@ -1,4 +1,4 @@
-import {Button, Classes, Dialog, FormGroup, H2, H6, HTMLTable, Icon, Intent, Switch} from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, H2, H6, Icon, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
@@ -10,8 +10,7 @@ import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {NonIdealState} from '../../NonIdealState';
-import {formatNumber, renderUserName, ucwords} from '../../Utility/string';
+import {renderUserName} from '../../Utility/string';
 import {AddPointsDialog} from './AddPointsDialog';
 import { PointsTable, PointsTableRow } from './UserPointsTable';
 
