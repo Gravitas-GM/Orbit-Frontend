@@ -1,4 +1,4 @@
-import { Button, H2, H6, HTMLTable, Icon, Intent } from '@blueprintjs/core';
+import { Button, H2, H6, Icon } from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { User, UserModel } from '../../../Api/Hub/Models/Users';
@@ -10,8 +10,9 @@ import * as toaster from '../../../Toaster';
 import { DeleteDialog } from '../../DeleteDialog';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { allSettled, isRejectedResult } from '../../Utility/promise';
-import { formatNumber, renderUserName, ucwords } from '../../Utility/string';
 import { AddPointsDialog } from './AddPointsDialog';
+import { PointsTable, PointsTableRow } from './UserPointsTable';
+import { renderUserName } from '../../Utility/string';
 import { UpdatableUserData, UserEditDialog } from './UserEditDialog';
 
 export type DialogPointItem = {
@@ -140,37 +141,16 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<HTMLTable striped={true}>
-					<thead>
-						<tr>
-							<th>Source</th>
-							<th>Point Value</th>
-							<th>Timestamp</th>
-							<th>Description</th>
-							<th style={{ width: 100, textAlign: 'center' }}>Delete</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						{this.state.pointItems.map(item => (
-							<tr key={`point-item-${item.id.$oid}`}>
-								<td>{ucwords(item.source)}</td>
-								<td>{formatNumber(item.point_value)}</td>
-								<td>{new Date(item.timestamp).toLocaleString()}</td>
-								<td>{item.description ?? <>&mdash;</>}</td>
-								<td style={{ textAlign: 'center' }}>
-									<Button
-										icon="delete"
-										minimal={true}
-										intent={Intent.DANGER}
-										loading={this.state.processing}
-										onClick={() => this.onBeginDeleteButtonClick(item)}
-									/>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</HTMLTable>
+				<PointsTable onAddPointsClick={this.onAddPointsClick}>
+					{this.state.pointItems.map(item => (
+						<PointsTableRow
+							key={item.id.$oid}
+							item={item}
+							onDelete={this.onBeginDeleteButtonClick}
+							loading={this.state.processing}
+						/>
+					))}
+				</PointsTable>
 
 				<DeleteDialog
 					isOpen={this.state.deleteTarget !== null}
