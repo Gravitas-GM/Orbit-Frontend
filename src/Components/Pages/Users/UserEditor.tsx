@@ -1,18 +1,19 @@
-import {Button, Classes, Dialog, FormGroup, H2, H6, Icon, Intent, Switch} from '@blueprintjs/core';
+import { Button, H2, H6, Icon } from '@blueprintjs/core';
 import * as React from 'react';
-import {Redirect, RouteComponentProps} from 'react-router';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
-import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
-import {Permission} from '../../../Permission';
-import {UserContext} from '../../../Session';
+import { Redirect, RouteComponentProps } from 'react-router';
+import { User, UserModel } from '../../../Api/Hub/Models/Users';
+import { PointItem, PointsModel, UserPoints } from '../../../Api/Point-Tracking/Models/Points';
+import { PointSourceItem, PointSourceModel } from '../../../Api/Point-Tracking/Models/Sources';
+import { Permission } from '../../../Permission';
+import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
-import {DeleteDialog} from '../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {renderUserName} from '../../Utility/string';
-import {AddPointsDialog} from './AddPointsDialog';
+import { DeleteDialog } from '../../DeleteDialog';
+import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
+import { allSettled, isRejectedResult } from '../../Utility/promise';
+import { AddPointsDialog } from './AddPointsDialog';
 import { PointsTable, PointsTableRow } from './UserPointsTable';
+import { renderUserName } from '../../Utility/string';
+import { UpdatableUserData, UserEditDialog } from './UserEditDialog';
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -26,7 +27,6 @@ interface IRouteProps {
 
 interface IState {
 	user: User | null;
-	isAdmin: boolean;
 	loading: boolean;
 	pointItems: PointItem[];
 	processing: boolean;
@@ -43,7 +43,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	public state: Readonly<IState> = {
 		user: null,
-		isAdmin: false,
 		loading: true,
 		pointItems: [],
 		processing: false,
@@ -95,7 +94,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 		this.setState({
 			user,
-			isAdmin: user.permissions.includes(Permission.ADMIN),
 			pointItems: userPoints.points,
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
@@ -132,7 +130,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{paddingTop: 25}}>
+				<div className="settings-title-container" style={{ paddingTop: 25 }}>
 					<H2>Points</H2>
 
 					<Button
@@ -162,48 +160,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 				/>
 
 				{this.state.showEditDialog && (
-					<Dialog
+					<UserEditDialog
+						user={this.state.user!}
+						onSubmit={this.onEditDialogSubmit}
 						onClose={this.onEditDialogClose}
-						isOpen={true}
-						title="Edit User Details"
-					>
-						<div className={Classes.DIALOG_BODY}>
-							<form onSubmit={this.onEditDialogSubmit}>
-								<FormGroup
-									labelFor="isAdmin"
-								>
-									<div className="settings-switch-container">
-										<span>
-											Admin
-										</span>
-
-										<Switch
-											checked={this.state.isAdmin}
-											onChange={this.onIsAdminChange}
-											large={true}
-										/>
-									</div>
-								</FormGroup>
-							</form>
-						</div>
-
-						<div className={Classes.DIALOG_FOOTER}>
-							<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-								<Button
-									text="Cancel"
-									onClick={this.onEditDialogClose}
-									disabled={this.state.processing}
-								/>
-
-								<Button
-									intent={Intent.PRIMARY}
-									text="Submit"
-									onClick={this.onEditDialogSubmit}
-									loading={this.state.processing}
-								/>
-							</div>
-						</div>
-					</Dialog>
+					/>
 				)}
 
 				{this.state.showAddPointsDialog && (
@@ -226,10 +187,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showEditDialog: false,
 	});
 
-	private onIsAdminChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
-		isAdmin: event.currentTarget.checked,
-	});
-
 	private onAddPointsClick = () => this.setState({
 		showAddPointsDialog: true,
 	});
@@ -238,7 +195,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showAddPointsDialog: false,
 	});
 
-	private onEditDialogSubmit = async () => {
+	private onEditDialogSubmit = async (update: UpdatableUserData) => {
 		if (this.state.processing)
 			return;
 
@@ -246,11 +203,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		let user: User;
+		// Name is a bit of a misnomer; it isn't a "new" user, but the replacement object
+		// after the chnages have been applied by the API.
+		let newUser: User;
 
 		try {
-			user = await UserModel.update(this.state.user!.id, {
-				admin: this.state.isAdmin,
+			newUser = await UserModel.update(this.state.user!.id, {
+				admin: update.permissions.includes(Permission.ADMIN),
 			}).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
@@ -265,7 +224,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		toaster.success('User updated.');
 
 		this.setState({
-			user,
+			user: newUser,
 			processing: false,
 			showEditDialog: false,
 		});
