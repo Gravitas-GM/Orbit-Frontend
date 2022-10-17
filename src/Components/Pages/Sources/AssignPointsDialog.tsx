@@ -6,7 +6,7 @@ import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import * as toaster from '../../../Toaster';
 import {allSettled} from '../../Utility/promise';
-import {compareStrings, renderUserName} from '../../Utility/string';
+import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
 
 interface IProps {
 	source: PointSourceItem;
@@ -59,8 +59,10 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 	}
 
 	public render() {
+		const title = `Assign points for ${ucwords(this.props.source.name)}`;
+
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title="Assign Points">
+			<Dialog onClose={this.props.onClose} isOpen={true} title={title}>
 				<div className={Classes.DIALOG_BODY}>
 					<form>
 						<FormGroup

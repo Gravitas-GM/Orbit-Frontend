@@ -1,5 +1,6 @@
-import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, MenuItem, NumericInput} from '@blueprintjs/core';
-import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
+import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {ItemRenderer, MultiSelect2 as MultiSelect} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords} from '../../Utility/string';
@@ -10,7 +11,7 @@ interface IProps {
 	sources: PointSourceItem[];
 	processing: boolean;
 	onClose: () => void;
-	onSubmit: (dialogPointItem: DialogPointItem) => void;
+	onSubmit: (dialogPointItem: DialogPointItem[]) => void;
 }
 
 interface IState {
@@ -19,7 +20,7 @@ interface IState {
 	sourceName: string;
 	showCustomSourceForm: boolean;
 	showSourceForm: boolean;
-	selectedSource: PointSourceItem | null;
+	selectedSources: PointSourceItem[];
 }
 
 export class AddPointsDialog extends React.PureComponent<IProps, IState> {
@@ -32,7 +33,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			sourceName: '',
 			showCustomSourceForm: false,
 			showSourceForm: false,
-			selectedSource: null,
+			selectedSources: [],
 		};
 	}
 
@@ -62,28 +63,19 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							<FormGroup
 								label="Source"
 							>
-								<Select
+								<MultiSelect
+									selectedItems={this.state.selectedSources}
 									items={this.props.sources}
+									onItemSelect={this.onSelectSourceItem}
+									onRemove={this.onRemoveSourceItem}
+									tagRenderer={this.tagItemRenderer}
 									itemRenderer={this.selectItemRenderer}
-									onItemSelect={this.onSelectedSourceChange}
-									filterable={false}
 									fill={true}
 									popoverProps={{
 										matchTargetWidth: true,
 										minimal: true,
 									}}
-								>
-									<Button
-										text={(
-											this.state.selectedSource?.name
-												? ucwords(this.state.selectedSource.name)
-												: 'Select a Source'
-										)}
-										rightIcon="caret-down"
-										fill={true}
-										alignText="left"
-									/>
-								</Select>
+								/>
 							</FormGroup>
 						</form>
 					)}
@@ -137,10 +129,6 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		showSourceForm: true,
 	});
 
-	private onSelectedSourceChange = (selectedSource: PointSourceItem) => this.setState({
-		selectedSource,
-	});
-
 	private onPointValueChange = (pointValue: number) => this.setState({
 		pointValue,
 	});
@@ -155,16 +143,20 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 	private onSubmitClick = () => {
 		if (this.state.showSourceForm) {
-			if (!this.state.selectedSource) {
+			if (this.state.selectedSources.length === 0) {
 				toaster.error('Please select a source.');
 
 				return;
 			}
 
-			this.props.onSubmit({
-				sourceName: this.state.selectedSource.name,
-				pointValue: this.state.selectedSource.point_value,
-			});
+			const dialogPointItems = this.state.selectedSources.map((source: PointSourceItem) => (
+				{
+					sourceName: source.name,
+					pointValue: source.point_value
+				})
+			);
+
+			this.props.onSubmit(dialogPointItems);
 
 			return;
 		}
@@ -175,14 +167,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		this.props.onSubmit({
+		this.props.onSubmit([{
 			sourceName: this.state.sourceName,
 			pointValue: this.state.pointValue,
 			description: this.state.description,
-		});
+		}]);
 	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers}) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers }) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}
@@ -195,5 +187,27 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 				onClick={handleClick}
 			/>
 		);
+	};
+
+	private tagItemRenderer = (item: PointSourceItem) => ucwords(item.name);
+
+	private onSelectSourceItem = (item: PointSourceItem) => this.setState(state => {
+		if (state.selectedSources.includes(item)) {
+			return {
+				selectedSources: state.selectedSources.filter(pointItem => pointItem !== item),
+			};
+		} else {
+			return {
+				selectedSources: [...state.selectedSources, item],
+			};
+		}
+	});
+
+	private onRemoveSourceItem = (item: PointSourceItem) => {
+		this.setState(state => {
+			return {
+				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item))
+			}
+		});
 	};
 }
