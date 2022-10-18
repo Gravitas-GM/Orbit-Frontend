@@ -310,7 +310,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 
 		const results = await allSettled(dialogPointItems.map(async item => {
-			return await PointsModel.create(this.state.user!.id, {
+			return PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
 				point_value: item.pointValue,
 				source: item.sourceName,
