@@ -35,7 +35,10 @@ interface IState {
 	showAddPointsDialog: boolean;
 	showEditDialog: boolean;
 	sources: PointSourceItem[];
-	deleteTarget: PointItem | null,
+	selectedToRemoval: PointItem[];
+	selectedItems: PointItem[];
+	deleteSubject: string | undefined;
+	showDeleteDialog: boolean;
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -51,7 +54,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showAddPointsDialog: false,
 		showEditDialog: false,
 		sources: [],
-		deleteTarget: null,
+		selectedItems: [],
+		selectedToRemoval: [],
+		deleteSubject: undefined,
+		showDeleteDialog: false,
 	};
 
 	public async componentDidMount() {
@@ -128,7 +134,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25 }}>
+				<div className="settings-title-container" style={{ paddingTop: 25, display: "flex", gap: "1rem" }}>
 					<H2>Points</H2>
 
 					<Button
@@ -136,6 +142,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						icon="plus"
 						intent="primary"
 						onClick={this.onAddPointsClick}
+					/>
+					<Button
+						text="Delete Points"
+						icon="delete"
+						intent="danger"
+						onClick={() => this.onBeginDeleteButtonClick(this.state.selectedItems)}
+						disabled={this.state.selectedItems.length <= 0}
 					/>
 				</div>
 
@@ -145,16 +158,19 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							key={item.id.$oid}
 							item={item}
 							onDelete={this.onBeginDeleteButtonClick}
-							loading={this.state.processing}
+							isChecked={this.isChecked(item)}
+							toggleCheck={() => this.toggleCheck(item)}
 						/>
 					))}
 				</PointsTable>
 
 				<DeleteDialog
-					isOpen={this.state.deleteTarget !== null}
-					subject={this.state.deleteTarget?.source}
+					isOpen={this.state.showDeleteDialog}
+					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
+					processing={this.state.processing}
+					multiple={this.state.selectedToRemoval.length > 1}
 				/>
 
 				{this.state.showEditDialog && (
@@ -228,42 +244,59 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 	};
 
-	private onBeginDeleteButtonClick = (item: PointItem) => this.setState({
-		deleteTarget: item,
-	});
+	private onBeginDeleteButtonClick = (items: PointItem[]) => {
+		if (items.length === 1) {
+			this.setState( ({
+				selectedToRemoval: items,
+				deleteSubject: items[0].source,
+				showDeleteDialog: true,
+			}));
+		} else {
+			this.setState(({
+				deleteSubject: 'DELETE',
+				selectedToRemoval: items,
+				showDeleteDialog: true,
+			}));
+		}
+	}
 
 	private onDeleteCancel = () => this.setState({
-		deleteTarget: null,
+		showDeleteDialog: false,
 	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
 			return;
 
-		let target = this.state.deleteTarget;
-
-		if (!target)
+		if (this.state.selectedToRemoval.length === 0)
 			return;
 
 		this.setState({
 			processing: true,
 		});
 
-		try {
-			await PointsModel.delete(this.state.user!.id, target.id);
-		} catch (_) {
+
+		const results = await allSettled(this.state.selectedToRemoval.map(async item => {
+			return PointsModel.delete(this.state.user!.id, item.id).then(()=>item);
+		}));
+		let failureCount = 0;
+		let deletedItems: PointItem[] = [];
+		for (const result of results) {
+			if(isRejectedResult(result)) {
+				failureCount++;
+				continue;
+			}
+			deletedItems.push(result.value);
+		}
+
+		if (failureCount > 0) {
 			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				processing: false,
-			});
-
-			return;
 		}
 
 		this.setState(state => ({
-			pointItems: state.pointItems.filter(item => item !== target),
-			deleteTarget: null,
+			pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
+			selectedItems: [],
+			showDeleteDialog: false,
 			processing: false,
 		}));
 	};
@@ -313,5 +346,15 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: false,
 			showAddPointsDialog: false,
 		});
+	};
+	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
+	private toggleCheck = (item: PointItem) => {
+		if (this.isChecked(item)) {
+			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
+			return;
+		}
+		this.setState((state)=> ({
+			selectedItems: [...state.selectedItems, item]
+		}));
 	};
 }
