@@ -1,4 +1,4 @@
-import { Button, HTMLTable, Intent } from '@blueprintjs/core';
+import { Button, HTMLTable, Intent, Checkbox } from '@blueprintjs/core';
 import * as React from 'react';
 import { PointItem } from '../../../Api/Point-Tracking/Models/Points';
 import { NonIdealState } from '../../NonIdealState';
@@ -49,16 +49,18 @@ export const PointsTable: React.FC<ITableProps> = props => {
 
 interface IRowProps {
 	item: PointItem;
-	onDelete: (item: PointItem) => void;
+	onDelete: (items: PointItem[]) => void;
+	isChecked: boolean;
+	toggleCheck: (item: PointItem) => void;
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, onDelete }) => {
-	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete]);
+export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, onDelete, toggleCheck }) => {
+	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete]);
 
 	return (
 		<tr>
-			<td>{ucwords(item.source)}</td>
+			<td><Checkbox label={ucwords(item.source)} checked={isChecked} onClick={() => toggleCheck(item)} /></td>
 			<td>{formatNumber(item.point_value)}</td>
 			<td>{new Date(item.timestamp).toLocaleString()}</td>
 			<td>{item.description ?? <>—</>}</td>
