@@ -353,14 +353,30 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			showAddPointsDialog: false,
 		});
 	};
+
 	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
+
+	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems.length;
+
 	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
-			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
+			this.setState(state => ({ selectedItems: state.selectedItems.filter(target => target !== item) }));
 			return;
 		}
-		this.setState((state)=> ({
+		this.setState((state) => ({
 			selectedItems: [...state.selectedItems, item]
 		}));
+	};
+
+	private onSelectAll = () => {
+		if (this.isAllChecked()) {
+			this.setState({
+				selectedItems: [],
+			});
+		} else {
+			this.setState({
+				selectedItems: [...this.state.pointItems],
+			});
+		}
 	};
 }

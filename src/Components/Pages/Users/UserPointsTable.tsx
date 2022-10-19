@@ -6,6 +6,8 @@ import { formatNumber, ucwords } from '../../Utility/string';
 
 interface ITableProps {
 	onAddPointsClick: () => void;
+	onSelectAll: () => void;
+	allSelected: boolean;
 	children?: React.ReactNode;
 }
 
@@ -32,7 +34,10 @@ export const PointsTable: React.FC<ITableProps> = props => {
 		<HTMLTable striped={true}>
 			<thead>
 				<tr>
-					<th><Checkbox checked={false}/></th>
+					<th style={{ width: 20 }}>
+						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
+					</th>
+
 					<th>Source</th>
 					<th>Point Value</th>
 					<th>Timestamp</th>
@@ -57,11 +62,12 @@ interface IRowProps {
 }
 
 export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, onDelete, onSelect }) => {
-	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete]);
+	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
+	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (
 		<tr>
-			<td><Checkbox checked={isChecked} onClick={() => onSelect(item)} /></td>
+			<td><Checkbox checked={isChecked} onClick={onCheckboxClick} /></td>
 			<td>{ucwords(item.source)}</td>
 			<td>{formatNumber(item.point_value)}</td>
 			<td>{new Date(item.timestamp).toLocaleString()}</td>
