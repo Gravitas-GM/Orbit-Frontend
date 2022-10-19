@@ -32,6 +32,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 		<HTMLTable striped={true}>
 			<thead>
 				<tr>
+					<th><Checkbox checked={false}/></th>
 					<th>Source</th>
 					<th>Point Value</th>
 					<th>Timestamp</th>
@@ -51,16 +52,17 @@ interface IRowProps {
 	item: PointItem;
 	onDelete: (items: PointItem[]) => void;
 	isChecked: boolean;
-	toggleCheck: (item: PointItem) => void;
+	onSelect: (item: PointItem) => void;
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, onDelete, toggleCheck }) => {
+export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, onDelete, onSelect }) => {
 	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete]);
 
 	return (
 		<tr>
-			<td><Checkbox label={ucwords(item.source)} checked={isChecked} onClick={() => toggleCheck(item)} /></td>
+			<td><Checkbox checked={isChecked} onClick={() => onSelect(item)} /></td>
+			<td>{ucwords(item.source)}</td>
 			<td>{formatNumber(item.point_value)}</td>
 			<td>{new Date(item.timestamp).toLocaleString()}</td>
 			<td>{item.description ?? <>—</>}</td>

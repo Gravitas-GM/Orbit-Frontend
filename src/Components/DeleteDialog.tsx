@@ -5,22 +5,25 @@ interface IProps {
 	isOpen: boolean,
 	subject: string | undefined,
 	multiple?: boolean,
-	processing?: boolean,
 	onConfirm: () => Promise<void>,
 	onCancel: () => void,
 }
 
-export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = false, processing, onConfirm, onCancel}) => {
+export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = false, onConfirm, onCancel}) => {
 	let [confirmText, setConfirmText] = React.useState('');
+	const [processing, setIsProcessing] = React.useState(false)
 
 	let onCancelCallback = React.useCallback(() => {
 		setConfirmText('');
 		onCancel();
+		setIsProcessing(false)
 	}, [onCancel, setConfirmText]);
 
 	let onConfirmCallback = React.useCallback(async () => {
-		setConfirmText('');
+		setIsProcessing(true)
 		await onConfirm();
+		setConfirmText('');
+		setIsProcessing(false)
 	}, [onConfirm, setConfirmText]);
 
 	let onConfirmTextChange = React.useCallback(

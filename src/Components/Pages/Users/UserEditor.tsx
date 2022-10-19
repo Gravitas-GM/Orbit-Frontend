@@ -134,7 +134,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25, display: "flex", gap: "1rem" }}>
+				<div className="settings-title-container" style={{ paddingTop: 25, display: 'flex', gap: '1rem' }}>
 					<H2>Points</H2>
 
 					<Button
@@ -159,7 +159,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 							item={item}
 							onDelete={this.onBeginDeleteButtonClick}
 							isChecked={this.isChecked(item)}
-							toggleCheck={() => this.toggleCheck(item)}
+							onSelect={this.onSelect}
 						/>
 					))}
 				</PointsTable>
@@ -169,7 +169,6 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
-					processing={this.state.processing}
 					multiple={this.state.selectedToRemoval.length > 1}
 				/>
 
@@ -279,19 +278,22 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		const results = await allSettled(this.state.selectedToRemoval.map(async item => {
 			return PointsModel.delete(this.state.user!.id, item.id).then(()=>item);
 		}));
+
 		let failureCount = 0;
 		let deletedItems: PointItem[] = [];
+
 		for (const result of results) {
 			if(isRejectedResult(result)) {
 				failureCount++;
 				continue;
 			}
+
 			deletedItems.push(result.value);
 		}
 
-		if (failureCount > 0) {
+		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
-		}
+
 
 		this.setState(state => ({
 			pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
@@ -309,7 +311,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		const results = await allSettled(dialogPointItems.map(async item => {
+		const results = await allSettled(dialogPointItems.map( item => {
 			return PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
 				point_value: item.pointValue,
@@ -348,7 +350,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 	};
 	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
-	private toggleCheck = (item: PointItem) => {
+	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
 			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
 			return;
