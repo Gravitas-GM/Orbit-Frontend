@@ -6,4 +6,21 @@
 		padding: 0 10px 0 10px;
 		text-decoration: none;
 	}
+
+	// new styles to match board design
+	background: $gm-navbar-background-color;
+	height: 80px;
+
+	// oddly, BlueprintJS uses floats to position items :(
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.profile-button {
+		.bp4-icon { margin-right: 0.5rem; }
+		.bp4-button-text {
+			display: flex;
+			align-items: center;
+		}
+	}
 }
