@@ -3,6 +3,7 @@ import {
 	Button,
 	Classes,
 	Icon,
+	IconSize,
 	Intent,
 	Menu,
 	MenuDivider,
@@ -57,6 +58,7 @@ export const NavHeader: React.FC<IProps> = props => {
 											text="Game"
 											icon="properties"
 											minimal={true}
+											rightIcon="caret-down"
 										/>
 										<Menu>
 											<MenuItem
@@ -65,17 +67,19 @@ export const NavHeader: React.FC<IProps> = props => {
 												onClick={toggleShowDialog}
 											/>
 
-											<MenuItem
-												icon="star"
-												text="Game Board"
-												onClick={()=> { console.log('hit me')}}
-											/>
+											<Link to="/game" className="plain-link">
+												<MenuItem
+													icon="star"
+													text="Game Board"
+												/>
+											</Link>
 
-											<MenuItem
-												icon="list"
-												text="Leaderboard"
-												onClick={()=> { console.log('hit me')}}
-											/>
+											<Link to="/leaderboard" className="plain-link">
+												<MenuItem
+													icon="list"
+													text="Leaderboard"
+																									/>
+											</Link>
 
 											<Link to="/point-summary" className="plain-link">
 												<MenuItem
@@ -116,13 +120,13 @@ export const NavHeader: React.FC<IProps> = props => {
 										<Popover>
 											<Button
 												large
-												rightIcon={'caret-down'}
+												icon={<Icon icon="user" size={IconSize.LARGE} />}
+												rightIcon="caret-down"
 												minimal={true}
 												className="gm-navbar profile-button"
-											>
-												<Icon icon="user" size={32} />
-												{renderUserName(user)}
-											</Button>
+												text={renderUserName(user)}
+											/>
+
 
 											<Menu>
 												<MenuItem
