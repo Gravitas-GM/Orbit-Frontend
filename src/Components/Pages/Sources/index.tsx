@@ -70,7 +70,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<>
+			<div className="gm-page-wrapper">
 				<div className="settings-title-container">
 					<H2>Sources</H2>
 
@@ -196,7 +196,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						onClose={this.onAssignPointsDialogClose}
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 
