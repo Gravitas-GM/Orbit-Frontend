@@ -33,7 +33,7 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/" component={Home} exact={true} />
 
 							<Route path="/point-summary" component={PointSummary} exact={true} />
-							<Route path="/game" key="/game" component={Game} exact={true} />
+							<Route path="/game" key="/game" component={Game} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
