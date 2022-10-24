@@ -4,7 +4,7 @@ $pt-app-background-color: $dark-gray4;
 
 $gm-nav-header-height: 50px;
 
-$gm-main-frame-height: calc(100vh - #{$gm-nav-header-height});
+$gm-main-frame-height: calc(100% - #{$gm-nav-header-height});
 
 $gm-content-padding-vertical: 20px;
 $gm-content-padding-horizontal: 30px;

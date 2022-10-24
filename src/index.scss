@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import './variables';
-
+body, html, #app-root, #app {
+	height: 100%;
+}
 body {
 	margin: 0;
 
@@ -23,8 +25,10 @@ body {
 			height: 30px;
 		}
 	}
-
 	.main-frame {
+		height: $gm-main-frame-height;
+	}
+	.gm-page-wrapper {
 		padding: 10px 20px;
 	}
 }
