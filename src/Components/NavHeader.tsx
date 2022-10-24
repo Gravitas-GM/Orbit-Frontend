@@ -47,7 +47,6 @@ export const NavHeader: React.FC<IProps> = props => {
 
 									<Link to="/" className="plain-link">
 										<Button
-											icon="home"
 											text="Home"
 											minimal
 										/>
@@ -56,7 +55,6 @@ export const NavHeader: React.FC<IProps> = props => {
 									<Popover>
 										<Button
 											text="Game"
-											icon="properties"
 											minimal={true}
 											rightIcon="caret-down"
 										/>
@@ -106,7 +104,6 @@ export const NavHeader: React.FC<IProps> = props => {
 									{isGranted(Permission.ADMIN) && (
 										<Link to="/users">
 											<Button
-												icon="user"
 												text="Users"
 												minimal={true}
 											/>
