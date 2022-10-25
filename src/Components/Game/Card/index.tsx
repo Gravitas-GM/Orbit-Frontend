@@ -1,5 +1,5 @@
 import {Icon, IconName} from '@blueprintjs/core';
-import './Card.scss'
+import './Card.scss';
 
 interface IProps {
 	title: string;
@@ -15,9 +15,7 @@ export const GameCard: React.FC<IProps> = props => {
 				{props.title}
 			</header>
 
-			<div className="gm-card-content">
-				{props.children}
-			</div>
+			<div className="gm-card-content">{props.children}</div>
 		</div>
 	);
 };
