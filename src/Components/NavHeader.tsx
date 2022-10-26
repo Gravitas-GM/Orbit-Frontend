@@ -2,6 +2,8 @@ import {
 	Alignment,
 	Button,
 	Classes,
+	Icon,
+	IconSize,
 	Intent,
 	Menu,
 	MenuDivider,
@@ -43,33 +45,39 @@ export const NavHeader: React.FC<IProps> = props => {
 
 									<Navbar.Divider />
 
-									{isGranted(Permission.ADMIN) && (
-										<Link to="/users">
-											<Button
-												icon="user"
-												text="Users"
-												minimal={true}
-											/>
-										</Link>
-									)}
+									<Link to="/" className="plain-link">
+										<Button
+											text="Home"
+											minimal
+										/>
+									</Link>
 
 									<Popover>
 										<Button
-											text="Points"
-											icon="properties"
+											text="Game"
 											minimal={true}
+											rightIcon="caret-down"
 										/>
-
 										<Menu>
-											{isGranted(Permission.ADMIN) && (
-												<Link to="/sources" className="plain-link">
-													<MenuItem
-														icon="bank-account"
-														text="Sources"
-														tagName="span"
-													/>
-												</Link>
-											)}
+											<MenuItem
+												icon="plus"
+												text="Claim Points"
+												onClick={toggleShowDialog}
+											/>
+
+											<Link to="/game" className="plain-link">
+												<MenuItem
+													icon="star"
+													text="Game Board"
+												/>
+											</Link>
+
+											<Link to="/leaderboard" className="plain-link">
+												<MenuItem
+													icon="list"
+													text="Leaderboard"
+												/>
+											</Link>
 
 											<Link to="/point-summary" className="plain-link">
 												<MenuItem
@@ -79,23 +87,42 @@ export const NavHeader: React.FC<IProps> = props => {
 												/>
 											</Link>
 
-											<MenuItem
-												icon="plus"
-												text="Claim Points"
-												onClick={toggleShowDialog}
-											/>
+											<MenuDivider />
+
+											{isGranted(Permission.ADMIN) && (
+												<Link to="/sources" className="plain-link">
+													<MenuItem
+														icon="bank-account"
+														text="Sources"
+														tagName="span"
+													/>
+												</Link>
+											)}
 										</Menu>
 									</Popover>
+
+									{isGranted(Permission.ADMIN) && (
+										<Link to="/users">
+											<Button
+												text="Users"
+												minimal={true}
+											/>
+										</Link>
+									)}
+
 								</Navbar.Group>
 
 								<Navbar.Group align={Alignment.RIGHT}>
 									{user ? (
 										<Popover>
 											<Button
-												text={`Welcome, ${renderUserName(user)}`}
-												rightIcon={'caret-down'}
+												large
+												icon={<Icon icon="user" size={IconSize.LARGE} />}
+												rightIcon="caret-down"
 												minimal={true}
+												text={renderUserName(user)}
 											/>
+
 
 											<Menu>
 												<MenuItem
