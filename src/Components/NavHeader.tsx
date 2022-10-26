@@ -76,7 +76,7 @@ export const NavHeader: React.FC<IProps> = props => {
 												<MenuItem
 													icon="list"
 													text="Leaderboard"
-																									/>
+												/>
 											</Link>
 
 											<Link to="/point-summary" className="plain-link">
@@ -120,7 +120,6 @@ export const NavHeader: React.FC<IProps> = props => {
 												icon={<Icon icon="user" size={IconSize.LARGE} />}
 												rightIcon="caret-down"
 												minimal={true}
-												className="gm-navbar profile-button"
 												text={renderUserName(user)}
 											/>
 

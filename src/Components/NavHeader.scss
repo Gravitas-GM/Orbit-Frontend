@@ -13,15 +13,4 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-
-	.profile-button {
-		.#{$ns}-icon {
-			margin-right: 0.5rem;
-		}
-
-		.#{$ns}-button-text {
-			display: flex;
-			align-items: center;
-		}
-	}
 }
