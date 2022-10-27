@@ -11,17 +11,20 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 
+// do not bother right now
+import {Game} from './Pages/Game';
+
 interface IProps {
 	loading: boolean;
 }
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div style={{width: '100%', height: '100vh'}}>
+		<div style={{width: '100%'}}>
 			<Spinner intent={Intent.PRIMARY} />
 		</div>
 	) : (
-		<div style={{flex: 12}}>
+		<div style={{flex: 12, height: '100%'}}>
 			<NavHeader loading={props.loading} />
 
 			<div className="main-frame">
@@ -31,6 +34,7 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/" component={Home} exact={true} />
 
 							<Route path="/point-summary" component={PointSummary} exact={true} />
+							<Route path="/game" key="/game" component={Game} />
 
 							<Route path="/game" component={GameBoardPage} />
 
