@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { Icon, IconName } from '@blueprintjs/core';
 import './GameCard.scss';
-import { classNames } from '../../Utility/dom';
-import { Classes } from '../../../classes';
+import { classNames } from '../../../../Utility/dom';
+import { Classes } from '../../../../../classes';
 
 interface IProps {
 	title: string;
