@@ -1,5 +1,5 @@
 import {Icon, IconSize} from '@blueprintjs/core';
-import {PlayerState} from '../../Api/Game-State/Models/Games';
+import {PlayerState} from '../../../Api/Game-State/Models/Games';
 import './TopRankedUsers.scss';
 
 interface IProps {
