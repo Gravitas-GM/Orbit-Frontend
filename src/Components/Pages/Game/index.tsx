@@ -1,12 +1,14 @@
 import {H1} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
+import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
 import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 
 interface IState {
+	board: Board | null;
 	gameState: GameState | null;
 	loading: boolean;
 	redirect: boolean;
@@ -17,6 +19,7 @@ export class GameBoard extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
+		board: null,
 		gameState: null,
 		loading: true,
 		redirect: false,
@@ -37,7 +40,22 @@ export class GameBoard extends React.PureComponent<{}, IState> {
 			return;
 		}
 
+		let board: Board;
+
+		try {
+			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				redirect: true,
+			});
+
+			return;
+		}
+
 		this.setState({
+			board,
 			gameState,
 			loading: false,
 		});
