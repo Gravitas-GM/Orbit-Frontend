@@ -14,7 +14,7 @@ interface IState {
 	redirect: boolean;
 }
 
-export class GameBoard extends React.PureComponent<{}, IState> {
+export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 

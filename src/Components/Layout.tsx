@@ -5,7 +5,7 @@ import {Permission, PermissionContext} from '../Permission';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
-import {GameBoard} from './Pages/Game';
+import {GameBoardPage} from './Pages/Game';
 import {PointSummary} from './Pages/PointSummary';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
@@ -32,7 +32,7 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/point-summary" component={PointSummary} exact={true} />
 
-							<Route path="/game" component={GameBoard} />
+							<Route path="/game" component={GameBoardPage} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
