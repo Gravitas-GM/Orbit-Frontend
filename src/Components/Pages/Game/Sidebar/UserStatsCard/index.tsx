@@ -11,7 +11,6 @@ export const UserStatsCard: React.FC<IProps> = ({user}) => {
 		<GameCard title="User Stats" icon="user">
 			<div style={{display: 'flex', flexDirection: 'column'}}>
 				<span style={{marginBottom:'1rem'}}>
-
 					{user.user_name} ({user.current_points} points)
 				</span>
 				<span>
