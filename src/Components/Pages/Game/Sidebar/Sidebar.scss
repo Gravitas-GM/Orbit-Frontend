@@ -1,0 +1,10 @@
+@import '../../../../variables';
+
+.gm-sidebar {
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+	padding: 1rem;
+	gap: 1.25rem;
+	justify-content: space-between;
+}

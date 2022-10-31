@@ -53,7 +53,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<>
+			<div className="gm-page-wrapper">
 				<H2>Users</H2>
 
 				<HTMLTable striped={true}>
@@ -100,7 +100,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				/>
-			</>
+			</div>
 		);
 	}
 
