@@ -1,20 +1,20 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {UserStatsCard} from './';
+import {PlayerStatsCard} from './';
 
 export default {
-	title: 'User Card',
-	component: UserStatsCard,
-} as ComponentMeta<typeof UserStatsCard>;
+	title: 'Player Stats Card',
+	component: PlayerStatsCard,
+} as ComponentMeta<typeof PlayerStatsCard>;
 
-const Template: ComponentStory<typeof UserStatsCard> = args => (
+const Template: ComponentStory<typeof PlayerStatsCard> = args => (
 	<div className="bp4-dark">
-		<UserStatsCard {...args} />
+		<PlayerStatsCard {...args} />
 	</div>
 );
 
 export const Basic = Template.bind({});
 Basic.args = {
-	user: {
+	player: {
 		current_points: 123,
 		current_stage_id: 123,
 		current_stage_name: 'Stage 11',
