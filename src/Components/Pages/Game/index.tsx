@@ -6,6 +6,7 @@ import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {GameBoard} from './GameBoardPieces/GameBoard';
 
 interface IState {
 	board: Board | null;
@@ -68,7 +69,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<H1>Game Board</H1>
+			<GameBoard imageUrl={this.state.board!.imageUrl} loading={this.state.loading} />
 		);
 	}
 }
