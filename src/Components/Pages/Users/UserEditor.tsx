@@ -35,7 +35,10 @@ interface IState {
 	showAddPointsDialog: boolean;
 	showEditDialog: boolean;
 	sources: PointSourceItem[];
-	deleteTarget: PointItem | null,
+	selectedItems: PointItem[];
+	deleteSubject: string | undefined;
+	deleteTargets: PointItem[];
+	showDeleteDialog: boolean;
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -51,7 +54,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showAddPointsDialog: false,
 		showEditDialog: false,
 		sources: [],
-		deleteTarget: null,
+		selectedItems: [],
+		deleteSubject: undefined,
+		deleteTargets: [],
+		showDeleteDialog: false,
 	};
 
 	public async componentDidMount() {
@@ -128,8 +134,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25 }}>
+				<div className="settings-title-container" style={{ paddingTop: 25, display: 'flex', gap: '1rem' }}>
 					<H2>Points</H2>
+
+					{this.state.selectedItems.length > 0 && (
+						<Button
+							text="Delete Selected"
+							icon="delete"
+							intent="danger"
+							onClick={this.onBulkDeleteButtonClick}
+							disabled={this.state.selectedItems.length === 0}
+						/>
+					)}
 
 					<Button
 						text="Add Points"
@@ -139,22 +155,28 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<PointsTable onAddPointsClick={this.onAddPointsClick}>
+				<PointsTable
+					onAddPointsClick={this.onAddPointsClick}
+					onSelectAll={this.onSelectAll}
+					allSelected={this.isAllChecked()}
+				>
 					{this.state.pointItems.map(item => (
 						<PointsTableRow
 							key={item.id.$oid}
 							item={item}
 							onDelete={this.onBeginDeleteButtonClick}
-							loading={this.state.processing}
+							isChecked={this.isChecked(item)}
+							onSelect={this.onSelect}
 						/>
 					))}
 				</PointsTable>
 
 				<DeleteDialog
-					isOpen={this.state.deleteTarget !== null}
-					subject={this.state.deleteTarget?.source}
+					isOpen={this.state.showDeleteDialog}
+					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
+					multiple={this.state.selectedItems.length > 1}
 				/>
 
 				{this.state.showEditDialog && (
@@ -228,42 +250,59 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 	};
 
-	private onBeginDeleteButtonClick = (item: PointItem) => this.setState({
-		deleteTarget: item,
+	private onBulkDeleteButtonClick = () => this.setState({
+		deleteSubject: 'delete',
+		showDeleteDialog: true,
+		deleteTargets: this.state.selectedItems,
 	});
 
+	private onBeginDeleteButtonClick = (items: PointItem[]) => {
+		this.setState(({
+			deleteSubject: items[0].source,
+			deleteTargets: items,
+			showDeleteDialog: true,
+		}));
+	}
+
 	private onDeleteCancel = () => this.setState({
-		deleteTarget: null,
+		showDeleteDialog: false,
 	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
 			return;
 
-		let target = this.state.deleteTarget;
-
-		if (!target)
-			return;
-
 		this.setState({
 			processing: true,
 		});
 
-		try {
-			await PointsModel.delete(this.state.user!.id, target.id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		const results = await allSettled(this.state.deleteTargets.map(async item => {
+			await PointsModel.delete(this.state.user!.id, item.id);
 
-			this.setState({
-				processing: false,
-			});
+			return item;
+		}));
 
-			return;
+		let failureCount = 0;
+		const deletedItems: PointItem[] = [];
+
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				failureCount++;
+				continue;
+			}
+
+			deletedItems.push(result.value);
 		}
 
+		if (failureCount > 0)
+			toaster.showUnhandledErrorMessage();
+
 		this.setState(state => ({
-			pointItems: state.pointItems.filter(item => item !== target),
-			deleteTarget: null,
+			pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
+			selectedItems: [],
+			deleteTargets: [],
+			deleteSubject: '',
+			showDeleteDialog: false,
 			processing: false,
 		}));
 	};
@@ -276,8 +315,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: true,
 		});
 
-		const results = await allSettled(dialogPointItems.map(async item => {
-			return await PointsModel.create(this.state.user!.id, {
+		const results = await allSettled(dialogPointItems.map(item => {
+			return PointsModel.create(this.state.user!.id, {
 				timestamp: new Date(),
 				point_value: item.pointValue,
 				source: item.sourceName,
@@ -313,5 +352,31 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			processing: false,
 			showAddPointsDialog: false,
 		});
+	};
+
+	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
+
+	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems.length;
+
+	private onSelect = (item: PointItem) => {
+		if (this.isChecked(item)) {
+			this.setState(state => ({ selectedItems: state.selectedItems.filter(target => target !== item) }));
+			return;
+		}
+		this.setState((state) => ({
+			selectedItems: [...state.selectedItems, item]
+		}));
+	};
+
+	private onSelectAll = () => {
+		if (this.isAllChecked()) {
+			this.setState({
+				selectedItems: [],
+			});
+		} else {
+			this.setState({
+				selectedItems: [...this.state.pointItems],
+			});
+		}
 	};
 }
