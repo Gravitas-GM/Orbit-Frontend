@@ -1,3 +1,4 @@
+import {PlayerState} from '../../Api/Game-State/Models/Games';
 import {User} from '../../Api/Hub/Models/Users';
 
 export function ucfirst(value: string) {
@@ -29,4 +30,8 @@ export function renderUserName(user: User | null) {
 		return 'User';
 
 	return `${ucwords(user.firstName ?? '')} ${ucwords(user.lastName ?? '')}`;
+}
+
+export function renderPlayerInitials(player: PlayerState) {
+	return player.user_name.split(' ').map(name => name[0].toUpperCase()).join('');
 }
