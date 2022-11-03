@@ -1,4 +1,3 @@
-import {H1} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
