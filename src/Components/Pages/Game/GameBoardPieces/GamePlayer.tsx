@@ -1,7 +1,8 @@
-import {Button, H5, H6, Popover} from '@blueprintjs/core';
 import * as React from 'react';
+import {Button, H5, H6, Popover} from '@blueprintjs/core';
 import {PlayerState} from '../../../../Api/Game-State/Models/Games';
 import {formatNumber, renderPlayerInitials, ucwords} from '../../../Utility/string';
+import './GamePlayer.scss';
 
 interface IProps {
 	player: PlayerState;
@@ -18,6 +19,7 @@ export const GamePlayer: React.FC<IProps> = ({ player }) => {
 			}
 		>
 			<Button
+				className='player-button'
 				text={renderPlayerInitials(player)}
 			/>
 		</Popover>
