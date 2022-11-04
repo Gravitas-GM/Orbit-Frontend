@@ -1,0 +1,33 @@
+@import '../../../../../variables';
+
+.gm-log-history-card {
+	display: flex;
+	flex-direction: column;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	margin-top: $spacing-3;
+
+	.item-date {
+		text-align: center;
+		border-bottom: solid $spacing-px #000;
+		margin-bottom: $spacing-2;
+	}
+	&:last-of-type {
+		margin-bottom: $spacing-4;
+	}
+
+	li {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		&:not(:first-child) {
+			margin-top: $spacing-1;
+		}
+
+		.item-content {
+			margin-left: $spacing-1;
+		}
+	}
+}
