@@ -14,7 +14,10 @@ export const GamePlayer: React.FC<IProps> = ({ player }) => {
 			content={
 				<div style={{padding: 10}}>
 					<H5>{ucwords(player.user_name)}</H5>
-					<H6>{formatNumber(player.current_points)} Points</H6>
+
+					<H6 style={{display: 'flex', justifyContent: 'center'}}>
+						{formatNumber(player.current_points)} Points
+					</H6>
 				</div>
 			}
 		>
