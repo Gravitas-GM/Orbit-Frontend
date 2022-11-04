@@ -28,7 +28,7 @@ Basic.args = {
 				requiredPoints: 5,
 				boardRegion: {
 					x: 150,
-					y: 425,
+					y: 365,
 					width: 100,
 					height: 150,
 				},
@@ -40,7 +40,7 @@ Basic.args = {
 				requiredPoints: 100,
 				boardRegion: {
 					x: 600,
-					y: 465,
+					y: 405,
 					width: 100,
 					height: 150,
 				},
@@ -52,7 +52,7 @@ Basic.args = {
 				requiredPoints: 200,
 				boardRegion: {
 					x: 1150,
-					y: 660,
+					y: 600,
 					width: 100,
 					height: 150,
 				},
