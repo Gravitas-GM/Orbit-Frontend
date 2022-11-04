@@ -8,13 +8,22 @@ interface IProps {
 	players: PlayerState[];
 }
 
-export const GameStage: React.FC<IProps> = ({ stage, players }) => {
+export const GameStage: React.FC<IProps> = ({stage, players}) => {
 	return (
-		<>
+		<div
+			key={`stage-${stage.id}`}
+			style={{
+				position: 'absolute',
+				left: stage.boardRegion.x,
+				top: stage.boardRegion.y,
+				width: stage.boardRegion.width,
+				height: stage.boardRegion.height,
+			}}
+		>
 			{players.map(player =>
-				<GamePlayer player={player} />
+				<GamePlayer player={player} />,
 			)}
-		</>
+		</div>
 	);
 };
 
