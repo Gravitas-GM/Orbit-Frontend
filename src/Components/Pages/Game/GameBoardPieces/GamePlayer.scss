@@ -1,0 +1,17 @@
+@import '../../../../variables';
+
+.#{$ns}-popover-wrapper {
+	.#{$ns}-popover-target {
+		.player-button {
+			border-radius: 25px;
+			padding: 10px;
+			margin: 2px;
+			background-color: #eef2f1;
+			color: #0b2540;
+			border-color: #0b2540;
+			border-style: solid;
+			border-width: 2px;
+			font-weight: bold;
+		}
+	}
+}
