@@ -4,6 +4,7 @@ import React from 'react';
 type BaseProps = Omit<NonIdealStateProps, 'title'>;
 type Props = BaseProps & {
 	title: React.ReactNode;
+	hideIcon: boolean;
 };
 
-export const NonIdealState: React.FC<Props> = ({icon, ...props}) =>	<Base {...props} icon={icon ?? 'wind'} />;
+export const NonIdealState: React.FC<Props> = ({icon, hideIcon = false, ...props}) =>	<Base {...props} icon={hideIcon ? null : (icon ?? 'wind')}/>;
