@@ -68,7 +68,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<GameBoard imageUrl={this.state.board!.imageUrl} loading={this.state.loading} />
+			<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 		);
 	}
 }

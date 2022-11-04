@@ -1,17 +1,27 @@
 import * as React from 'react';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {Board} from '../../../../Api/Game-Catalog/Models/Boards';
+import {Stage} from '../../../../Api/Game-Catalog/Models/Stages';
+import {GameState, PlayerState} from '../../../../Api/Game-State/Models/Games';
+import {GameStage} from './GameStage';
 
 interface IProps {
-	imageUrl: string;
-	loading: boolean;
+	board: Board;
+	gameState: GameState;
 }
 
-export const GameBoard: React.FC<IProps> = ({ imageUrl, loading }) => {
-	if (loading)
-		return <FrameLoadingSpinner />;
+function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
+	return players.filter(item => item.current_stage_id === stage.id);
+}
 
+export const GameBoard: React.FC<IProps> = ({ board, gameState }) => {
 	return (
-		<img src={imageUrl} alt='Game Board Background' style={{maxWidth: '100%'}} />
+		<>
+			<img src={board.imageUrl} alt='Game Board Background' style={{maxWidth: '100%'}} />
+
+			{board.stages.map(stage =>
+				<GameStage stage={stage} players={getPlayersAtStage(stage, gameState.players)} />
+			)}
+		</>
 	);
 };
 
