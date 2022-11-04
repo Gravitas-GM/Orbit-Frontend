@@ -11,9 +11,7 @@ export const GameBoard: React.FC<IProps> = ({ imageUrl, loading }) => {
 		return <FrameLoadingSpinner />;
 
 	return (
-		<>
-			<img src={imageUrl} alt='Game Board Background' />
-		</>
+		<img src={imageUrl} alt='Game Board Background' style={{maxWidth: '100%'}} />
 	);
 };
 
