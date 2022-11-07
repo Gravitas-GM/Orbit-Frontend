@@ -5,7 +5,7 @@ import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {GameBoard} from './GameBoardPieces/GameBoard';
+import {GameBoard} from './Board/GameBoard';
 
 interface IState {
 	board: Board | null;
