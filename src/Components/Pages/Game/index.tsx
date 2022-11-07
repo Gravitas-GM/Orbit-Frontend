@@ -3,13 +3,17 @@ import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
 import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
+import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {Sidebar} from './Sidebar';
+import {LogHistoryCard} from './Sidebar/LogHistoryCard';
 
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
+	history: HistoryItem[];
 	loading: boolean;
 	redirect: boolean;
 }
@@ -21,6 +25,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
+		history: [],
 		loading: true,
 		redirect: false,
 	};
@@ -54,21 +59,41 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
+		let history = [];
+
+		try {
+			history = await HistoryModel.get(this.context!.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				redirect: true,
+			});
+
+			return;
+		}
+
 		this.setState({
 			board,
 			gameState,
+			history,
 			loading: false,
 		});
 	}
 
 	public render() {
 		if (this.state.redirect)
-			return <Redirect to="/" />;
+				return <Redirect to="/" />;
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
 		return (
-			<H1>Game Board</H1>
+			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
+				<H1>Game Board</H1>
+				<Sidebar>
+					<LogHistoryCard logItems={this.state.history} />
+				</Sidebar>
+			</div>
 		);
 	}
 }
