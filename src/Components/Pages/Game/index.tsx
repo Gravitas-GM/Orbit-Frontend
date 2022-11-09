@@ -13,7 +13,7 @@ import {LogHistoryCard} from './Sidebar/LogHistoryCard';
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
-	history: HistoryItem[];
+	history: HistoryItem[] | null;
 	loading: boolean;
 	redirect: boolean;
 }
@@ -25,7 +25,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
-		history: [],
+		history: null,
 		loading: true,
 		redirect: false,
 	};
@@ -59,19 +59,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		let history = [];
-
-		try {
-			history = await HistoryModel.get(this.context!.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
-		}
+		const history = await this.fetchLogHistory();
 
 		this.setState({
 			board,
@@ -95,5 +83,21 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				</Sidebar>
 			</div>
 		);
+	}
+
+
+	private async fetchLogHistory() {
+		let history: HistoryItem[] | null;
+
+		try {
+			history = await HistoryModel.get(this.context!.id).then(response => response.data);
+		} catch (_) {
+
+			toaster.showUnhandledErrorMessage();
+
+			history = null;
+		}
+
+		return history;
 	}
 }

@@ -12,7 +12,7 @@ import {Classes} from '../../../../../classes';
 import './LogHistoryCard.scss';
 
 interface IProps {
-	logItems: HistoryItem[];
+	logItems: HistoryItem[] | null;
 }
 
 type DateGroup = {
@@ -25,65 +25,59 @@ export const LogHistoryCard: React.FC<IProps> = ({logItems}) => {
 	const User = useContext(UserContext);
 
 	const groupedDates = useMemo(() => {
-		return currentItems.reduce((dates: DateGroup, item) => {
-			const {timestamp} = item;
-			const formattedDate = formatDate(timestamp);
+		if (!Array.isArray(currentItems))
+			return {};
 
-			dates[formattedDate] = dates[formattedDate] ?? [];
-			dates[formattedDate].push(item);
+		else {
+			return currentItems.reduce((dates: DateGroup, item) => {
+				const {timestamp} = item;
+				const formattedDate = formatDate(timestamp);
 
-			return dates;
-		}, {});
+				dates[formattedDate] = dates[formattedDate] ?? [];
+				dates[formattedDate].push(item);
+
+				return dates;
+			}, {});
+		}
 	}, [currentItems]);
 
 	const currentDateFormatted = useMemo(() => formatDate(new Date()), []);
 
 	const onLoadMoreClick = useCallback(async (lastItemId: ObjectId | undefined) => {
-		if (!User)
-			return;
+		setIsProcessing(true);
 
-		if (lastItemId === undefined)
-			return;
+		await HistoryModel.getAfter(User!.account.id, lastItemId!)
+			.then(({data}) => setCurrentItems(data))
+			.catch(_ => {
+				setCurrentItems(null);
+				toaster.showUnhandledErrorMessage();
+			});
 
-		else {
-			setIsProcessing(true);
-
-			await HistoryModel.getAfter(User.account.id, lastItemId)
-				.then(({data}) => setCurrentItems(data))
-				.catch(_ => {
-					toaster.showUnhandledErrorMessage();
-				});
-
-			setIsProcessing(false);
-		}
-
-	},[]);
+		setIsProcessing(false);
+	}, []);
 
 	const onRefreshClick = useCallback(async () => {
-		if (!User)
-			return;
+		setIsProcessing(true);
 
-		else {
-			setIsProcessing(true);
+		await HistoryModel.get(User!.account.id)
+			.then(({data}) => setCurrentItems(data))
+			.catch(_ => {
+				setCurrentItems(null);
+				toaster.showUnhandledErrorMessage();
+			});
 
-			await HistoryModel.get(User.account.id)
-				.then(({data}) => setCurrentItems(data))
-				.catch(_ => {
-					toaster.showUnhandledErrorMessage();
-				});
-
-			setIsProcessing(false);
-		}
-
-	},[]);
+		setIsProcessing(false);
+	}, []);
 
 	return (
 		<GameCard title="Log History" icon="history">
-			{currentItems.length === 0 ? (
+			{(Array.isArray(currentItems) && currentItems.length === 0) || currentItems === null ? (
 				<NonIdealState
 					hideIcon
-					title="There isn't any history yet."
-					action={<Button icon="refresh" text="Refresh history" onClick={onRefreshClick} loading={processing} />}
+					title={currentItems !== null ? "There isn't any history yet." : "An error ocurred while fetching history data."}
+					action={
+						<Button icon="refresh" text="Refresh history" onClick={onRefreshClick} loading={processing} />
+					}
 				/>
 			) : (
 				<>
