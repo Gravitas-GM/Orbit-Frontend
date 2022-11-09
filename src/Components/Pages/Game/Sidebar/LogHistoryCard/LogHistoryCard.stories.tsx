@@ -59,3 +59,8 @@ export const NoData = Template.bind({});
 NoData.args = {
 	logItems: [],
 };
+
+export const Error = Template.bind({});
+Error.args = {
+	logItems: null,
+};
