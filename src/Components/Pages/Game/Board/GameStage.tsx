@@ -22,7 +22,7 @@ export const GameStage: React.FC<IProps> = ({stage, players}) => {
 			}}
 		>
 			{players.map(player =>
-				<GamePlayer player={player} />,
+				<GamePlayer player={player} />
 			)}
 		</div>
 	);
