@@ -78,7 +78,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					{/*TODO: When the player movement control code sets a new player, this will reset the animation*/}
-					<GameAnnouncement player={this.state.playerToMove} />
+					{this.state.playerToMove && (
+						<GameAnnouncement player={this.state.playerToMove} />
+					)}
 				</div>
 
 				<Sidebar>

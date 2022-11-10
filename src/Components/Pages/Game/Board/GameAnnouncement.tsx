@@ -6,21 +6,21 @@ import {ucwords} from '../../../Utility/string';
 import './GameAnnouncement.scss';
 
 interface IProps {
-	player: PlayerState | null;
+	player: PlayerState;
 }
 
 export const GameAnnouncement: React.FC<IProps> = ({player}) => {
 	return (
 		<div
-			className={classNames('game-announcement-container', player && 'fade')}
+			className={classNames('game-announcement-container', 'fade')}
 			key={`announcement-${player?.hub_id}`}
 		>
 			<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 'auto'}}>
-				<H1>{ucwords(player?.user_name ?? 'Player Name')}</H1>
+				<H1>{ucwords(player.user_name)}</H1>
 
 				<H3>has moved to</H3>
 
-				<H1>{ucwords(player?.current_stage_name ?? 'Stage Name')}</H1>
+				<H1>{ucwords(player.current_stage_name)}</H1>
 			</div>
 		</div>
 	);

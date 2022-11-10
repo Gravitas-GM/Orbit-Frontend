@@ -8,11 +8,11 @@
 	height: 300px;
 	background-color: #0b2540;
 	border-radius: 50px;
-	opacity: 0;
+	pointer-events: none;
 }
 
 .fade {
-	animation: fade 5s linear 1;
+	animation: fade 5s linear 1 forwards;
 }
 
 @keyframes fade {
