@@ -9,10 +9,11 @@
 	background-color: #0b2540;
 	border-radius: 50px;
 	pointer-events: none;
+	opacity: 0;
 }
 
 .fade {
-	animation: fade 5s linear 1 forwards;
+	animation: fade 5s linear;
 }
 
 @keyframes fade {
