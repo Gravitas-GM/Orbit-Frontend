@@ -1,0 +1,31 @@
+@import '../../../../variables';
+
+.game-announcement-container {
+	display: flex;
+	position: absolute;
+	margin-top: 200px;
+	width: 500px;
+	height: 300px;
+	background-color: #0b2540;
+	border-radius: 50px;
+	opacity: 0;
+}
+
+.fade {
+	animation: fade 5s linear 1;
+}
+
+@keyframes fade {
+	0% {
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	70% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
