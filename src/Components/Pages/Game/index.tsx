@@ -77,7 +77,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div style={{display: 'flex', justifyContent: 'center'}}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					{/*TODO: When the player movement control code sets a new player, this will reset the animation*/}
+					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
 					<GameAnnouncement player={this.state.movingPlayer} />
 				</div>
 
