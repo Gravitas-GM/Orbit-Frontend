@@ -12,7 +12,7 @@ import {Sidebar} from './Sidebar';
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
-	playerToMove: PlayerState | null;
+	movingPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
 }
@@ -24,7 +24,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
-		playerToMove: null,
+		movingPlayer: null,
 		loading: true,
 		redirect: false,
 	};
@@ -78,7 +78,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					{/*TODO: When the player movement control code sets a new player, this will reset the animation*/}
-					<GameAnnouncement player={this.state.playerToMove} />
+					<GameAnnouncement player={this.state.movingPlayer} />
 				</div>
 
 				<Sidebar>
