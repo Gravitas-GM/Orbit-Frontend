@@ -9,7 +9,7 @@ interface IProps {
 	player: PlayerState | null;
 }
 
-export const GameAnnouncement: React.FC<IProps> = ({player}) => {
+export const GameAnnouncement: React.FC<IProps> = ({ player }) => {
 	return (
 		<div
 			className={classNames('game-announcement-container', player && 'fade')}
