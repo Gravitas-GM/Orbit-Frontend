@@ -9,7 +9,7 @@ interface IProps {
 	players: PlayerState[];
 }
 
-export const GameStage: React.FC<IProps> = ({stage, players}) => {
+export const GameStage: React.FC<IProps> = ({ stage, players }) => {
 	return (
 		<div
 			key={`stage-${stage.id}`}
