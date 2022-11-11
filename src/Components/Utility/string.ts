@@ -1,3 +1,4 @@
+import GraphemeSplitter from 'grapheme-splitter';
 import {PlayerState} from '../../Api/Game-State/Models/Games';
 import {User} from '../../Api/Hub/Models/Users';
 
@@ -33,5 +34,10 @@ export function renderUserName(user: User | null) {
 }
 
 export function renderPlayerInitials(player: PlayerState) {
-	return player.user_name.split(' ').map(name => name[0]).join('');
+	//TODO: haha strings, fix this to output first and last initial
+	const splitter = new GraphemeSplitter();
+
+	const split = splitter.iterateGraphemes(player.user_name);
+
+	return split.next().value + split.next().value;
 }
