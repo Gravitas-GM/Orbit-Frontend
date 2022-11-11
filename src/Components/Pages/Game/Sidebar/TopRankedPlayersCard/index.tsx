@@ -2,13 +2,13 @@ import {useMemo} from 'react';
 import {Icon, IconSize} from '@blueprintjs/core';
 import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
 import {GameCard} from '../GameCard/GameCard';
-import './TopRankedPlayers.scss';
+import './TopRankedPlayersCard.scss';
 
 interface IProps {
 	players: PlayerState[];
 }
 
-export const TopRankedPlayers: React.FC<IProps> = ({players}) => {
+export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
 	const topPlayers = useMemo(() => {
 		return players
 			.sort((a, b) => {

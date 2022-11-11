@@ -1,14 +1,14 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {TopRankedPlayers} from './';
+import {TopRankedPlayersCard} from './';
 
 export default {
 	title: 'Top Ranked Users Card',
-	component: TopRankedPlayers,
-} as ComponentMeta<typeof TopRankedPlayers>;
+	component: TopRankedPlayersCard,
+} as ComponentMeta<typeof TopRankedPlayersCard>;
 
-const Template: ComponentStory<typeof TopRankedPlayers> = args => (
+const Template: ComponentStory<typeof TopRankedPlayersCard> = args => (
 	<div className="bp4-dark">
-		<TopRankedPlayers {...args} />
+		<TopRankedPlayersCard {...args} />
 	</div>
 );
 
