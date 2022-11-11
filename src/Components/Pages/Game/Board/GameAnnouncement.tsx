@@ -13,7 +13,7 @@ export const GameAnnouncement: React.FC<IProps> = ({ player }) => {
 	return (
 		<div
 			className={classNames('game-announcement-container', player && 'fade')}
-			key={`announcement-${player?.hub_id}`}
+			key={player?.hub_id}
 		>
 			<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 'auto'}}>
 				<H1>{ucwords(player?.user_name ?? 'Player Name')}</H1>
