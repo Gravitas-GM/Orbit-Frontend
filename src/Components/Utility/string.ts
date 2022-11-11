@@ -33,5 +33,5 @@ export function renderUserName(user: User | null) {
 }
 
 export function renderPlayerInitials(player: PlayerState) {
-	return player.user_name.split(' ').map(name => name[0].toUpperCase()).join('');
+	return player.user_name.split(' ').map(name => name[0]).join('');
 }
