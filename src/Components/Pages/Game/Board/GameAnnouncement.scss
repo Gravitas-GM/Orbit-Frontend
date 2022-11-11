@@ -12,11 +12,11 @@
 	opacity: 0;
 }
 
-.fade {
-	animation: fade 5s linear;
+.player-movement-toast {
+	animation: player-movement-toast 4s linear;
 }
 
-@keyframes fade {
+@keyframes player-movement-toast {
 	0% {
 		opacity: 0;
 	}
