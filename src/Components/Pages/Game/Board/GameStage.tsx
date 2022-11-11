@@ -12,7 +12,7 @@ interface IProps {
 export const GameStage: React.FC<IProps> = ({ stage, players }) => {
 	return (
 		<div
-			key={`stage-${stage.id}`}
+			key={stage.id}
 			className='game-stage-container'
 			style={{
 				left: stage.boardRegion.x,
