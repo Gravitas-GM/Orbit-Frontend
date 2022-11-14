@@ -38,3 +38,34 @@ Basic.args = {
 		},
 	],
 };
+
+export const LessThanThree = Template.bind({});
+LessThanThree.args = {
+	players: [
+		{
+			current_points: 123,
+			current_stage_id: 123,
+			current_stage_name: 'Stage 11',
+			hub_id: 123,
+			user_name: 'John Doe',
+		},
+		{
+			current_points: 999,
+			current_stage_id: 123,
+			current_stage_name: 'Stage 11',
+			hub_id: 123,
+			user_name: 'Robert Johnson',
+		}
+	],
+};
+
+
+export const EmptyData = Template.bind({});
+EmptyData.args = {
+	players: [],
+};
+
+export const InvalidData = Template.bind({});
+InvalidData.args = {
+	players: null,
+};
