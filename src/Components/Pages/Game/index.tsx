@@ -70,8 +70,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	public render() {
-		if (this.state.redirect) return <Redirect to="/" />;
-		if (this.state.loading) return <FrameLoadingSpinner />;
+		if (this.state.redirect)
+			return <Redirect to="/" />;
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
 
 		return (
 			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>

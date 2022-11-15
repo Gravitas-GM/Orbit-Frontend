@@ -25,5 +25,5 @@ Basic.args = {
 
 export const InvalidData = Template.bind({});
 InvalidData.args = {
-	player: null
+	player: null,
 };

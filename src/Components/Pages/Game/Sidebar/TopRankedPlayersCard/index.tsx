@@ -10,34 +10,31 @@ interface IProps {
 }
 
 export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
+	if (players === null || players.length === 0) {
+		return (
+			<GameCard title="Top 3/Highest Points" icon="star">
+				<NonIdealState title="No player data" icon={null} />
+			</GameCard>
+		);
+	}
+
 	const topPlayers = useMemo(() => {
-		if (players === null)
-			return [];
-
 		return players.sort((a, b) => b.current_points - a.current_points).slice(0, 3);
-	}, [players]);
-
-	const isInvalidData = useMemo(() => {
-		return players === null || players.length === 0;
 	}, [players]);
 
 	return (
 		<GameCard title="Top 3/Highest Points" icon="star">
-			{isInvalidData ? (
-				<NonIdealState title="No player data" />
-			) : (
-				<ul className="gm-top-ranked-card">
-					{topPlayers.map(user => (
-						<li key={user.user_name}>
-							<Icon icon="user" size={IconSize.LARGE} />
+			<ul className="gm-top-ranked-card">
+				{topPlayers.map(user => (
+					<li key={user.user_name}>
+						<Icon icon="user" size={IconSize.LARGE} />
 
-							<span>
-								{user.user_name} ({user.current_points} points)
-							</span>
-						</li>
-					))}
-				</ul>
-			)}
+						<span>
+							{user.user_name} ({user.current_points} points)
+						</span>
+					</li>
+				))}
+			</ul>
 		</GameCard>
 	);
 };

@@ -8,21 +8,25 @@ interface IProps {
 }
 
 export const PlayerStatsCard: React.FC<IProps> = ({player}) => {
+	if (!player) {
+		return (
+			<GameCard title="Player Stats" icon="user">
+				<NonIdealState title="No player data" icon={null} />
+			</GameCard>
+		);
+	}
+
 	return (
 		<GameCard title="Player Stats" icon="user">
-			{!player ? (
-				<NonIdealState title="No current player stats" />
-			) : (
-				<div style={{display: 'flex', flexDirection: 'column'}}>
-					<span style={{marginBottom: '1rem'}}>
-						{player.user_name} ({player.current_points} points)
-					</span>
+			<div style={{display: 'flex', flexDirection: 'column'}}>
+				<span style={{marginBottom: '1rem'}}>
+					{player.user_name} ({player.current_points} points)
+				</span>
 
-					<span>
-						<Icon icon="flag" style={{marginRight: '0.5rem'}} /> {player.current_stage_name}
-					</span>
-				</div>
-			)}
+				<span>
+					<Icon icon="flag" style={{marginRight: '0.5rem'}} /> {player.current_stage_name}
+				</span>
+			</div>
 		</GameCard>
 	);
 };
