@@ -17,9 +17,9 @@ export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
 		return players.sort((a, b) => b.current_points - a.current_points).slice(0, 3);
 	}, [players]);
 
-	const isInvalidData = useMemo(()=> {
-		return  players === null || players.length === 0;
-	}, [players])
+	const isInvalidData = useMemo(() => {
+		return players === null || players.length === 0;
+	}, [players]);
 
 	return (
 		<GameCard title="Top 3/Highest Points" icon="star">

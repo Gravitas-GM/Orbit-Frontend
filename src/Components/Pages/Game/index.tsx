@@ -70,22 +70,19 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	public render() {
-		if (this.state.redirect)
-			return <Redirect to="/" />;
-		if (this.state.loading)
-			return <FrameLoadingSpinner />;
+		if (this.state.redirect) return <Redirect to="/" />;
+		if (this.state.loading) return <FrameLoadingSpinner />;
 
 		return (
 			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
 				<H1>Game Board</H1>
 
 				<Sidebar>
-					<TopRankedPlayersCard players={this.state.gameState!.players}/>
+					<TopRankedPlayersCard players={this.state.gameState!.players} />
 
 					<PlayerStatsCard player={this.state.currentPlayer} />
 				</Sidebar>
 			</div>
-
 		);
 	}
 
