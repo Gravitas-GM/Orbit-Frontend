@@ -26,7 +26,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
-		history:  [],
+		history: [],
 		loadingHistory: false,
 		loading: true,
 		redirect: false,
@@ -73,7 +73,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 	public render() {
 		if (this.state.redirect)
-				return <Redirect to="/" />;
+			return <Redirect to="/" />;
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
@@ -93,7 +93,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-
 	private async fetchHistory() {
 		try {
 			return await HistoryModel.get(this.context!.id).then(response => response.data);
@@ -110,28 +109,31 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		const history = await this.fetchHistory();
 
 		this.setState({history, loadingHistory: false});
-	}
+	};
 
 	private loadMoreHistory = async () => {
 		let items: HistoryItem[] = [];
 
 		this.setState({
-			loadingHistory: true
+			loadingHistory: true,
 		});
 
 		try {
-			items = await HistoryModel.getAfter(this.context!.id, this.state.history!.at(-1)!.id).then(response => response.data);
+			items = await HistoryModel.getAfter(this.context!.id, this.state.history!.at(-1)!.id).then(
+				response => response.data,
+			);
 
 			this.setState(({history}) => {
 				if (history !== null)
-					return { history: [...history, ...items], loadingHistory: false };
+					return {history: [...history, ...items], loadingHistory: false};
+
 				else
-					return { history: items, loadingHistory: false };
+					return {history: items, loadingHistory: false};
 			});
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({ loadingHistory: false });
+			this.setState({loadingHistory: false});
 		}
-	}
+	};
 }

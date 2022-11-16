@@ -30,7 +30,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 					}
 				/>
 			</GameCard>
-		)
+		);
 	}
 
 	const groupedDates = useMemo(() => {
@@ -50,14 +50,14 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 		}
 	}, [history]);
 
-	const currentDateFormatted = formatDate(new Date())
+	const currentDateFormatted = formatDate(new Date());
 
 	return (
 		<GameCard title="Log History" icon="history">
 			{Object.keys(groupedDates).map(date => {
 				return (
 					<ul key={date} className="gm-log-history-card">
- 						{currentDateFormatted !== date && <span className='item-date'>{date}</span>}
+						{currentDateFormatted !== date && <span className="item-date">{date}</span>}
 
 						{groupedDates[date].map(logItem => (
 							<LogItem key={logItem.id.$oid}>{logItem.content}</LogItem>
@@ -66,7 +66,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 				);
 			})}
 
-			<div className='button-wrapper'>
+			<div className="button-wrapper">
 				<Button onClick={loadMore} loading={processing}>
 					Load More...
 				</Button>
@@ -80,7 +80,7 @@ const LogItem: React.FC<{children: React.ReactNode}> = ({children}) => {
 		<li>
 			<Icon icon="direction-right" size={IconSize.SMALL} />
 
-			<span className='item-content'>{children}</span>
+			<span className="item-content">{children}</span>
 		</li>
 	);
 };

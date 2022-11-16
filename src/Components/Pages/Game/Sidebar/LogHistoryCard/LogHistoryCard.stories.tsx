@@ -14,53 +14,52 @@ const Template: ComponentStory<typeof LogHistoryCard> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	logItems: [
+	history: [
 		{
 			id: {$oid: '3'},
-			account_id: 123,
+			account_id: 723,
 			timestamp: new Date(),
 			content: 'John Smith moved from Russia to Japan (250 points)',
 		},
 		{
 			id: {$oid: '2'},
-			account_id: 123,
+			account_id: 723,
 			timestamp: new Date(),
 			content: 'Bilbo Baggins moved from Canada to Russia (130 points)',
 		},
 		{
 			id: {$oid: '1'},
-			account_id: 123,
+			account_id: 923,
 			timestamp: new Date(),
 			content: 'Betty White moved from Australia to Canada  (130 points)',
 		},
 		{
-			id: {$oid: '3'},
+			id: {$oid: '31'},
 			account_id: 123,
 			timestamp: new Date('10/01/2022'),
 			content: 'John Smith moved from Russia to Japan (250 points)',
 		},
 		{
-			id: {$oid: '2'},
-			account_id: 123,
+			id: {$oid: '22'},
+			account_id: 223,
 			timestamp: new Date('10/01/2022'),
 			content: 'Bilbo Baggins moved from Canada to Russia (130 points)',
 		},
 		{
-			id: {$oid: '1'},
-			account_id: 123,
+			id: {$oid: '11'},
+			account_id: 523,
 			timestamp: new Date('10/01/2022'),
 			content: 'Betty White moved from Australia to Canada  (130 points)',
 		},
-
 	],
 };
 
 export const NoData = Template.bind({});
 NoData.args = {
-	logItems: [],
+	history: [],
 };
 
 export const Error = Template.bind({});
 Error.args = {
-	logItems: null,
+	history: null,
 };
