@@ -7,6 +7,24 @@ export interface GamesEndpoints {
 			response: GameState;
 		};
 	};
+
+	'/games/accounts/:account/update': {
+		GET: {
+			params: Id;
+			response: PlayerUpdate[];
+		};
+
+		POST: {
+			params: Id;
+			response: PlayerUpdate[];
+		};
+	}
+}
+
+export interface PlayerUpdate {
+	player_id: number,
+	new_stage_id: number,
+	new_point_total: number,
 }
 
 export interface GameState {
@@ -34,5 +52,13 @@ export interface Board {
 export class GamesModel {
 	public static gameInfo(account: Id) {
 		return gameStateClient.get<'/games/accounts/:account'>(`/games/accounts/${account}`);
+	}
+
+	public static update(account: Id) {
+		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+	}
+
+	public static updatePreview(account: Id) {
+		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
 	}
 }
