@@ -34,10 +34,19 @@ export function renderUserName(user: User | null) {
 }
 
 export function renderPlayerInitials(player: PlayerState) {
-	//TODO: haha strings, fix this to output first and last initial
 	const splitter = new GraphemeSplitter();
 
-	const split = splitter.iterateGraphemes(player.user_name);
+	const split = splitter.splitGraphemes(player.user_name);
+	let initials = split[0];
 
-	return split.next().value + split.next().value;
+	// loop backwards through the split to find the last name initial, to account for a name with multiple spaces
+	for (let i = split.length; i > 0; i--) {
+		if (split[i] === ' ') {
+			initials += split[i + 1];
+
+			break;
+		}
+	}
+
+	return initials;
 }
