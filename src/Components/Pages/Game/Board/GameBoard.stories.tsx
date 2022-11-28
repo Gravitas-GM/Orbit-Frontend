@@ -132,6 +132,13 @@ Basic.args = {
 				current_stage_name: 'Gondor',
 				current_points: 250,
 			},
+			{
+				hub_id: 10,
+				user_name: 'The Dark Lord Sauron',
+				current_stage_id: 3,
+				current_stage_name: 'Gondor',
+				current_points: 255,
+			},
 		],
 	},
 };
