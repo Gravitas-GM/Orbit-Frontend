@@ -1,5 +1,5 @@
-import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {UpdatePreviewDialog} from './';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { UpdatePreviewDialog } from './';
 
 export default {
 	title: 'Update Preview Dialog',
@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof UpdatePreviewDialog> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	game: {
+	gameState: {
 		name: 'Game',
 		account_id: 'game-account',
 		catalog_id: 'game-catalog-id',
@@ -94,7 +94,7 @@ Basic.args = {
 			},
 		],
 	},
-	update: [
+	players: [
 		{
 			player_id: 3333,
 			new_stage_id: 3,
@@ -113,10 +113,9 @@ Basic.args = {
 	],
 };
 
-
 export const NonNullUpdateData = Template.bind({});
 NonNullUpdateData.args = {
-	game: {
+	gameState: {
 		name: 'Game',
 		account_id: 'game-account',
 		catalog_id: 'game-catalog-id',
@@ -196,7 +195,7 @@ NonNullUpdateData.args = {
 			},
 		],
 	},
-	update: [
+	players: [
 		{
 			player_id: 3333,
 			new_stage_id: 0,

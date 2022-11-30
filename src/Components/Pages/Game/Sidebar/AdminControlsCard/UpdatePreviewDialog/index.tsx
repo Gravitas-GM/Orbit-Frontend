@@ -1,18 +1,18 @@
-import {Button, Dialog, HTMLTable, Intent} from '@blueprintjs/core';
-import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
-import {GameState, PlayerUpdate} from '../../../../../../Api/Game-State/Models/Games';
+import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
+import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
+import { GameState, PlayerUpdate } from '../../../../../../Api/Game-State/Models/Games';
 
 interface IProps {
 	onClose: () => void;
-	game: GameState;
+	gameState: GameState;
 	board: Board;
-	update: PlayerUpdate[];
+	players: PlayerUpdate[];
 }
 
-export const UpdatePreviewDialog: React.FC<IProps> = ({game, board, update, onClose}) => {
+export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, players, onClose }) => {
 	return (
 		<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
-			<div style={{display: 'flex', flexDirection: 'column', padding: '1rem'}}>
+			<div style={{ display: 'flex', flexDirection: 'column', padding: '1rem' }}>
 				<HTMLTable striped>
 					<thead>
 						<th>User</th>
@@ -23,18 +23,22 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({game, board, update, onCl
 					</thead>
 
 					<tbody>
-						{game.players.map(player => {
-							const updateData = update.find(user => user.player_id === player.hub_id);
-							const nextPoints = updateData?.new_point_total ? updateData.new_point_total : '-';
-							const nextStage = board.stages.find(stage => updateData?.new_stage_id === stage.id)?.name || '-';
+						{players.map(player => {
+							const playerData = gameState.players.find(p => p.hub_id === player.player_id)
+
+							if (!playerData)
+								return;
+
+							const nextStage = board.stages.find(stage => player.new_stage_id === stage.id)?.name || '—';
+							const newPoints = player.new_point_total ? player.new_point_total : '—';
 
 							return (
-								<tr key={player.hub_id}>
-									<td>{player.user_name}</td>
-									<td>{player.current_points}</td>
-									<td>{player.current_stage_name}</td>
-									<td>{nextPoints}</td>
+								<tr key={player.player_id}>
+									<td>{playerData.user_name}</td>
+									<td>{playerData.current_points}</td>
+									<td>{playerData.current_stage_name}</td>
 									<td>{nextStage}</td>
+									<td>{newPoints}</td>
 								</tr>
 							);
 						})}
@@ -42,7 +46,7 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({game, board, update, onCl
 				</HTMLTable>
 			</div>
 
-			<Button onClick={onClose} intent={Intent.PRIMARY} style={{margin: '0 1rem'}}>
+			<Button onClick={onClose} intent={Intent.PRIMARY} style={{ margin: '0 1rem' }}>
 				Close
 			</Button>
 		</Dialog>

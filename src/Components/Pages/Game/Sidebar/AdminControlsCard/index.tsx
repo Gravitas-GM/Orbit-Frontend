@@ -1,48 +1,50 @@
-import {Button, Intent} from '@blueprintjs/core';
-import {useCallback, useState, useContext} from 'react';
-import {GamesModel, GameState, PlayerUpdate} from '../../../../../Api/Game-State/Models/Games';
-import {GameCard} from '../GameCard/GameCard';
-import {UpdatePreviewDialog} from './UpdatePreviewDialog/';
+import { Button, Intent } from '@blueprintjs/core';
+import { useCallback, useState, useContext } from 'react';
+import { GamesModel, GameState, PlayerUpdate } from '../../../../../Api/Game-State/Models/Games';
+import { GameCard } from '../GameCard/GameCard';
+import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import * as toaster from '../../../../../Toaster';
-import {UserContext} from '../../../../../Session';
-import {Board} from '../../../../../Api/Game-Catalog/Models/Boards';
+import { UserContext } from '../../../../../Session';
+import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
 
 interface IProps {
 	game: GameState;
 	board: Board;
 }
 
-export const AdminControlsCard: React.FC<IProps> = ({game,board}) => {
+export const AdminControlsCard: React.FC<IProps> = ({ game, board }) => {
 	const User = useContext(UserContext);
 
 	const [processing, setIsProcessing] = useState(false);
 	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
 
+	const clearUpdateData = useCallback(() => setUpdateData(null), []);
+
 	const onPreviewClick = useCallback(async () => {
 		setIsProcessing(true);
 
-		await GamesModel.updatePreview(User!.account.id)
-			.then(({data}) => {
-				setUpdateData(data);
-			})
-			.catch(_ => {
-				toaster.showUnhandledErrorMessage();
-			})
-			.finally(() => {
-				setIsProcessing(false);
-			});
+		let updateData: PlayerUpdate[];
+
+		try {
+			updateData = await GamesModel.updatePreview(User!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			setIsProcessing(false);
+
+			return;
+		}
+
+		setUpdateData(updateData);
+
+		setIsProcessing(false);
 	}, []);
 
 	return (
 		<>
 			<GameCard title="Admin Controls" icon="control">
-				<div style={{display: 'flex', flexDirection: 'column'}}>
-					<Button
-						title="Preview"
-						intent={Intent.PRIMARY}
-						onClick={onPreviewClick}
-						loading={processing}
-					>
+				<div style={{ display: 'flex', flexDirection: 'column' }}>
+					<Button title="Preview" intent={Intent.PRIMARY} onClick={onPreviewClick} loading={processing}>
 						Preview
 					</Button>
 				</div>
@@ -50,10 +52,10 @@ export const AdminControlsCard: React.FC<IProps> = ({game,board}) => {
 
 			{updateData && (
 				<UpdatePreviewDialog
-					game={game}
+					gameState={game}
 					board={board}
-					update={updateData}
-					onClose={() => setUpdateData(null)}
+					players={updateData}
+					onClose={clearUpdateData}
 				/>
 			)}
 		</>
