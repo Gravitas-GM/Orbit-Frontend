@@ -19,6 +19,20 @@ export interface GamesEndpoints {
 			response: PlayerUpdate[];
 		};
 	}
+
+	'/games/accounts/:account/next': {
+		POST: {
+			params: Id;
+			response: NextBoardResult;
+		}
+	}
+}
+
+export enum NextBoardResult {
+	Success,
+	NoActiveGame,
+	NoRemainingBoards,
+	BoardNotFound,
 }
 
 export interface PlayerUpdate {
@@ -60,5 +74,9 @@ export class GamesModel {
 
 	public static updatePreview(account: Id) {
 		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+	}
+
+	public static nextBoard(account: Id) {
+		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
 	}
 }
