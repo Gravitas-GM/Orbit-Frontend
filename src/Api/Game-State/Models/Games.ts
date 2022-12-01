@@ -82,7 +82,7 @@ export class GamesModel {
 		return gameStateClient.get<'/games/accounts/:account'>(`/games/accounts/${account}`);
 	}
 
-	public static startGame(account: Id, payload: GameStartPayload){
+	public static startGame(account: Id, payload: GameStartPayload) {
 		return gameStateClient.put<'/games/accounts/:account'>(`/games/accounts/${account}`, payload);
 	}
 
