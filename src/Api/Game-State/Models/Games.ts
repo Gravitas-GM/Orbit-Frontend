@@ -6,6 +6,12 @@ export interface GamesEndpoints {
 			params: Id;
 			response: GameState;
 		};
+
+		PUT: {
+			params: Id;
+			body: GameStartPayload;
+			response: GameState | GameNotFoundResponse;
+		};
 	};
 
 	'/games/accounts/:account/update': {
@@ -24,7 +30,7 @@ export interface GamesEndpoints {
 		POST: {
 			params: Id;
 			response: NextBoardResult;
-		}
+		};
 	}
 }
 
@@ -63,9 +69,21 @@ export interface Board {
 	sequence: number,
 }
 
+export interface GameNotFoundResponse {
+	error: string;
+}
+
+export interface GameStartPayload {
+	catalog_id: number,
+}
+
 export class GamesModel {
 	public static gameInfo(account: Id) {
 		return gameStateClient.get<'/games/accounts/:account'>(`/games/accounts/${account}`);
+	}
+
+	public static startGame(account: Id, payload: GameStartPayload){
+		return gameStateClient.put<'/games/accounts/:account'>(`/games/accounts/${account}`, payload);
 	}
 
 	public static update(account: Id) {
