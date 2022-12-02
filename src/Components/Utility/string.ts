@@ -40,7 +40,7 @@ export function renderPlayerInitials(player: PlayerState) {
 	let initials = split[0];
 
 	// loop backwards through the split to find the last name initial, to account for a name with multiple spaces
-	for (let i = split.length; i > 0; i--) {
+	for (let i = split.length - 1; i > 0; i--) {
 		if (split[i] === ' ') {
 			initials += split[i + 1];
 
