@@ -71,7 +71,7 @@ Basic.args = {
 		players: [
 			{
 				hub_id: 1,
-				user_name: 'Frodo Baggins',
+				user_name: 'Frodo',
 				current_stage_id: 1,
 				current_stage_name: 'The Shire',
 				current_points: 20,
