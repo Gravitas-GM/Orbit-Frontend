@@ -6,22 +6,45 @@ import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import * as toaster from '../../../../../Toaster';
 import { UserContext } from '../../../../../Session';
 import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
+import { ConfirmNextBoardDialog } from './ConfrmNextBoardDialog';
 
 interface IProps {
 	game: GameState;
 	board: Board;
+	goToNextBoard: () => Promise<void>;
 }
 
-export const AdminControlsCard: React.FC<IProps> = ({ game, board }) => {
+export const AdminControlsCard: React.FC<IProps> = ({ game, board, goToNextBoard }) => {
 	const User = useContext(UserContext);
 
-	const [processing, setIsProcessing] = useState(false);
+	const [processing, setIsProcessing] = useState({ preview: false, nextBoard: false });
 	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
+	const [showConfirmNextBoardDialog, setShowConfirmNextBoardDialog] = useState(false);
 
 	const clearUpdateData = useCallback(() => setUpdateData(null), []);
+	const closeNextBoardDialog = useCallback(() => setShowConfirmNextBoardDialog(false), []);
+
+	const confirmNextBoard = useCallback(() => {
+		setShowConfirmNextBoardDialog(true);
+	}, []);
+
+	const onConfirmNextBoard = useCallback(async () => {
+		setShowConfirmNextBoardDialog(false);
+
+		setIsProcessing({ preview: false, nextBoard: true });
+
+		try {
+			await goToNextBoard();
+		} catch (_) {
+			setIsProcessing({ preview: false, nextBoard: false });
+			return;
+		}
+
+		setIsProcessing({ preview: false, nextBoard: false });
+	}, []);
 
 	const onPreviewClick = useCallback(async () => {
-		setIsProcessing(true);
+		setIsProcessing({ preview: true, nextBoard: false });
 
 		let updateData: PlayerUpdate[];
 
@@ -30,22 +53,26 @@ export const AdminControlsCard: React.FC<IProps> = ({ game, board }) => {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			setIsProcessing(false);
+			setIsProcessing({ preview: false, nextBoard: false });
 
 			return;
 		}
 
 		setUpdateData(updateData);
 
-		setIsProcessing(false);
+		setIsProcessing({ preview: false, nextBoard: false });
 	}, []);
 
 	return (
 		<>
 			<GameCard title="Admin Controls" icon="control">
-				<div style={{ display: 'flex', flexDirection: 'column' }}>
-					<Button title="Preview" intent={Intent.PRIMARY} onClick={onPreviewClick} loading={processing}>
+				<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
+					<Button title="Preview" intent={Intent.PRIMARY} onClick={onPreviewClick} loading={processing.preview}>
 						Preview
+					</Button>
+
+					<Button title="Preview" intent={Intent.PRIMARY} onClick={confirmNextBoard} loading={processing.nextBoard}>
+						Next Board
 					</Button>
 				</div>
 			</GameCard>
@@ -56,6 +83,13 @@ export const AdminControlsCard: React.FC<IProps> = ({ game, board }) => {
 					board={board}
 					players={updateData}
 					onClose={clearUpdateData}
+				/>
+			)}
+
+			{showConfirmNextBoardDialog && (
+				<ConfirmNextBoardDialog
+					onClose={closeNextBoardDialog}
+					moveToNextBoard={onConfirmNextBoard}
 				/>
 			)}
 		</>
