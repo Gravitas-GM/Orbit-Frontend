@@ -10,7 +10,7 @@ export const ConfirmNextBoardDialog: React.FC<IProps> = ({ onClose, moveToNextBo
 		<Dialog isOpen title="Confirm move to next board" onClose={onClose}>
 			<div className={Classes.DIALOG_BODY}>
 				<p>
-					This will move all players to the next board. <span>(This action cannot be undone)</span>
+					This will move all players to the next board. (This action cannot be undone)
 				</p>
 			</div>
 
