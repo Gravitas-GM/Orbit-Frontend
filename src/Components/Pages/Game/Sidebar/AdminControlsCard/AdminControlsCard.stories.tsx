@@ -70,4 +70,5 @@ Basic.args = {
 			},
 		],
 	},
+	goToNextBoard: () => Promise.resolve(),
 };
