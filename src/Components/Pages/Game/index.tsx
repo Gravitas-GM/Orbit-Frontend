@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
-import {GamesModel, GameState, PlayerState} from '../../../Api/Game-State/Models/Games';
+import {GamesModel, GameState, NextBoardResult, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {GameAnnouncement} from './Board/GameAnnouncement';
 import {GameBoard} from './Board/GameBoard';
 import {Sidebar} from './Sidebar';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
 interface IState {
 	board: Board | null;
@@ -30,6 +31,65 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	public async componentDidMount() {
+		this.fetchGameState({ redirect: true });
+	}
+
+	public render() {
+		if (this.state.redirect)
+			return <Redirect to="/" />;
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
+
+		return (
+			<div style={{ display: 'grid', gridTemplateColumns: '5fr 2fr' }}>
+				<div style={{ display: 'flex', justifyContent: 'center' }}>
+					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
+
+					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
+					<GameAnnouncement player={this.state.movingPlayer} />
+				</div>
+
+				<Sidebar>
+					{/*TODO: implement sidebar game cards*/}
+					<AdminControlsCard
+						board={this.state.board!}
+						gameState={this.state.gameState!}
+						goToNextBoard={this.goToNextBoard}
+					/>
+				</Sidebar>
+			</div>
+		);
+	}
+
+	public async goToNextBoard() {
+		let result: NextBoardResult;
+
+		try {
+			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			return;
+		}
+
+		if (result === NextBoardResult.Success) {
+			try {
+				await this.fetchGameState({ redirect: false });
+			} catch (_) {
+				toaster.showUnhandledErrorMessage();
+
+				return;
+			}
+		}
+
+		toaster.notifyNextBoardResult(result);
+	}
+
+	private async fetchGameState(args: { redirect: boolean }) {
+		this.setState({
+			loading: true,
+		});
+
 		let gameState: GameState;
 
 		try {
@@ -37,9 +97,8 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({
-				redirect: true,
-			});
+			if (args.redirect)
+				this.setState({ redirect: true });
 
 			return;
 		}
@@ -51,9 +110,8 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({
-				redirect: true,
-			});
+			if (args.redirect)
+				this.setState({ redirect: true });
 
 			return;
 		}
@@ -63,27 +121,5 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			gameState,
 			loading: false,
 		});
-	}
-
-	public render() {
-		if (this.state.redirect)
-			return <Redirect to="/" />;
-		if (this.state.loading)
-			return <FrameLoadingSpinner />;
-
-		return (
-			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
-				<div style={{display: 'flex', justifyContent: 'center'}}>
-					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
-
-					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
-					<GameAnnouncement player={this.state.movingPlayer} />
-				</div>
-
-				<Sidebar>
-					{/*TODO: implement sidebar game cards*/}
-				</Sidebar>
-			</div>
-		);
 	}
 }
