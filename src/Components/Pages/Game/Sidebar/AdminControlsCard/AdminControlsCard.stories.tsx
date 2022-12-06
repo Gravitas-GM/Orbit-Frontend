@@ -14,7 +14,7 @@ const Template: ComponentStory<typeof AdminControlsCard> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	game: {
+	gameState: {
 		name: 'Game',
 		account_id: 'game-account',
 		catalog_id: 'game-catalog-id',

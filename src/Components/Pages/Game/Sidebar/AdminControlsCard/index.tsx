@@ -9,19 +9,22 @@ import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
 import { ConfirmNextBoardDialog } from './ConfrmNextBoardDialog';
 
 interface IProps {
-	game: GameState;
+	gameState: GameState;
 	board: Board;
 	goToNextBoard: () => Promise<void>;
 }
 
-export const AdminControlsCard: React.FC<IProps> = ({ game, board, goToNextBoard }) => {
+export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNextBoard }) => {
 	const User = useContext(UserContext);
 
 	const [processing, setIsProcessing] = useState({ preview: false, nextBoard: false });
+
 	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
+
 	const [showConfirmNextBoardDialog, setShowConfirmNextBoardDialog] = useState(false);
 
 	const clearUpdateData = useCallback(() => setUpdateData(null), []);
+
 	const closeNextBoardDialog = useCallback(() => setShowConfirmNextBoardDialog(false), []);
 
 	const confirmNextBoard = useCallback(() => {
@@ -79,7 +82,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ game, board, goToNextBoard
 
 			{updateData && (
 				<UpdatePreviewDialog
-					gameState={game}
+					gameState={gameState}
 					board={board}
 					players={updateData}
 					onClose={clearUpdateData}
