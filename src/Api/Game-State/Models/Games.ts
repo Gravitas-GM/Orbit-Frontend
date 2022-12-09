@@ -69,20 +69,20 @@ export interface PlayerDeleted {
 
 export type PlayerUpdate = PlayerCreated | PlayerChanged | PlayerMoved | PlayerDeleted;
 
-export interface GameState {
-	name: string,
-	account_id: Id,
-	catalog_id: Id,
-	current_board: Board,
-	players: PlayerState[],
-}
-
 export interface Player {
 	hub_id: number,
 	account_id: number,
 	user_name: string,
 	current_stage_index: number,
 	current_points: number,
+}
+
+export interface GameState {
+	name: string,
+	account_id: Id,
+	catalog_id: Id,
+	current_board: Board,
+	players: PlayerState[],
 }
 
 export interface PlayerState {
