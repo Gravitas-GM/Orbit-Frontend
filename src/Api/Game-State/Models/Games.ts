@@ -1,4 +1,5 @@
 import {gameStateClient, Id} from '../..';
+import {HistoryItem} from './History';
 
 export interface GamesEndpoints {
 	'/games/accounts/:account': {
@@ -41,11 +42,39 @@ export enum NextBoardResult {
 	BoardNotFound,
 }
 
-export interface PlayerUpdate {
-	player_id: number,
-	new_stage_id: number,
+export enum UpdateResultType {
+	CREATED = 'created',
+	CHANGED = 'changed',
+	MOVED = 'moved',
+	DELETED = 'deleted',
+}
+
+export interface PlayerCreated {
+	type: UpdateResultType.CREATED,
+	player: PlayerState,
+	history_item: HistoryItem,
+}
+
+export interface PlayerChanged {
+	type: UpdateResultType.CHANGED,
+	player: PlayerState,
 	new_point_total: number,
 }
+
+export interface PlayerMoved {
+	type: UpdateResultType.MOVED,
+	player: PlayerState,
+	new_point_total: number,
+	new_stage_index: number,
+	history_item: HistoryItem,
+}
+
+export interface PlayerDeleted {
+	type: UpdateResultType.DELETED,
+	player_id: number,
+}
+
+export type PlayerUpdate = PlayerCreated | PlayerChanged | PlayerMoved | PlayerDeleted;
 
 export interface GameState {
 	name: string,
