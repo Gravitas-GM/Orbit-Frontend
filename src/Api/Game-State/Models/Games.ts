@@ -44,19 +44,19 @@ export enum UpdateResultType {
 
 export interface PlayerCreated {
 	type: UpdateResultType.CREATED,
-	player: PlayerState,
+	player: Player,
 	history_item: HistoryItem,
 }
 
 export interface PlayerChanged {
 	type: UpdateResultType.CHANGED,
-	player: PlayerState,
+	player: Player,
 	new_point_total: number,
 }
 
 export interface PlayerMoved {
 	type: UpdateResultType.MOVED,
-	player: PlayerState,
+	player: Player,
 	new_point_total: number,
 	new_stage_index: number,
 	history_item: HistoryItem,
@@ -75,6 +75,14 @@ export interface GameState {
 	catalog_id: Id,
 	current_board: Board,
 	players: PlayerState[],
+}
+
+export interface Player {
+	hub_id: number,
+	account_id: number,
+	user_name: string,
+	current_stage_index: number,
+	current_points: number,
 }
 
 export interface PlayerState {
