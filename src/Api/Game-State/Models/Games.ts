@@ -35,13 +35,6 @@ export interface GamesEndpoints {
 	}
 }
 
-export enum NextBoardResult {
-	Success,
-	NoActiveGame,
-	NoRemainingBoards,
-	BoardNotFound,
-}
-
 export enum UpdateResultType {
 	CREATED = 'created',
 	CHANGED = 'changed',
@@ -96,6 +89,13 @@ export interface Board {
 	id: Id,
 	name: string,
 	sequence: number,
+}
+
+export enum NextBoardResult {
+	Success,
+	NoActiveGame,
+	NoRemainingBoards,
+	BoardNotFound,
 }
 
 export interface GameNotFoundResponse {
