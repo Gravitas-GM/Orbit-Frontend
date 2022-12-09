@@ -1,13 +1,14 @@
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
-import {GamesModel, GameState, PlayerState} from '../../../Api/Game-State/Models/Games';
+import {GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {GameAnnouncement} from './Board/GameAnnouncement';
 import {GameBoard} from './Board/GameBoard';
 import {Sidebar} from './Sidebar';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
 interface IState {
 	board: Board | null;
@@ -82,8 +83,58 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 				<Sidebar>
 					{/*TODO: implement sidebar game cards*/}
+
+					<AdminControlsCard
+						startNewGame={this.startNewGame}
+						board={this.state.board!}
+						gameState={this.state.gameState!}
+					/>
 				</Sidebar>
 			</div>
 		);
+	}
+
+	public startNewGame = async (gameId: GameStartPayload) => {
+		this.setState({ loading: true });
+
+		let gameState: GameState | GameNotFoundResponse;
+
+		const hasGameStartError = (response: GameState | GameNotFoundResponse): response is GameNotFoundResponse => (response as GameNotFoundResponse).error !== undefined;
+
+		try {
+			gameState = await GamesModel.startGame(this.context!.account.id, gameId).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({ loading: false });
+
+			return;
+		}
+
+		if (hasGameStartError(gameState)) {
+			toaster.info('Game not found');
+
+			this.setState({ loading: false });
+
+			return
+		}
+
+		let board: Board;
+
+		try {
+			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({ loading: false });
+
+			return;
+		}
+
+		this.setState({
+			board,
+			gameState,
+			loading: false,
+		});
 	}
 }

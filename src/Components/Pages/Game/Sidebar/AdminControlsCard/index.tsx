@@ -1,6 +1,6 @@
 import { Button, Intent } from '@blueprintjs/core';
 import { useCallback, useState, useContext } from 'react';
-import { GamesModel, GameState, PlayerUpdate } from '../../../../../Api/Game-State/Models/Games';
+import { GamesModel, GameStartPayload, GameState, PlayerUpdate } from '../../../../../Api/Game-State/Models/Games';
 import { GameCard } from '../GameCard/GameCard';
 import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import * as toaster from '../../../../../Toaster';
@@ -11,9 +11,10 @@ import { NewGameDialog } from './NewGameDialog';
 interface IProps {
 	gameState: GameState;
 	board: Board;
+	startNewGame: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const AdminControlsCard: React.FC<IProps> = ({ gameState, board }) => {
+export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, startNewGame }) => {
 	const User = useContext(UserContext);
 
 	const [processing, setIsProcessing] = useState(false);
@@ -72,7 +73,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board }) => {
 				/>
 			)}
 
-			{showNewGameDialog && <NewGameDialog onClose={closeNewGameDialog} />}
+			{showNewGameDialog && <NewGameDialog onClose={closeNewGameDialog} startNewGame={startNewGame} />}
 		</>
 	);
 };
