@@ -10,6 +10,7 @@
     "axios": "^0.27.2",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.1",
+    "grapheme-splitter": "^1.0.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router": "^5.1.2",
@@ -21,7 +22,7 @@
     "start": "parcel -p 8000 ./src/index.html",
     "build": "rimraf ./dist && parcel build --no-source-maps --no-autoinstall ./src/index.html",
     "deploy": "./bin/deploy.sh",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 --no-open",
     "build-storybook": "build-storybook"
   },
   "eslintConfig": {
@@ -50,6 +51,7 @@
     "@storybook/addon-links": "^6.5.13",
     "@storybook/builder-webpack4": "^6.5.13",
     "@storybook/manager-webpack4": "^6.5.13",
+    "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.5.13",
     "@storybook/testing-library": "^0.0.13",
     "@types/jest": "^27.5.1",
@@ -59,11 +61,13 @@
     "@types/react-router": "^5.1.18",
     "@types/react-router-dom": "^5.3.3",
     "babel-loader": "^8.2.5",
+    "css-loader": "^5.2.6",
     "parcel-bundler": "^1.12.5",
     "rimraf": "^3.0.2",
     "sass": "^1.52.1",
+    "sass-loader": "^10.1.1",
     "storybook": "^6.5.13",
-    "storybook-addon-sass-postcss": "^0.1.3",
+    "style-loader": "^2.0.0",
     "typescript": "^4.7.2"
   }
 }

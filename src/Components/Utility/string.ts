@@ -1,3 +1,5 @@
+import GraphemeSplitter from 'grapheme-splitter';
+import {PlayerState} from '../../Api/Game-State/Models/Games';
 import {User} from '../../Api/Hub/Models/Users';
 
 export function ucfirst(value: string) {
@@ -29,4 +31,22 @@ export function renderUserName(user: User | null) {
 		return 'User';
 
 	return `${ucwords(user.firstName ?? '')} ${ucwords(user.lastName ?? '')}`;
+}
+
+export function renderPlayerInitials(player: PlayerState) {
+	const splitter = new GraphemeSplitter();
+
+	const split = splitter.splitGraphemes(player.user_name);
+	let initials = split[0];
+
+	// loop backwards through the split to find the last name initial, to account for a name with multiple spaces
+	for (let i = split.length - 1; i > 0; i--) {
+		if (split[i] === ' ') {
+			initials += split[i + 1];
+
+			break;
+		}
+	}
+
+	return initials;
 }

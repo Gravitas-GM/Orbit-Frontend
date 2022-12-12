@@ -1,10 +1,8 @@
 @import '../../../../../variables';
 
-/*
-Content should be colored as if we were using Blueprint's light theme, since the design does not
-currently include light and dark modes for the game board. This will likely change in the future,
-assuming we want to support light and dark modes.
-*/
+// Content should be colored as if we were using Blueprint's light theme, since the design does not
+// currently include light and dark modes for the game board. This will likely change in the future,
+// assuming we want to support light and dark modes.
 $text-color: $pt-text-color;
 $border-radius: 1rem;
 $padding: 0.5rem 1rem;

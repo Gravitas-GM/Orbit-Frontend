@@ -1,20 +1,22 @@
-import {H1} from '@blueprintjs/core';
 import * as React from 'react';
-import {Redirect} from 'react-router';
-import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
-import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
-import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
-import {UserContext} from '../../../Session';
+import { Redirect } from 'react-router';
+import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
+import { GamesModel, GameState, PlayerState } from '../../../Api/Game-State/Models/Games';
+import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
+import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {Sidebar} from './Sidebar';
-import {LogHistoryCard} from './Sidebar/LogHistoryCard';
+import { LogHistoryCard } from './Sidebar/LogHistoryCard';
+import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
+import { GameAnnouncement } from './Board/GameAnnouncement';
+import { GameBoard } from './Board/GameBoard';
+import { Sidebar } from './Sidebar';
 
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
+	movingPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
 }
@@ -28,6 +30,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		gameState: null,
 		history: [],
 		loadingHistory: false,
+		movingPlayer: null,
 		loading: true,
 		redirect: false,
 	};
@@ -78,10 +81,17 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
-				<H1>Game Board</H1>
+			<div style={{ display: 'grid', gridTemplateColumns: '5fr 2fr' }}>
+				<div style={{ display: 'flex', justifyContent: 'center' }}>
+					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
+
+					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
+					<GameAnnouncement player={this.state.movingPlayer} />
+				</div>
 
 				<Sidebar>
+					{/*TODO: implement sidebar game cards*/}
+
 					<LogHistoryCard
 						processing={this.state.loadingHistory}
 						history={this.state.history}
@@ -104,11 +114,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	private loadHistory = async () => {
-		this.setState({loadingHistory: true});
+		this.setState({ loadingHistory: true });
 
 		const history = await this.fetchHistory();
 
-		this.setState({history, loadingHistory: false});
+		this.setState({ history, loadingHistory: false });
 	};
 
 	private loadMoreHistory = async () => {
@@ -123,17 +133,16 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				response => response.data,
 			);
 
-			this.setState(({history}) => {
+			this.setState(({ history }) => {
 				if (history !== null)
-					return {history: [...history, ...items], loadingHistory: false};
-
+					return { history: [...history, ...items], loadingHistory: false };
 				else
-					return {history: items, loadingHistory: false};
+					return { history: items, loadingHistory: false };
 			});
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({loadingHistory: false});
+			this.setState({ loadingHistory: false });
 		}
 	};
 }

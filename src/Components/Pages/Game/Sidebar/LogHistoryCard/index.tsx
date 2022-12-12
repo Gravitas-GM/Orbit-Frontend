@@ -42,7 +42,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 				const {timestamp} = item;
 				const formattedDate = formatDate(timestamp);
 
-				dates[formattedDate] ??= [];
+				dates[formattedDate] = dates[formattedDate] ?? [];
 				dates[formattedDate].push(item);
 
 				return dates;
