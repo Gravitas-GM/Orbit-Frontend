@@ -16,8 +16,8 @@ export const Basic = Template.bind({});
 Basic.args = {
 	gameState: {
 		name: 'Game',
-		account_id: 'game-account',
-		catalog_id: 'game-catalog-id',
+		account_id: 123,
+		catalog_id: 456,
 		current_board: {
 			id: 'board-id',
 			name: 'board-name',
@@ -94,31 +94,14 @@ Basic.args = {
 			},
 		],
 	},
-	players: [
-		{
-			player_id: 3333,
-			new_stage_id: 3,
-			new_point_total: 32,
-		},
-		{
-			player_id: 2222,
-			new_stage_id: 2,
-			new_point_total: 2,
-		},
-		{
-			player_id: 1111,
-			new_stage_id: 2,
-			new_point_total: 12,
-		},
-	],
 };
 
 export const NonNullUpdateData = Template.bind({});
 NonNullUpdateData.args = {
 	gameState: {
 		name: 'Game',
-		account_id: 'game-account',
-		catalog_id: 'game-catalog-id',
+		account_id: 123,
+		catalog_id: 456,
 		current_board: {
 			id: 'board-id',
 			name: 'board-name',
@@ -194,22 +177,5 @@ NonNullUpdateData.args = {
 				},
 			},
 		],
-	},
-	players: [
-		{
-			player_id: 3333,
-			new_stage_id: 0,
-			new_point_total: 0,
-		},
-		{
-			player_id: 2222,
-			new_stage_id: 0,
-			new_point_total: 0,
-		},
-		{
-			player_id: 1111,
-			new_stage_id: 0,
-			new_point_total: 0,
-		},
-	],
+	}
 };
