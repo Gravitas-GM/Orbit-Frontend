@@ -1,15 +1,18 @@
-import {H1} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
-import {GamesModel, GameState} from '../../../Api/Game-State/Models/Games';
+import {GamesModel, GameState, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {GameAnnouncement} from './Board/GameAnnouncement';
+import {GameBoard} from './Board/GameBoard';
+import {Sidebar} from './Sidebar';
 
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
+	movingPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
 }
@@ -21,6 +24,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
+		movingPlayer: null,
 		loading: true,
 		redirect: false,
 	};
@@ -68,7 +72,18 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<H1>Game Board</H1>
+			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
+				<div style={{display: 'flex', justifyContent: 'center'}}>
+					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
+
+					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
+					<GameAnnouncement player={this.state.movingPlayer} />
+				</div>
+
+				<Sidebar>
+					{/*TODO: implement sidebar game cards*/}
+				</Sidebar>
+			</div>
 		);
 	}
 }
