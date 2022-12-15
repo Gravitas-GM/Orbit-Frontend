@@ -1,5 +1,5 @@
-import { PlayerUpdate, UpdateResultType } from "../Api/Game-State/Models/Games";
-import { playersMock } from "./Player";
+import { PlayerUpdate, UpdateResultType } from '../Api/Game-State/Models/Games';
+import { playersMock } from './Player';
 export const playerUpdateMock: PlayerUpdate[] = [
 	{
 		type: UpdateResultType.CREATED,
@@ -32,4 +32,4 @@ export const playerUpdateMock: PlayerUpdate[] = [
 		type: UpdateResultType.DELETED,
 		player_id: playersMock[3].hub_id,
 	},
-]
+];

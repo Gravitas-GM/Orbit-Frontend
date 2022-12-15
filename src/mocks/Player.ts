@@ -58,5 +58,4 @@ export const playersMock: Player[] = [
 		current_stage_index: 1,
 		current_points: 7,
 	},
-
 ];

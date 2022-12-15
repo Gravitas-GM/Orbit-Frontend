@@ -1,12 +1,7 @@
 import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
 import { useCallback, useState, useEffect, useContext, useMemo } from 'react';
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import {
-	GamesModel,
-	GameState,
-	PlayerUpdate,
-	UpdateResultType,
-} from '../../../../../../Api/Game-State/Models/Games';
+import { GamesModel, GameState, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../../../../Session';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';

@@ -18,5 +18,5 @@ export const Basic = Template.bind({});
 Basic.args = {
 	gameState: gameStateMock,
 	board: boardMock,
-	onClose: () => null
+	onClose: () => null,
 };
