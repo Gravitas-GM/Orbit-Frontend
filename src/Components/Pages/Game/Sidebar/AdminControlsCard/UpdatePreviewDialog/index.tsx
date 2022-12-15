@@ -1,7 +1,12 @@
 import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
-import { useCallback, useState, useEffect, useContext } from 'react';
+import { useCallback, useState, useEffect, useContext, useMemo } from 'react';
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import { GamesModel, GameState, PlayerUpdate } from '../../../../../../Api/Game-State/Models/Games';
+import {
+	GamesModel,
+	GameState,
+	PlayerUpdate,
+	UpdateResultType,
+} from '../../../../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../../../../Session';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
@@ -15,11 +20,48 @@ interface IProps {
 export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClose }) => {
 	const User = useContext(UserContext);
 
-	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>([{
-		new_point_total: 123,
-		new_stage_id: 1,
-		player_id: 1111
-	}]);
+	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
+
+	const sortedData = useMemo(() => {
+		if (updateData === null)
+			return [];
+
+		const deletedItems = updateData?.filter(item => item.type === UpdateResultType.DELETED);
+		const otherItems = updateData.filter(item => item.type !== UpdateResultType.DELETED);
+
+		otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
+			let playerAPoints;
+			let playerBPoints;
+
+			switch (playerA.type) {
+				case UpdateResultType.CHANGED:
+					playerAPoints = playerA.new_point_total;
+					break;
+				case UpdateResultType.MOVED:
+					playerAPoints = playerA.new_point_total;
+					break;
+				default:
+					playerAPoints = 0;
+					break;
+			}
+
+			switch (playerB.type) {
+				case UpdateResultType.CHANGED:
+					playerBPoints = playerB.new_point_total;
+					break;
+				case UpdateResultType.MOVED:
+					playerBPoints = playerB.new_point_total;
+					break;
+				default:
+					playerBPoints = 0;
+					break;
+			}
+
+			return playerAPoints - playerBPoints;
+		});
+
+		return [...otherItems, ...deletedItems];
+	}, [updateData]);
 
 	const fetchUpdateData = useCallback(async () => {
 		let updateData: PlayerUpdate[];
@@ -41,6 +83,69 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 		fetchUpdateData();
 	}, []);
 
+	const displayPlayerUpdateData = useCallback((player: PlayerUpdate) => {
+		const status = player.type;
+
+		let currentPlayer;
+		let playerId;
+		let playerName;
+		let currentPoints: string | number = '—';
+		let currentStage = '—';
+		let newPoints: string | number = '—';
+		let newStage = '—';
+
+		switch (player.type) {
+			case UpdateResultType.MOVED:
+				currentPlayer = player;
+				playerId = currentPlayer.player.hub_id;
+				playerName = currentPlayer.player.user_name;
+				currentPoints = currentPlayer.player.current_points;
+				currentStage = board.stages[currentPlayer.player.current_stage_index].name;
+				newStage = board.stages[currentPlayer.new_stage_index].name;
+				newPoints = currentPlayer.new_point_total ? currentPlayer.new_point_total : '—';
+				break;
+
+			case UpdateResultType.CHANGED:
+				currentPlayer = player;
+				playerId = currentPlayer.player.hub_id;
+				playerName = currentPlayer.player.user_name;
+				currentPoints = currentPlayer.player.current_points;
+				currentStage = board.stages[currentPlayer.player.current_stage_index].name;
+				newPoints = currentPlayer.new_point_total ? currentPlayer.new_point_total : '—';
+				break;
+
+			case UpdateResultType.CREATED:
+				currentPlayer = player;
+				playerId = currentPlayer.player.hub_id;
+				playerName = currentPlayer.player.user_name;
+				currentPoints = currentPlayer.player.current_points;
+				currentStage = board.stages[currentPlayer?.player.current_stage_index].name;
+				break;
+
+			case UpdateResultType.DELETED:
+				currentPlayer = gameState.players.find(p => p.hub_id === player.player_id);
+				playerId = player.player_id;
+				playerName = currentPlayer?.user_name;
+				currentPoints = currentPlayer!.current_points;
+				currentStage = currentPlayer!.current_stage_name;
+				break;
+
+			default:
+				break;
+		}
+
+		return (
+			<tr key={playerId} style={{}}>
+				<td>{playerName}</td>
+				<td style={{ textTransform: 'capitalize' }}>{status}</td>
+				<td>{currentPoints}</td>
+				<td>{currentStage}</td>
+				<td>{newPoints}</td>
+				<td>{newStage}</td>
+			</tr>
+		);
+	}, []);
+
 	if (!updateData) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
@@ -55,33 +160,17 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 				<div style={{ display: 'flex', flexDirection: 'column', padding: '1rem' }}>
 					<HTMLTable striped>
 						<thead>
-							<th>User</th>
-							<th>Current Points</th>
-							<th>Current Stage</th>
-							<th>New Points</th>
-							<th>New Stage</th>
+							<tr>
+								<th>Name</th>
+								<th>Status</th>
+								<th>Current Points</th>
+								<th>Current Stage</th>
+								<th>New Points</th>
+								<th>New Stage</th>
+							</tr>
 						</thead>
 
-						<tbody>
-							{updateData.map(player => {
-								const playerData = gameState.players.find(p => p.hub_id === player.player_id);
-
-								if (!playerData) return;
-
-								const nextStage = board.stages.find(stage => player.new_stage_id === stage.id)?.name || '—';
-								const newPoints = player.new_point_total ? player.new_point_total : '—';
-
-								return (
-									<tr key={player.player_id}>
-										<td>{playerData.user_name}</td>
-										<td>{playerData.current_points}</td>
-										<td>{playerData.current_stage_name}</td>
-										<td>{nextStage}</td>
-										<td>{newPoints}</td>
-									</tr>
-								);
-							})}
-						</tbody>
+						<tbody>{sortedData.map(displayPlayerUpdateData)}</tbody>
 					</HTMLTable>
 				</div>
 
