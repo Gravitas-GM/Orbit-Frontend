@@ -22,6 +22,7 @@ export interface Game {
 	publishedDate: Date | null;
 	hidden: boolean;
 	boards: Board[];
+	thumbnailUrl: string | null;
 }
 
 export class GameModel {
