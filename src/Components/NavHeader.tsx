@@ -87,6 +87,14 @@ export const NavHeader: React.FC<IProps> = props => {
 												/>
 											</Link>
 
+											<Link to="/catalog" className="plain-link">
+												<MenuItem
+													icon="layers"
+													text="Game Catalog"
+													tagName="span"
+												/>
+											</Link>
+
 											<MenuDivider />
 
 											{isGranted(Permission.ADMIN) && (
