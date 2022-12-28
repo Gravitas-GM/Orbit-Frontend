@@ -3,7 +3,7 @@ import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
 import { Button, Card } from '@blueprintjs/core';
-import { NonIdealState as BaseNonIdealState } from '../../NonIdealState';
+import { NonIdealState } from '../../NonIdealState';
 const ITEMS_PER_PAGE = 8;
 
 interface IState {
@@ -28,8 +28,15 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-		if (!this.state.games)
-			return <this.NonIdealState />;
+		if (!this.state.games) {
+			return (
+				<NonIdealState
+					title="Error"
+					action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
+					description="There was an error while fetching catalog data"
+				/>
+			);
+		}
 
 		const { currentPage, totalPages } = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -94,7 +101,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 					</span>
 
 					<Button
-						disabled={this.state.currentPage === totalPages}
+						disabled={this.state.currentPage >= totalPages}
 						onClick={this.onClickNext}
 						rightIcon="caret-right"
 					>
@@ -117,16 +124,6 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 
 		this.setState(state => ({ currentPage: state.currentPage - 1 }));
-	};
-
-	private NonIdealState = () => {
-		return (
-			<BaseNonIdealState
-				title="Error"
-				action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
-				description="There was an error while fetching catalog data"
-			/>
-		);
 	};
 
 	private fetchCatalogData = async () => {
