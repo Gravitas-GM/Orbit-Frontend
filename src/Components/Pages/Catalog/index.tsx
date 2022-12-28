@@ -2,13 +2,14 @@ import * as React from 'react';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
-import { Button, Card } from '@blueprintjs/core';
-import { NonIdealState as BaseNonIdealState } from '../../NonIdealState';
+import { Button, Card, InputGroup } from '@blueprintjs/core';
+import { NonIdealState } from '../../NonIdealState';
 const ITEMS_PER_PAGE = 8;
 
 interface IState {
 	loading: boolean;
 	games: Game[] | null;
+	filteredGames: Game[];
 	currentPage: number;
 	totalPages: number;
 }
@@ -19,6 +20,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		currentPage: 1,
 		totalPages: 0,
 		games: [],
+		filteredGames: [],
 	};
 
 	public async componentDidMount() {
@@ -28,48 +30,29 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-		if (!this.state.games)
-			return <this.NonIdealState />;
+		if (!this.state.games) {
+			return (
+				<NonIdealState
+					title="Error"
+					action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
+					description="There was an error while fetching catalog data"
+				/>
+			);
+		}
 
 		const { currentPage, totalPages } = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
-		const currrentPageItems = this.state.games.slice(startIndex, endIndex);
+		const currrentPageItems = this.state.filteredGames.slice(startIndex, endIndex);
 
 		return (
-			<div style={{ display: 'flex', padding: '0  2rem', flexDirection: 'column' }}>
-				<h1>Game Catalog</h1>
+			<div style={{ display: 'flex', padding: '0  2rem', flexDirection: 'column', height: '100%' }}>
+				<header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+					<h1>Game Catalog</h1>
+					<InputGroup type="search" leftIcon="search" placeholder="Search catalog" onChange={this.onChangeSearch} />
+				</header>
 
-				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
-					{/*  please, dont consider this part, since it will become the game card */}
-					{currrentPageItems.map(game => (
-						<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-							<div style={{ display: 'flex', flexDirection: 'column' }}>
-								<figure>
-									<img src={game.thumbnailUrl!} alt={game.name} width="180" />
-								</figure>
-
-								<div style={{ display: 'flex', flexDirection: 'column' }}>
-									<h2>{game.name}</h2>
-
-									<span>Game Description</span>
-
-									<div>
-										<h3>Boards</h3>
-
-										<div style={{ display: 'flex', gap: '0.75rem' }}>
-											{game.boards.map(board => (
-												<span key={board.id}>{board.name}</span>
-											))}
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<Button>Play Game</Button>
-						</Card>
-					))}
-				</div>
+				{this.renderPageItems(currrentPageItems)}
 
 				<div
 					style={{
@@ -81,23 +64,16 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 						gap: '2rem',
 					}}
 				>
-					<Button
-						disabled={this.state.currentPage === 1}
-						onClick={this.onClickBack}
-						icon="caret-left"
-					>
+					<Button disabled={this.state.currentPage === 1} onClick={this.onClickBack} icon="caret-left">
 						Prev
 					</Button>
 
 					<span>
-						{currentPage}/{totalPages}
+						{currentPage}
+						{totalPages > 0 && `\\${totalPages}`}
 					</span>
 
-					<Button
-						disabled={this.state.currentPage === totalPages}
-						onClick={this.onClickNext}
-						rightIcon="caret-right"
-					>
+					<Button disabled={this.state.currentPage >= totalPages} onClick={this.onClickNext} rightIcon="caret-right">
 						Next
 					</Button>
 				</div>
@@ -119,19 +95,46 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		this.setState(state => ({ currentPage: state.currentPage - 1 }));
 	};
 
-	private NonIdealState = () => {
+	private renderPageItems = (items: Game[]) => {
+		if (items.length === 0)
+			return <NonIdealState title="No results" />;
+
 		return (
-			<BaseNonIdealState
-				title="Error"
-				action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
-				description="There was an error while fetching catalog data"
-			/>
+			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
+				{/*  please, dont consider this right now, since it will become the game card */}
+				{items.map(game => (
+					<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+						<div style={{ display: 'flex', flexDirection: 'column' }}>
+							<figure>
+								<img src={game.thumbnailUrl!} alt={game.name} width="180" />
+							</figure>
+
+							<div style={{ display: 'flex', flexDirection: 'column' }}>
+								<h2>{game.name}</h2>
+
+								<span>Game Description</span>
+
+								<div>
+									<h3>Boards</h3>
+
+									<div style={{ display: 'flex', gap: '0.75rem' }}>
+										{game.boards.map(board => (
+											<span key={board.id}>{board.name}</span>
+										))}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<Button>Play Game</Button>
+					</Card>
+				))}
+			</div>
 		);
 	};
 
 	private fetchCatalogData = async () => {
 		let games: Game[];
-		let totalPages: number;
 
 		this.setState({ loading: true });
 
@@ -148,12 +151,33 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
+		const totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
 
 		this.setState({
 			games,
+			filteredGames: games,
 			totalPages,
 			loading: false,
+		});
+	};
+
+	private onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.target.value === '') {
+			this.setState({
+				filteredGames: this.state.games!,
+			});
+		}
+
+		const filteredGames = this.state.games!.filter(game => {
+			return game.name.toLowerCase().includes(event.target.value.toLowerCase());
+		});
+
+		const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
+
+		this.setState({
+			filteredGames,
+			currentPage: 1,
+			totalPages,
 		});
 	};
 }
