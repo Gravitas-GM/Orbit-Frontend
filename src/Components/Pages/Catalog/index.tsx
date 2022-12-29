@@ -49,6 +49,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			<div style={{ display: 'flex', padding: '0  2rem', flexDirection: 'column', height: '100%' }}>
 				<header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
 					<h1>Game Catalog</h1>
+
 					<InputGroup type="search" leftIcon="search" placeholder="Search catalog" onChange={this.onChangeSearch} />
 				</header>
 
