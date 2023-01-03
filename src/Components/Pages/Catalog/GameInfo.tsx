@@ -1,12 +1,13 @@
-import {Button, H2} from '@blueprintjs/core';
+import {Button, H2, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
+import { GamesModel } from '../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import {ucwords} from '../../Utility/string';
-import {BoardInfoCard} from './BoardInfoCard';
+import { ucwords } from '../../Utility/string';
+import { BoardInfoCard } from './BoardInfoCard';
 
 interface IRouteProps {
 	game: string;
@@ -16,6 +17,7 @@ interface IState {
 	game: Game | null;
 	loading: boolean;
 	redirect: boolean;
+	processing: boolean;
 }
 
 export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -26,6 +28,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		game: null,
 		loading: true,
 		redirect: false,
+		processing: false,
 	};
 
 	public async componentDidMount() {
@@ -69,10 +72,17 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					<div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 20 }}>
 						<H2>{ucwords(this.state.game!.name)}</H2>
 
-						<span>{this.state.game!.description}</span>
+						<span style={{ paddingBottom: 20 }}>
+							{this.state.game!.description}
+						</span>
 
-						{/*TODO: implement start button*/}
-						<Button>Start Game</Button>
+						{/*TODO: Implement start game confirmation dialog*/}
+						<Button
+							text="Start Game"
+							intent={Intent.PRIMARY}
+							onClick={this.onStartGameButtonClick}
+							disabled={this.state.processing}
+						/>
 					</div>
 				</div>
 
@@ -83,5 +93,34 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 				</div>
 			</div>
 		);
+	}
+
+	private onStartGameButtonClick = async () => {
+		this.setState({
+			processing: true,
+		});
+
+		try {
+			await GamesModel.startGame(
+				this.context!.account.id,
+				{
+					catalog_id: this.state.game!.id
+				}
+			).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		toaster.success(`${ucwords(this.state.game!.name)} started.`);
+
+		this.setState({
+			processing: false,
+		})
 	}
 }
