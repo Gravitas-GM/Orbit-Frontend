@@ -81,7 +81,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 							text="Start Game"
 							intent={Intent.PRIMARY}
 							onClick={this.onStartGameButtonClick}
-							disabled={this.state.processing}
+							loading={this.state.processing}
 						/>
 					</div>
 				</div>
