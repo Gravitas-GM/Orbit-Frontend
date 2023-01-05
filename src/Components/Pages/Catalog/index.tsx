@@ -8,7 +8,7 @@ const ITEMS_PER_PAGE = 8;
 
 interface IState {
 	loading: boolean;
-	games: Game[] | null;
+	games: Game[];
 	currentPage: number;
 	totalPages: number;
 }
@@ -28,12 +28,12 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-		if (!this.state.games) {
+		if (this.state.games.length <= 0) {
 			return (
 				<NonIdealState
 					title="Error"
 					action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
-					description="There was an error while fetching catalog data"
+					description="No games found"
 				/>
 			);
 		}
@@ -72,8 +72,6 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 									</div>
 								</div>
 							</div>
-
-							<Button>Play Game</Button>
 						</Card>
 					))}
 				</div>
@@ -116,21 +114,27 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
 
-		this.setState(state => ({ currentPage: state.currentPage + 1 }));
+		this.setState(state => ({
+			currentPage: state.currentPage + 1
+		}));
 	};
 
 	private onClickBack = () => {
 		if (this.state.currentPage === 1)
 			return;
 
-		this.setState(state => ({ currentPage: state.currentPage - 1 }));
+		this.setState(state => ({
+			currentPage: state.currentPage - 1
+		}));
 	};
 
 	private fetchCatalogData = async () => {
 		let games: Game[];
 		let totalPages: number;
 
-		this.setState({ loading: true });
+		this.setState({
+			loading: true
+		});
 
 		try {
 			games = await GameModel.list().then(response => response.data);
@@ -138,7 +142,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				games: null,
+				games: [],
 				loading: false,
 			});
 
