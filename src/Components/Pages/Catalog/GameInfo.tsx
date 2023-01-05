@@ -108,13 +108,13 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 	private onStartGameButtonClick = () => {
 		this.setState({
 			showStartGameDialog: true
-		})
+		});
 	}
 
 	private onStartGameDialogClose = () => {
 		this.setState({
 			showStartGameDialog: false
-		})
+		});
 	}
 
 	private confirmStartGame = async () => {
