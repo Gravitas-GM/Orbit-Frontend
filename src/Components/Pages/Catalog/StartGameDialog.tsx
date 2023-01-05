@@ -31,7 +31,7 @@ export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, on
 	return (
 		<Dialog
 			isOpen={isOpen}
-			title="Confirm Start Game"
+			title="Start Game"
 			onClose={onCancelCallback}
 		>
 			<div className={Classes.DIALOG_BODY}>
