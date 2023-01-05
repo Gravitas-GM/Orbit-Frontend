@@ -8,8 +8,8 @@ const ITEMS_PER_PAGE = 8;
 
 interface IState {
 	loading: boolean;
-	games: Game[] | null;
 	filteredGames: Game[];
+	games: Game[];
 	currentPage: number;
 	totalPages: number;
 }
@@ -30,12 +30,12 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-		if (!this.state.games) {
+		if (this.state.games.length <= 0) {
 			return (
 				<NonIdealState
 					title="Error"
 					action={<Button onClick={this.fetchCatalogData}>Try again</Button>}
-					description="There was an error while fetching catalog data"
+					description="No games found"
 				/>
 			);
 		}
@@ -50,7 +50,12 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				<header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
 					<h1>Game Catalog</h1>
 
-					<InputGroup type="search" leftIcon="search" placeholder="Search catalog" onChange={this.onChangeSearch} />
+					<InputGroup
+						type="search"
+						leftIcon="search"
+						placeholder="Search catalog"
+						onChange={this.onSearchChange}
+					/>
 				</header>
 
 				{this.renderPageItems(currrentPageItems)}
@@ -74,7 +79,11 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 						{totalPages > 0 && `\\${totalPages}`}
 					</span>
 
-					<Button disabled={this.state.currentPage >= totalPages} onClick={this.onClickNext} rightIcon="caret-right">
+					<Button
+						disabled={this.state.currentPage >= totalPages}
+						onClick={this.onClickNext}
+						rightIcon="caret-right"
+					>
 						Next
 					</Button>
 				</div>
@@ -86,14 +95,18 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
 
-		this.setState(state => ({ currentPage: state.currentPage + 1 }));
+		this.setState(state => ({
+			currentPage: state.currentPage + 1
+		}));
 	};
 
 	private onClickBack = () => {
 		if (this.state.currentPage === 1)
 			return;
 
-		this.setState(state => ({ currentPage: state.currentPage - 1 }));
+		this.setState(state => ({
+			currentPage: state.currentPage - 1
+		}));
 	};
 
 	private renderPageItems = (items: Game[]) => {
@@ -126,8 +139,6 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 								</div>
 							</div>
 						</div>
-
-						<Button>Play Game</Button>
 					</Card>
 				))}
 			</div>
@@ -137,7 +148,9 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	private fetchCatalogData = async () => {
 		let games: Game[];
 
-		this.setState({ loading: true });
+		this.setState({
+			loading: true
+		});
 
 		try {
 			games = await GameModel.list().then(response => response.data);
@@ -145,7 +158,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				games: null,
+				games: [],
 				loading: false,
 			});
 
@@ -162,16 +175,20 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value === '') {
+			const totalPages = Math.ceil(this.state.games.length / ITEMS_PER_PAGE);
+
 			this.setState({
 				filteredGames: this.state.games!,
+				currentPage: 1,
+				totalPages,
 			});
 		}
 
-		const filteredGames = this.state.games!.filter(game => {
-			return game.name.toLowerCase().includes(event.target.value.toLowerCase());
-		});
+		const filteredGames = this.state.games!.filter(game =>
+			game.name.toLowerCase().includes(event.target.value.toLowerCase())
+		);
 
 		const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
 
