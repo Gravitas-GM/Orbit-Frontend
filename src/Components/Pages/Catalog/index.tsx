@@ -4,6 +4,8 @@ import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
 import { Button, Card } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
+import { history } from '../../../history';
+
 const ITEMS_PER_PAGE = 8;
 
 interface IState {
@@ -50,7 +52,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
 					{/*  please, dont consider this part, since it will become the game card */}
 					{currrentPageItems.map(game => (
-						<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+						<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} onClick={() => this.onGameCardClick(game.id)}>
 							<div style={{ display: 'flex', flexDirection: 'column' }}>
 								<figure>
 									<img src={game.thumbnailUrl!} alt={game.name} width="180" />
@@ -110,6 +112,10 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
+	private onGameCardClick(id: number) {
+		history.push(`/catalog/${id}`)
+	}
+
 	private onClickNext = () => {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
@@ -130,7 +136,6 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 
 	private fetchCatalogData = async () => {
 		let games: Game[];
-		let totalPages: number;
 
 		this.setState({
 			loading: true
@@ -149,7 +154,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
+		const totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
 
 		this.setState({
 			games,
