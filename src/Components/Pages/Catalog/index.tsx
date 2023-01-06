@@ -176,18 +176,20 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	};
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.target.value === '') {
+		if (event.currentTarget.value === '') {
 			const totalPages = Math.ceil(this.state.games.length / ITEMS_PER_PAGE);
 
 			this.setState({
-				filteredGames: this.state.games!,
+				filteredGames: this.state.games,
 				currentPage: 1,
 				totalPages,
 			});
+
+			return;
 		}
 
 		const filteredGames = this.state.games!.filter(game =>
-			game.name.toLowerCase().includes(event.target.value.toLowerCase())
+			game.name.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase())
 		);
 
 		const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
