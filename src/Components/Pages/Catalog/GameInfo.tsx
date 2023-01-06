@@ -9,6 +9,7 @@ import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
 import { StartGameDialog } from './StartGameDialog';
+import ImageNotFound from '../../../Assets/ImageNotFound.png';
 
 interface IRouteProps {
 	game: string;
@@ -67,7 +68,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<div style={{ display: 'flex' }}>
 					<img
-						src={this.state.game!.thumbnailUrl ?? 'https://i.imgur.com/6Y1ocrb.png'}
+						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
 						width="150"
 					/>
@@ -84,7 +85,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 							text="Start Game"
 							intent={Intent.PRIMARY}
 							onClick={this.onStartGameButtonClick}
-							disabled={this.state.processing}
+							loading={this.state.processing}
 						/>
 					</div>
 				</div>
@@ -128,7 +129,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 				{
 					catalog_id: this.state.game!.id
 				}
-			).then(response => response.data);
+			);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
