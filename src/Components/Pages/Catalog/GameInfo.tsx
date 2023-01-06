@@ -106,7 +106,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 				{
 					catalog_id: this.state.game!.id
 				}
-			).then(response => response.data);
+			);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
