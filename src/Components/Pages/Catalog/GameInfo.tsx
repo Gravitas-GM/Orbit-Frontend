@@ -8,6 +8,7 @@ import * as toaster from '../../../Toaster';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
+import ImageNotFound from '../../../Assets/ImageNotFound.png';
 
 interface IRouteProps {
 	game: string;
@@ -64,7 +65,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			<div style={{ display: 'flex', flexDirection: 'column' }}>
 				<div style={{ display: 'flex' }}>
 					<img
-						src={this.state.game!.thumbnailUrl ?? 'https://i.imgur.com/6Y1ocrb.png'}
+						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
 						width="150"
 					/>

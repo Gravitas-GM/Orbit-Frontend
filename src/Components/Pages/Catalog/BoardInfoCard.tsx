@@ -3,6 +3,7 @@ import { Card, H2, HTMLTable } from '@blueprintjs/core';
 import { Board } from '../../../Api/Game-Catalog/Models/Boards';
 import { formatNumber, ucwords } from '../../Utility/string';
 import './CatalogInfoCard.scss';
+import ImageNotFound from '../../../Assets/ImageNotFound.png';
 
 interface IProps {
 	board: Board;
@@ -16,7 +17,7 @@ export const BoardInfoCard: React.FC<IProps> = ({ board }) => {
 		>
 			<div style={{ display: 'flex' }}>
 				<img
-					src={board.imageUrl ?? 'https://i.imgur.com/6Y1ocrb.png'}
+					src={board.imageUrl ?? ImageNotFound}
 					alt={`${board.name} image`}
 					width="150"
 				/>
