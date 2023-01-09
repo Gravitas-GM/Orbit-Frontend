@@ -5,6 +5,7 @@ import * as toaster from '../../../Toaster';
 import { Button, Card } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
 import { history } from '../../../history';
+import { Link } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -52,29 +53,31 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
 					{/*  please, dont consider this part, since it will become the game card */}
 					{currrentPageItems.map(game => (
-						<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} onClick={() => this.onGameCardClick(game.id)}>
-							<div style={{ display: 'flex', flexDirection: 'column' }}>
-								<figure>
-									<img src={game.thumbnailUrl!} alt={game.name} width="180" />
-								</figure>
-
+						<Link to={`/catalog/${game.id}`} key={game.id}>
+							<Card style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
 								<div style={{ display: 'flex', flexDirection: 'column' }}>
-									<h2>{game.name}</h2>
+									<figure>
+										<img src={game.thumbnailUrl!} alt={game.name} width="180" />
+									</figure>
 
-									<span>Game Description</span>
+									<div style={{ display: 'flex', flexDirection: 'column' }}>
+										<h2>{game.name}</h2>
 
-									<div>
-										<h3>Boards</h3>
+										<span>Game Description</span>
 
-										<div style={{ display: 'flex', gap: '0.75rem' }}>
-											{game.boards.map(board => (
-												<span key={board.id}>{board.name}</span>
-											))}
+										<div>
+											<h3>Boards</h3>
+
+											<div style={{ display: 'flex', gap: '0.75rem' }}>
+												{game.boards.map(board => (
+													<span key={board.id}>{board.name}</span>
+												))}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</Card>
+							</Card>
+						</Link>
 					))}
 				</div>
 
@@ -110,10 +113,6 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				</div>
 			</div>
 		);
-	}
-
-	private onGameCardClick(id: number) {
-		history.push(`/catalog/${id}`)
 	}
 
 	private onClickNext = () => {
