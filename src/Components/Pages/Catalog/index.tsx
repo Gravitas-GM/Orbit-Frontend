@@ -4,6 +4,8 @@ import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
 import { Button, Card, InputGroup } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
+import { history } from '../../../history';
+
 const ITEMS_PER_PAGE = 8;
 
 interface IState {
@@ -50,13 +52,14 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				<header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
 					<h1>Game Catalog</h1>
 
-					<InputGroup
+        <InputGroup
 						type="search"
 						leftIcon="search"
 						placeholder="Search catalog"
 						onChange={this.onSearchChange}
 					/>
 				</header>
+
 
 				{this.renderPageItems(currrentPageItems)}
 
@@ -91,6 +94,10 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
+	private onGameCardClick(id: number) {
+		history.push(`/catalog/${id}`)
+	}
+
 	private onClickNext = () => {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
@@ -117,7 +124,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
 				{/*  please, dont consider this right now, since it will become the game card */}
 				{items.map(game => (
-					<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+					<Card key={game.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }} onClick={() => this.onGameCardClick(game.id)}>
 						<div style={{ display: 'flex', flexDirection: 'column' }}>
 							<figure>
 								<img src={game.thumbnailUrl!} alt={game.name} width="180" />
