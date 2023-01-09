@@ -1,4 +1,4 @@
-import { Button, Classes, Dialog, InputGroup, Intent } from '@blueprintjs/core';
+import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 import * as React from 'react';
 import { Game } from '../../../Api/Game-Catalog/Models/Games';
 
@@ -12,19 +12,11 @@ interface IProps {
 
 export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, onConfirm, onCancel }) => {
 
-	let onCancelCallback = React.useCallback(() => {
-		onCancel();
-	}, [onCancel]);
-
-	let onConfirmCallback = React.useCallback(() => {
-		onConfirm();
-	}, [onConfirm]);
-
 	return (
 		<Dialog
 			isOpen={isOpen}
 			title="Start Game"
-			onClose={onCancelCallback}
+			onClose={onCancel}
 		>
 			<div className={Classes.DIALOG_BODY}>
 				<p style={{ lineHeight: '175%' }}>
@@ -35,12 +27,12 @@ export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, on
 
 			<div className={Classes.DIALOG_FOOTER}>
 				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button text="Cancel" onClick={onCancelCallback} disabled={processing} />
+					<Button text="Cancel" onClick={onCancel} disabled={processing} />
 
 					<Button
 						text="Start Game"
 						intent={Intent.PRIMARY}
-						onClick={onConfirmCallback}
+						onClick={onConfirm}
 						loading={processing}
 					/>
 				</div>
