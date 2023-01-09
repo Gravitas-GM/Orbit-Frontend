@@ -4,7 +4,6 @@ import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
 import { Button, Card } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
-import { history } from '../../../history';
 import { Link } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 8;
