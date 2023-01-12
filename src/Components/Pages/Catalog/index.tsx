@@ -2,9 +2,9 @@ import * as React from 'react';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
-import { Button, Card } from '@blueprintjs/core';
+import { Button } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
-import { Link } from 'react-router-dom';
+import { GameInfoCard } from './GameInfoCard';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -50,33 +50,8 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 				<h1>Game Catalog</h1>
 
 				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
-					{/*  please, dont consider this part, since it will become the game card */}
 					{currrentPageItems.map(game => (
-						<Link to={`/catalog/${game.id}`} key={game.id}>
-							<Card style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-								<div style={{ display: 'flex', flexDirection: 'column' }}>
-									<figure>
-										<img src={game.thumbnailUrl!} alt={game.name} width="180" />
-									</figure>
-
-									<div style={{ display: 'flex', flexDirection: 'column' }}>
-										<h2>{game.name}</h2>
-
-										<span>Game Description</span>
-
-										<div>
-											<h3>Boards</h3>
-
-											<div style={{ display: 'flex', gap: '0.75rem' }}>
-												{game.boards.map(board => (
-													<span key={board.id}>{board.name}</span>
-												))}
-											</div>
-										</div>
-									</div>
-								</div>
-							</Card>
-						</Link>
+						<GameInfoCard game={game} key={game.id} />
 					))}
 				</div>
 
