@@ -89,7 +89,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 				<div style={{ display: 'flex', paddingTop: 20 }}>
 					{this.state.game!.boards.map(board => (
-						<BoardInfoCard board={board} />
+						<BoardInfoCard board={board} key={board.id} />
 					))}
 				</div>
 			</div>
