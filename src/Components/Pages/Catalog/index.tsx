@@ -155,7 +155,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		const filteredGames = this.state.games!.filter(game =>
+		const filteredGames = this.state.games.filter(game =>
 			game.name.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase())
 		);
 
