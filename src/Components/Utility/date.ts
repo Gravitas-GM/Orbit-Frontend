@@ -8,3 +8,11 @@ export function parseApiTimestamp(input: any): Date {
 
 	throw new Error(`Cannot convert input to Date`);
 }
+
+export function formatDate(input: Date) {
+	return new Intl.DateTimeFormat('default', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+	}).format(input);
+}
