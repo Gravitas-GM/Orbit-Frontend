@@ -34,8 +34,8 @@ export const playersMock: Player[] = [
 		hub_id: 9999,
 		account_id: 9,
 		user_name: 'Gandalf the Grey',
-		current_stage_index: 1,
-		current_points: 0,
+		current_stage_index: 2,
+		current_points: 555,
 	},
 	{
 		hub_id: 5555,

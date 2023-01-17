@@ -13,10 +13,9 @@ import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
 interface IProps {
 	board: Board;
 	update: PlayerUpdate;
-	player?: PlayerState;
 }
 
-export const PreviewRow: React.FC<IProps> = ({ board, update, player }) => {
+export const PreviewRow: React.FC<IProps> = ({ board, update }) => {
 	switch (update.type) {
 		case UpdateResultType.CREATED:
 			return <CreatedPlayerRow board={board} update={update} />;
@@ -28,14 +27,13 @@ export const PreviewRow: React.FC<IProps> = ({ board, update, player }) => {
 			return <MovedPlayerRow board={board} update={update} />;
 
 		case UpdateResultType.DELETED:
-			return <DeletedPlayerRow player={player} update={update} board={board} />;
+			return <DeletedPlayerRow update={update} board={board} />;
 	}
 };
 
 interface TypedRowProps<T extends PlayerUpdate> {
 	board: Board;
 	update: T;
-	player?: PlayerState;
 }
 
 const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, update }) => (
@@ -68,17 +66,17 @@ const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update })
 		<td>{update.player.current_points}</td>
 		<td>{board.stages[update.player.current_stage_index].name}</td>
 		<td>{update.new_point_total}</td>
-		<td>{board.stages[update.new_stage_index].name}</td>
+		<td>{update.new_stage.stage.name}</td>
 	</tr>
 );
 
 
-const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({ player, update, board }) => (
-	<tr key={update.player_id}>
-		<td>{player!.user_name}</td>
+const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board }) => (
+	<tr key={update.player.hub_id}>
+		<td>{update.player.user_name}</td>
 		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
-		<td>{player!.current_points}</td>
-		<td>{player?.current_stage_name}</td>
+		<td>{update.player.current_points}</td>
+		<td>{board.stages[update.player.current_stage_index].name}</td>
 		<td>&mdash;</td>
 		<td>&mdash;</td>
 	</tr>

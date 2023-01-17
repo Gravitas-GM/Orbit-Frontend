@@ -79,16 +79,6 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 		fetchUpdateData();
 	}, []);
 
-	const displayPlayerUpdateData = useCallback((update: PlayerUpdate) => {
-		if (update.type === UpdateResultType.DELETED) {
-			const deletedPlayer = gameState.players.find(p => p.hub_id === update.player_id);
-
-			return <PreviewRow board={board} update={update} player={deletedPlayer}/>;
-		}
-
-		return <PreviewRow board={board} update={update} />;
-	}, []);
-
 	if (!updateData) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
@@ -113,7 +103,11 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 							</tr>
 						</thead>
 
-						<tbody>{sortedData.map(displayPlayerUpdateData)}</tbody>
+						<tbody>
+							{sortedData.map(
+								update => <PreviewRow board={board} update={update}/>
+							)}
+						</tbody>
 					</HTMLTable>
 				</div>
 

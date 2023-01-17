@@ -1,9 +1,11 @@
 import { PlayerUpdate, UpdateResultType } from '../Api/Game-State/Models/Games';
 import { playersMock } from './Player';
+import { stageMock, stagesMock } from './Stage';
 export const playerUpdateMock: PlayerUpdate[] = [
 	{
 		type: UpdateResultType.CREATED,
 		player: playersMock[0],
+		initial_stage: stageMock,
 		history_item: {
 			id: { $oid: 'id' },
 			account_id: 12,
@@ -20,7 +22,10 @@ export const playerUpdateMock: PlayerUpdate[] = [
 		type: UpdateResultType.MOVED,
 		player: playersMock[2],
 		new_point_total: 120,
-		new_stage_index: 2,
+		new_stage: {
+			index: 123,
+			stage: stagesMock[2],
+		},
 		history_item: {
 			id: { $oid: 'id' },
 			account_id: 1,
@@ -30,6 +35,6 @@ export const playerUpdateMock: PlayerUpdate[] = [
 	},
 	{
 		type: UpdateResultType.DELETED,
-		player_id: playersMock[3].hub_id,
+		player: playersMock[3],
 	},
 ];
