@@ -5,9 +5,15 @@ import { GameCard } from '../GameCard/GameCard';
 import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
 
+/*
+
+Uncomment after feature merge
+
 // new game and next board
 import { ConfirmNextBoardDialog } from './ConfirmNextBoardDialog';
 import { NewGameDialog } from './NewGameDialog';
+
+*/
 
 
 interface IProps {
@@ -20,15 +26,36 @@ interface IProps {
 }
 
 export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNextBoard, startNewGame }) => {
+
+	//  do we really need this?
 	const [processing, setIsProcessing] = useState({ preview: false, nextBoard: false, newGame: false });
 
 	const [showUpdatePreviewDialog, setShowUpdatePreviewDialog] = useState(false);
 
 
 	const onPreviewClick = useCallback(async () => {
-		setShowUpdatePreviewDialog(!showUpdatePreviewDialog);
+		setIsProcessing({
+			newGame: false,
+			nextBoard: false,
+			preview: true
+		});
+
+		setShowUpdatePreviewDialog(true);
 	}, []);
 
+	const closePreviewDialog = useCallback(async () => {
+		setShowUpdatePreviewDialog(false);
+
+		setIsProcessing({
+			newGame: false,
+			nextBoard: false,
+			preview: false
+		});
+	}, []);
+
+	/*
+
+	Uncomment after feature merge
 
 	// next board
 	const [showConfirmNextBoardDialog, setShowConfirmNextBoardDialog] = useState(false);
@@ -48,6 +75,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 			await goToNextBoard();
 		} catch (_) {
 			setIsProcessing({ preview: false, newGame: false,  nextBoard: false });
+
 			return;
 		}
 
@@ -62,24 +90,47 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 
 	const onNewGameClick = useCallback(() => {
 		setShowNewGameDialog(true);
-	 }, []);
+	}, []);
+
+	*/
 
 
 	return (
 		<>
 			<GameCard title="Admin Controls" icon="control">
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-					<Button title="Preview" intent={Intent.PRIMARY} onClick={onPreviewClick} loading={processing.preview}>
+					<Button
+						title="Preview"
+						intent={Intent.PRIMARY}
+						onClick={onPreviewClick}
+						loading={processing.preview}
+					>
 						Preview
 					</Button>
 
-					<Button title="Preview" intent={Intent.PRIMARY} onClick={confirmNextBoard} loading={processing.nextBoard}>
+					{/*
+
+					Uncomment after feature merge
+
+					<Button
+						title="Preview"
+						intent={Intent.PRIMARY}
+						onClick={confirmNextBoard}
+						loading={processing.nextBoard}
+					>
 						Next Board
 					</Button>
 
-					<Button title="New Game" intent={Intent.PRIMARY} onClick={onNewGameClick} loading={processing.newGame}>
+					<Button
+						title="New Game"
+						intent={Intent.PRIMARY}
+						onClick={onNewGameClick}
+						loading={processing.newGame}
+					>
 						New Game
 					</Button>
+
+					*/}
 				</div>
 			</GameCard>
 
@@ -87,9 +138,13 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 				<UpdatePreviewDialog
 					gameState={gameState}
 					board={board}
-					onClose={onPreviewClick}
+					onClose={closePreviewDialog}
 				/>
 			)}
+
+			{/*
+
+			Uncomment after feature merge
 
 			{showConfirmNextBoardDialog && (
 				<ConfirmNextBoardDialog
@@ -99,8 +154,13 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 			)}
 
 			{showNewGameDialog &&
-				<NewGameDialog onClose={closeNewGameDialog} startNewGame={startNewGame} />
+				<NewGameDialog
+					onClose={closeNewGameDialog}
+					startNewGame={startNewGame}
+				/>
 			}
+
+			*/}
 
 		</>
 	);
