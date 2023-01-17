@@ -37,7 +37,7 @@ interface TypedRowProps<T extends PlayerUpdate> {
 }
 
 const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, update }) => (
-	<tr key={update.player.hub_id}>
+	<tr>
 		<td>{update.player.user_name}</td>
 		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
 		<td>{update.player.current_points}</td>
@@ -48,7 +48,7 @@ const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, updat
 );
 
 const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, update }) => (
-	<tr key={update.player.hub_id}>
+	<tr>
 		<td>{update.player.user_name}</td>
 		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
 		<td>{update.player.current_points}</td>
@@ -60,7 +60,7 @@ const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, updat
 
 
 const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update }) => (
-	<tr key={update.player.hub_id}>
+	<tr>
 		<td>{update.player.user_name}</td>
 		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
 		<td>{update.player.current_points}</td>
@@ -72,7 +72,7 @@ const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update })
 
 
 const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board }) => (
-	<tr key={update.player.hub_id}>
+	<tr>
 		<td>{update.player.user_name}</td>
 		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
 		<td>{update.player.current_points}</td>

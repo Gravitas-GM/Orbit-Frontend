@@ -1,5 +1,5 @@
 import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
-import { useCallback, useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
 import { GamesModel, GameState, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../../../../Session';
@@ -59,23 +59,25 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 		return [...otherItems, ...deletedItems];
 	}, [updateData]);
 
-	const fetchUpdateData = useCallback(async () => {
-		let updateData: PlayerUpdate[];
 
-		try {
-			updateData = await GamesModel.updatePreview(User!.account.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			onClose();
-
-			return;
-		}
-
-		setUpdateData(updateData);
-	}, []);
 
 	useEffect(() => {
+		const fetchUpdateData = async () => {
+			let updateData: PlayerUpdate[];
+
+			try {
+				updateData = await GamesModel.updatePreview(User!.account.id).then(response => response.data);
+			} catch (_) {
+				toaster.showUnhandledErrorMessage();
+
+				onClose();
+
+				return;
+			}
+
+			setUpdateData(updateData);
+		};
+
 		fetchUpdateData();
 	}, []);
 
@@ -105,7 +107,7 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 
 						<tbody>
 							{sortedData.map(
-								update => <PreviewRow board={board} update={update}/>
+								update => <PreviewRow board={board} update={update} key={update.player.hub_id} />
 							)}
 						</tbody>
 					</HTMLTable>
