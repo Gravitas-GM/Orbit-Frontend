@@ -1,9 +1,21 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { NewGameDialog } from './';
+import { gameMock } from '../../../../../../mocks/Game';
 
 export default {
 	title: 'New Game Dialog',
 	component: NewGameDialog,
+	parameters: {
+		mockData: [
+			{
+				url: 'http://catalog.test.api.happyorbit.com/games',
+				method: 'GET',
+				status: 200,
+				response: [gameMock],
+				delay: 1500,
+			},
+		],
+	},
 } as ComponentMeta<typeof NewGameDialog>;
 
 const Template: ComponentStory<typeof NewGameDialog> = args => (
