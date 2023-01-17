@@ -5,6 +5,7 @@ import { GamesModel, GameState, PlayerUpdate, UpdateResultType } from '../../../
 import { UserContext } from '../../../../../../Session';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
+import { PreviewRow } from './PreviewRow';
 
 interface IProps {
 	onClose: () => void;
@@ -78,67 +79,14 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 		fetchUpdateData();
 	}, []);
 
-	const displayPlayerUpdateData = useCallback((player: PlayerUpdate) => {
-		const status = player.type;
+	const displayPlayerUpdateData = useCallback((update: PlayerUpdate) => {
+		if (update.type === UpdateResultType.DELETED) {
+			const deletedPlayer = gameState.players.find(p => p.hub_id === update.player_id);
 
-		let currentPlayer;
-		let playerId;
-		let playerName;
-		let currentPoints: string | number = '—';
-		let currentStage = '—';
-		let newPoints: string | number = '—';
-		let newStage = '—';
-
-		switch (player.type) {
-			case UpdateResultType.MOVED:
-				currentPlayer = player;
-				playerId = currentPlayer.player.hub_id;
-				playerName = currentPlayer.player.user_name;
-				currentPoints = currentPlayer.player.current_points;
-				currentStage = board.stages[currentPlayer.player.current_stage_index].name;
-				newStage = board.stages[currentPlayer.new_stage_index].name;
-				newPoints = currentPlayer.new_point_total ? currentPlayer.new_point_total : '—';
-				break;
-
-			case UpdateResultType.CHANGED:
-				currentPlayer = player;
-				playerId = currentPlayer.player.hub_id;
-				playerName = currentPlayer.player.user_name;
-				currentPoints = currentPlayer.player.current_points;
-				currentStage = board.stages[currentPlayer.player.current_stage_index].name;
-				newPoints = currentPlayer.new_point_total ? currentPlayer.new_point_total : '—';
-				break;
-
-			case UpdateResultType.CREATED:
-				currentPlayer = player;
-				playerId = currentPlayer.player.hub_id;
-				playerName = currentPlayer.player.user_name;
-				currentPoints = currentPlayer.player.current_points;
-				currentStage = board.stages[currentPlayer?.player.current_stage_index].name;
-				break;
-
-			case UpdateResultType.DELETED:
-				currentPlayer = gameState.players.find(p => p.hub_id === player.player_id);
-				playerId = player.player_id;
-				playerName = currentPlayer?.user_name;
-				currentPoints = currentPlayer!.current_points;
-				currentStage = currentPlayer!.current_stage_name;
-				break;
-
-			default:
-				break;
+			return <PreviewRow board={board} update={update} player={deletedPlayer}/>;
 		}
 
-		return (
-			<tr key={playerId} style={{}}>
-				<td>{playerName}</td>
-				<td style={{ textTransform: 'capitalize' }}>{status}</td>
-				<td>{currentPoints}</td>
-				<td>{currentStage}</td>
-				<td>{newPoints}</td>
-				<td>{newStage}</td>
-			</tr>
-		);
+		return <PreviewRow board={board} update={update} />;
 	}, []);
 
 	if (!updateData) {
