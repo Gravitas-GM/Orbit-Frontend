@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
-import { GamesModel, GameState, PlayerState } from '../../../Api/Game-State/Models/Games';
+import { GamesModel, GameState, PlayerState, NextBoardResult } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -36,42 +36,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	public async componentDidMount() {
-		let gameState: GameState;
-
-		try {
-			gameState = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
-		}
-
-		let board: Board;
-
-		try {
-			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
-		}
-
-		const history = await this.fetchHistory();
-
-		this.setState({
-			board,
-			gameState,
-			history,
-			loading: false,
-		});
+		this.fetchGameState({ redirect: true });
 	}
 
 	public render() {
@@ -145,4 +110,67 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			this.setState({ loadingHistory: false });
 		}
 	};
+
+	private async fetchGameState(args: { redirect: boolean }) {
+		this.setState({
+			loading: true,
+		});
+
+		let gameState: GameState;
+
+		try {
+			gameState = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			if (args.redirect)
+				this.setState({ redirect: true });
+
+			return;
+		}
+
+		let board: Board;
+
+		try {
+			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			if (args.redirect)
+				this.setState({ redirect: true });
+
+			return;
+		}
+
+		this.setState({
+			board,
+			gameState,
+			loading: false,
+		});
+	}
+
+	public async goToNextBoard() {
+		let result: NextBoardResult;
+
+		try {
+			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			return;
+		}
+
+		if (result === NextBoardResult.Success) {
+			try {
+				await this.fetchGameState({ redirect: false });
+			} catch (_) {
+				toaster.showUnhandledErrorMessage();
+
+				return;
+			}
+		}
+
+		toaster.notifyNextBoardResult(result);
+	}
+
 }
