@@ -6,14 +6,13 @@ import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
 
 /*
-
 Uncomment after feature merge
+*/
 
 // new game and next board
 import { ConfirmNextBoardDialog } from './ConfirmNextBoardDialog';
 import { NewGameDialog } from './NewGameDialog';
 
-*/
 
 
 interface IProps {
@@ -56,7 +55,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 	/*
 
 	Uncomment after feature merge
-
+	*/
 	// next board
 	const [showConfirmNextBoardDialog, setShowConfirmNextBoardDialog] = useState(false);
 
@@ -92,8 +91,6 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 		setShowNewGameDialog(true);
 	}, []);
 
-	*/
-
 
 	return (
 		<>
@@ -108,9 +105,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 						Preview
 					</Button>
 
-					{/*
-
-					Uncomment after feature merge
+					{/*	Uncomment after feature merge */}
 
 					<Button
 						title="Preview"
@@ -130,7 +125,6 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 						New Game
 					</Button>
 
-					*/}
 				</div>
 			</GameCard>
 
@@ -142,9 +136,7 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 				/>
 			)}
 
-			{/*
-
-			Uncomment after feature merge
+			{/*	Uncomment after feature merge */}
 
 			{showConfirmNextBoardDialog && (
 				<ConfirmNextBoardDialog
@@ -159,9 +151,6 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 					startNewGame={startNewGame}
 				/>
 			}
-
-			*/}
-
 		</>
 	);
 };
