@@ -8,6 +8,7 @@ import * as toaster from '../../../Toaster';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
+import { StartGameDialog } from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
 
 interface IRouteProps {
@@ -19,6 +20,7 @@ interface IState {
 	loading: boolean;
 	redirect: boolean;
 	processing: boolean;
+	showStartGameDialog: boolean;
 }
 
 export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -30,6 +32,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		loading: true,
 		redirect: false,
 		processing: false,
+		showStartGameDialog: false,
 	};
 
 	public async componentDidMount() {
@@ -92,11 +95,30 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 						<BoardInfoCard board={board} key={board.id} />
 					))}
 				</div>
+
+				<StartGameDialog
+					game={this.state.game!}
+					isOpen={this.state.showStartGameDialog}
+					onCancel={this.onStartGameDialogClose}
+					onConfirm={this.confirmStartGame}
+					processing={this.state.processing}
+				/>
 			</div>
 		);
 	}
+	private onStartGameButtonClick = () => {
+		this.setState({
+			showStartGameDialog: true
+		});
+	}
 
-	private onStartGameButtonClick = async () => {
+	private onStartGameDialogClose = () => {
+		this.setState({
+			showStartGameDialog: false
+		});
+	}
+
+	private confirmStartGame = async () => {
 		this.setState({
 			processing: true,
 		});
@@ -122,6 +144,6 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 		this.setState({
 			processing: false,
-		})
+		});
 	}
 }
