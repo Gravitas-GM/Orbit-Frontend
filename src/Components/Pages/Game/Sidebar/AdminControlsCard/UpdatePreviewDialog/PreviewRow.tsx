@@ -5,10 +5,9 @@ import {
 	PlayerChanged,
 	PlayerDeleted,
 	PlayerMoved,
-	PlayerState,
 } from '../../../../../../Api/Game-State/Models/Games';
-
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
+import { formatNumber, ucwords } from '../../../../../Utility/string';
 
 interface IProps {
 	board: Board;
@@ -38,10 +37,10 @@ interface TypedRowProps<T extends PlayerUpdate> {
 
 const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, update }) => (
 	<tr>
-		<td>{update.player.user_name}</td>
-		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
-		<td>{update.player.current_points}</td>
-		<td>{board.stages[update.player.current_stage_index].name}</td>
+		<td>{ucwords(update.player.user_name)}</td>
+		<td>{ucwords(update.type)}</td>
+		<td>{formatNumber(update.player.current_points)}</td>
+		<td>{ucwords(board.stages[update.player.current_stage_index].name)}</td>
 		<td>&mdash;</td>
 		<td>&mdash;</td>
 	</tr>
@@ -49,11 +48,11 @@ const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, updat
 
 const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, update }) => (
 	<tr>
-		<td>{update.player.user_name}</td>
-		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
-		<td>{update.player.current_points}</td>
-		<td>{board.stages[update.player.current_stage_index].name}</td>
-		<td>{update.new_point_total}</td>
+		<td>{ucwords(update.player.user_name)}</td>
+		<td>{ucwords(update.type)}</td>
+		<td>{formatNumber(update.player.current_points)}</td>
+		<td>{ucwords(board.stages[update.player.current_stage_index].name)}</td>
+		<td>{formatNumber(update.new_point_total)}</td>
 		<td>&mdash;</td>
 	</tr>
 );
@@ -61,22 +60,22 @@ const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, updat
 
 const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update }) => (
 	<tr>
-		<td>{update.player.user_name}</td>
-		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
-		<td>{update.player.current_points}</td>
-		<td>{board.stages[update.player.current_stage_index].name}</td>
-		<td>{update.new_point_total}</td>
-		<td>{update.new_stage.stage.name}</td>
+		<td>{ucwords(update.player.user_name)}</td>
+		<td>{ucwords(update.type)}</td>
+		<td>{formatNumber(update.player.current_points)}</td>
+		<td>{ucwords(board.stages[update.player.current_stage_index].name)}</td>
+		<td>{formatNumber(update.new_point_total)}</td>
+		<td>{ucwords(update.new_stage.stage.name)}</td>
 	</tr>
 );
 
 
 const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board }) => (
 	<tr>
-		<td>{update.player.user_name}</td>
-		<td style={{ textTransform: 'capitalize' }}>{update.type}</td>
-		<td>{update.player.current_points}</td>
-		<td>{board.stages[update.player.current_stage_index].name}</td>
+		<td>{ucwords(update.player.user_name)}</td>
+		<td>{ucwords(update.type)}</td>
+		<td>{formatNumber(update.player.current_points)}</td>
+		<td>{ucwords(board.stages[update.player.current_stage_index].name)}</td>
 		<td>&mdash;</td>
 		<td>&mdash;</td>
 	</tr>

@@ -1,6 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { boardMock } from '../../../../../../mocks/Board';
-import { gameStateMock } from '../../../../../../mocks/GameState';
 import { UpdatePreviewDialog } from './';
 import { playerUpdateMock } from '../../../../../../mocks/PlayerUpdate';
 
@@ -28,7 +27,6 @@ const Template: ComponentStory<typeof UpdatePreviewDialog> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	gameState: gameStateMock,
 	board: boardMock,
 	onClose: () => null,
 };

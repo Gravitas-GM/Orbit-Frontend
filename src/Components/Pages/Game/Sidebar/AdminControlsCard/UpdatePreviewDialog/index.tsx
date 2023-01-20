@@ -1,22 +1,24 @@
 import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
 import { useState, useEffect, useContext, useMemo } from 'react';
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import { GamesModel, GameState, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
+import { GamesModel, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../../../../Session';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
 import { PreviewRow } from './PreviewRow';
+import { NonIdealState } from '../../../../../NonIdealState';
 
 interface IProps {
 	onClose: () => void;
-	gameState: GameState;
 	board: Board;
 }
 
-export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClose }) => {
+export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 	const User = useContext(UserContext);
 
-	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
+	const [updateData, setUpdateData] = useState<PlayerUpdate[]>([]);
+
+	const [processing, setIsProcessing] = useState(false);
 
 	const sortedData = useMemo(() => {
 		if (updateData === null)
@@ -59,10 +61,9 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 		return [...otherItems, ...deletedItems];
 	}, [updateData]);
 
-
-
 	useEffect(() => {
 		const fetchUpdateData = async () => {
+			setIsProcessing(true);
 			let updateData: PlayerUpdate[];
 
 			try {
@@ -72,21 +73,42 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ gameState, board, onClos
 
 				onClose();
 
+				setIsProcessing(false);
+
 				return;
 			}
 
 			setUpdateData(updateData);
+
+			setIsProcessing(false);
 		};
 
 		fetchUpdateData();
 	}, []);
 
-	if (!updateData) {
+	if (processing) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
 				<div style={{ marginTop: '1rem' }}>
 					<FrameLoadingSpinner />
 				</div>
+			</Dialog>
+		);
+	}
+
+	if (updateData.length === 0) {
+		return (
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
+				<NonIdealState
+					title="No preview data available"
+					action={(
+						<Button
+							text="Close"
+							onClick={onClose}
+							intent={Intent.PRIMARY}
+						/>
+					)}
+				/>
 			</Dialog>
 		);
 	} else {

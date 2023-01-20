@@ -1,5 +1,7 @@
-import { Button, Classes, Dialog, Intent, HTMLSelect } from '@blueprintjs/core';
-import { useState, useCallback, useEffect, ChangeEvent } from 'react';
+import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
+import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
+import { MenuItem2 as MenuItem } from "@blueprintjs/popover2";
+import { useState, useCallback, useEffect } from 'react';
 import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games';
 import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
@@ -12,37 +14,14 @@ interface IProps {
 
 export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
-
-	const [selectedGameId, setSelectedGameId] = useState<number>();
-
+	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState({ list: true, start: false });
-
-	const onChangeGame = useCallback(
-		(e: ChangeEvent<HTMLSelectElement>) => setSelectedGameId(parseInt(e.currentTarget.value)),
-		[],
-	);
-
-	const loadGamesList = useCallback(async () => {
-		setIsProcessing({ list: true, start: false });
-
-		try {
-			await GameModel.list().then(response => setGamesList(response.data));
-		} catch (_) {
-			toaster.error('Caught an error while fetching available games.');
-
-			onClose();
-
-			return;
-		}
-
-		setIsProcessing({ list: false, start: false });
-	}, []);
 
 	const onClickStartNewGame = useCallback(async () => {
 		setIsProcessing({ list: false, start: true });
 
 		const gameId: GameStartPayload = {
-			catalog_id: selectedGameId!,
+			catalog_id: selectedGame?.id!,
 		};
 
 		await startNewGame(gameId);
@@ -50,9 +29,25 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 		setIsProcessing({ list: false, start: false });
 
 		onClose();
-	}, [selectedGameId]);
+	}, [selectedGame]);
 
 	useEffect(() => {
+		const loadGamesList = async () => {
+			setIsProcessing({ list: true, start: false });
+
+			try {
+				await GameModel.list().then(response => setGamesList(response.data));
+			} catch (_) {
+				toaster.error('Could not obtain available games.');
+
+				onClose();
+
+				return;
+			}
+
+			setIsProcessing({ list: false, start: false });
+		}
+
 		loadGamesList();
 	}, []);
 
@@ -67,19 +62,16 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 					<div className={Classes.DIALOG_BODY}>
 						<p>Please select a game from the options below:</p>
 
-						<HTMLSelect value={selectedGameId} onChange={onChangeGame} fill>
-							{/* react complains about it, but bpjs suggests using this way */}
-							{/* defaultValue seems to not work */}
-							<option selected hidden>
-								Choose a game:
-							</option>
+						<Select<Game>
+							items={gamesList}
+							onItemSelect={setSelectedGame}
+							filterable={false}
+							itemRenderer={renderGameOption}
+							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+						>
 
-							{gamesList?.map(game => (
-								<option key={game.id} value={game.id}>
-									{game.name}
-								</option>
-							))}
-						</HTMLSelect>
+							<Button text={selectedGame ? selectedGame.name : 'Select a game'} rightIcon="double-caret-vertical" placeholder="Select a game" />
+						</Select>
 					</div>
 
 					<div className={Classes.DIALOG_FOOTER}>
@@ -88,7 +80,7 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 								onClick={onClickStartNewGame}
 								intent={Intent.PRIMARY}
 								loading={processing.start}
-								disabled={!selectedGameId}
+								disabled={!selectedGame}
 							>
 								Start Game
 							</Button>
@@ -99,3 +91,20 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 		</Dialog>
 	);
 };
+
+const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, modifiers }) => {
+	if (!modifiers.matchesPredicate) {
+        return null;
+    }
+	 return (
+		<MenuItem
+			active={modifiers.active}
+			disabled={modifiers.disabled}
+			key={game.id}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			roleStructure="listoption"
+			text={game.name}
+		/>
+	 )
+}

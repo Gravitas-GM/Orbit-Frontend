@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { NewGameDialog } from './';
-import { gameMock } from '../../../../../../mocks/Game';
+import { gamesMock } from '../../../../../../mocks/Game';
 
 export default {
 	title: 'New Game Dialog',
@@ -11,7 +11,7 @@ export default {
 				url: 'http://catalog.test.api.happyorbit.com/games',
 				method: 'GET',
 				status: 200,
-				response: [gameMock],
+				response: gamesMock,
 				delay: 1500,
 			},
 		],
