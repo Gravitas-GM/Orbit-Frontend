@@ -1,5 +1,5 @@
 import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
-import { useState, useEffect, useContext, useMemo } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
 import { GamesModel, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../../../../Session';
@@ -20,50 +20,13 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 
 	const [processing, setIsProcessing] = useState(false);
 
-	const sortedData = useMemo(() => {
-		if (updateData === null)
-			return [];
-
-		const deletedItems = updateData?.filter(item => item.type === UpdateResultType.DELETED);
-		const otherItems = updateData.filter(item => item.type !== UpdateResultType.DELETED);
-
-		otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
-			let playerAPoints;
-			let playerBPoints;
-
-			switch (playerA.type) {
-				case UpdateResultType.CHANGED:
-					playerAPoints = playerA.new_point_total;
-					break;
-				case UpdateResultType.MOVED:
-					playerAPoints = playerA.new_point_total;
-					break;
-				default:
-					playerAPoints = 0;
-					break;
-			}
-
-			switch (playerB.type) {
-				case UpdateResultType.CHANGED:
-					playerBPoints = playerB.new_point_total;
-					break;
-				case UpdateResultType.MOVED:
-					playerBPoints = playerB.new_point_total;
-					break;
-				default:
-					playerBPoints = 0;
-					break;
-			}
-
-			return playerAPoints - playerBPoints;
-		});
-
-		return [...otherItems, ...deletedItems];
-	}, [updateData]);
-
 	useEffect(() => {
 		const fetchUpdateData = async () => {
+			if (processing)
+				return;
+
 			setIsProcessing(true);
+
 			let updateData: PlayerUpdate[];
 
 			try {
@@ -78,7 +41,43 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 				return;
 			}
 
-			setUpdateData(updateData);
+			const deletedItems = updateData?.filter(item => item.type === UpdateResultType.DELETED);
+			const otherItems = updateData.filter(item => item.type !== UpdateResultType.DELETED);
+
+			otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
+				let playerAPoints;
+				let playerBPoints;
+
+				switch (playerA.type) {
+					case UpdateResultType.CHANGED:
+						playerAPoints = playerA.new_point_total;
+						break;
+					case UpdateResultType.MOVED:
+						playerAPoints = playerA.new_point_total;
+						break;
+					default:
+						playerAPoints = 0;
+						break;
+				}
+
+				switch (playerB.type) {
+					case UpdateResultType.CHANGED:
+						playerBPoints = playerB.new_point_total;
+						break;
+					case UpdateResultType.MOVED:
+						playerBPoints = playerB.new_point_total;
+						break;
+					default:
+						playerBPoints = 0;
+						break;
+				}
+
+				return playerAPoints - playerBPoints;
+			});
+
+			const sortedUpdateData = [...otherItems, ...deletedItems];
+
+			setUpdateData(sortedUpdateData);
 
 			setIsProcessing(false);
 		};
@@ -128,7 +127,7 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 						</thead>
 
 						<tbody>
-							{sortedData.map(
+							{updateData.map(
 								update => <PreviewRow board={board} update={update} key={update.player.hub_id} />
 							)}
 						</tbody>
