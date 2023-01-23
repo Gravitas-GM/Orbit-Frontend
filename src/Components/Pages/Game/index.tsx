@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
-import { GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState, NextBoardResult } from '../../../Api/Game-State/Models/Games';
+import { GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState, NextBoardResult, isGameStartError } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -36,7 +36,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	public async componentDidMount() {
-		this.fetchGameState({ redirect: true });
+		this.fetchGameState(true);
 	}
 
 	public render() {
@@ -111,7 +111,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
-	private async fetchGameState(args: { redirect: boolean }) {
+	private async fetchGameState(redirect: boolean) {
+		if (this.state.loading)
+			return;
+
 		this.setState({
 			loading: true,
 		});
@@ -123,7 +126,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			if (args.redirect)
+			if (redirect)
 				this.setState({ redirect: true });
 
 			return;
@@ -136,7 +139,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			if (args.redirect)
+			if (redirect)
 				this.setState({ redirect: true });
 
 			return;
@@ -150,50 +153,73 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	public async goToNextBoard() {
+		if (this.state.loading)
+			return;
+
 		let result: NextBoardResult;
+
+		this.setState({
+			loading: true
+		});
 
 		try {
 			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
+			this.setState({
+				loading: false
+			});
+
 			return;
 		}
 
 		if (result === NextBoardResult.Success) {
 			try {
-				await this.fetchGameState({ redirect: false });
+				await this.fetchGameState(false);
 			} catch (_) {
 				toaster.showUnhandledErrorMessage();
+
+				this.setState({
+					loading: false
+				});
 
 				return;
 			}
 		}
 
+		this.setState({
+			loading: false
+		});
+
 		toaster.notifyNextBoardResult(result);
 	}
 
 	public startNewGame = async (gameId: GameStartPayload) => {
-		this.setState({ loading: true });
+		this.setState({
+			loading: true
+		});
 
 		let gameState: GameState | GameNotFoundResponse;
-
-		const hasGameStartError = (response: GameState | GameNotFoundResponse): response is GameNotFoundResponse => (response as GameNotFoundResponse).error !== undefined;
 
 		try {
 			gameState = await GamesModel.startGame(this.context!.account.id, gameId).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({ loading: false });
+			this.setState({
+				loading: false
+			});
 
 			return;
 		}
 
-		if (hasGameStartError(gameState)) {
+		if (isGameStartError(gameState)) {
 			toaster.info('Game not found');
 
-			this.setState({ loading: false });
+			this.setState({
+				loading: false
+			});
 
 			return
 		}
@@ -205,7 +231,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({ loading: false });
+			this.setState({
+				loading: false
+			});
 
 			return;
 		}
