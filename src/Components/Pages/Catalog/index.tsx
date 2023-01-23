@@ -108,6 +108,9 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	};
 
 	private fetchCatalogData = async () => {
+		if (this.state.loading)
+			return;
+
 		let games: Game[];
 
 		this.setState({
