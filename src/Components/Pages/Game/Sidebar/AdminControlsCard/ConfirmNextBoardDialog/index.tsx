@@ -1,11 +1,22 @@
 import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
+import { useCallback, useState } from 'react';
 
 interface IProps {
 	onClose: () => void;
-	moveToNextBoard: () => void;
+	onConfirm: () => Promise<void>;
 }
 
-export const ConfirmNextBoardDialog: React.FC<IProps> = ({ onClose, moveToNextBoard }) => {
+export const ConfirmNextBoardDialog: React.FC<IProps> = ({ onClose, onConfirm }) => {
+	const [processing, setIsProcessing] = useState(false);
+
+	const onConfirmCallback = useCallback(async () => {
+		setIsProcessing(true);
+
+		await onConfirm();
+
+		setIsProcessing(false);
+	}, [onConfirm])
+
 	return (
 		<Dialog isOpen title="Confirm move to next board" onClose={onClose}>
 			<div className={Classes.DIALOG_BODY}>
@@ -16,11 +27,11 @@ export const ConfirmNextBoardDialog: React.FC<IProps> = ({ onClose, moveToNextBo
 
 			<div className={Classes.DIALOG_FOOTER}>
 				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button onClick={moveToNextBoard} intent={Intent.PRIMARY}>
+					<Button onClick={onConfirmCallback} intent={Intent.PRIMARY} loading={processing}>
 						Confirm
 					</Button>
 
-					<Button onClick={onClose} intent={Intent.DANGER}>
+					<Button onClick={onClose} intent={Intent.DANGER} loading={processing}>
 						Cancel
 					</Button>
 				</div>

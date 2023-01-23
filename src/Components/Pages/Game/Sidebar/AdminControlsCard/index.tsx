@@ -9,13 +9,12 @@ import { ConfirmNextBoardDialog } from './ConfirmNextBoardDialog';
 import { NewGameDialog } from './NewGameDialog';
 
 interface IProps {
-	gameState: GameState;
 	board: Board;
 	goToNextBoard: () => Promise<void>;
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNextBoard, startNewGame }) => {
+export const AdminControlsCard: React.FC<IProps> = ({ board, goToNextBoard, startNewGame }) => {
 	const [showUpdatePreviewDialog, setShowUpdatePreviewDialog] = useState(false);
 
 	const onPreviewClick = useCallback(async () => {
@@ -34,13 +33,15 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 	}, []);
 
 	const onConfirmNextBoard = useCallback(async () => {
-		setShowConfirmNextBoardDialog(false);
-
 		try {
 			await goToNextBoard();
+
+			await new Promise((res, _) => { setTimeout(() => res(console.log('time end')), 2000) } );
 		} catch (_) {
 			return;
 		}
+
+		setShowConfirmNextBoardDialog(false);
 	}, []);
 
 	const [showNewGameDialog, setShowNewGameDialog] = useState(false);
@@ -85,7 +86,6 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 
 			{showUpdatePreviewDialog && (
 				<UpdatePreviewDialog
-					gameState={gameState}
 					board={board}
 					onClose={closePreviewDialog}
 				/>
@@ -95,14 +95,14 @@ export const AdminControlsCard: React.FC<IProps> = ({ gameState, board, goToNext
 			{showConfirmNextBoardDialog && (
 				<ConfirmNextBoardDialog
 					onClose={closeNextBoardDialog}
-					moveToNextBoard={onConfirmNextBoard}
+					onConfirm={onConfirmNextBoard}
 				/>
 			)}
 
 			{showNewGameDialog &&
 				<NewGameDialog
 					onClose={closeNewGameDialog}
-					startNewGame={startNewGame}
+					onConfirm={startNewGame}
 				/>
 			}
 		</>

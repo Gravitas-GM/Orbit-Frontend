@@ -9,10 +9,10 @@ import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
 
 interface IProps {
 	onClose: () => void;
-	startNewGame: (gameId: GameStartPayload) => Promise<void>;
+	onConfirm: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
+export const NewGameDialog: React.FC<IProps> = ({ onClose, onConfirm }) => {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState({ list: true, start: false });
@@ -24,7 +24,7 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, startNewGame }) => {
 			catalog_id: selectedGame?.id!,
 		};
 
-		await startNewGame(gameId);
+		await onConfirm(gameId);
 
 		setIsProcessing({ list: false, start: false });
 
