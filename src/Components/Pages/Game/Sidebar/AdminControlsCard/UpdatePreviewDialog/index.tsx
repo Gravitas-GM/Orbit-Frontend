@@ -21,68 +21,25 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 	const [processing, setIsProcessing] = useState(false);
 
 	useEffect(() => {
-		const fetchUpdateData = async () => {
-			if (processing)
-				return;
+		setIsProcessing(true);
 
-			setIsProcessing(true);
+		let data: PlayerUpdate[] = [];
 
-			let updateData: PlayerUpdate[];
-
-			try {
-				updateData = await GamesModel.updatePreview(User!.account.id).then(response => response.data);
-			} catch (_) {
-				toaster.showUnhandledErrorMessage();
-
-				onClose();
-
-				setIsProcessing(false);
-
-				return;
-			}
-
-			const deletedItems = updateData?.filter(item => item.type === UpdateResultType.DELETED);
-			const otherItems = updateData.filter(item => item.type !== UpdateResultType.DELETED);
-
-			otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
-				let playerAPoints;
-				let playerBPoints;
-
-				switch (playerA.type) {
-					case UpdateResultType.CHANGED:
-						playerAPoints = playerA.new_point_total;
-						break;
-					case UpdateResultType.MOVED:
-						playerAPoints = playerA.new_point_total;
-						break;
-					default:
-						playerAPoints = 0;
-						break;
-				}
-
-				switch (playerB.type) {
-					case UpdateResultType.CHANGED:
-						playerBPoints = playerB.new_point_total;
-						break;
-					case UpdateResultType.MOVED:
-						playerBPoints = playerB.new_point_total;
-						break;
-					default:
-						playerBPoints = 0;
-						break;
-				}
-
-				return playerAPoints - playerBPoints;
-			});
-
-			const sortedUpdateData = [...otherItems, ...deletedItems];
-
-			setUpdateData(sortedUpdateData);
+		GamesModel.updatePreview(User!.account.id)
+		.then(r => data = r.data)
+		.catch(() => {
+			toaster.showUnhandledErrorMessage();
 
 			setIsProcessing(false);
-		};
 
-		fetchUpdateData();
+			onClose();
+		});
+
+		const sortedData = sortUpdateData(data);
+
+		setUpdateData(sortedData);
+
+		setIsProcessing(false);
 	}, []);
 
 	if (processing) {
@@ -141,3 +98,41 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 		);
 	}
 };
+
+function sortUpdateData(data: PlayerUpdate[]) {
+	const deletedItems = data.filter(item => item.type === UpdateResultType.DELETED);
+	const otherItems = data.filter(item => item.type !== UpdateResultType.DELETED);
+
+	otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
+		let playerAPoints;
+		let playerBPoints;
+
+		switch (playerA.type) {
+			case UpdateResultType.CHANGED:
+				playerAPoints = playerA.new_point_total;
+				break;
+			case UpdateResultType.MOVED:
+				playerAPoints = playerA.new_point_total;
+				break;
+			default:
+				playerAPoints = 0;
+				break;
+		}
+
+		switch (playerB.type) {
+			case UpdateResultType.CHANGED:
+				playerBPoints = playerB.new_point_total;
+				break;
+			case UpdateResultType.MOVED:
+				playerBPoints = playerB.new_point_total;
+				break;
+			default:
+				playerBPoints = 0;
+				break;
+		}
+
+		return playerAPoints - playerBPoints;
+	});
+
+	return [...otherItems, ...deletedItems];
+}

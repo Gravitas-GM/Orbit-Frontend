@@ -1,6 +1,6 @@
 import { Button, Intent } from '@blueprintjs/core';
 import { useCallback, useState } from 'react';
-import { GameState, GameStartPayload } from '../../../../../Api/Game-State/Models/Games';
+import { GameStartPayload } from '../../../../../Api/Game-State/Models/Games';
 import { GameCard } from '../GameCard/GameCard';
 import { UpdatePreviewDialog } from './UpdatePreviewDialog/';
 import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';

@@ -196,6 +196,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	public startNewGame = async (gameId: GameStartPayload) => {
+		if (this.state.loading)
+			return;
+
 		this.setState({
 			loading: true
 		});
