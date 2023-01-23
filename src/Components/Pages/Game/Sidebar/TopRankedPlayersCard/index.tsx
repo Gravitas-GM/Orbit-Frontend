@@ -26,7 +26,7 @@ export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
 		<GameCard title="Top 3/Highest Points" icon="star">
 			<ul className="gm-top-ranked-card">
 				{topPlayers.map(user => (
-					<li key={user.user_name}>
+					<li key={user.hub_id}>
 						<Icon icon="user" size={IconSize.LARGE} />
 
 						<span>

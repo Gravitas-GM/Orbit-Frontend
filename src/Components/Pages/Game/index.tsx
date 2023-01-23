@@ -59,7 +59,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		const currentPlayer: PlayerState | null = this.getCurrentPlayer(gameState.players);
+		const currentPlayer = this.getCurrentPlayer(gameState.players);
 
 		this.setState({
 			board,
@@ -88,7 +88,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private getCurrentPlayer(players: PlayerState[]) {
+	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
 		return players.find(player => player.hub_id === this.context!.id) || null;
 	}
 }
