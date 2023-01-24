@@ -10,6 +10,7 @@ import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { GameAnnouncement } from './Board/GameAnnouncement';
 import { GameBoard } from './Board/GameBoard';
 import { Sidebar } from './Sidebar';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
 interface IState {
 	board: Board | null;
@@ -56,6 +57,12 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 				<Sidebar>
 					{/*TODO: implement sidebar game cards*/}
+
+					<AdminControlsCard
+						board={this.state.board!}
+						goToNextBoard={this.goToNextBoard}
+						startNewGame={this.startNewGame}
+					/>
 
 					<LogHistoryCard
 						processing={this.state.loadingHistory}
@@ -111,10 +118,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
-	private async fetchGameState(redirect: boolean) {
-		if (this.state.loading)
-			return;
-
+	private fetchGameState = async (redirect: boolean) => {
 		this.setState({
 			loading: true,
 		});
@@ -152,24 +156,13 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 	}
 
-	public async goToNextBoard() {
-		if (this.state.loading)
-			return;
-
+	public goToNextBoard = async () => {
 		let result: NextBoardResult;
-
-		this.setState({
-			loading: true
-		});
 
 		try {
 			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				loading: false
-			});
 
 			return;
 		}
@@ -180,17 +173,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			} catch (_) {
 				toaster.showUnhandledErrorMessage();
 
-				this.setState({
-					loading: false
-				});
-
 				return;
 			}
 		}
-
-		this.setState({
-			loading: false
-		});
 
 		toaster.notifyNextBoardResult(result);
 	}

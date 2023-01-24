@@ -6,19 +6,56 @@ import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games
 import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
+import { gamesMock } from '../../../../../../mocks/Game';
 
-interface IProps {
+interface INewGameProps {
+	startNewGame: (gameId: GameStartPayload) => Promise<void>;
+}
+
+export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
+	const [showNewGameDialog, setShowNewGameDialog] = useState(false);
+
+	const closeNewGameDialog = useCallback(() => setShowNewGameDialog(false), []);
+
+	const onNewGameClick = useCallback(() => {
+		setShowNewGameDialog(true);
+	}, []);
+
+	return(
+		<>
+		<Button
+			title="New Game"
+			intent={Intent.PRIMARY}
+			onClick={onNewGameClick}
+		>
+			New Game
+		</Button>
+		{showNewGameDialog &&
+			<NewGameDialog
+				onClose={closeNewGameDialog}
+				onConfirm={startNewGame}
+			/>
+		}
+		</>
+	)
+}
+
+
+interface INewGameDialogProps {
 	onClose: () => void;
 	onConfirm: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameDialog: React.FC<IProps> = ({ onClose, onConfirm }) => {
-	const [gamesList, setGamesList] = useState<Game[]>([]);
+export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfirm }) => {
+	const [gamesList, setGamesList] = useState<Game[]>(gamesMock);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState({ list: true, start: false });
 
 	const onClickStartNewGame = useCallback(async () => {
-		setIsProcessing({ list: false, start: true });
+		setIsProcessing({
+			list: false,
+			start: true
+		});
 
 		const gameId: GameStartPayload = {
 			catalog_id: selectedGame?.id!,
@@ -26,14 +63,23 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, onConfirm }) => {
 
 		await onConfirm(gameId);
 
-		setIsProcessing({ list: false, start: false });
+		setIsProcessing({
+			list: false,
+			start: false
+		});
 
 		onClose();
 	}, [selectedGame]);
 
 	useEffect(() => {
 		const loadGamesList = async () => {
-			setIsProcessing({ list: true, start: false });
+			if (processing.list)
+				return;
+
+			setIsProcessing({
+				list: true,
+				start: false
+			});
 
 			try {
 				await GameModel.list().then(response => setGamesList(response.data));
@@ -45,10 +91,18 @@ export const NewGameDialog: React.FC<IProps> = ({ onClose, onConfirm }) => {
 				return;
 			}
 
-			setIsProcessing({ list: false, start: false });
+			setIsProcessing({
+				list: false,
+				start: false
+			});
 		}
 
-		loadGamesList();
+		setIsProcessing({
+			list: false,
+			start: false
+		});
+
+		// loadGamesList();
 	}, []);
 
 	return (

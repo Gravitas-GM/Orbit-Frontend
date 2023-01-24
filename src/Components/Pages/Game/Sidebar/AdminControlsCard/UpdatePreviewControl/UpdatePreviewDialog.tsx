@@ -1,45 +1,35 @@
-import { Button, Dialog, HTMLTable, Intent } from '@blueprintjs/core';
-import { useState, useEffect, useContext } from 'react';
-import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import { GamesModel, PlayerUpdate, UpdateResultType } from '../../../../../../Api/Game-State/Models/Games';
-import { UserContext } from '../../../../../../Session';
+import { Dialog, NonIdealState, Button, Intent, HTMLTable } from "@blueprintjs/core";
+import { useContext, useState, useEffect } from "react";
+import { PlayerUpdate, GamesModel, UpdateResultType } from "../../../../../../Api/Game-State/Models/Games";
+import { Board } from "../../../../../../Api/Game-Catalog/Models/Boards";
+import { UserContext } from "../../../../../../Session";
+import { FrameLoadingSpinner } from "../../../../../FrameLoadingSpinner";
+import { PreviewRow } from "./PreviewRow";
 import * as toaster from '../../../../../../Toaster';
-import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
-import { PreviewRow } from './PreviewRow';
-import { NonIdealState } from '../../../../../NonIdealState';
 
-interface IProps {
+interface IUpdatePreviewDialogProps {
 	onClose: () => void;
-	board: Board;
+	board: Board
 }
 
-export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
+export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board, onClose }) => {
 	const User = useContext(UserContext);
 
-	const [updateData, setUpdateData] = useState<PlayerUpdate[]>([]);
+	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
 
 	const [processing, setIsProcessing] = useState(false);
 
 	useEffect(() => {
 		setIsProcessing(true);
 
-		let data: PlayerUpdate[] = [];
-
 		GamesModel.updatePreview(User!.account.id)
-		.then(r => data = r.data)
+		.then(r => setUpdateData(sortUpdateData(r.data)))
+		.then(() => setIsProcessing(false))
 		.catch(() => {
 			toaster.showUnhandledErrorMessage();
 
-			setIsProcessing(false);
-
 			onClose();
 		});
-
-		const sortedData = sortUpdateData(data);
-
-		setUpdateData(sortedData);
-
-		setIsProcessing(false);
 	}, []);
 
 	if (processing) {
@@ -52,7 +42,7 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 		);
 	}
 
-	if (updateData.length === 0) {
+	if (!updateData) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
 				<NonIdealState
@@ -85,7 +75,11 @@ export const UpdatePreviewDialog: React.FC<IProps> = ({ board, onClose }) => {
 
 						<tbody>
 							{updateData.map(
-								update => <PreviewRow board={board} update={update} key={update.player.hub_id} />
+								update => <PreviewRow
+									board={board}
+									update={update}
+									key={update.player.hub_id}
+								/>
 							)}
 						</tbody>
 					</HTMLTable>

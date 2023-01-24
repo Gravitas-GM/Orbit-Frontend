@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof ConfirmNextBoardDialog> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
 	onClose: () => null,
-	moveToNextBoard: () => null
+	onConfirm: Promise.resolve
 };

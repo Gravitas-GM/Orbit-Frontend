@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { boardMock } from '../../../../../../mocks/Board';
-import { UpdatePreviewDialog } from './';
+import { UpdatePreviewDialog } from './UpdatePreviewDialog';
 import { playerUpdateMock } from '../../../../../../mocks/PlayerUpdate';
 
 export default {
