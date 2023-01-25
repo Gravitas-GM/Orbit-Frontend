@@ -10,6 +10,13 @@ interface IProps {
 }
 
 export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
+	const topPlayers = useMemo(() => {
+		if (!players)
+			return [];
+
+		return players.sort((a, b) => b.current_points - a.current_points).slice(0, 3);
+	}, [players]);
+
 	if (players === null || players.length === 0) {
 		return (
 			<GameCard title="Top 3/Highest Points" icon="star">
@@ -17,10 +24,6 @@ export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
 			</GameCard>
 		);
 	}
-
-	const topPlayers = useMemo(() => {
-		return players.sort((a, b) => b.current_points - a.current_points).slice(0, 3);
-	}, [players]);
 
 	return (
 		<GameCard title="Top 3/Highest Points" icon="star">
