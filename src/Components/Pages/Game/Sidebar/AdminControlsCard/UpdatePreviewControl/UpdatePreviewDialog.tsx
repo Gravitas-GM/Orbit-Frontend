@@ -23,13 +23,13 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 		setIsProcessing(true);
 
 		GamesModel.updatePreview(User!.account.id)
-		.then(r => setUpdateData(sortUpdateData(r.data)))
-		.then(() => setIsProcessing(false))
-		.catch(() => {
-			toaster.showUnhandledErrorMessage();
+			.then(r => setUpdateData(sortUpdateData(r.data)))
+			.then(() => setIsProcessing(false))
+			.catch(() => {
+				toaster.showUnhandledErrorMessage();
 
-			onClose();
-		});
+				onClose();
+			});
 	}, []);
 
 	if (processing) {

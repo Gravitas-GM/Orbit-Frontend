@@ -22,19 +22,20 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 
 	return (
 		<>
-		<Button
-			title="New Game"
-			intent={Intent.PRIMARY}
-			onClick={onNewGameClick}
-		>
-			New Game
-		</Button>
-		{showNewGameDialog &&
-			<NewGameDialog
-				onClose={closeNewGameDialog}
-				onConfirm={startNewGame}
-			/>
-		}
+			<Button
+				title="New Game"
+				intent={Intent.PRIMARY}
+				onClick={onNewGameClick}
+			>
+				New Game
+			</Button>
+
+			{showNewGameDialog &&
+				<NewGameDialog
+					onClose={closeNewGameDialog}
+					onConfirm={startNewGame}
+				/>
+			}
 		</>
 	);
 }
@@ -42,71 +43,45 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 
 interface INewGameDialogProps {
 	onClose: () => void;
-	onConfirm: (gameId: GameStartPayload) => Promise<void>;
+	onConfirm: (payload: GameStartPayload) => Promise<void>;
 }
 
 export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfirm }) => {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
-	const [processing, setIsProcessing] = useState({ list: true, start: false });
+	const [processing, setIsProcessing] = useState(false);
+	const [loading, setIsLoading] = useState(true);
 
 	const onClickStartNewGame = useCallback(async () => {
-		setIsProcessing({
-			list: false,
-			start: true
-		});
+		setIsProcessing(true);
 
-		const gameId: GameStartPayload = {
+		const gameStartPayload: GameStartPayload = {
 			catalog_id: selectedGame?.id!,
 		};
 
-		await onConfirm(gameId);
+		await onConfirm(gameStartPayload);
 
-		setIsProcessing({
-			list: false,
-			start: false
-		});
+		setIsProcessing(false);
 
 		onClose();
-	}, [selectedGame]);
+	}, [selectedGame, processing]);
 
 	useEffect(() => {
-		const loadGamesList = async () => {
-			if (processing.list)
-				return;
+		setIsLoading(true);
 
-			setIsProcessing({
-				list: true,
-				start: false
-			});
-
-			try {
-				await GameModel.list().then(response => setGamesList(response.data));
-			} catch (_) {
+		GameModel.list()
+			.then(response => setGamesList(response.data))
+			.then(() => setIsLoading(false))
+			.catch((_) => {
 				toaster.error('Could not obtain available games.');
 
 				onClose();
-
-				return;
-			}
-
-			setIsProcessing({
-				list: false,
-				start: false
 			});
-		}
-
-		setIsProcessing({
-			list: false,
-			start: false
-		});
-
-		loadGamesList();
 	}, []);
 
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
-			{processing.list ? (
+			{loading ? (
 				<div style={{ marginTop: '1rem' }}>
 					<FrameLoadingSpinner />
 				</div>
@@ -132,7 +107,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 							<Button
 								onClick={onClickStartNewGame}
 								intent={Intent.PRIMARY}
-								loading={processing.start}
+								loading={processing}
 								disabled={!selectedGame}
 							>
 								Start Game
@@ -147,9 +122,9 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 
 const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, modifiers }) => {
 	if (!modifiers.matchesPredicate)
-        return null;
+    	return null;
 
-	 return (
+	return (
 		<MenuItem
 			active={modifiers.active}
 			disabled={modifiers.disabled}
@@ -159,5 +134,5 @@ const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, 
 			roleStructure="listoption"
 			text={game.name}
 		/>
-	 );
+	);
 }

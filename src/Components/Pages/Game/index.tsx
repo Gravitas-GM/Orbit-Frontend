@@ -182,7 +182,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		toaster.notifyNextBoardResult(result);
 	}
 
-	public startNewGame = async (gameId: GameStartPayload) => {
+	public startNewGame = async (payload: GameStartPayload) => {
 		if (this.state.loading)
 			return;
 
@@ -190,10 +190,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			loading: true
 		});
 
-		let gameState: GameState | GameNotFoundResponse;
+		let gameState;
 
 		try {
-			gameState = await GamesModel.startGame(this.context!.account.id, gameId).then(response => response.data);
+			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -214,7 +214,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		let board: Board;
+		let board;
 
 		try {
 			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
