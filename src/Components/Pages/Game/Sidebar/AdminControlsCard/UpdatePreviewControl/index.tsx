@@ -35,5 +35,5 @@ export const UpdatePreviewControl: React.FC<IUpdatePreviewProps> = ({ board }) =
 				/>
 			)}
 		</>
-	)
+	);
 }

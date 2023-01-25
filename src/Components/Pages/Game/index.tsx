@@ -11,6 +11,9 @@ import { GameAnnouncement } from './Board/GameAnnouncement';
 import { GameBoard } from './Board/GameBoard';
 import { Sidebar } from './Sidebar';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
+import { boardMock } from '../../../mocks/Board';
+import { gameStateMock } from '../../../mocks/GameState';
+import { historyItemMock } from '../../../mocks/History';
 
 interface IState {
 	board: Board | null;
@@ -27,17 +30,17 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		board: null,
-		gameState: null,
-		history: [],
+		board: boardMock,
+		gameState: gameStateMock,
+		history: [historyItemMock],
 		loadingHistory: false,
 		movingPlayer: null,
-		loading: true,
+		loading: false,
 		redirect: false,
 	};
 
 	public async componentDidMount() {
-		this.fetchGameState(true);
+		// this.fetchGameState(true);
 	}
 
 	public render() {
@@ -114,7 +117,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({ loadingHistory: false });
+			this.setState({
+				loadingHistory: false
+			});
 		}
 	};
 
@@ -209,7 +214,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				loading: false
 			});
 
-			return
+			return;
 		}
 
 		let board: Board;

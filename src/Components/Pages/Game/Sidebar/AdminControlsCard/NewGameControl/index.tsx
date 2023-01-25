@@ -6,7 +6,6 @@ import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games
 import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
-import { gamesMock } from '../../../../../../mocks/Game';
 
 interface INewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
@@ -21,7 +20,7 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 		setShowNewGameDialog(true);
 	}, []);
 
-	return(
+	return (
 		<>
 		<Button
 			title="New Game"
@@ -37,7 +36,7 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 			/>
 		}
 		</>
-	)
+	);
 }
 
 
@@ -47,7 +46,7 @@ interface INewGameDialogProps {
 }
 
 export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfirm }) => {
-	const [gamesList, setGamesList] = useState<Game[]>(gamesMock);
+	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState({ list: true, start: false });
 
@@ -102,7 +101,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 			start: false
 		});
 
-		// loadGamesList();
+		loadGamesList();
 	}, []);
 
 	return (
@@ -147,9 +146,9 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 };
 
 const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, modifiers }) => {
-	if (!modifiers.matchesPredicate) {
+	if (!modifiers.matchesPredicate)
         return null;
-    }
+
 	 return (
 		<MenuItem
 			active={modifiers.active}
@@ -160,5 +159,5 @@ const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, 
 			roleStructure="listoption"
 			text={game.name}
 		/>
-	 )
+	 );
 }

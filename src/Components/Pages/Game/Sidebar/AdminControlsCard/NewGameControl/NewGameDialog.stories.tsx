@@ -27,5 +27,5 @@ const Template: ComponentStory<typeof NewGameDialog> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
 	onClose: () => null,
-	startNewGame: () => Promise.resolve(),
+	onConfirm: () => Promise.resolve(),
 };

@@ -1,4 +1,4 @@
-import { Button, Classes, Dialog, Intent, Toaster } from '@blueprintjs/core';
+import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
 import { useCallback, useState } from 'react';
 
 interface INextBoardProps {
@@ -49,7 +49,7 @@ export const ConfirmNextBoardDialog: React.FC<INextBoardDialogProps> = ({ onClos
 		await onConfirm();
 
 		setIsProcessing(false);
-	}, [onConfirm])
+	}, [onConfirm]);
 
 	return (
 		<Dialog isOpen title="Confirm move to next board" onClose={onClose}>
