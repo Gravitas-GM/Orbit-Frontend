@@ -11,6 +11,7 @@ import {PointSummary} from './Pages/PointSummary';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
+import {CatalogListPage} from './Pages/Catalog';
 
 interface IProps {
 	loading: boolean;
@@ -34,6 +35,8 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/point-summary" component={PointSummary} exact={true} />
 
 							<Route path="/game" component={GameBoardPage} />
+
+							<Route path="/catalog" component={CatalogListPage} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
