@@ -10,11 +10,11 @@ interface IUpdatePreviewProps {
 export const UpdatePreviewControl: React.FC<IUpdatePreviewProps> = ({ board }) => {
 	const [showUpdatePreviewDialog, setShowUpdatePreviewDialog] = useState(false);
 
-	const onPreviewClick = useCallback(async () => {
+	const onPreviewClick = useCallback(() => {
 		setShowUpdatePreviewDialog(true);
 	}, []);
 
-	const closePreviewDialog = useCallback(async () => {
+	const closePreviewDialog = useCallback(() => {
 		setShowUpdatePreviewDialog(false);
 	}, []);
 

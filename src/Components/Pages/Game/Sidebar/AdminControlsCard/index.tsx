@@ -12,21 +12,19 @@ interface IProps {
 }
 
 export const AdminControlsCard: React.FC<IProps> = ({ board, goToNextBoard, startNewGame }) => (
-	<>
-		<GameCard title="Admin Controls" icon="control">
-			<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
-				<UpdatePreviewControl
-					board={board}
-				/>
+	<GameCard title="Admin Controls" icon="control">
+		<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
+			<UpdatePreviewControl
+				board={board}
+			/>
 
-				<ConfirmNextBoardControl
-					goToNextBoard={goToNextBoard}
-				/>
+			<ConfirmNextBoardControl
+				goToNextBoard={goToNextBoard}
+			/>
 
-				<NewGameControl
-					startNewGame={startNewGame}
-				/>
-			</div>
-		</GameCard>
-	</>
+			<NewGameControl
+				startNewGame={startNewGame}
+			/>
+		</div>
+	</GameCard>
 );

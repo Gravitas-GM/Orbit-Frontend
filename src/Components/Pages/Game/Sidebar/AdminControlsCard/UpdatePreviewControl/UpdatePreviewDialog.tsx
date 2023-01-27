@@ -30,7 +30,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 
 				onClose();
 			});
-	}, []);
+	}, [User]);
 
 	if (processing) {
 		return (
