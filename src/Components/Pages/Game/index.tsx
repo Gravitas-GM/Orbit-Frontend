@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
-import { GamesModel, GameState, PlayerState } from '../../../Api/Game-State/Models/Games';
+import { GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState, NextBoardResult, isGameStartError } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -10,6 +10,7 @@ import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { GameAnnouncement } from './Board/GameAnnouncement';
 import { GameBoard } from './Board/GameBoard';
 import { Sidebar } from './Sidebar';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
 interface IState {
 	board: Board | null;
@@ -36,42 +37,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	public async componentDidMount() {
-		let gameState: GameState;
-
-		try {
-			gameState = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
-		}
-
-		let board: Board;
-
-		try {
-			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirect: true,
-			});
-
-			return;
-		}
-
-		const history = await this.fetchHistory();
-
-		this.setState({
-			board,
-			gameState,
-			history,
-			loading: false,
-		});
+		this.fetchGameState(true);
 	}
 
 	public render() {
@@ -91,6 +57,12 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 				<Sidebar>
 					{/*TODO: implement sidebar game cards*/}
+
+					<AdminControlsCard
+						board={this.state.board!}
+						goToNextBoard={this.goToNextBoard}
+						startNewGame={this.startNewGame}
+					/>
 
 					<LogHistoryCard
 						processing={this.state.loadingHistory}
@@ -142,7 +114,124 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({ loadingHistory: false });
+			this.setState({
+				loadingHistory: false
+			});
 		}
 	};
+
+	private fetchGameState = async (redirect: boolean) => {
+		this.setState({
+			loading: true,
+		});
+
+		let gameState: GameState;
+
+		try {
+			gameState = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			if (redirect)
+				this.setState({ redirect: true });
+
+			return;
+		}
+
+		let board: Board;
+
+		try {
+			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			if (redirect)
+				this.setState({ redirect: true });
+
+			return;
+		}
+
+		this.setState({
+			board,
+			gameState,
+			loading: false,
+		});
+	}
+
+	public goToNextBoard = async () => {
+		let result: NextBoardResult;
+
+		try {
+			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			return;
+		}
+
+		if (result === NextBoardResult.Success) {
+			try {
+				await this.fetchGameState(false);
+			} catch (_) {
+				toaster.showUnhandledErrorMessage();
+
+				return;
+			}
+		}
+
+		toaster.notifyNextBoardResult(result);
+	}
+
+	public startNewGame = async (payload: GameStartPayload) => {
+		if (this.state.loading)
+			return;
+
+		this.setState({
+			loading: true
+		});
+
+		let gameState;
+
+		try {
+			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				loading: false
+			});
+
+			return;
+		}
+
+		if (isGameStartError(gameState)) {
+			toaster.info('Game not found');
+
+			this.setState({
+				loading: false
+			});
+
+			return;
+		}
+
+		let board;
+
+		try {
+			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				loading: false
+			});
+
+			return;
+		}
+
+		this.setState({
+			board,
+			gameState,
+			loading: false,
+		});
+	}
 }
