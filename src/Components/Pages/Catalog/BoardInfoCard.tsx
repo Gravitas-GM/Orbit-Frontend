@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Card, H2, HTMLTable } from '@blueprintjs/core';
+import { Card, HTMLTable } from '@blueprintjs/core';
 import { Board } from '../../../Api/Game-Catalog/Models/Boards';
 import { formatNumber, ucwords } from '../../Utility/string';
 import './CatalogInfoCard.scss';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
-import { wrap } from 'module';
 
 interface IProps {
 	board: Board;

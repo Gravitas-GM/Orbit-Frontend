@@ -1,7 +1,7 @@
 import {Button, H2, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
+import { Game } from '../../../Api/Game-Catalog/Models/Games';
 import { GamesModel } from '../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -10,6 +10,7 @@ import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
 import { StartGameDialog } from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
+import { gameMock } from '../../../mocks/Game';
 import { Link } from 'react-router-dom';
 
 interface IRouteProps {
@@ -42,7 +43,8 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		let game: Game;
 
 		try {
-			game = await GameModel.read(idParam).then(response => response.data);
+			// game = await GameModel.read(idParam).then(response => response.data);
+			 game = gameMock
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
