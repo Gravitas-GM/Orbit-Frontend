@@ -27,7 +27,11 @@ export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, on
 
 			<div className={Classes.DIALOG_FOOTER}>
 				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button text="Cancel" onClick={onCancel} disabled={processing} />
+					<Button
+						text="Cancel"
+						onClick={onCancel}
+						loading={processing}
+					/>
 
 					<Button
 						text="Start Game"
