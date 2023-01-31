@@ -17,7 +17,7 @@ interface IState {
 
 export class CatalogListPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
-		loading: true,
+		loading: false,
 		currentPage: 1,
 		totalPages: 0,
 		games: [],
@@ -46,12 +46,12 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		const currrentPageItems = this.state.games.slice(startIndex, endIndex);
 
 		return (
-			<div style={{ display: 'flex', padding: '0  2rem', flexDirection: 'column' }}>
+			<div style={{ display: 'flex', flexDirection: 'column', width: '75vw', margin: '0 auto' }}>
 				<h1>Game Catalog</h1>
 
-				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
+				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
 					{currrentPageItems.map(game => (
-						<GameInfoCard game={game} key={game.id} />
+						<GameInfoCard game={game} key={game.id}/>
 					))}
 				</div>
 
