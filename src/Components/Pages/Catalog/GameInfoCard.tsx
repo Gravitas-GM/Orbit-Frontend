@@ -12,23 +12,23 @@ interface IProps {
 
 export const GameInfoCard: React.FC<IProps> = ({ game,  }) => {
 	return (
-		<Link to={`/catalog/${game.id}`}>
+		<Link to={`/catalog/${game.id}`} className='catalog-card-link'>
 			<Card
-				className="catalog-info-card"
+				className="catalog-info-card fixed-height"
 				key={game.id}
 				interactive={true}
 			>
-				<div style={{ display: 'flex' }}>
+				<div style={{ display: 'flex', flexDirection: 'column' }}>
 					<img
 						src={game.thumbnailUrl ?? ImageNotFound}
 						alt={`${game.name} image`}
-						width="150"
+						style={{ width: '100%' }}
 					/>
 
-					<div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 20 }}>
+					<div style={{ display: 'flex', flexDirection: 'column', padding: '1rem' }}>
 						<H2>{ucwords(game.name)}</H2>
 
-						<span>{game.description}</span>
+						<p className='catalog-card-description'>{game.description}</p >
 					</div>
 				</div>
 			</Card>

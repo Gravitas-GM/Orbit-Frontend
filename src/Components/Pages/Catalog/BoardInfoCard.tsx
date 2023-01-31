@@ -4,6 +4,7 @@ import { Board } from '../../../Api/Game-Catalog/Models/Boards';
 import { formatNumber, ucwords } from '../../Utility/string';
 import './CatalogInfoCard.scss';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
+import { wrap } from 'module';
 
 interface IProps {
 	board: Board;
@@ -15,15 +16,18 @@ export const BoardInfoCard: React.FC<IProps> = ({ board }) => {
 			className="catalog-info-card"
 			key={board.id}
 		>
-			<div style={{ display: 'flex' }}>
-				<img
-					src={board.imageUrl ?? ImageNotFound}
-					alt={`${board.name} image`}
-					width="150"
-				/>
+			<div>
+				<div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '1rem' }}>
+					<img
+						src={board.imageUrl ?? ImageNotFound}
+						alt={`${board.name} image`}
+						height="80"
+					/>
 
-				<div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 20 }}>
-					<H2>{ucwords(board.name)}</H2>
+					<h2 style={{ fontSize: '2rem', margin: 'unset', padding: '0 0 0 20px' }}>{ucwords(board.name)}</h2>
+				</div>
+
+				<div style={{ display: 'flex', flexDirection: 'column', paddingTop: 20 }}>
 
 					<HTMLTable striped={true}>
 						<thead>
