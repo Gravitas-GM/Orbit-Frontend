@@ -142,3 +142,7 @@ export class GamesModel {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
 	}
 }
+
+export function isGameStartError(value: any): value is GameNotFoundResponse {
+    return typeof value === 'object' && typeof value.error !== 'undefined';
+}
