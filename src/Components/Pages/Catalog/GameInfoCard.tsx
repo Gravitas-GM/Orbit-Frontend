@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Card, H2 } from '@blueprintjs/core';
 import { Game } from '../../../Api/Game-Catalog/Models/Games';
 import { ucwords } from '../../Utility/string';
-import './CatalogInfoCard.scss';
+import './Catalog.scss';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import { Link } from 'react-router-dom';
 
@@ -18,17 +18,17 @@ export const GameInfoCard: React.FC<IProps> = ({ game,  }) => {
 				key={game.id}
 				interactive={true}
 			>
-				<div style={{ display: 'flex', flexDirection: 'column' }}>
+				<div className="catalog-card-content">
 					<img
 						src={game.thumbnailUrl ?? ImageNotFound}
 						alt={`${game.name} image`}
 						style={{ width: '100%' }}
 					/>
 
-					<div style={{ display: 'flex', flexDirection: 'column', padding: '1rem' }}>
+					<div className="catalog-card-description">
 						<H2>{ucwords(game.name)}</H2>
 
-						<p className='catalog-card-description'>{game.description}</p >
+						<p>{game.description}</p >
 					</div>
 				</div>
 			</Card>

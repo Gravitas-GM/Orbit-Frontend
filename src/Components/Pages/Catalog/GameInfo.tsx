@@ -1,7 +1,7 @@
 import {Button, H2, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
-import { Game } from '../../../Api/Game-Catalog/Models/Games';
+import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import { GamesModel } from '../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -10,7 +10,6 @@ import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
 import { StartGameDialog } from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
-import { gameMock } from '../../../mocks/Game';
 import { Link } from 'react-router-dom';
 
 interface IRouteProps {
@@ -43,8 +42,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		let game: Game;
 
 		try {
-			// game = await GameModel.read(idParam).then(response => response.data);
-			 game = gameMock
+			game = await GameModel.read(idParam).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -68,9 +66,9 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{ display: 'flex', flexDirection: 'column', width: '75vw', margin: '0 auto', paddingTop: '1rem' }}>
-				<div style={{ marginBottom: '2rem' }}><Link to="/catalog">Catalog</Link> &gt; { ucwords(this.state.game!.name) }</div>
-				<div style={{ display: 'flex', gap: '2rem' }}>
+			<div className="game-info-container">
+				<div className="breadcrumb"><Link to="/catalog">Catalog</Link> &gt; { ucwords(this.state.game!.name) }</div>
+				<div className="game-info-content">
 					<img
 						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
@@ -81,11 +79,10 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					<div>
 						<H2>{ucwords(this.state.game!.name)}</H2>
 
-						<p style={{ paddingBottom: 20, fontSize: '1.2rem', lineHeight: '150%' }}>
+						<p className="game-info-description">
 							{this.state.game!.description}
 						</p>
 
-						{/*TODO: Implement start game confirmation dialog*/}
 						<Button
 							text="Start Game"
 							intent={Intent.PRIMARY}

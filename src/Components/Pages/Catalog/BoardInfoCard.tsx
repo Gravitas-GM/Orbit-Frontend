@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Card, HTMLTable } from '@blueprintjs/core';
 import { Board } from '../../../Api/Game-Catalog/Models/Boards';
 import { formatNumber, ucwords } from '../../Utility/string';
-import './CatalogInfoCard.scss';
+import './Catalog.scss';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
 
 interface IProps {
@@ -16,17 +16,17 @@ export const BoardInfoCard: React.FC<IProps> = ({ board }) => {
 			key={board.id}
 		>
 			<div>
-				<div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '1rem' }}>
+				<div className="board-card-content">
 					<img
 						src={board.imageUrl ?? ImageNotFound}
 						alt={`${board.name} image`}
 						height="80"
 					/>
 
-					<h2 style={{ fontSize: '2rem', margin: 'unset', padding: '0 0 0 20px' }}>{ucwords(board.name)}</h2>
+					<h2>{ucwords(board.name)}</h2>
 				</div>
 
-				<div style={{ display: 'flex', flexDirection: 'column', paddingTop: 20 }}>
+				<div className="table-container">
 
 					<HTMLTable striped={true}>
 						<thead>

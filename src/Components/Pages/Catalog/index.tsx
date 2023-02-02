@@ -46,25 +46,16 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		const currrentPageItems = this.state.games.slice(startIndex, endIndex);
 
 		return (
-			<div style={{ display: 'flex', flexDirection: 'column', width: '75vw', margin: '0 auto' }}>
+			<div className="catalog-container">
 				<h1>Game Catalog</h1>
 
-				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+				<div className="catalog-games-list">
 					{currrentPageItems.map(game => (
 						<GameInfoCard game={game} key={game.id}/>
 					))}
 				</div>
 
-				<div
-					style={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						padding: '2rem',
-						width: '100%',
-						gap: '2rem',
-					}}
-				>
+				<div className="pagination-container">
 					<Button
 						disabled={this.state.currentPage === 1}
 						onClick={this.onClickBack}
