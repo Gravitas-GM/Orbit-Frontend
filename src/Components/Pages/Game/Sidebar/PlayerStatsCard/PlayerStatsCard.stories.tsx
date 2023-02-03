@@ -22,3 +22,8 @@ Basic.args = {
 		user_name: 'John Doe',
 	},
 };
+
+export const InvalidData = Template.bind({});
+InvalidData.args = {
+	player: null,
+};

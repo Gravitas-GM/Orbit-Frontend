@@ -10,7 +10,10 @@ import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { GameAnnouncement } from './Board/GameAnnouncement';
 import { GameBoard } from './Board/GameBoard';
 import { Sidebar } from './Sidebar';
+import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
+import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
+
 
 interface IState {
 	board: Board | null;
@@ -18,6 +21,7 @@ interface IState {
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
 	movingPlayer: PlayerState | null;
+	currentPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
 }
@@ -32,6 +36,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		history: [],
 		loadingHistory: false,
 		movingPlayer: null,
+		currentPlayer: null,
 		loading: true,
 		redirect: false,
 	};
@@ -47,30 +52,41 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{ display: 'grid', gridTemplateColumns: '5fr 2fr' }}>
+			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
 					<GameAnnouncement player={this.state.movingPlayer} />
 				</div>
+				<div>
+					<Sidebar>
+						{/*TODO: implement sidebar game cards*/}
+						<LogHistoryCard
+							processing={this.state.loadingHistory}
+							history={this.state.history}
+							refresh={this.loadHistory}
+							loadMore={this.loadMoreHistory}
+						/>
 
-				<Sidebar>
-					{/*TODO: implement sidebar game cards*/}
+						<TopRankedPlayersCard players={this.state.gameState!.players} />
 
-					<AdminControlsCard
-						board={this.state.board!}
-						goToNextBoard={this.goToNextBoard}
-						startNewGame={this.startNewGame}
-					/>
+						<PlayerStatsCard player={this.state.currentPlayer} />
 
-					<LogHistoryCard
-						processing={this.state.loadingHistory}
-						history={this.state.history}
-						refresh={this.loadHistory}
-						loadMore={this.loadMoreHistory}
-					/>
-				</Sidebar>
+						<AdminControlsCard
+							board={this.state.board!}
+							goToNextBoard={this.goToNextBoard}
+							startNewGame={this.startNewGame}
+						/>
+
+						<LogHistoryCard
+							processing={this.state.loadingHistory}
+							history={this.state.history}
+							refresh={this.loadHistory}
+							loadMore={this.loadMoreHistory}
+						/>
+					</Sidebar>
+				</div>
 			</div>
 		);
 	}
@@ -120,6 +136,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
+
+	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
+		return players.find(player => player.hub_id === this.context!.id) || null;
+	}
+
 	private fetchGameState = async (redirect: boolean) => {
 		this.setState({
 			loading: true,
@@ -151,9 +172,16 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
+		const history = await this.fetchHistory();
+
+		const currentPlayer = this.getCurrentPlayer(gameState.players);
+
+
 		this.setState({
 			board,
 			gameState,
+			history,
+			currentPlayer,
 			loading: false,
 		});
 	}
