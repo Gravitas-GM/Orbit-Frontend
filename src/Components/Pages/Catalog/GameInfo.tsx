@@ -10,6 +10,7 @@ import { ucwords } from '../../Utility/string';
 import { BoardInfoCard } from './BoardInfoCard';
 import { StartGameDialog } from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
+import { Link } from 'react-router-dom';
 
 interface IRouteProps {
 	game: string;
@@ -65,22 +66,23 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{ display: 'flex', flexDirection: 'column' }}>
-				<div style={{ display: 'flex' }}>
+			<div className="game-info-container">
+				<div className="breadcrumb"><Link to="/catalog">Catalog</Link> &gt; { ucwords(this.state.game!.name) }</div>
+				<div className="game-info-content">
 					<img
 						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
-						width="150"
+						width="450"
+						style={{ borderRadius: '0.25rem'}}
 					/>
 
-					<div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 20 }}>
+					<div>
 						<H2>{ucwords(this.state.game!.name)}</H2>
 
-						<span style={{ paddingBottom: 20 }}>
+						<p className="game-info-description">
 							{this.state.game!.description}
-						</span>
+						</p>
 
-						{/*TODO: Implement start game confirmation dialog*/}
 						<Button
 							text="Start Game"
 							intent={Intent.PRIMARY}
@@ -90,7 +92,10 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					</div>
 				</div>
 
-				<div style={{ display: 'flex', paddingTop: 20 }}>
+				<h3 style={{ fontSize: '2rem', paddingTop: 20 }}>Boards</h3>
+
+				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+
 					{this.state.game!.boards.map(board => (
 						<BoardInfoCard board={board} key={board.id} />
 					))}
