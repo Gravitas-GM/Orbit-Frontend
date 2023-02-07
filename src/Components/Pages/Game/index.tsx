@@ -22,7 +22,6 @@ import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
 import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
-
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
@@ -73,7 +72,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				</div>
 				<div>
 					<Sidebar>
-						{/*TODO: implement sidebar game cards*/}
 						<LogHistoryCard
 							processing={this.state.loadingHistory}
 							history={this.state.history}
@@ -147,7 +145,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			});
 		}
 	};
-
 
 	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
 		return players.find(player => player.hub_id === this.context!.id) || null;
