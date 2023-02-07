@@ -72,8 +72,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 					</Button>
 
 					<span>
-						{currentPage}
-						{totalPages > 0 && `/${totalPages}`}
+						{currentPage}/{totalPages}
 					</span>
 
 					<Button
