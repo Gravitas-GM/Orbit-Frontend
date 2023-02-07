@@ -5,6 +5,13 @@
 	margin: 0 auto;
 }
 
+.catalog-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
 .catalog-games-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -50,6 +57,12 @@
 		-webkit-box-orient: vertical;
 		display: -webkit-box;
 	}
+}
+
+.board-list-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 1rem;
 }
 
 .board-card-content {

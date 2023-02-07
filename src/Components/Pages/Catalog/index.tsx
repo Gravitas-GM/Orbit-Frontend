@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
-import { Button } from '@blueprintjs/core';
+import { Button, InputGroup } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
 import { GameInfoCard } from './GameInfoCard';
 
@@ -11,6 +11,7 @@ const ITEMS_PER_PAGE = 8;
 interface IState {
 	loading: boolean;
 	games: Game[];
+	filteredGames: Game[];
 	currentPage: number;
 	totalPages: number;
 }
@@ -21,6 +22,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		currentPage: 1,
 		totalPages: 0,
 		games: [],
+		filteredGames: [],
 	};
 
 	public async componentDidMount() {
@@ -43,17 +45,22 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		const { currentPage, totalPages } = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
-		const currrentPageItems = this.state.games.slice(startIndex, endIndex);
+		const currrentPageItems = this.state.filteredGames.slice(startIndex, endIndex);
 
 		return (
 			<div className="catalog-container">
-				<h1>Game Catalog</h1>
+				<header className="catalog-header">
+					<h1>Game Catalog</h1>
 
-				<div className="catalog-games-list">
-					{currrentPageItems.map(game => (
-						<GameInfoCard game={game} key={game.id}/>
-					))}
-				</div>
+        			<InputGroup
+						type="search"
+						leftIcon="search"
+						placeholder="Search catalog"
+						onChange={this.onSearchChange}
+					/>
+				</header>
+
+				<RenderPageItems items={currrentPageItems} />
 
 				<div className="pagination-container">
 					<Button
@@ -65,7 +72,8 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 					</Button>
 
 					<span>
-						{currentPage}/{totalPages}
+						{currentPage}
+						{totalPages > 0 && `/${totalPages}`}
 					</span>
 
 					<Button
@@ -125,8 +133,48 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 
 		this.setState({
 			games,
+			filteredGames: games,
 			totalPages,
 			loading: false,
 		});
 	};
+
+	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (event.currentTarget.value === '') {
+			const totalPages = Math.ceil(this.state.games.length / ITEMS_PER_PAGE);
+
+			this.setState({
+				filteredGames: this.state.games,
+				currentPage: 1,
+				totalPages,
+			});
+
+			return;
+		}
+
+		const filteredGames = this.state.games.filter(game =>
+			game.name.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase())
+		);
+
+		const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
+
+		this.setState({
+			filteredGames,
+			currentPage: 1,
+			totalPages,
+		});
+	};
 }
+
+const RenderPageItems: React.FC<{items: Game[]}> = ({items}) => {
+	if (items.length === 0)
+		return <NonIdealState title="No results" />;
+
+	return (
+		<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
+			{items.map(game => (
+				<GameInfoCard game={game} key={game.id} />
+			))}
+		</div>
+	);
+};

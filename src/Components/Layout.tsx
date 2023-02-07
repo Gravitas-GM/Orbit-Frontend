@@ -19,7 +19,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div style={{width: '100%'}}>
+		<div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Spinner intent={Intent.PRIMARY} />
 		</div>
 	) : (
