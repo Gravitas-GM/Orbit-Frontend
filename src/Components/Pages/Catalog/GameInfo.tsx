@@ -94,8 +94,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 				<h3 style={{ fontSize: '2rem', paddingTop: 20 }}>Boards</h3>
 
-				<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
-
+				<div className="board-list-container">
 					{this.state.game!.boards.map(board => (
 						<BoardInfoCard board={board} key={board.id} />
 					))}
