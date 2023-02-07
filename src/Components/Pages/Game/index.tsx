@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
 import {
-	GameNotFoundResponse,
 	GamesModel,
 	GameStartPayload,
 	GameState,
