@@ -1,7 +1,16 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
-import { GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState, NextBoardResult, isGameStartError } from '../../../Api/Game-State/Models/Games';
+import {
+	GameNotFoundResponse,
+	GamesModel,
+	GameStartPayload,
+	GameState,
+	PlayerState,
+	NextBoardResult,
+	isGameStartError,
+	UpdateResultType, PlayerUpdate,
+} from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -20,10 +29,12 @@ interface IState {
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
-	movingPlayer: PlayerState | null;
+	playerUpdates: PlayerUpdate[];
+	movingPlayer: PlayerUpdate | null;
 	currentPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
+	processing: boolean;
 }
 
 export class GameBoardPage extends React.PureComponent<{}, IState> {
@@ -33,12 +44,14 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
+		playerUpdates: [],
 		history: [],
 		loadingHistory: false,
 		movingPlayer: null,
 		currentPlayer: null,
 		loading: true,
 		redirect: false,
+		processing: false,
 	};
 
 	public async componentDidMount() {
@@ -57,7 +70,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
-					<GameAnnouncement player={this.state.movingPlayer} />
+					<GameAnnouncement player={this.state.movingPlayer} stage={this.getMovingPlayerStage()} />
 				</div>
 				<div>
 					<Sidebar>
@@ -262,4 +275,64 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			loading: false,
 		});
 	}
+
+	// TODO: Called when Sidebar "Start" button is clicked to load all the updated players
+	private onStartPlayerUpdateClick = async () => {
+		// TODO: This processing bool should be passed to the Sidebar "Start" button to disable clicking it again
+		this.setState({
+			processing: true,
+		});
+
+		let playerUpdates: PlayerUpdate[] = [];
+
+		try {
+			playerUpdates = await GamesModel.update(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		toaster.success('Game is ready to play!');
+
+		this.setState({
+			playerUpdates: playerUpdates.filter(player =>
+				player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
+			),
+			processing: false,
+		});
+	};
+
+	// TODO: Called from Sidebar "Next" button
+	private onNextPlayerClick = () => {
+		let nextPlayerIndex = 0;
+
+		if (this.state.movingPlayer)
+			nextPlayerIndex = this.state.playerUpdates.indexOf(this.state.movingPlayer) + 1;
+
+		let movingPlayer = this.state.playerUpdates[nextPlayerIndex];
+
+		this.setState({
+			movingPlayer,
+		});
+
+		if (movingPlayer.type === UpdateResultType.CREATED || movingPlayer.type === UpdateResultType.MOVED) {
+			const historyItem = movingPlayer.history_item;
+
+			this.setState(state => ({
+				history: state.history ? [...state.history, historyItem] : [historyItem],
+			}));
+		}
+	};
+
+	private getMovingPlayerStage = () => {
+		if (this.state.movingPlayer && this.state.movingPlayer.type !== UpdateResultType.DELETED)
+			return this.state.board!.stages[this.state.movingPlayer.player.current_stage_index];
+
+		return null;
+	};
 }
