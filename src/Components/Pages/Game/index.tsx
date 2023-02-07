@@ -53,7 +53,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	public async componentDidMount() {
-		this.fetchGameState(true);
+		await this.fetchGameState(true);
 	}
 
 	public render() {
