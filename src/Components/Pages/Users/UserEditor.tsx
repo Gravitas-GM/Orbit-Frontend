@@ -105,7 +105,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return <FrameLoadingSpinner />;
 
 		return (
-			<>
+			<div className="gm-page-wrapper">
 				<div className="settings-title-container">
 					<H2>{renderUserName(this.state.user!)}</H2>
 
@@ -173,7 +173,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						onSubmit={this.onAddPointsDialogSubmit}
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 

@@ -50,7 +50,11 @@ class Login extends React.PureComponent<IProps, IState> {
 
 				<form method="post" onSubmit={this.onLoginSubmit}>
 					<FormGroup label="Email Address">
-						<InputGroup value={this.state.emailAddress} onChange={this.onEmailAddressChange} />
+						<InputGroup
+							value={this.state.emailAddress}
+							onChange={this.onEmailAddressChange}
+							autoFocus
+						 />
 					</FormGroup>
 
 					<FormGroup label="Password">
