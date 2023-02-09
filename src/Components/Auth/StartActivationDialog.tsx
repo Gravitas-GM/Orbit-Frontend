@@ -42,7 +42,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 							failures={this.state.validationFailures}
 						>
 							<InputGroup
-								autoFocus
+								autoFocus={true}
 								value={this.state.emailAddress}
 								onChange={this.onEmailAddressChange}
 							/>

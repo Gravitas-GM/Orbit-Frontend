@@ -53,7 +53,7 @@ class Login extends React.PureComponent<IProps, IState> {
 						<InputGroup
 							value={this.state.emailAddress}
 							onChange={this.onEmailAddressChange}
-							autoFocus
+							autoFocus={true}
 						 />
 					</FormGroup>
 

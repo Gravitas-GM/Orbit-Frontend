@@ -57,7 +57,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 						failures={this.state.validationFailures}
 					>
 						<InputGroup
-							autoFocus
+							autoFocus={true}
 							type="password"
 							name="password"
 							value={this.state.password}
