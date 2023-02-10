@@ -74,15 +74,8 @@ export const NavHeader: React.FC<IProps> = props => {
 
 											<Link to="/leaderboard" className="plain-link">
 												<MenuItem
-													icon="list"
-													text="Leaderboard"
-												/>
-											</Link>
-
-											<Link to="/point-summary" className="plain-link">
-												<MenuItem
 													icon="properties"
-													text="Point Summary"
+													text="Leaderboard"
 													tagName="span"
 												/>
 											</Link>
