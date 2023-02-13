@@ -41,7 +41,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		return (
 			<div className="gm-page-wrapper">
 				<div className="settings-title-container">
-					<H2>Point Summary <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
+					<H2>Leaderboard <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
 
 					<AnchorButton
 						text="Download"

@@ -32,7 +32,7 @@ export const Layout: React.FC<IProps> = props => (
 						<Switch>
 							<Route path="/" component={Home} exact={true} />
 
-							<Route path="/point-summary" component={PointSummary} exact={true} />
+							<Route path="/leaderboard" component={PointSummary} exact={true} />
 
 							<Route path="/game" component={GameBoardPage} />
 
