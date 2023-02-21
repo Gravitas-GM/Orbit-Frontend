@@ -328,7 +328,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	private getMovingPlayerStage = () => {
-		if (this.state.movingPlayer && this.state.movingPlayer.type !== UpdateResultType.DELETED)
+		if (this.state.movingPlayer)
 			return this.state.board!.stages[this.state.movingPlayer.player.current_stage_index];
 
 		return null;

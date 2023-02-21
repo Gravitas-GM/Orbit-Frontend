@@ -13,10 +13,6 @@ interface IProps {
 }
 
 export const GameAnnouncement: React.FC<IProps> = ({ player, stage }) => {
-	// TODO: this is not very clean... Looks into another solution /Larry
-	if (player?.type === UpdateResultType.DELETED)
-		return <FrameLoadingSpinner />;
-
 	return (
 		<div
 			className={classNames('game-announcement-container', player && 'player-movement-toast')}
