@@ -8,7 +8,8 @@ import {
 	PlayerState,
 	NextBoardResult,
 	isGameStartError,
-	UpdateResultType, PlayerUpdate,
+	UpdateResultType,
+	PlayerUpdate,
 } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
