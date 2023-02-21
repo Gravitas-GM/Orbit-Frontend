@@ -67,11 +67,15 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
 					<GameAnnouncement player={this.state.movingPlayer} stage={this.getMovingPlayerStage()} />
 				</div>
 				<div>
-					<Sidebar>
+					<Sidebar
+						processing={this.state.processing}
+						isNextButton={this.state.playerUpdates.length > 0}
+						onStartClick={this.onStartPlayerUpdateClick}
+						onNextClick={this.onNextPlayerClick}
+					>
 						<LogHistoryCard
 							processing={this.state.loadingHistory}
 							history={this.state.history}
@@ -272,9 +276,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 	}
 
-	// TODO: Called when Sidebar "Start" button is clicked to load all the updated players
 	private onStartPlayerUpdateClick = async () => {
-		// TODO: This processing bool should be passed to the Sidebar "Start" button to disable clicking it again
 		this.setState({
 			processing: true,
 		});
@@ -303,7 +305,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	// TODO: Called from Sidebar "Next" button
 	private onNextPlayerClick = () => {
 		let nextPlayerIndex = 0;
 
