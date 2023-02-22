@@ -1,18 +1,26 @@
 import {H1, H3} from '@blueprintjs/core';
 import * as React from 'react';
-import {Stage} from '../../../../Api/Game-Catalog/Models/Stages';
 import {PlayerUpdate, UpdateResultType} from '../../../../Api/Game-State/Models/Games';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {classNames} from '../../../Utility/dom';
 import {ucwords} from '../../../Utility/string';
 import './GameAnnouncement.scss';
 
-interface IProps {
-	player: PlayerUpdate | null;
-	stage: Stage | null;
+function getPlayerStageName(player?: PlayerUpdate | null) {
+	if (!player)
+		return 'Stage Name';
+
+	if (player.type === UpdateResultType.MOVED)
+		return ucwords(player.new_stage.stage.name);
+
+	if (player.type === UpdateResultType.CREATED)
+		return ucwords(player.initial_stage.name);
 }
 
-export const GameAnnouncement: React.FC<IProps> = ({ player, stage }) => {
+interface IProps {
+	player: PlayerUpdate | null;
+}
+
+export const GameAnnouncement: React.FC<IProps> = ({ player }) => {
 	return (
 		<div
 			className={classNames('game-announcement-container', player && 'player-movement-toast')}
@@ -23,7 +31,7 @@ export const GameAnnouncement: React.FC<IProps> = ({ player, stage }) => {
 
 				<H3>has moved to</H3>
 
-				<H1>{ucwords(stage?.name ?? 'Stage Name')}</H1>
+				<H1>{getPlayerStageName(player)}</H1>
 			</div>
 		</div>
 	);
