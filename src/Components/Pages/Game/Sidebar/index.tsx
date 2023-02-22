@@ -12,7 +12,9 @@ interface IProps {
 
 export const Sidebar: React.FC<IProps> = props => (
 	<aside className="gm-sidebar">
-		<div>{props.children}</div>
+		<div style={{paddingBottom: 15}}>
+			{props.children}
+		</div>
 
 		<Button
 			intent={Intent.PRIMARY}
