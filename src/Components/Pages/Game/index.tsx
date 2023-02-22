@@ -190,7 +190,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		const currentPlayer = this.getCurrentPlayer(gameState.players);
 
-
 		this.setState({
 			board,
 			gameState,
