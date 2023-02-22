@@ -48,17 +48,5 @@ Basic.args = {
 			timestamp: new Date(),
 			content: 'Test History Item',
 		},
-	},
-	stage: {
-		id: 1,
-		name: 'The Shire',
-		board: 1,
-		requiredPoints: 5,
-		boardRegion: {
-			x: 30,
-			y: 50,
-			width: 100,
-			height: 150,
-		},
-	},
+	}
 };
