@@ -68,7 +68,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					<GameAnnouncement player={this.state.movingPlayer} stage={this.getMovingPlayerStage()} />
+					<GameAnnouncement player={this.state.movingPlayer} />
 				</div>
 				<div>
 					<Sidebar
@@ -325,12 +325,5 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				history: state.history ? [...state.history, historyItem] : [historyItem],
 			}));
 		}
-	};
-
-	private getMovingPlayerStage = () => {
-		if (this.state.movingPlayer)
-			return this.state.board!.stages[this.state.movingPlayer.player.current_stage_index];
-
-		return null;
 	};
 }
