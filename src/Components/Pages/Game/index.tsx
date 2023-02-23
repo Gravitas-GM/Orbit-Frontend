@@ -9,7 +9,8 @@ import {
 	NextBoardResult,
 	isGameStartError,
 	UpdateResultType,
-	PlayerUpdate,
+	PlayerCreated,
+	PlayerMoved,
 } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
@@ -23,13 +24,15 @@ import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
 import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
+export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
+
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
-	playerUpdates: PlayerUpdate[];
-	movingPlayer: PlayerUpdate | null;
+	playerAnnouncements: PlayerAnnouncement[];
+	movingPlayer: PlayerAnnouncement | null;
 	currentPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
@@ -43,7 +46,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
-		playerUpdates: [],
+		playerAnnouncements: [],
 		history: [],
 		loadingHistory: false,
 		movingPlayer: null,
@@ -70,10 +73,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 					<GameAnnouncement player={this.state.movingPlayer} />
 				</div>
+
 				<div>
 					<Sidebar
 						processing={this.state.processing}
-						isNextButton={this.state.playerUpdates.length > 0}
+						isNextButton={this.state.playerAnnouncements.length > 0}
 						onStartClick={this.onStartPlayerUpdateClick}
 						onNextClick={this.onNextPlayerClick}
 					>
@@ -281,10 +285,15 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		let playerUpdates: PlayerUpdate[] = [];
+
+		let playerAnnouncements: PlayerAnnouncement[] = [];
 
 		try {
-			playerUpdates = await GamesModel.update(this.context!.account.id).then(response => response.data);
+			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
+				response => response.data.filter(player =>
+					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
+				) as PlayerAnnouncement[]
+			);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -297,32 +306,27 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		toaster.success('Game is ready to play!');
 
+
 		this.setState({
-			playerUpdates: playerUpdates.filter(player =>
-				player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
-			),
+			playerAnnouncements,
 			processing: false,
 		});
 	};
 
 	private onNextPlayerClick = () => {
-		let nextPlayerIndex = 0;
+		let movingPlayer = this.state.playerAnnouncements.pop() ?? null;
 
-		if (this.state.movingPlayer)
-			nextPlayerIndex = this.state.playerUpdates.indexOf(this.state.movingPlayer) + 1;
+		if (!movingPlayer) {
+			toaster.success('All players moved!');
 
-		let movingPlayer = this.state.playerUpdates[nextPlayerIndex];
-
-		this.setState({
-			movingPlayer,
-		});
-
-		if (movingPlayer.type === UpdateResultType.CREATED || movingPlayer.type === UpdateResultType.MOVED) {
-			const historyItem = movingPlayer.history_item;
-
-			this.setState(state => ({
-				history: state.history ? [...state.history, historyItem] : [historyItem],
-			}));
+			return;
 		}
+
+		const historyItem = movingPlayer.history_item;
+
+		this.setState(state => ({
+			movingPlayer,
+			history: state.history ? [...state.history, historyItem] : [historyItem],
+		}));
 	};
 }
