@@ -6,6 +6,7 @@ import { UserContext } from "../../../../../../Session";
 import { FrameLoadingSpinner } from "../../../../../FrameLoadingSpinner";
 import { PreviewRow } from "./PreviewRow";
 import * as toaster from '../../../../../../Toaster';
+import './UpdatePreviewDialog.scss';
 
 interface IUpdatePreviewDialogProps {
 	onClose: () => void;
@@ -34,8 +35,8 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 
 	if (processing) {
 		return (
-			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
-				<div style={{ marginTop: '1rem' }}>
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
+				<div style={{ margin: '1rem' }}>
 					<FrameLoadingSpinner />
 				</div>
 			</Dialog>
@@ -44,7 +45,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 
 	if (!updateData) {
 		return (
-			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}  className="gm-dialog-large">
 				<NonIdealState
 					title="No preview data available"
 					action={(
@@ -59,8 +60,8 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 		);
 	} else {
 		return (
-			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}>
-				<div style={{ display: 'flex', flexDirection: 'column', padding: '1rem' }}>
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}  className="gm-dialog-large">
+				<div className="table-container">
 					<HTMLTable striped>
 						<thead>
 							<tr>
@@ -84,10 +85,6 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 						</tbody>
 					</HTMLTable>
 				</div>
-
-				<Button onClick={onClose} intent={Intent.PRIMARY} style={{ margin: '0 1rem' }}>
-					Close
-				</Button>
 			</Dialog>
 		);
 	}
