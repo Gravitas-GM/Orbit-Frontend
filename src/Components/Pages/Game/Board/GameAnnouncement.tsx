@@ -1,11 +1,12 @@
 import {H1, H3} from '@blueprintjs/core';
 import * as React from 'react';
-import {PlayerUpdate, UpdateResultType} from '../../../../Api/Game-State/Models/Games';
+import {UpdateResultType} from '../../../../Api/Game-State/Models/Games';
 import {classNames} from '../../../Utility/dom';
 import {ucwords} from '../../../Utility/string';
 import './GameAnnouncement.scss';
+import {PlayerAnnouncement} from '../index';
 
-function getPlayerStageName(player?: PlayerUpdate | null) {
+function getPlayerStageName(player?: PlayerAnnouncement | null) {
 	if (!player)
 		return 'Stage Name';
 
@@ -17,7 +18,7 @@ function getPlayerStageName(player?: PlayerUpdate | null) {
 }
 
 interface IProps {
-	player: PlayerUpdate | null;
+	player: PlayerAnnouncement | null;
 }
 
 export const GameAnnouncement: React.FC<IProps> = ({ player }) => {
