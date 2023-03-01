@@ -37,7 +37,7 @@ export const NavHeader: React.FC<IProps> = props => {
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
 						<>
-							<Navbar id="nav-header" className={Classes.NAVBAR}>
+							<Navbar id="nav-header" className={Classes.NAVBAR} fixedToTop={true}>
 								<Navbar.Group align={Alignment.LEFT}>
 									<Navbar.Heading>
 										<Link to="/" className="plain-link">Happy Orbit</Link>
