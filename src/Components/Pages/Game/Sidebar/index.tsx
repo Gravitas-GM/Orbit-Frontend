@@ -12,16 +12,14 @@ interface IProps {
 
 export const Sidebar: React.FC<IProps> = props => (
 	<aside className="gm-sidebar">
-		<div style={{paddingBottom: 15}}>
-			{props.children}
-		</div>
+		<div>{props.children}</div>
 
 		<Button
 			intent={Intent.PRIMARY}
-			onClick={props.isNextButton ? props.onStartClick : props.onNextClick}
+			onClick={props.isNextButton ? props.onNextClick : props.onStartClick}
 			large
 		>
-			{props.isNextButton ? 'Start' : 'Next'} <Icon icon="caret-right" size={IconSize.STANDARD} />
+			{props.isNextButton ? 'Next' : 'Start'} <Icon icon="caret-right" size={IconSize.STANDARD} />
 		</Button>
 	</aside>
 );

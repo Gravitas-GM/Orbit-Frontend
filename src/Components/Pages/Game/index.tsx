@@ -77,7 +77,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div>
 					<Sidebar
 						processing={this.state.processing}
-						isNextButton={this.state.playerAnnouncements.length > 0}
+						isNextButton={this.state.playerAnnouncements.length > 1}
 						onStartClick={this.onStartPlayerUpdateClick}
 						onNextClick={this.onNextPlayerClick}
 					>
@@ -96,13 +96,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 							board={this.state.board!}
 							goToNextBoard={this.goToNextBoard}
 							startNewGame={this.startNewGame}
-						/>
-
-						<LogHistoryCard
-							processing={this.state.loadingHistory}
-							history={this.state.history}
-							refresh={this.loadHistory}
-							loadMore={this.loadMoreHistory}
 						/>
 					</Sidebar>
 				</div>
@@ -285,7 +278,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-
 		let playerAnnouncements: PlayerAnnouncement[] = [];
 
 		try {
@@ -305,7 +297,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 
 		toaster.success('Game is ready to play!');
-
 
 		this.setState({
 			playerAnnouncements,
