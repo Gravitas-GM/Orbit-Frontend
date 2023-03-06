@@ -8,7 +8,7 @@ export default {
 	parameters: {
 		mockData: [
 			{
-				url: 'http://catalog.test.api.happyorbit.com/games',
+				url: `${process.env.GAME_CATALOG_URL}/games`,
 				method: 'GET',
 				status: 200,
 				response: gamesMock,

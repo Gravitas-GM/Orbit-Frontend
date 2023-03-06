@@ -10,35 +10,35 @@ export default {
 	parameters: {
 		mockData: [
 			{
-				url: 'http://points.test.api.happyorbit.com/sources/account/0',
+				url: `${process.env.POINT_TRACKING_URL}/sources/account/0`,
 				method: 'GET',
 				status: 200,
 				response: pointSourceItemsMock,
 				delay: 1500,
 			},
 			{
-				url: 'http://points.test.api.happyorbit.com/sources/account/0',
+				url: `${process.env.POINT_TRACKING_URL}/sources/account/0`,
 				method: 'POST',
 				status: 200,
 				response: pointSourceItemsMock[0],
 				delay: 1500,
 			},
 			{
-				url: 'http://hub.test.api.happyorbit.com/users',
+				url: `${process.env.HUB_URL}/users`,
 				method: 'GET',
 				status: 200,
 				response: [userMock],
 				delay: 1500,
 			},
 			{
-				url: 'http://points.test.api.happyorbit.com/points/users/0',
+				url: `${process.env.POINT_TRACKING_URL}/points/users/0`,
 				method: 'PUT',
 				status: 200,
 				response: [userMock],
 				delay: 1500,
 			},
 			{
-				url: 'http://points.test.api.happyorbit.com/sources/0',
+				url: `${process.env.POINT_TRACKING_URL}/sources/0`,
 				method: 'DELETE',
 				status: 200,
 				response: pointSourceItemsMock[0],

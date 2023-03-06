@@ -9,7 +9,7 @@ export default {
 	parameters: {
 		mockData: [
 			{
-				url: 'http://game.test.api.happyorbit.com/games/accounts/0/update',
+				url: `${process.env.GAME_STATE_URL}/games/accounts/0/update`,
 				method: 'GET',
 				status: 200,
 				response: playerUpdateMock,
