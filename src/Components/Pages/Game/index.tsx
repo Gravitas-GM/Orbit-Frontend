@@ -274,6 +274,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	private onStartPlayerUpdateClick = async () => {
+		if (this.state.processing)
+			return;
+
 		this.setState({
 			processing: true,
 		});
