@@ -18,21 +18,21 @@ function getPlayerStageName(player?: PlayerAnnouncement | null) {
 }
 
 interface IProps {
-	player: PlayerAnnouncement | null;
+	playerAnnouncement: PlayerAnnouncement | null;
 }
 
-export const GameAnnouncement: React.FC<IProps> = ({ player }) => {
+export const GameAnnouncement: React.FC<IProps> = ({ playerAnnouncement }) => {
 	return (
 		<div
-			className={classNames('game-announcement-container', player && 'player-movement-toast')}
-			key={player?.player.hub_id}
+			className={classNames('game-announcement-container', playerAnnouncement && 'player-movement-toast')}
+			key={playerAnnouncement?.player.hub_id}
 		>
 			<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', margin: 'auto'}}>
-				<H1>{ucwords(player?.player.user_name ?? 'Player Name')}</H1>
+				<H1>{ucwords(playerAnnouncement?.player.user_name ?? 'Player Name')}</H1>
 
 				<H3>has moved to</H3>
 
-				<H1>{getPlayerStageName(player)}</H1>
+				<H1>{getPlayerStageName(playerAnnouncement)}</H1>
 			</div>
 		</div>
 	);

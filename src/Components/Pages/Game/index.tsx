@@ -71,7 +71,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					<GameAnnouncement player={this.state.movingPlayer} />
+					<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
 				</div>
 
 				<div>
