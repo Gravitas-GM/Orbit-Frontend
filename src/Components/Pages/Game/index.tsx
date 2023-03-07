@@ -77,9 +77,12 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div>
 					<Sidebar
 						processing={this.state.processing}
-						isNextButton={this.state.playerAnnouncements.length > 1}
-						onStartClick={this.onStartPlayerUpdateClick}
-						onNextClick={this.onNextPlayerClick}
+						buttonLabel={this.state.playerAnnouncements.length === 0 ? 'Start' : 'Next'}
+						onButtonClick={(
+							this.state.playerAnnouncements.length === 0
+								? this.onStartPlayerUpdateClick
+								: this.onNextPlayerClick
+						)}
 					>
 						<LogHistoryCard
 							processing={this.state.loadingHistory}

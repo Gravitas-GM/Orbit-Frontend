@@ -5,9 +5,8 @@ import './Sidebar.scss';
 interface IProps {
 	children: React.ReactNode;
 	processing: boolean;
-	isNextButton: boolean;
-	onStartClick: () => void;
-	onNextClick: () => void;
+	buttonLabel: string;
+	onButtonClick: () => void;
 }
 
 export const Sidebar: React.FC<IProps> = props => (
@@ -16,10 +15,10 @@ export const Sidebar: React.FC<IProps> = props => (
 
 		<Button
 			intent={Intent.PRIMARY}
-			onClick={props.isNextButton ? props.onNextClick : props.onStartClick}
+			onClick={props.onButtonClick}
 			large
 		>
-			{props.isNextButton ? 'Next' : 'Start'} <Icon icon="caret-right" size={IconSize.STANDARD} />
+			{props.buttonLabel} <Icon icon="caret-right" size={IconSize.STANDARD} />
 		</Button>
 	</aside>
 );
