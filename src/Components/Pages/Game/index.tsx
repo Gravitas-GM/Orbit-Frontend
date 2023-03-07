@@ -281,7 +281,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		let playerAnnouncements: PlayerAnnouncement[] = [];
+		let playerAnnouncements: PlayerAnnouncement[];
 
 		try {
 			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
