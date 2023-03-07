@@ -13,7 +13,7 @@ function getPlayerStageName(player?: PlayerAnnouncement | null) {
 	if (player.type === UpdateResultType.MOVED)
 		return ucwords(player.new_stage.stage.name);
 
-	if (player.type === UpdateResultType.CREATED)
+	else if (player.type === UpdateResultType.CREATED)
 		return ucwords(player.initial_stage.name);
 }
 
