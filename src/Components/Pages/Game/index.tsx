@@ -1,7 +1,17 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
-import { GameNotFoundResponse, GamesModel, GameStartPayload, GameState, PlayerState, NextBoardResult, isGameStartError } from '../../../Api/Game-State/Models/Games';
+import {
+	GamesModel,
+	GameStartPayload,
+	GameState,
+	PlayerState,
+	NextBoardResult,
+	isGameStartError,
+	UpdateResultType,
+	PlayerCreated,
+	PlayerMoved,
+} from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -14,16 +24,19 @@ import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
 import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
+export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
 interface IState {
 	board: Board | null;
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
-	movingPlayer: PlayerState | null;
+	playerAnnouncements: PlayerAnnouncement[];
+	movingPlayer: PlayerAnnouncement | null;
 	currentPlayer: PlayerState | null;
 	loading: boolean;
 	redirect: boolean;
+	processing: boolean;
 }
 
 export class GameBoardPage extends React.PureComponent<{}, IState> {
@@ -33,16 +46,18 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
+		playerAnnouncements: [],
 		history: [],
 		loadingHistory: false,
 		movingPlayer: null,
 		currentPlayer: null,
 		loading: true,
 		redirect: false,
+		processing: false,
 	};
 
 	public async componentDidMount() {
-		this.fetchGameState(true);
+		await this.fetchGameState(true);
 	}
 
 	public render() {
@@ -56,12 +71,19 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					{/*TODO: When the movement control code sets a new movingPlayer, the fade animation will reset*/}
-					<GameAnnouncement player={this.state.movingPlayer} />
+					<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
 				</div>
+
 				<div>
-					<Sidebar>
-						{/*TODO: implement sidebar game cards*/}
+					<Sidebar
+						processing={this.state.processing}
+						buttonLabel={this.state.playerAnnouncements.length === 0 ? 'Start' : 'Next'}
+						onButtonClick={(
+							this.state.playerAnnouncements.length === 0
+								? this.onStartPlayerUpdateClick
+								: this.onNextPlayerClick
+						)}
+					>
 						<LogHistoryCard
 							processing={this.state.loadingHistory}
 							history={this.state.history}
@@ -77,13 +99,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 							board={this.state.board!}
 							goToNextBoard={this.goToNextBoard}
 							startNewGame={this.startNewGame}
-						/>
-
-						<LogHistoryCard
-							processing={this.state.loadingHistory}
-							history={this.state.history}
-							refresh={this.loadHistory}
-							loadMore={this.loadMoreHistory}
 						/>
 					</Sidebar>
 				</div>
@@ -136,7 +151,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
-
 	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
 		return players.find(player => player.hub_id === this.context!.id) || null;
 	}
@@ -175,7 +189,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		const history = await this.fetchHistory();
 
 		const currentPlayer = this.getCurrentPlayer(gameState.players);
-
 
 		this.setState({
 			board,
@@ -262,4 +275,55 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			loading: false,
 		});
 	}
+
+	private onStartPlayerUpdateClick = async () => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		let playerAnnouncements: PlayerAnnouncement[];
+
+		try {
+			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
+				response => response.data.filter(player =>
+					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
+				) as PlayerAnnouncement[]
+			);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
+
+		toaster.success('Game is ready to play!');
+
+		this.setState({
+			playerAnnouncements,
+			processing: false,
+		});
+	};
+
+	private onNextPlayerClick = () => {
+		let movingPlayer = this.state.playerAnnouncements.pop() ?? null;
+
+		if (!movingPlayer) {
+			toaster.success('All players moved!');
+
+			return;
+		}
+
+		const historyItem = movingPlayer.history_item;
+
+		this.setState(state => ({
+			movingPlayer,
+			history: state.history ? [...state.history, historyItem] : [historyItem],
+		}));
+	};
 }

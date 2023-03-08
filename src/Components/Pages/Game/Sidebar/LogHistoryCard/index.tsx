@@ -21,13 +21,15 @@ type DateGroup = {
 export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, loadMore}) => {
 	if (history === null || history.length === 0) {
 		return (
-			<GameCard title="Log History" icon="history">
+			<GameCard title="Log" icon="history">
 				<NonIdealState
 					icon={null}
-					title={history !== null ? "There isn't any history yet." : "An error ocurred while fetching history data."}
-					action={
+					title={(
+						history !== null ? "There isn't any history yet." : "There was an error getting history data."
+					)}
+					action={(
 						<Button icon="refresh" text="Refresh history" onClick={refresh} loading={processing} />
-					}
+					)}
 				/>
 			</GameCard>
 		);
@@ -53,7 +55,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 	const currentDateFormatted = formatDate(new Date());
 
 	return (
-		<GameCard title="Log History" icon="history">
+		<GameCard title="Log" icon="history">
 			{Object.keys(groupedDates).map(date => {
 				return (
 					<ul key={date} className="gm-log-history-card">
