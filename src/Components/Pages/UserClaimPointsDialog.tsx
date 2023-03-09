@@ -63,6 +63,11 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 								style={{display: 'flex'}}
 							>
 								<MultiSelect
+									tagInputProps={{
+										inputProps: {
+											autoFocus: true
+										}
+									}}
 									selectedItems={this.state.selectedSources}
 									items={this.state.sources}
 									onItemSelect={this.onSourceSelect}
