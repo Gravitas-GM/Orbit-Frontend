@@ -71,6 +71,11 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 							style={{display: 'flex'}}
 						>
 							<MultiSelect
+								tagInputProps={{
+									inputProps: {
+										autoFocus: true
+									}
+								}}
 								selectedItems={this.state.selectedUsers}
 								items={this.state.users}
 								onItemSelect={this.onUserSelect}

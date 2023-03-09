@@ -19,9 +19,11 @@ export interface GameEndpoints {
 export interface Game {
 	id: number;
 	name: string;
+	description: string;
 	publishedDate: Date | null;
 	hidden: boolean;
 	boards: Board[];
+	thumbnailUrl: string | null;
 }
 
 export class GameModel {

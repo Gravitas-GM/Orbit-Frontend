@@ -1,0 +1,17 @@
+.gm-top-ranked-card {
+	list-style-type: none;
+	padding: 0;
+	margin: 0.25rem 0;
+
+	li {
+		display: flex;
+
+		&:not(:last-child) {
+			margin-bottom: 0.5rem;
+		}
+
+		span:last-of-type {
+			margin-left: 0.5rem;
+		}
+	}
+}

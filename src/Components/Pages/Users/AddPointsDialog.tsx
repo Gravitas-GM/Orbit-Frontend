@@ -64,6 +64,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								label="Source"
 							>
 								<MultiSelect
+									tagInputProps={{
+										inputProps: {
+											autoFocus: true
+										}
+									}}
 									selectedItems={this.state.selectedSources}
 									items={this.props.sources}
 									onItemSelect={this.onSelectSourceItem}
@@ -83,7 +88,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					{this.state.showCustomSourceForm && (
 						<form>
 							<FormGroup label="Name">
-								<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} />
+								<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} autoFocus />
 							</FormGroup>
 
 							<FormGroup label="Point Value">

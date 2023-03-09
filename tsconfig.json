@@ -21,6 +21,11 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+  	"src/declaration.d.ts",
+  ],
+  "exclude": [
+	"*.stories.ts",
+	"*.stories.tsx"
   ]
 }

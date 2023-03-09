@@ -39,9 +39,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
-			<>
+			<div className="gm-page-wrapper">
 				<div className="settings-title-container">
-					<H2>Point Summary <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
+					<H2>Leaderboard <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
 
 					<AnchorButton
 						text="Download"
@@ -81,7 +81,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 						))}
 					</tbody>
 				</HTMLTable>
-			</>
+			</div>
 		);
 	}
 

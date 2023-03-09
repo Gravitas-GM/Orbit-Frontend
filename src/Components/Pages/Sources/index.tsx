@@ -70,7 +70,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<>
+			<div className="gm-page-wrapper">
 				<div className="settings-title-container">
 					<H2>Sources</H2>
 
@@ -143,6 +143,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									labelFor="sourceName"
 								>
 									<InputGroup
+										autoFocus={!this.state.isEditSource}
 										value={this.state.sourceName}
 										onChange={this.onSourceNameChange}
 										disabled={this.state.isEditSource}
@@ -154,6 +155,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									labelFor="pointValue"
 								>
 									<NumericInput
+										autoFocus={this.state.isEditSource}
 										min={0}
 										name="pointValue"
 										onValueChange={this.onPointValueChange}
@@ -196,7 +198,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						onClose={this.onAssignPointsDialogClose}
 					/>
 				)}
-			</>
+			</div>
 		);
 	}
 
