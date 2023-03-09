@@ -1,6 +1,7 @@
 import { userMock } from './User';
 import { Story } from '@storybook/react';
 import { UserContext } from '../Session';
+import { MemoryRouter } from "react-router";
 
 export function ContextMockDecorator(Story: Story) {
 	// hard-coded token with unlimited expiration
@@ -13,9 +14,11 @@ export function ContextMockDecorator(Story: Story) {
 
 	return (
 		<div className="bp4-dark">
-			<UserContext.Provider value={userMock}>
-				<Story />
-			</UserContext.Provider>
+			<MemoryRouter initialEntries={['/']}>
+				<UserContext.Provider value={userMock}>
+					<Story />
+				</UserContext.Provider>
+			</MemoryRouter>
 		</div>
 	);
 }
