@@ -1,4 +1,5 @@
 import {Intent, IToastProps, Position, Toaster} from '@blueprintjs/core';
+import { NextBoardResult } from './Api/Game-State/Models/Games';
 
 const toaster = Toaster.create({
 	position: Position.BOTTOM_RIGHT,
@@ -44,4 +45,17 @@ export function showUnhandledErrorMessage() {
 export function showValidationFailedErrorMessage() {
 	error('One or more fields did not pass validation.');
 }
+
+
+const nextBoardResultMessage = {
+	[NextBoardResult.Success]: () => success('Successfully moved to next board.'),
+	[NextBoardResult.NoActiveGame]: () => info('No active game.'),
+	[NextBoardResult.NoRemainingBoards]: () => info('No remaining boards.'),
+	[NextBoardResult.BoardNotFound]: () => error('Board not found.'),
+};
+
+export function notifyNextBoardResult(result: NextBoardResult) {
+	nextBoardResultMessage[result]();
+}
+
 // endregion

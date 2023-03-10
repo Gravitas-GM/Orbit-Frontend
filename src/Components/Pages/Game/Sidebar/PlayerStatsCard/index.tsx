@@ -1,12 +1,21 @@
 import {Icon} from '@blueprintjs/core';
 import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
+import {NonIdealState} from '../../../../NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 
 interface IProps {
-	player: PlayerState;
+	player: PlayerState | null;
 }
 
 export const PlayerStatsCard: React.FC<IProps> = ({player}) => {
+	if (!player) {
+		return (
+			<GameCard title="Player Stats" icon="user">
+				<NonIdealState title="No player data" icon={null} />
+			</GameCard>
+		);
+	}
+
 	return (
 		<GameCard title="Player Stats" icon="user">
 			<div style={{display: 'flex', flexDirection: 'column'}}>

@@ -1,4 +1,5 @@
 import {gameStateClient, Id} from '../..';
+import { Stage } from '../../Game-Catalog/Models/Stages';
 import {HistoryItem} from './History';
 
 export interface GamesEndpoints {
@@ -45,6 +46,7 @@ export enum UpdateResultType {
 export interface PlayerCreated {
 	type: UpdateResultType.CREATED,
 	player: Player,
+	initial_stage: Stage,
 	history_item: HistoryItem,
 }
 
@@ -58,13 +60,13 @@ export interface PlayerMoved {
 	type: UpdateResultType.MOVED,
 	player: Player,
 	new_point_total: number,
-	new_stage_index: number,
+	new_stage: StageDescriptor,
 	history_item: HistoryItem,
 }
 
 export interface PlayerDeleted {
 	type: UpdateResultType.DELETED,
-	player_id: number,
+	player: Player,
 }
 
 export type PlayerUpdate = PlayerCreated | PlayerChanged | PlayerMoved | PlayerDeleted;
@@ -91,6 +93,11 @@ export interface PlayerState {
 	current_stage_id: Id,
 	current_stage_name: string,
 	current_points: number,
+}
+
+export interface StageDescriptor {
+	stage: Stage,
+	index: number,
 }
 
 export interface Board {
@@ -134,4 +141,8 @@ export class GamesModel {
 	public static nextBoard(account: Id) {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
 	}
+}
+
+export function isGameStartError(value: any): value is GameNotFoundResponse {
+    return typeof value === 'object' && typeof value.error !== 'undefined';
 }

@@ -1,17 +1,14 @@
 import '@blueprintjs/core/lib/css/blueprint.css';
-import React from "react";
-import { addDecorator } from "@storybook/react";
-import { MemoryRouter } from "react-router";
+import { ContextMockDecorator } from '../src/mocks/Context';
 
 export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
-  controls: {
-    matchers: {
-      color: /(background|color)$/i,
-      date: /Date$/,
-    },
-  },
-}
+	actions: { argTypesRegex: '^on[A-Z].*' },
+	controls: {
+		matchers: {
+			color: /(background|color)$/i,
+			date: /Date$/,
+		},
+	},
+};
 
-
-addDecorator(story => <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>);
+export const decorators = [ContextMockDecorator];
