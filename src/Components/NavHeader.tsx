@@ -37,7 +37,7 @@ export const NavHeader: React.FC<IProps> = props => {
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
 						<>
-							<Navbar id="nav-header" className={Classes.NAVBAR}>
+							<Navbar id="nav-header" className={Classes.NAVBAR} fixedToTop={true}>
 								<Navbar.Group align={Alignment.LEFT}>
 									<Navbar.Heading>
 										<Link to="/" className="plain-link">Happy Orbit</Link>
@@ -74,15 +74,16 @@ export const NavHeader: React.FC<IProps> = props => {
 
 											<Link to="/leaderboard" className="plain-link">
 												<MenuItem
-													icon="list"
+													icon="properties"
 													text="Leaderboard"
+													tagName="span"
 												/>
 											</Link>
 
-											<Link to="/point-summary" className="plain-link">
+											<Link to="/catalog" className="plain-link">
 												<MenuItem
-													icon="properties"
-													text="Point Summary"
+													icon="layers"
+													text="Game Catalog"
 													tagName="span"
 												/>
 											</Link>
