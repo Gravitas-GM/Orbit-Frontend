@@ -16,69 +16,55 @@ export const Home: React.FC = () => (
 						<H2 style={{marginTop: '2rem' }}>Game</H2>
 
 						<div className="cards-container">
-							<Card>
-								<H5>
-									<Link to="/catalog">Game Catalog</Link>
-								</H5>
+							<Link to="/catalog">
+								<Card>
+									<H5>Game Catalog</H5>
 
-								<p>
-									Browse our Game Catalog and start playing one of our games
-								</p>
+									<p>Browse our Game Catalog and start playing one of our games</p>
+								</Card>
+							</Link>
 
-								<Link to="/catalog">
-									<Button text="Explore catalog"/>
-								</Link>
-							</Card>
+							<Link to="/game">
+								<Card>
+									<H5>Game Board</H5>
 
-							<Card>
-								<H5>
-									<Link to="/game">Game Board</Link>
-								</H5>
+									<p>Continue playing on your current game board.</p>
+								</Card>
+							</Link>
 
-								<p>
-									Continue playing your current stage
-								</p>
+							<Link to="/leaderboard">
+								<Card>
+									<H5>Leaderboard</H5>
 
-								<Link to="/game">
-									<Button text="Got to Game Board"/>
-								</Link>
-							</Card>
+									<p>See how users rank against each other.</p>
+								</Card>
+							</Link>
 						</div>
 
 						{
 							isGranted(Permission.ADMIN) &&
-
 							<>
-								<Divider style={{ margin: "2rem 0"}}/>
+								<H2 style={{marginTop: '2rem' }}>Admin</H2>
 
-								<H2>Admin</H2>
 
-								<div className="cards-container">
-									<Card>
-										<H5>
-											<Link to="/users">Users List</Link>
-										</H5>
+								<div className="cards-container admin">
 
-										<p>
-											Browse our Users List
-										</p>
+									<Link to="/users">
+										<Card>
+											<H5>Users List</H5>
 
-										<Link to="/users"><Button text="Users List"/></Link>
-									</Card>
+											<p>Browse users list, manage users, and give points.</p>
+										</Card>
+									</Link>
 
-									<Card>
-										<H5>
-											<Link to="/leaderboard">Leaderboard</Link>
-										</H5>
 
-										<p>
-											Keep track of who is on top
-										</p>
+									<Link to="/sources">
+										<Card>
+											<H5>Sources</H5>
 
-										<Link to="/leaderboard">
-											<Button text="Got to Leaderboard"/>
-										</Link>
-									</Card>
+											<p>Manage point sources and give points to multiple users.</p>
+										</Card>
+									</Link>
 								</div>
 							</>
 						}

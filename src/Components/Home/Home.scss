@@ -1,6 +1,16 @@
+@import '../../variables';
+
 .cards-container {
 	display: grid;
-	grid-template-columns: repeat(2,1fr);
+	grid-template-columns: repeat(3,1fr);
 	gap: 1rem;
-	margin-top: 1.5rem
+	margin-top: 1.5rem;
+
+	.#{$ns}-card {
+		min-height: 120px;
+	}
+
+	&.admin {
+		grid-template-columns: repeat(2,1fr);
+	}
 }
