@@ -1,5 +1,12 @@
 @import '../../variables';
 
+.home-page-container {
+	width: 65vw;
+	display: flex;
+	flex-direction: column;
+	margin: 0 auto;
+}
+
 .cards-container {
 	display: grid;
 	grid-template-columns: repeat(3,1fr);
@@ -8,6 +15,13 @@
 
 	.#{$ns}-card {
 		min-height: 120px;
+		display: grid;
+		grid-template-columns: min-content 5fr;
+		gap: 1rem;
+
+	}
+	a:hover {
+		text-decoration: none;
 	}
 
 	&.admin {
