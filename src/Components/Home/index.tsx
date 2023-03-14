@@ -1,4 +1,4 @@
-import { Card, H2, H4, Icon } from '@blueprintjs/core';
+import { Card, H2, H4, Icon, IconSize } from '@blueprintjs/core';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Permission, PermissionContext  } from '../../Permission';
@@ -18,17 +18,17 @@ export const Home: React.FC = () => (
 						<div className="cards-container">
 							<Link to="/catalog">
 								<Card interactive={true}>
-									<Icon icon="layers"/>
+									<Icon icon="layers" size={35}/>
 									<div>
 										<H4>Game Catalog</H4>
-										<p>Browse our Game Catalog and start playing one of our games</p>
+										<p>Browse our Game Catalog and start playing one of our games.</p>
 									</div>
 								</Card>
 							</Link>
 
 							<Link to="/game">
 								<Card interactive={true}>
-									<Icon icon='star'/>
+									<Icon icon='star' size={35}/>
 									<div>
 										<H4>Game Board</H4>
 
@@ -39,7 +39,7 @@ export const Home: React.FC = () => (
 
 							<Link to="/leaderboard">
 								<Card interactive={true}>
-									<Icon icon="properties"/>
+									<Icon icon="properties" size={35}/>
 
 									<div>
 										<H4>Leaderboard</H4>
@@ -59,7 +59,7 @@ export const Home: React.FC = () => (
 								<div className="cards-container admin">
 									<Link to="/users">
 										<Card interactive={true}>
-											<Icon icon="people"/>
+											<Icon icon="people" size={35}/>
 											<div>
 												<H4>Users List</H4>
 
@@ -71,7 +71,7 @@ export const Home: React.FC = () => (
 
 									<Link to="/sources">
 										<Card interactive={true}>
-											<Icon icon="bank-account"/>
+											<Icon icon="bank-account" size={35}/>
 											<div>
 												<H4>Sources</H4>
 
