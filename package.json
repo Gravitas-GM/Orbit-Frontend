@@ -20,6 +20,7 @@
   },
   "scripts": {
     "start": "parcel -p 8000 ./src/index.html",
+	"clear-cache": "rimraf ./dist ./.cache",
     "build": "rimraf ./dist && parcel build --no-source-maps --no-autoinstall ./src/index.html",
     "deploy": "./bin/deploy.sh",
     "storybook": "start-storybook -p 6006 --no-open",

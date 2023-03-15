@@ -1,11 +1,10 @@
-import {ApiError, isApiErrorResponse, isAxiosErrorResponse} from './errors';
-import * as hubApi from "./Hub";
-import {AuthenticationModel} from './Hub/Models/Authentication';
-import {Token, TokenStorage} from './jwt';
-import * as pointTrackingApi from "./Point-Tracking";
-import * as gameStateApi from "./Game-State";
-import * as gameCatalogApi from "./Game-Catalog";
-import {history} from '../history';
+import * as hubApi from './Hub';
+import { AuthenticationModel } from './Hub/Models/Authentication';
+import { Token, TokenStorage } from './jwt';
+import * as pointTrackingApi from './Point-Tracking';
+import * as gameStateApi from './Game-State';
+import * as gameCatalogApi from './Game-Catalog';
+import { history } from '../history';
 
 export interface QueryDocument {
 	[key: string]: string | number | boolean | null | Array<any> | QueryDocument | QueryDocument[];
@@ -49,20 +48,3 @@ export function logout() {
 export function isAuthenticated() {
 	return tokenStorage.getToken()?.isValid();
 }
-
-hubApiClient.interceptors.response.use(response => {
-	if (isApiErrorResponse(response.data)) {
-		const error = response.data.error;
-
-		throw new ApiError(error.code, error.message, error.context ?? {}, error.exceptions);
-	}
-
-	return response;
-}, error => {
-	if (!isAxiosErrorResponse(error) || !error.response || !isApiErrorResponse(error.response.data))
-		throw error;
-
-	const data = error.response.data.error;
-
-	throw new ApiError(data.code, data.message, data.context ?? {}, data.exceptions);
-});
