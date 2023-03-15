@@ -1,6 +1,6 @@
 import {gameStateClient, Id} from '../..';
 import { Stage } from '../../Game-Catalog/Models/Stages';
-import {HistoryItem} from './History';
+import {denormalizeHistoryItem, HistoryItem } from './History';
 
 export interface GamesEndpoints {
 	'/games/accounts/:account': {
@@ -131,15 +131,32 @@ export class GamesModel {
 	}
 
 	public static update(account: Id) {
-		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
+			.then(response => {
+				response.data = response.data.map(this.denormalizePlayerUpdate);
+
+				return response;
+			});
 	}
 
 	public static updatePreview(account: Id) {
-		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
+			.then(response => {
+				response.data = response.data.map(this.denormalizePlayerUpdate);
+
+				return response;
+			});
 	}
 
 	public static nextBoard(account: Id) {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
+	}
+
+	private static denormalizePlayerUpdate(playerUpdate: PlayerUpdate) {
+		if (playerUpdate.type === UpdateResultType.CREATED || playerUpdate.type === UpdateResultType.MOVED)
+			playerUpdate.history_item = denormalizeHistoryItem(playerUpdate.history_item);
+
+		return playerUpdate;
 	}
 }
 

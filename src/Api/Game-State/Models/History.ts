@@ -28,7 +28,7 @@ export interface HistoryItem {
 export class HistoryModel {
 	public static get(account: Id) {
 		return gameStateClient.get<'/history/:account'>(`/history/${account}`).then(response => {
-			response.data = response.data.map(this.denormalizeHistoryItem);
+			response.data = response.data.map(denormalizeHistoryItem);
 
 			return response;
 		});
@@ -37,15 +37,15 @@ export class HistoryModel {
 	public static getAfter(account: Id, afterId: ObjectId) {
 		return gameStateClient.get<'/history/:account/:afterId'>(`/history/${account}/${afterId.$oid}`)
 			.then(response => {
-				response.data = response.data.map(this.denormalizeHistoryItem);
+				response.data = response.data.map(denormalizeHistoryItem);
 
 				return response;
 			});
 	}
+}
 
-	private static denormalizeHistoryItem(historyItem: HistoryItem) {
-		historyItem.timestamp = parseApiTimestamp(historyItem.timestamp);
+export function denormalizeHistoryItem(historyItem: HistoryItem) {
+	historyItem.timestamp = parseApiTimestamp(historyItem.timestamp);
 
-		return historyItem;
-	}
+	return historyItem;
 }
