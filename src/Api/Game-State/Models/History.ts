@@ -1,4 +1,5 @@
 import {gameStateClient, Id} from '../..';
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {ObjectId} from '../../Point-Tracking';
 
 export interface HistoryEndpoints {
@@ -26,10 +27,25 @@ export interface HistoryItem {
 
 export class HistoryModel {
 	public static get(account: Id) {
-		return gameStateClient.get<'/history/:account'>(`/history/${account}`);
+		return gameStateClient.get<'/history/:account'>(`/history/${account}`).then(response => {
+			response.data = response.data.map(this.denormalizeHistoryItem);
+
+			return response;
+		});
 	}
 
 	public static getAfter(account: Id, afterId: ObjectId) {
-		return gameStateClient.get<'/history/:account/:afterId'>(`/history/${account}/${afterId.$oid}`);
+		return gameStateClient.get<'/history/:account/:afterId'>(`/history/${account}/${afterId.$oid}`)
+			.then(response => {
+				response.data = response.data.map(this.denormalizeHistoryItem);
+
+				return response;
+			});
+	}
+
+	private static denormalizeHistoryItem(historyItem: HistoryItem) {
+		historyItem.timestamp = parseApiTimestamp(historyItem.timestamp);
+
+		return historyItem;
 	}
 }
