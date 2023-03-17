@@ -231,7 +231,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			}
 		}
 
-		toaster.notifyNextBoardResult(result);
+		if (result)
+			toaster.notifyNextBoardResult(result);
+		else
+			toaster.showUnhandledErrorMessage();
 	}
 
 	public startNewGame = async (payload: GameStartPayload) => {
