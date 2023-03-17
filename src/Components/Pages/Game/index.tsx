@@ -316,7 +316,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		toaster.success('Game is ready to play!');
+		if (playerAnnouncements.length > 0)
+			toaster.success('Game is ready to play!');
+		else if (playerAnnouncements.length === 0)
+			toaster.success('All players are moved.')
 
 		this.setState({
 			playerAnnouncements,
@@ -328,7 +331,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let movingPlayer = this.state.playerAnnouncements.pop() ?? null;
 
 		if (!movingPlayer) {
-			toaster.success('All players moved!');
+			toaster.success('All players are moved.');
 
 			return;
 		}
