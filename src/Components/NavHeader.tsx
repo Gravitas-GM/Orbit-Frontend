@@ -69,6 +69,7 @@ export const NavHeader: React.FC<IProps> = props => {
 												<MenuItem
 													icon="star"
 													text="Game Board"
+													tagName="span"
 												/>
 											</Link>
 
