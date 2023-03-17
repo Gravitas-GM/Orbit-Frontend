@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router';
 import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
+import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
 import {
 	GamesModel,
 	GameStartPayload,
@@ -25,6 +26,16 @@ import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
+
+export function getPlayerStage(player?: PlayerAnnouncement | null): Stage | null {
+	if (player?.type === UpdateResultType.MOVED)
+		return player.new_stage.stage;
+
+	else if (player?.type === UpdateResultType.CREATED)
+		return player.initial_stage?.stage;
+
+	return null;
+}
 
 interface IState {
 	board: Board | null;
@@ -319,11 +330,29 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		const historyItem = movingPlayer.history_item;
+		const movingPlayerStage = getPlayerStage(movingPlayer);
+
+		if (!movingPlayerStage) {
+			toaster.error('Could not find Playey\'s stage');
+
+			return;
+		}
+
+		let movingPlayerState : PlayerState = {
+			hub_id: movingPlayer.player.hub_id,
+			user_name: movingPlayer.player.user_name,
+			current_points: movingPlayer.player.current_points,
+			current_stage_name: movingPlayerStage.name,
+			current_stage_id: movingPlayerStage.id,
+		}
 
 		this.setState(state => ({
 			movingPlayer,
-			history: state.history ? [...state.history, historyItem] : [historyItem],
+			history: state.history ? [...state.history, movingPlayer!.history_item] : [movingPlayer!.history_item],
+			gameState: {
+				...state.gameState!,
+				players: [...state.gameState!.players, movingPlayerState],
+			},
 		}));
 	};
 }

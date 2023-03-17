@@ -46,7 +46,7 @@ export enum UpdateResultType {
 export interface PlayerCreated {
 	type: UpdateResultType.CREATED,
 	player: Player,
-	initial_stage: Stage,
+	initial_stage: StageDescriptor,
 	history_item: HistoryItem,
 }
 
