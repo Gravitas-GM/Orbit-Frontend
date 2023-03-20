@@ -44,7 +44,7 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 				</p>
 
 				<p>
-					To confirm, please type "{multiple ? 'DELETE' : subject}" in the box below, then click "Confirm."
+					To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click "Confirm."
 				</p>
 
 				<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
@@ -59,7 +59,7 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 						intent={Intent.WARNING}
 						onClick={onConfirmCallback}
 						loading={processing}
-						disabled={subject !== confirmText || processing}
+						disabled={subject?.toLowerCase() !== confirmText.toLowerCase() || processing}
 					/>
 				</div>
 			</div>

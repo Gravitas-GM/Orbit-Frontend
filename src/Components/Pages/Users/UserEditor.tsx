@@ -251,7 +251,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onBulkDeleteButtonClick = () => this.setState({
-		deleteSubject: 'delete',
+		deleteSubject: 'Delete',
 		showDeleteDialog: true,
 		deleteTargets: this.state.selectedItems,
 	});
