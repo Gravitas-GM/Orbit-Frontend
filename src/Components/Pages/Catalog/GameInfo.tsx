@@ -1,4 +1,4 @@
-import {Button, H2, Intent} from '@blueprintjs/core';
+import {Button, H2, Icon, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
@@ -82,6 +82,12 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 						<p className="game-info-description">
 							{this.state.game!.description}
 						</p>
+
+						{!this.state.game?.publishedDate && (
+							<p className="catalog-card-under-construction">
+								<Icon style={{paddingRight: 5}} icon={'build'} /> Under Construction
+							</p>
+						)}
 
 						<Button
 							text="Start Game"

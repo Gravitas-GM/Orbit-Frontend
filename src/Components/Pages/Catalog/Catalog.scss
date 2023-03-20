@@ -1,3 +1,5 @@
+@import '../../../variables';
+
 .catalog-container {
 	display: flex;
 	flex-direction: column;
@@ -57,6 +59,10 @@
 		-webkit-box-orient: vertical;
 		display: -webkit-box;
 	}
+}
+
+.catalog-card-under-construction {
+	color: $pt-intent-warning;
 }
 
 .board-list-container {
