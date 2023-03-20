@@ -1,75 +1,75 @@
 {
-  "name": "orbit-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@blueprintjs/colors": "^4.1.3",
-    "@blueprintjs/core": "^4.3.2",
-    "@blueprintjs/select": "^4.4.1",
-    "axios": "^0.27.2",
-    "csvtojson": "^2.0.10",
-    "dotenv": "^16.0.1",
-    "grapheme-splitter": "^1.0.4",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-router": "^5.1.2",
-    "react-router-dom": "^5.1.2",
-    "restyped-axios": "^2.0.0",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "parcel -p 8000 ./src/index.html",
-	"clear-cache": "rimraf ./dist ./.cache",
-    "build": "rimraf ./dist && parcel build --no-source-maps --no-autoinstall ./src/index.html",
-    "deploy": "./bin/deploy.sh",
-    "storybook": "start-storybook -p 6006 --no-open",
-    "build-storybook": "build-storybook"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@babel/core": "^7.19.6",
-    "@storybook/addon-actions": "^6.5.13",
-    "@storybook/addon-essentials": "^6.5.13",
-    "@storybook/addon-interactions": "^6.5.13",
-    "@storybook/addon-links": "^6.5.13",
-    "@storybook/builder-webpack4": "^6.5.13",
-    "@storybook/manager-webpack4": "^6.5.13",
-    "@storybook/preset-scss": "^1.0.3",
-    "@storybook/react": "^6.5.13",
-    "@storybook/testing-library": "^0.0.13",
-    "@types/jest": "^27.5.1",
-    "@types/node": "^16.11.36",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.5",
-    "@types/react-router": "^5.1.18",
-    "@types/react-router-dom": "^5.3.3",
-    "babel-loader": "^8.2.5",
-    "css-loader": "^5.2.6",
-    "parcel-bundler": "^1.12.5",
-    "rimraf": "^3.0.2",
-    "sass": "^1.52.1",
-    "sass-loader": "^10.1.1",
-    "storybook": "^6.5.13",
-    "storybook-addon-mock": "^3.2.0",
-    "style-loader": "^2.0.0",
-    "typescript": "^4.7.2"
-  }
+	"name": "orbit-frontend",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"@blueprintjs/colors": "^4.1.3",
+		"@blueprintjs/core": "^4.3.2",
+		"@blueprintjs/select": "^4.4.1",
+		"axios": "^0.27.2",
+		"csvtojson": "^2.0.10",
+		"dotenv": "^16.0.1",
+		"grapheme-splitter": "^1.0.4",
+		"react": "^18.1.0",
+		"react-dom": "^18.1.0",
+		"react-router": "^5.1.2",
+		"react-router-dom": "^5.1.2",
+		"restyped-axios": "^2.0.0",
+		"web-vitals": "^2.1.4"
+	},
+	"scripts": {
+		"start": "parcel -p 8000 ./src/index.html",
+		"clear-cache": "rimraf ./dist ./.cache",
+		"build": "rimraf ./dist && parcel build --no-source-maps --no-autoinstall ./src/index.html",
+		"deploy": "./bin/deploy.sh",
+		"storybook": "start-storybook -p 6006 --no-open",
+		"build-storybook": "build-storybook"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@babel/core": "^7.19.6",
+		"@storybook/addon-actions": "^6.5.13",
+		"@storybook/addon-essentials": "^6.5.13",
+		"@storybook/addon-interactions": "^6.5.13",
+		"@storybook/addon-links": "^6.5.13",
+		"@storybook/builder-webpack4": "^6.5.13",
+		"@storybook/manager-webpack4": "^6.5.13",
+		"@storybook/preset-scss": "^1.0.3",
+		"@storybook/react": "^6.5.13",
+		"@storybook/testing-library": "^0.0.13",
+		"@types/jest": "^27.5.1",
+		"@types/node": "^16.11.36",
+		"@types/react": "^18.0.9",
+		"@types/react-dom": "^18.0.5",
+		"@types/react-router": "^5.1.18",
+		"@types/react-router-dom": "^5.3.3",
+		"babel-loader": "^8.2.5",
+		"css-loader": "^5.2.6",
+		"parcel-bundler": "^1.12.5",
+		"rimraf": "^3.0.2",
+		"sass": "^1.52.1",
+		"sass-loader": "^10.1.1",
+		"storybook": "^6.5.13",
+		"storybook-addon-mock": "^3.2.0",
+		"style-loader": "^2.0.0",
+		"typescript": "^4.7.2"
+	}
 }
