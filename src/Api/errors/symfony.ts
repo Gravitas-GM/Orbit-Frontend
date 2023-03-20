@@ -40,6 +40,11 @@ interface ValidationFailureContext {
 	failures: ValidationFailures;
 }
 
+export const ErrorCodes = {
+	Validation: 'validation_failed',
+	AccessDenied: 'access_denied',
+};
+
 export class ApiError<Context extends {} = {}> extends Error {
 	public readonly code: string;
 	public readonly context: Context;
@@ -51,6 +56,14 @@ export class ApiError<Context extends {} = {}> extends Error {
 		this.code = code;
 		this.context = context;
 		this.exceptions = exceptions || null;
+	}
+
+	public isValidationFailure(): this is ApiError<ValidationFailureContext> {
+		return this.code === ErrorCodes.Validation;
+	}
+
+	public isAccessDenied(): boolean {
+		return this.code === ErrorCodes.AccessDenied;
 	}
 }
 

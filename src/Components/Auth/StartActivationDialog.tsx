@@ -1,8 +1,8 @@
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import { ApiError, ValidationFailures } from '../../Api/errors/symfony';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import * as toaster from '../../Toaster';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 
 interface IProps {
@@ -83,7 +83,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 					activationUrlTemplate: 'https://app.happyorbit.com/activate?token=:code'
 				});
 		} catch (error) {
-			if (isValidationFailureError(error)) {
+			if (error instanceof ApiError && error.isValidationFailure()) {
 				toaster.showValidationFailedErrorMessage();
 
 				this.setState({
