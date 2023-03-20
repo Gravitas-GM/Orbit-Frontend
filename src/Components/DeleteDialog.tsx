@@ -38,31 +38,34 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 			onClose={onCancelCallback}
 			isCloseButtonShown={!processing}
 		>
-			<div className={Classes.DIALOG_BODY}>
-				<p>
-					You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be reversed.
-				</p>
+			<form onSubmit={(event) => event.preventDefault()}>
+				<div className={Classes.DIALOG_BODY}>
+					<p>
+						You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be reversed.
+					</p>
 
-				<p>
-					To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click "Confirm."
-				</p>
+					<p>
+						To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click "Confirm."
+					</p>
 
-				<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
-			</div>
-
-			<div className={Classes.DIALOG_FOOTER}>
-				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button text="Cancel" onClick={onCancelCallback} disabled={processing} loading={processing} />
-
-					<Button
-						text="Confirm"
-						intent={Intent.WARNING}
-						onClick={onConfirmCallback}
-						loading={processing}
-						disabled={subject?.toLowerCase() !== confirmText.toLowerCase() || processing}
-					/>
+					<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
 				</div>
-			</div>
+
+				<div className={Classes.DIALOG_FOOTER}>
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button text="Cancel" onClick={onCancelCallback} disabled={processing} loading={processing} />
+
+						<Button
+							type="submit"
+							text="Confirm"
+							intent={Intent.WARNING}
+							onClick={onConfirmCallback}
+							loading={processing}
+							disabled={subject?.toLowerCase() !== confirmText.toLowerCase() || processing}
+						/>
+					</div>
+				</div>
+			</form>
 		</Dialog>
 	);
 };
