@@ -6,16 +6,16 @@
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	margin-top: $spacing-3;
+	margin-top: $spacing-m;
 
 	.item-date {
 		text-align: center;
 		border-bottom: solid $spacing-px #000;
-		margin-bottom: $spacing-2;
+		margin-bottom: $spacing-s;
 	}
 
 	&:last-of-type {
-		margin-bottom: $spacing-4;
+		margin-bottom: $spacing-l;
 	}
 
 	li {
@@ -24,11 +24,11 @@
 		align-items: center;
 
 		&:not(:first-child) {
-			margin-top: $spacing-1;
+			margin-top: $spacing-xs;
 		}
 
 		.item-content {
-			margin-left: $spacing-1;
+			margin-left: $spacing-xs;
 		}
 	}
 }

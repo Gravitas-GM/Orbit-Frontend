@@ -48,7 +48,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		const currrentPageItems = this.state.filteredGames.slice(startIndex, endIndex);
 
 		return (
-			<div className="catalog-container">
+			<div className="catalog-container gm-page-wrapper">
 				<header className="catalog-header">
 					<h1>Game Catalog</h1>
 
@@ -170,7 +170,7 @@ const RenderPageItems: React.FC<{items: Game[]}> = ({items}) => {
 		return <NonIdealState title="No results" />;
 
 	return (
-		<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '2rem', width: '100%' }}>
+		<div className="catalog-list-container">
 			{items.map(game => (
 				<GameInfoCard game={game} key={game.id} />
 			))}

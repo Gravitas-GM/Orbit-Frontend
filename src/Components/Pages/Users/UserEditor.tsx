@@ -134,7 +134,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25, display: 'flex', gap: '1rem' }}>
+				<div className="settings-title-container">
 					<H2>Points</H2>
 
 					{this.state.selectedItems.length > 0 && (
