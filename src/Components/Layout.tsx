@@ -12,6 +12,7 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
+import './Layout.scss'
 
 interface IProps {
 	loading: boolean;
@@ -19,7 +20,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+		<div className="loading-container">
 			<Spinner intent={Intent.PRIMARY} />
 		</div>
 	) : (
