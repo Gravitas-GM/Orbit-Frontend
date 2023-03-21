@@ -41,11 +41,6 @@ export interface PointsEndpoints {
 			params: Id;
 			response: UserPoints[];
 		};
-
-		DELETE: {
-			params: Id;
-			response: void;
-		};
 	};
 
 	'/points/account/:account/total': {
@@ -142,10 +137,6 @@ export class PointsModel {
 
 	public static delete(userId: Id, claimId: ObjectId) {
 		return pointTrackingClient.delete<'/points/users/:user/:claim'>(`/points/users/${userId}/${claimId.$oid}`);
-	}
-
-	public static deleteAll(accountId: Id) {
-		return pointTrackingClient.delete<'/points/account/:account'>(`points/account/${accountId}`);
 	}
 
 	private static denormalizePointItem(pointItem: PointItem) {

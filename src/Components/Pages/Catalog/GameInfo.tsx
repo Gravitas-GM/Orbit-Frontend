@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import { GamesModel } from '../../../Api/Game-State/Models/Games';
-import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
 import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
@@ -136,7 +135,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		});
 
 		try {
-			await PointsModel.deleteAll(this.context!.account.id);
+			await GamesModel.deleteGameState(this.context!.account.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 

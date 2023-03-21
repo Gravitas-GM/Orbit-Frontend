@@ -14,7 +14,6 @@ import {
 	PlayerMoved,
 } from '../../../Api/Game-State/Models/Games';
 import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
-import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import { UserContext } from '../../../Session';
 import * as toaster from '../../../Toaster';
 import { LogHistoryCard } from './Sidebar/LogHistoryCard';
@@ -247,7 +246,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			await PointsModel.deleteAll(this.context!.account.id);
+			await GamesModel.deleteGameState(this.context!.account.id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 

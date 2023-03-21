@@ -1,4 +1,4 @@
-import {gameStateClient, Id} from '../..';
+import {gameStateClient, Id, pointTrackingClient} from '../..';
 import { Stage } from '../../Game-Catalog/Models/Stages';
 import {denormalizeHistoryItem, HistoryItem } from './History';
 
@@ -13,6 +13,11 @@ export interface GamesEndpoints {
 			params: Id;
 			body: GameStartPayload;
 			response: GameState | GameNotFoundResponse;
+		};
+
+		DELETE: {
+			params: Id;
+			response: void;
 		};
 	};
 
@@ -150,6 +155,10 @@ export class GamesModel {
 
 	public static nextBoard(account: Id) {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
+	}
+
+	public static deleteGameState(accountId: Id) {
+		return gameStateClient.delete<'/games/accounts/:account'>(`/games/accounts/${accountId}`);
 	}
 
 	private static denormalizePlayerUpdate(playerUpdate: PlayerUpdate) {
