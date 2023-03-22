@@ -211,17 +211,17 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	public goToNextBoard = async () => {
-		let result: NextBoardResult;
+		let result;
 
 		try {
-			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
+			result = await GamesModel.nextBoard(this.state.gameState!.account_id);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
 			return;
 		}
 
-		if (result === NextBoardResult.Success) {
+		if (result.status === NextBoardResult.Success) {
 			try {
 				await this.fetchGameState(false);
 			} catch (_) {
@@ -232,7 +232,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		}
 
 		if (result)
-			toaster.notifyNextBoardResult(result);
+			toaster.notifyNextBoardResult(result.status);
 		else
 			toaster.showUnhandledErrorMessage();
 	}

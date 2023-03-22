@@ -48,10 +48,10 @@ export function showValidationFailedErrorMessage() {
 
 
 const nextBoardResultMessage = {
-	[NextBoardResult.Success]: () => success('Successfully moved to next board.'),
-	[NextBoardResult.NoActiveGame]: () => info('No active game.'),
-	[NextBoardResult.NoRemainingBoards]: () => info('No remaining boards.'),
-	[NextBoardResult.BoardNotFound]: () => error('Board not found.'),
+	[NextBoardResult.Success]: () => success('Moved to next board.'),
+	[NextBoardResult.NoActiveGame]: () => info('There is no active game.'),
+	[NextBoardResult.NoRemainingBoards]: () => info('There are no boards remaining.'),
+	[NextBoardResult.BoardNotFound]: () => error('Couldn\'t find the specified board.'),
 };
 
 export function notifyNextBoardResult(result: NextBoardResult) {

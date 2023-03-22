@@ -36,7 +36,7 @@ export interface GamesEndpoints {
 	'/games/accounts/:account/next': {
 		POST: {
 			params: Id;
-			response: NextBoardResult;
+			response: void;
 		};
 	}
 }
@@ -112,10 +112,10 @@ export interface Board {
 }
 
 export enum NextBoardResult {
-	Success,
-	NoActiveGame,
-	NoRemainingBoards,
-	BoardNotFound,
+	Success = 204,
+	NoActiveGame = 404,
+	NoRemainingBoards = 400,
+	BoardNotFound = 500,
 }
 
 export interface GameNotFoundResponse {
