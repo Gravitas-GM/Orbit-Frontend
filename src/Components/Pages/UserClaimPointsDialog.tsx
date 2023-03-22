@@ -8,6 +8,7 @@ import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
 import {allSettled} from '../Utility/promise';
 import {ucwords} from '../Utility/string';
 import * as toaster from '../../Toaster';
+import { Spacing } from '../../Styles/variables';
 
 interface IProps {
 	onClose: () => void;
@@ -81,7 +82,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 									}}
 								/>
 
-								<div style={{paddingTop: 10}}>
+								<div style={{ paddingTop: Spacing.m }}>
 									<Button
 										text="Clear"
 										icon="minus"

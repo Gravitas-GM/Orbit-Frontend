@@ -1,6 +1,7 @@
 import { Button, HTMLTable, Intent, Checkbox } from '@blueprintjs/core';
 import * as React from 'react';
 import { PointItem } from '../../../Api/Point-Tracking/Models/Points';
+import { Spacing } from '../../../Styles/variables';
 import { NonIdealState } from '../../NonIdealState';
 import { formatNumber, ucwords } from '../../Utility/string';
 
@@ -34,7 +35,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 		<HTMLTable striped={true}>
 			<thead>
 				<tr>
-					<th style={{ width: 20 }}>
+					<th style={{ width: Spacing.xl }}>
 						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
 					</th>
 

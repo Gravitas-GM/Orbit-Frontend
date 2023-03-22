@@ -6,6 +6,7 @@ import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
 import * as toaster from '../../../Toaster';
+import { Spacing } from '../../../Styles/variables';
 
 interface IProps {
 	sources: PointSourceItem[];
@@ -47,7 +48,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Preset Source"
 							onClick={this.onShowSourceFormClick}
 							disabled={this.props.processing}
-							style={{marginRight: 10}}
+							style={{ marginRight: Spacing.m }}
 						/>
 
 						<Button
