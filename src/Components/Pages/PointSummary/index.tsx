@@ -10,8 +10,6 @@ import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
 import { NonIdealState } from '../../NonIdealState';
-import { Permission } from '../../../Permission';
-import { history } from '../../../history';
 
 interface IState {
 	players: PlayerState[];
@@ -40,7 +38,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		if (this.state.sources.length === 0 || this.state.userPoints.length === 0)
-			return <NoData isAdmin={this.context!.permissions.includes(Permission.ADMIN)} />
+			return <NoData />
 
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
@@ -162,21 +160,13 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	};
 }
 
-interface INoDataProps {
-	isAdmin: boolean
-}
-
-const NoData: React.FC<INoDataProps> = ({ isAdmin }) => {
-
-	// Question: is this one useful? Maybe adding a button to assign points as well?
-	const adminAction = isAdmin ? { description: "You can start creating sources using the button below", action: <Button onClick={()=> history.push('/sources')}>Go to Sources page</Button> } : {};
-
+const NoData: React.FC = () => {
 	return (
 		<div className="gm-page-wrapper">
 			<div className="settings-title-container">
 				<H2>Leaderboard</H2>
 
-				<NonIdealState title="This account doesn't have any points data yet"  {...adminAction}/>
+				<NonIdealState title="This game doesn't have any points yet"/>
 			</div>
 		</div>
 	)
