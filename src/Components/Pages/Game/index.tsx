@@ -1,29 +1,30 @@
 import * as React from 'react';
-import { Redirect } from 'react-router';
-import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
+import {Redirect} from 'react-router';
+import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
 import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
 import {
 	GamesModel,
 	GameStartPayload,
 	GameState,
-	PlayerState,
-	NextBoardResult,
 	isGameStartError,
-	UpdateResultType,
+	NextBoardResult,
 	PlayerCreated,
 	PlayerMoved,
+	PlayerState,
+	UpdateResultType,
 } from '../../../Api/Game-State/Models/Games';
-import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
-import { UserContext } from '../../../Session';
+import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
+import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import { LogHistoryCard } from './Sidebar/LogHistoryCard';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { GameAnnouncement } from './Board/GameAnnouncement';
-import { GameBoard } from './Board/GameBoard';
-import { Sidebar } from './Sidebar';
-import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
-import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
-import { AdminControlsCard } from './Sidebar/AdminControlsCard';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {replace} from '../../Utility/array';
+import {GameAnnouncement} from './Board/GameAnnouncement';
+import {GameBoard} from './Board/GameBoard';
+import {Sidebar} from './Sidebar';
+import {AdminControlsCard} from './Sidebar/AdminControlsCard';
+import {LogHistoryCard} from './Sidebar/LogHistoryCard';
+import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
+import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
@@ -35,6 +36,16 @@ export function getPlayerStage(player?: PlayerAnnouncement | null): Stage | null
 		return player.initial_stage?.stage;
 
 	return null;
+}
+
+export function getPlayerPoints(player?: PlayerAnnouncement | null): number {
+	if (player?.type === UpdateResultType.MOVED)
+		return player.new_point_total;
+
+	else if (player?.type === UpdateResultType.CREATED)
+		return player.player.current_points;
+
+	return 0;
 }
 
 interface IState {
@@ -356,20 +367,29 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		let movingPlayerState : PlayerState = {
+		let players = this.state.gameState!.players;
+
+		let newPlayerState : PlayerState = {
 			hub_id: movingPlayer.player.hub_id,
 			user_name: movingPlayer.player.user_name,
-			current_points: movingPlayer.player.current_points,
+			current_points: getPlayerPoints(movingPlayer),
 			current_stage_name: movingPlayerStage.name,
 			current_stage_id: movingPlayerStage.id,
 		}
+
+		let currentPlayerState = players.find(player => player.hub_id === movingPlayer!.player.hub_id);
+
+		if (currentPlayerState)
+			players = replace(players, currentPlayerState, newPlayerState);
+		else
+			players = [...players, newPlayerState];
 
 		this.setState(state => ({
 			movingPlayer,
 			history: state.history ? [...state.history, movingPlayer!.history_item] : [movingPlayer!.history_item],
 			gameState: {
 				...state.gameState!,
-				players: [...state.gameState!.players, movingPlayerState],
+				players,
 			},
 		}));
 	};
