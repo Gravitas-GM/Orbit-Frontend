@@ -362,7 +362,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		const movingPlayerStage = getPlayerStage(movingPlayer);
 
 		if (!movingPlayerStage) {
-			toaster.error('Could not find Playey\'s stage');
+			toaster.error('Could not find Player\'s stage');
 
 			return;
 		}
