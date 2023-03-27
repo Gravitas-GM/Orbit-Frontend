@@ -43,19 +43,21 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 		);
 	}
 
-	if (!updateData) {
+	if (!updateData || updateData.length === 0) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}  className="gm-dialog-large">
-				<NonIdealState
-					title="No preview data available"
-					action={(
-						<Button
-							text="Close"
-							onClick={onClose}
-							intent={Intent.PRIMARY}
-						/>
-					)}
-				/>
+				<div className="empty-state-wrapper">
+					<NonIdealState
+						title="No preview data available"
+						action={(
+							<Button
+								text="Close"
+								onClick={onClose}
+								intent={Intent.PRIMARY}
+							/>
+						)}
+					/>
+				</div>
 			</Dialog>
 		);
 	} else {
