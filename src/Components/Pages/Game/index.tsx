@@ -262,8 +262,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			await GamesModel.deleteGameState(this.context!.account.id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				processing: false,
@@ -341,7 +344,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				toaster.warning('There are currently no active games for your account.');
 			else
 				toaster.showUnhandledErrorMessage();
-
 
 			this.setState({
 				processing: false,

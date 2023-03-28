@@ -1,6 +1,7 @@
 import {Button, H2, Icon, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router';
+import {ApiError} from '../../../Api/errors/rocket';
 import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
 import { GamesModel } from '../../../Api/Game-State/Models/Games';
 import { UserContext } from '../../../Session';
@@ -136,8 +137,11 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 		try {
 			await GamesModel.deleteGameState(this.context!.account.id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				processing: false,
