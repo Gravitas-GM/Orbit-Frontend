@@ -2,7 +2,7 @@
 
 $pt-app-background-color: $dark-gray4;
 
-$gm-nav-header-height: 60px;
+$gm-nav-header-height: $pt-navbar-height;
 
 $gm-main-frame-height: calc(100% - #{$gm-nav-header-height});
 

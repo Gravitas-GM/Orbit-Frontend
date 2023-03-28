@@ -1,93 +1,47 @@
-import { Game } from '../Api/Game-Catalog/Models/Games';
+import { Game } from "../Api/Game-Catalog/Models/Games";
+import { catalogGameBoardMock } from "./GameBoard";
 
 export const gameMock: Game = {
 	id: 1,
 	name: 'Zelda',
-	publishedDate: new Date(),
+	description: 'About a hundred years from the present, Ganon returns. The new king tried to use the Sheikah technology again to defeat Ganon. However, Ganon already controlled Sheikah technology and he used this to attack the kingdom. As a consequence, Link and princess Zelda were defeated by Sheikah technology. Link had to recover for a hundred years and when he woke up in the Shrine of Resurrection, and the game starts. He now has to return in search of Zelda to help her destroy Ganon with the help of clues Zelda left along the way.',
+	publishedDate: null,
 	hidden: false,
-	boards: [],
+	boards: [catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock,
+		catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock],
+	thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
+}
 
-	// needs updated game model to work
-	// description: 'A collection of Zelda board games.',
-	// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-};
+export const catalogGamesMock: Game[] = [{
+	id: 1,
+	name: 'Zelda',
+	description: 'About a hundred years from the present, Ganon returns. The new king tried to use the Sheikah technology again to defeat Ganon. However, Ganon already controlled Sheikah technology and he used this to attack the kingdom. As a consequence, Link and princess Zelda were defeated by Sheikah technology. Link had to recover for a hundred years and when he woke up in the Shrine of Resurrection, and the game starts. He now has to return in search of Zelda to help her destroy Ganon with the help of clues Zelda left along the way.',
+	publishedDate: null,
+	hidden: false,
+	boards: [catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock,
+		catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock],
+	thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
+},
 
-export const gamesMock: Game[] = [
-	{
-		id: 1,
-		name: 'Zelda',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
+{
+	id: 1,
+	name: 'Zelda',
+	description: 'As a consequence, Link and princess Zelda were defeated by Sheikah technology. Link had to recover for a hundred years and when he woke up in the Shrine of Resurrection, and the game starts. He now has to return in search of Zelda to help her destroy Ganon with the help of clues Zelda left along the way.',
+	publishedDate: null,
+	hidden: false,
+	boards: [catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock,
+		catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock],
+	thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
+},
 
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 2,
-		name: 'Metroid',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 3,
-		name: 'Bomberman',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 4,
-		name:'Street Fighter',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 5,
-		name: 'Turok Dinossaur Hunter',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 6,
-		name: 'Rock\'n\'Roll Racing',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
-	{
-		id: 7,
-		name: 'Chrono Trigger',
-		publishedDate: new Date(),
-		hidden: false,
-		boards: [],
-
-		// needs updated game model to work
-		// description: 'A collection of Zelda board games.',
-		// thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
-	},
+{
+	id: 1,
+	name: 'Zelda',
+	description: 'Link had to recover for a hundred years and when he woke up in the Shrine of Resurrection, and the game starts.',
+	publishedDate: null,
+	hidden: false,
+	boards: [catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock,
+		catalogGameBoardMock, catalogGameBoardMock,catalogGameBoardMock, catalogGameBoardMock, catalogGameBoardMock],
+	thumbnailUrl: 'https://images.nintendolife.com/880243a8baed2/switch-tloz-totk-artwork-01.large.jpg',
+}
 ];

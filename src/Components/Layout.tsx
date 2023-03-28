@@ -5,11 +5,13 @@ import {Permission, PermissionContext} from '../Permission';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
+import {GameInfo} from './Pages/Catalog/GameInfo';
 import {GameBoardPage} from './Pages/Game';
 import {PointSummary} from './Pages/PointSummary';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
+import {CatalogListPage} from './Pages/Catalog';
 
 interface IProps {
 	loading: boolean;
@@ -17,7 +19,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div style={{width: '100%'}}>
+		<div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Spinner intent={Intent.PRIMARY} />
 		</div>
 	) : (
@@ -30,14 +32,17 @@ export const Layout: React.FC<IProps> = props => (
 						<Switch>
 							<Route path="/" component={Home} exact={true} />
 
-							<Route path="/point-summary" component={PointSummary} exact={true} />
+							<Route path="/leaderboard" component={PointSummary} exact={true} />
 
 							<Route path="/game" component={GameBoardPage} />
+
+							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
-								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />
+								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
+								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 							]}
 
 							<Route component={PageNotFound} />
