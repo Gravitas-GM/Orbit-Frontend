@@ -342,7 +342,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		if (playerAnnouncements.length > 0)
 			toaster.success('Game is ready to play!');
 		else if (playerAnnouncements.length === 0)
-			toaster.success('All players are moved.')
+			toaster.success('All players are moved.');
 
 		this.setState({
 			playerAnnouncements: playerAnnouncements.sort((a , b) => getPlayerPoints(b) - getPlayerPoints(a)),
