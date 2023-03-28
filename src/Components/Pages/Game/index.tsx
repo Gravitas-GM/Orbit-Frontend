@@ -276,8 +276,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('Could not find specified game to start.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				loading: false
@@ -333,8 +336,12 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
 				) as PlayerAnnouncement[]
 			);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
+
 
 			this.setState({
 				processing: false,
