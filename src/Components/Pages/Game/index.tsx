@@ -221,7 +221,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 	}
 
-	public goToNextBoard = async () => {
+	private goToNextBoard = async () => {
 		let result;
 
 		try {
@@ -248,7 +248,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 	}
 
-	public startNewGame = async (payload: GameStartPayload) => {
+	private startNewGame = async (payload: GameStartPayload) => {
 		if (this.state.loading)
 			return;
 
