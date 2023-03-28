@@ -345,7 +345,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.success('All players are moved.')
 
 		this.setState({
-			playerAnnouncements,
+			playerAnnouncements: playerAnnouncements.sort((a , b) => getPlayerPoints(b) - getPlayerPoints(a)),
 			processing: false,
 		});
 	};
