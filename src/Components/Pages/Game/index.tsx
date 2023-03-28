@@ -16,15 +16,16 @@ import {
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {replace} from '../../Utility/array';
-import {GameAnnouncement} from './Board/GameAnnouncement';
-import {GameBoard} from './Board/GameBoard';
-import {Sidebar} from './Sidebar';
-import {AdminControlsCard} from './Sidebar/AdminControlsCard';
-import {LogHistoryCard} from './Sidebar/LogHistoryCard';
-import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
-import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
+import { LogHistoryCard } from './Sidebar/LogHistoryCard';
+import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
+import { GameAnnouncement } from './Board/GameAnnouncement';
+import { GameBoard } from './Board/GameBoard';
+import { Sidebar } from './Sidebar';
+import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
+import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
+import { ApiError } from '../../../Api/errors/rocket';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
@@ -185,9 +186,12 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let gameState: GameState;
 
 		try {
-			gameState = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+			gameState = await GamesModel.gameInfo(this.context!.account.id).then(r => r.data);
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			if (redirect)
 				this.setState({ redirect: true });
