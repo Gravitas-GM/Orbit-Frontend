@@ -230,8 +230,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			result = await GamesModel.nextBoard(this.state.gameState!.account_id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			return;
 		}
