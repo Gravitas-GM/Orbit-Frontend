@@ -171,6 +171,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 		this.setState({
 			processing: false,
+			showStartGameDialog: false
 		});
 	}
 }

@@ -281,7 +281,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let gameState;
 
 		try {
-			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(response => response.data);
+			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(
+				async () => await GamesModel.gameInfo(this.context!.account.id).then(r => r.data)
+			);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('Could not find specified game to start.');
@@ -309,7 +311,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
-		} catch (_) {
+		} catch (e) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
@@ -318,6 +320,8 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 			return;
 		}
+
+		toaster.success('New game started successfully');
 
 		this.setState({
 			board,
