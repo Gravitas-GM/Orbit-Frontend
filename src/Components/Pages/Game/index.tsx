@@ -90,7 +90,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
+			<div style={{display: 'grid', gridTemplateColumns: '10fr 2fr'}}>
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
