@@ -47,11 +47,9 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 							]}
 
-							{isGranted(Permission.ADMIN) && isDevelopmentMode && [
+							{isGranted(Permission.ADMIN) && Config.isDev && [
 								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
-							]
-
-							}
+							]}
 
 							<Route component={PageNotFound} />
 						</Switch>
@@ -63,7 +61,3 @@ export const Layout: React.FC<IProps> = props => (
 );
 
 Layout.displayName = 'Layout';
-
-
-// TODO: Take this function to the  config file.
-const isDevelopmentMode = Config.isDev;
