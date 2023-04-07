@@ -47,7 +47,7 @@ NoSources.parameters = {
 			url: 'http://points.test.api.happyorbit.com/points/account/0/total',
 			method: 'GET',
 			status: 200,
-			response: [],
+			response: userPointsSummaryMock,
 			delay: 1500,
 		},
 		{

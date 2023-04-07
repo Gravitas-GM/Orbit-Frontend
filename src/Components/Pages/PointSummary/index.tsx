@@ -37,7 +37,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		if (this.state.sources.length === 0 || this.state.userPoints.length === 0)
+		if (this.state.userPoints.length === 0)
 			return <NoData />
 
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
