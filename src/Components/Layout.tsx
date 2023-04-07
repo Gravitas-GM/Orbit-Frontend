@@ -12,6 +12,8 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
+import { DebugControls } from './Pages/Admin/DebugControls';
+import { Config } from '../config';
 
 interface IProps {
 	loading: boolean;
@@ -45,6 +47,12 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 							]}
 
+							{isGranted(Permission.ADMIN) && isDevelopmentMode && [
+								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
+							]
+
+							}
+
 							<Route component={PageNotFound} />
 						</Switch>
 					)}
@@ -55,3 +63,7 @@ export const Layout: React.FC<IProps> = props => (
 );
 
 Layout.displayName = 'Layout';
+
+
+// TODO: Take this function to the  config file.
+const isDevelopmentMode = Config.isDev;

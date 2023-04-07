@@ -21,6 +21,7 @@ import {UserContext} from '../Session';
 import './NavHeader.scss';
 import {UserClaimPointsDialog} from './Pages/UserClaimPointsDialog';
 import {renderUserName} from './Utility/string';
+import { Config } from '../config';
 
 interface IProps {
 	loading: boolean;
@@ -132,6 +133,15 @@ export const NavHeader: React.FC<IProps> = props => {
 													icon="person"
 												/>
 
+												{isGranted(Permission.ADMIN) && Config.isDev && 
+													<Link to="/debug-controls" className="plain-link">
+														<MenuItem
+															tagName="span"
+															icon="console"
+															text="Debug Controls"
+														/>
+													</Link>
+												}
 												<MenuDivider />
 
 												<MenuItem
@@ -139,6 +149,7 @@ export const NavHeader: React.FC<IProps> = props => {
 													icon="log-out"
 													onClick={logout}
 												/>
+												
 											</Menu>
 										</Popover>
 									) : <Spinner size={20} intent={Intent.PRIMARY} />}
