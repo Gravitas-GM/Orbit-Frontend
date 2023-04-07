@@ -24,7 +24,7 @@ export const DebugControls = () => {
 
     return (
         <div className="gm-page-wrapper">
-            <H1>Debug Controls Page</H1>
+            <H1>Debug Controls</H1>
   
             <Button 
                 loading={processing}
