@@ -2,7 +2,7 @@ import {Intent, IToastProps, Position, Toaster} from '@blueprintjs/core';
 import { NextBoardResult } from './Api/Game-State/Models/Games';
 
 const toaster = Toaster.create({
-	position: Position.BOTTOM_RIGHT,
+	position: Position.BOTTOM_LEFT,
 });
 
 export function show(props: IToastProps) {

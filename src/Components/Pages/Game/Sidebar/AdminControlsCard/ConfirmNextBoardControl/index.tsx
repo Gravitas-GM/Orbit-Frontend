@@ -48,6 +48,7 @@ export const ConfirmNextBoardDialog: React.FC<INextBoardDialogProps> = ({ onClos
 
 		await onConfirm();
 
+		onClose();
 		setIsProcessing(false);
 	}, [onConfirm]);
 
