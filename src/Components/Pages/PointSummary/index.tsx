@@ -9,6 +9,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
+import { NonIdealState } from '../../NonIdealState';
 
 interface IState {
 	players: PlayerState[];
@@ -35,6 +36,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
+
+		if (this.state.userPoints.length === 0)
+			return <NoData />
 
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
@@ -158,3 +162,15 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		});
 	};
 }
+
+const NoData: React.FC = () => {
+	return (
+		<div className="gm-page-wrapper">
+			<div className="settings-title-container">
+				<H2>Leaderboard</H2>
+
+				<NonIdealState title="This game doesn't have any points yet"/>
+			</div>
+		</div>
+	)
+};

@@ -10,8 +10,13 @@ export const userPointsSummaryMock: UserPointsSummary[] = [
 				points: 120,
 				source: 'Example Source',
 			},
+			{
+				count: 1,
+				points: 20,
+				source: 'Another Source',
+			},
 		],
-		total_points: 220,
+		total_points: 140,
 		user_name: 'John Doe',
 	},
 ];
