@@ -1,17 +1,19 @@
+@import '../../../../../variables';
+
 .gm-top-ranked-card {
 	list-style-type: none;
 	padding: 0;
-	margin: 0.25rem 0;
+	margin: $spacing-s 0;
 
 	li {
 		display: flex;
 
 		&:not(:last-child) {
-			margin-bottom: 0.5rem;
+			margin-bottom: $spacing-m;
 		}
 
 		span:last-of-type {
-			margin-left: 0.5rem;
+			margin-left: $spacing-m;
 		}
 	}
 }

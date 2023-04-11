@@ -6,6 +6,7 @@ import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games
 import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
 import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
+import { Spacing } from '../../../../../../Styles/variables';
 
 interface INewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
@@ -82,7 +83,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
 			{loading ? (
-				<div style={{ marginTop: '1rem' }}>
+				<div style={{ marginTop: Spacing.l }}>
 					<FrameLoadingSpinner />
 				</div>
 			) : (

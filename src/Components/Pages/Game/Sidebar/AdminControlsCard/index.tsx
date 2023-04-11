@@ -4,6 +4,7 @@ import { Board } from '../../../../../Api/Game-Catalog/Models/Boards';
 import { ConfirmNextBoardControl } from './ConfirmNextBoardControl';
 import { NewGameControl } from './NewGameControl';
 import { UpdatePreviewControl } from './UpdatePreviewControl';
+import './AdminControlsCard.scss';
 
 interface IProps {
 	board: Board;
@@ -13,7 +14,7 @@ interface IProps {
 
 export const AdminControlsCard: React.FC<IProps> = ({ board, goToNextBoard, startNewGame }) => (
 	<GameCard title="Admin Controls" icon="control">
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem 0' }}>
+		<div className="admin-controls-container">
 			<UpdatePreviewControl
 				board={board}
 			/>

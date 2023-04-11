@@ -14,6 +14,8 @@ import { AddPointsDialog } from './AddPointsDialog';
 import { PointsTable, PointsTableRow } from './UserPointsTable';
 import { renderUserName } from '../../Utility/string';
 import { UpdatableUserData, UserEditDialog } from './UserEditDialog';
+import { isAxiosErrorResponse } from '../../../Api/errors';
+import { Spacing } from '../../../Styles/variables';
 import { ApiError } from '../../../Api/errors/rocket';
 
 export type DialogPointItem = {
@@ -127,14 +129,14 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					<H6 style={{ flex: 1 }}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
-						<H6 style={{ paddingLeft: 10 }}>
-							<Icon icon={'person'} style={{ paddingRight: 5 }} intent="warning" />
+						<H6 style={{ paddingLeft: Spacing.m }}>
+							<Icon icon={'person'} style={{ paddingRight: Spacing.s }} intent="warning" />
 							Admin
 						</H6>
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25, display: 'flex', gap: '1rem' }}>
+				<div className="settings-title-container">
 					<H2>Points</H2>
 
 					{this.state.selectedItems.length > 0 && (

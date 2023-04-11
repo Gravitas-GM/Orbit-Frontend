@@ -12,6 +12,7 @@ import { BoardInfoCard } from './BoardInfoCard';
 import { StartGameDialog } from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import { Link } from 'react-router-dom';
+import { Spacing } from '../../../Styles/variables';
 
 interface IRouteProps {
 	game: string;
@@ -74,7 +75,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
 						width="300"
-						style={{ borderRadius: '0.25rem'}}
+						style={{ borderRadius: Spacing.s }}
 					/>
 
 					<div>
@@ -100,7 +101,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					</div>
 				</div>
 
-				<h3 style={{ fontSize: '2rem', paddingTop: 20 }}>Boards</h3>
+				<h3 style={{ fontSize: '2rem', paddingTop: Spacing.xxl }}>Boards</h3>
 
 				<div className="board-list-container">
 					{this.state.game!.boards.map(board => (

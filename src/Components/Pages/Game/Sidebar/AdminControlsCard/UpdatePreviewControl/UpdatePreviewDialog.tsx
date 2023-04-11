@@ -7,6 +7,7 @@ import { FrameLoadingSpinner } from "../../../../../FrameLoadingSpinner";
 import { PreviewRow } from "./PreviewRow";
 import * as toaster from '../../../../../../Toaster';
 import './UpdatePreviewDialog.scss';
+import { Spacing } from "../../../../../../Styles/variables";
 
 interface IUpdatePreviewDialogProps {
 	onClose: () => void;
@@ -36,7 +37,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 	if (processing) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
-				<div style={{ margin: '1rem' }}>
+				<div style={{ margin: Spacing.l }}>
 					<FrameLoadingSpinner />
 				</div>
 			</Dialog>

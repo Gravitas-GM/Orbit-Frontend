@@ -10,10 +10,16 @@ html,
 body {
 	padding-top: $pt-navbar-height;
 	margin: 0;
+	box-sizing: border-box;
 
 	&.#{$ns}-dark {
 		background-color: $pt-dark-app-background-color;
 	}
+}
+// Reset default margin and padding for text elements
+h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
+	margin: 0;
+	padding: 0;
 }
 
 #app-root {
@@ -27,8 +33,11 @@ body {
 		}
 
 		.#{$ns}-button {
-			height: 30px;
+			height: $spacing-xl;
 		}
+
+		padding-top: $spacing-l;
+		gap: $spacing-l;
 	}
 
 	.main-frame {
@@ -36,7 +45,13 @@ body {
 	}
 
 	.gm-page-wrapper {
-		padding: 10px 20px;
+		padding: $spacing-m $spacing-l;
+		width: 75vw;
+		margin: 0 auto;
+
+		header {
+			margin: $spacing-l 0;
+		}
 	}
 }
 
@@ -54,14 +69,14 @@ table.#{$ns}-html-table {
 
 	span {
 		flex: 1;
-		padding-right: 20px;
+		padding-right: $spacing-l;
 	}
 
 	.#{$ns}-switch {
-		margin: 10px 0 10px 0;
+		margin: $spacing-m 0 $spacing-m 0;
 
 		.#{$ns}-control-indicator {
-			padding-bottom: 20px;
+			padding-bottom: $spacing-l;
 		}
 	}
 }
