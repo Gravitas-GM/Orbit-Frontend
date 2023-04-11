@@ -123,5 +123,12 @@
 }
 
 .fixed-height {
-	min-height: 465px;
+	height: 270px;
+}
+
+.game-image-wrapper {
+	height: 150px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }

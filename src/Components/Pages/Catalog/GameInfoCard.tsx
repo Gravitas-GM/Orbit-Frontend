@@ -19,11 +19,13 @@ export const GameInfoCard: React.FC<IProps> = ({ game }) => {
 				interactive={true}
 			>
 				<div className="catalog-card-content">
-					<img
-						src={game.thumbnailUrl ?? ImageNotFound}
-						alt={`${game.name} image`}
-						style={{ width: '100%' }}
-					/>
+					<figure className="game-image-wrapper">
+						<img
+							src={game.thumbnailUrl ?? ImageNotFound}
+							alt={`${game.name} image`}
+							style={{ width: '100%' }}
+						/>
+					</figure>
 
 					<div className="catalog-card-description">
 						<H2>{ucwords(game.name)}</H2>
