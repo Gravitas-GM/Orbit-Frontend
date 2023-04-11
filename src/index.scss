@@ -83,3 +83,13 @@ a.plain-link {
 	max-height: 300px;
 	overflow-y: auto;
 }
+
+.empty-state-wrapper {
+	padding: 1rem 0;
+}
+
+.card-content-wrapper {
+	padding: 0.5rem 0;
+	display: flex;
+	flex-direction: column;
+}
