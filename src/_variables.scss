@@ -1,7 +1,5 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
-// Base
-
 //spacings
 $spacing-px: 1px;
 $spacing-xs: 2px;
@@ -17,7 +15,6 @@ $orbit-blue: #0b2540;
 $pt-app-background-color: $dark-gray4;
 $gm-main-frame-background-color: $gray4;
 
-
 // styles
 $gm-content-padding-vertical: $spacing-l;
 $gm-content-padding-horizontal: $spacing-l;
@@ -27,5 +24,3 @@ $gm-navbar-background-color: $orbit-blue;
 $gm-nav-header-height: $pt-navbar-height;
 
 $gm-main-frame-height: calc(100% - #{$gm-nav-header-height});
-
-
