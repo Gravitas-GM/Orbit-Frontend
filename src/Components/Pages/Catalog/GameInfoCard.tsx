@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, H2 } from '@blueprintjs/core';
+import {Card, H2, Icon} from '@blueprintjs/core';
 import { Game } from '../../../Api/Game-Catalog/Models/Games';
 import { ucwords } from '../../Utility/string';
 import './Catalog.scss';
@@ -10,7 +10,7 @@ interface IProps {
 	game: Game;
 }
 
-export const GameInfoCard: React.FC<IProps> = ({ game,  }) => {
+export const GameInfoCard: React.FC<IProps> = ({ game }) => {
 	return (
 		<Link to={`/catalog/${game.id}`} className='catalog-card-link'>
 			<Card
@@ -19,16 +19,24 @@ export const GameInfoCard: React.FC<IProps> = ({ game,  }) => {
 				interactive={true}
 			>
 				<div className="catalog-card-content">
-					<img
-						src={game.thumbnailUrl ?? ImageNotFound}
-						alt={`${game.name} image`}
-						style={{ width: '100%' }}
-					/>
+					<figure className="game-image-wrapper">
+						<img
+							src={game.thumbnailUrl ?? ImageNotFound}
+							alt={`${game.name} image`}
+							style={{ width: '100%' }}
+						/>
+					</figure>
 
 					<div className="catalog-card-description">
 						<H2>{ucwords(game.name)}</H2>
 
-						<p>{game.description}</p >
+						<p>{game.description}</p>
+
+						{!game.publishedDate && (
+							<p className="catalog-card-under-construction">
+								<Icon style={{paddingRight: 5}} icon={'build'} /> Under Construction
+							</p>
+						)}
 					</div>
 				</div>
 			</Card>

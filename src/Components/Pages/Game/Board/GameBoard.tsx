@@ -16,7 +16,7 @@ function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
 export const GameBoard: React.FC<IProps> = ({ board, gameState }) => {
 	return (
 		<div id="game-board">
-			<img src={board.imageUrl} alt="Game Board Background" />
+			<img src={board.imageUrl} alt="Game Board Background" style={{ width: '100%' }}/>
 
 			{board.stages.map(stage =>
 				<GameStage stage={stage} players={getPlayersAtStage(stage, gameState.players)} key={stage.id} />

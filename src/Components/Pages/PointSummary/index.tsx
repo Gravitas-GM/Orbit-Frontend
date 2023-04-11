@@ -1,7 +1,7 @@
 import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
-import {isAxiosErrorResponse} from '../../../Api/errors';
+import { ApiError } from '../../../Api/errors/rocket';
 import {GamesModel, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
@@ -9,6 +9,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
+import { NonIdealState } from '../../NonIdealState';
 
 interface IState {
 	players: PlayerState[];
@@ -35,6 +36,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
+
+		if (this.state.userPoints.length === 0)
+			return <NoData />
 
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
@@ -118,6 +122,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 		let hasError = false;
 		let userPoints: UserPointsSummary[] = [];
+		
+		// TODO This could be simplified and parallelized by using Promise.allSettled() and then checking for any
+		//		rejected promises. /tyler
 
 		try {
 			userPoints = await PointsModel.getAllSummary(this.context!.account.id).then(response => response.data);
@@ -140,7 +147,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		} catch (error) {
 			// The GameState API can return a response with a 404 status code if a game does not exist for the
 			// account. In those cases, just silently ignore the error.
-			if (!isAxiosErrorResponse(error) || error.response?.status !== 404)
+			if (error instanceof ApiError && error.isNotFound())
 				hasError = true;
 		}
 
@@ -155,3 +162,15 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		});
 	};
 }
+
+const NoData: React.FC = () => {
+	return (
+		<div className="gm-page-wrapper">
+			<div className="settings-title-container">
+				<H2>Leaderboard</H2>
+
+				<NonIdealState title="This game doesn't have any points yet"/>
+			</div>
+		</div>
+	)
+};

@@ -8,7 +8,9 @@ type Props = BaseProps & {
 };
 
 export const NonIdealState: React.FC<Props> = ({ icon = false, ...props }) => (
-	<Base {...props} icon={<Icon icon={icon} />} />
+	<div className="empty-state-wrapper">
+		<Base {...props} icon={icon ? <Icon icon={icon} /> : null}/>
+	</div>
 );
 
 const Icon: React.FC<Pick<NonIdealStateProps, 'icon'>> = ({ icon }) => {

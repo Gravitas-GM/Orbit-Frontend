@@ -2,7 +2,7 @@ import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps, withRouter} from 'react-router';
 import {isAuthenticated, login, tokenStorage} from '../../Api';
-import {ApiError} from '../../Api/errors';
+import { ApiError } from '../../Api/errors/symfony';
 import {User, UserModel} from '../../Api/Hub/Models/Users';
 import { Spacing } from '../../Styles/variables';
 import * as toaster from '../../Toaster';

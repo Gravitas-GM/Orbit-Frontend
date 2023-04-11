@@ -2,13 +2,13 @@ import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
 import * as toaster from '../../Toaster';
 import './Activate.scss';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 import { Spacing } from '../../Styles/variables';
+import { isValidationFailureError, ValidationFailures } from '../../Api/errors/symfony';
 
 interface IState {
 	password: string;

@@ -71,7 +71,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 		setIsLoading(true);
 
 		GameModel.list()
-			.then(response => setGamesList(response.data))
+			.then(response => setGamesList(response.data.filter(game => game.publishedDate !== null)))
 			.then(() => setIsLoading(false))
 			.catch((_) => {
 				toaster.error('Could not obtain available games.');

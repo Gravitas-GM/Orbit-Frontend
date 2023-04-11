@@ -11,7 +11,6 @@ interface IProps {
 }
 
 export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, onConfirm, onCancel }) => {
-
 	return (
 		<Dialog
 			isOpen={isOpen}

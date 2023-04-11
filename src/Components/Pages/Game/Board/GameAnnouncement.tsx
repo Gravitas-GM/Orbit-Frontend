@@ -1,21 +1,9 @@
 import {H1, H3} from '@blueprintjs/core';
 import * as React from 'react';
-import {UpdateResultType} from '../../../../Api/Game-State/Models/Games';
 import {classNames} from '../../../Utility/dom';
 import {ucwords} from '../../../Utility/string';
 import './GameAnnouncement.scss';
-import {PlayerAnnouncement} from '../index';
-
-function getPlayerStageName(player?: PlayerAnnouncement | null) {
-	if (!player)
-		return 'Stage Name';
-
-	if (player.type === UpdateResultType.MOVED)
-		return ucwords(player.new_stage.stage.name);
-
-	else if (player.type === UpdateResultType.CREATED)
-		return ucwords(player.initial_stage.name);
-}
+import {getPlayerStage, PlayerAnnouncement} from '../index';
 
 interface IProps {
 	playerAnnouncement: PlayerAnnouncement | null;
@@ -32,7 +20,7 @@ export const GameAnnouncement: React.FC<IProps> = ({ playerAnnouncement }) => {
 
 				<H3>has moved to</H3>
 
-				<H1>{getPlayerStageName(playerAnnouncement)}</H1>
+				<H1>{ucwords(getPlayerStage(playerAnnouncement)?.name ?? 'Stage Name')}</H1>
 			</div>
 		</div>
 	);
