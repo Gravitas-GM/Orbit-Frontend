@@ -5,4 +5,5 @@ export const Config = {
 		hub_url: process.env.HUB_URL ?? 'https://hub.api.happyorbit.com',
 		game_catalog_url: process.env.GAME_CATALOG_URL ?? 'https://catalog.api.happyorbit.com',
 	},
+	isDev: process.env.NODE_ENV === 'development'
 };

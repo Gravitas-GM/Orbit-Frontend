@@ -12,6 +12,8 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
+import { DebugControls } from './Pages/Admin/DebugControls';
+import { Config } from '../config';
 
 interface IProps {
 	loading: boolean;
@@ -43,6 +45,10 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
+							]}
+
+							{isGranted(Permission.ADMIN) && Config.isDev && [
+								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
 							]}
 
 							<Route component={PageNotFound} />
