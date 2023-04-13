@@ -1,12 +1,16 @@
-@import '../../../../../variables';
+@import "../../../../../variables";
 
 .gm-log-history-card {
-	display: flex;
-	flex-direction: column;
-	list-style-type: none;
-	padding: 0;
-	margin: $spacing-m 0 0;
-
+	ul {
+		display: flex;
+		flex-direction: column;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		&:not(:first-child) {
+			margin-top: $spacing-m;
+		}
+	}
 	.item-date {
 		text-align: center;
 		border-bottom: solid $spacing-px #000;
@@ -17,47 +21,22 @@
 		margin-bottom: $spacing-l;
 	}
 
-	ul {
+	li {
 		display: flex;
-		flex-direction: column;
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-
-		&:not(:first-of-type) {
-			margin-top: $spacing-xl;
-		}
-
-		.item-date {
-			text-align: center;
-			border-bottom: solid $spacing-px #000000;
-			margin-bottom: $spacing-m;
-		}
+		flex-direction: row;
+		align-items: center;
+		gap: $spacing-m;
 
 		&:not(:first-child) {
-			margin-top: $spacing-xs;
+			margin-top: $spacing-s;
+		}
+
+		&:last-child {
+			margin-bottom: $spacing-l;
 		}
 
 		.item-content {
 			margin-left: $spacing-xs;
-
-			&:last-of-type {
-				margin-bottom: $spacing-xl;
-			}
-
-			li {
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-
-				&:not(:first-of-type) {
-					margin-top: $spacing-s;
-				}
-
-				.item-content {
-					margin-left: $spacing-s;
-				}
-			}
 		}
 	}
 }

@@ -26,8 +26,7 @@ export const BoardInfoCard: React.FC<IProps> = ({ board }) => {
 					<h2>{ucwords(board.name)}</h2>
 				</div>
 
-				<div className="table-container">
-
+				<div className="catalog-table-container">
 					<HTMLTable striped={true}>
 						<thead>
 							<tr>

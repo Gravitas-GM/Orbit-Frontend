@@ -14,7 +14,7 @@
 
 .catalog-list-container {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px,300px));
+	grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
 	gap: $spacing-xl;
 	width: 100%;
 }
@@ -48,13 +48,13 @@
 
 .catalog-card-content {
 	display: flex;
-	flex-direction:column;
+	flex-direction: column;
 }
 
 .catalog-card-description {
-	 display: flex;
-	 flex-direction: column;
-	 padding: $spacing-l;
+	display: flex;
+	flex-direction: column;
+	padding: $spacing-l;
 
 	p {
 		overflow: hidden;
@@ -121,14 +121,13 @@
 	margin-bottom: $spacing-xl;
 }
 
-.table-container {
+.catalog-table-container {
 	display: flex;
 	flex-direction: column;
-	padding-top: $spacing-l
+	padding-top: $spacing-l;
 }
 
 .fixed-height {
-	min-height: 432px;
 	height: 270px;
 }
 
@@ -137,4 +136,9 @@
 	overflow: hidden;
 	margin: 0;
 	padding: 0;
+}
+
+.game-info-subheading {
+	font-size: 2rem;
+	padding: $spacing-xl 0;
 }

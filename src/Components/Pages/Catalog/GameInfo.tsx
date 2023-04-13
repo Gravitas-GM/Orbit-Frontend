@@ -101,7 +101,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					</div>
 				</div>
 
-				<h3 style={{ fontSize: '2rem', paddingTop: Spacing.xxl }}>Boards</h3>
+				<h3 className="game-info-subheading">Boards</h3>
 
 				<div className="board-list-container">
 					{this.state.game!.boards.map(board => (
