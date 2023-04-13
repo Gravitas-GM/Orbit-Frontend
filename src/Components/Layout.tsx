@@ -7,7 +7,7 @@ import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
 import {GameInfo} from './Pages/Catalog/GameInfo';
 import {GameBoardPage} from './Pages/Game';
-import {PointSummary} from './Pages/PointSummary';
+import {Leaderboard} from './Pages/Leaderboard';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
@@ -35,7 +35,7 @@ export const Layout: React.FC<IProps> = props => (
 						<Switch>
 							<Route path="/" component={Home} exact={true} />
 
-							<Route path="/leaderboard" component={PointSummary} exact={true} />
+							<Route path="/leaderboard" component={Leaderboard} exact={true} />
 
 							<Route path="/game" component={GameBoardPage} />
 
