@@ -3,6 +3,7 @@ import { useCallback, useContext, useState } from "react";
 import { GamesModel } from "../../../Api/Game-State/Models/Games";
 import { UserContext } from "../../../Session";
 import * as toaster from "../../../Toaster";
+import { PageHeader } from "../../PageHeader";
 
 export const DebugControls = () => {
     const User = useContext(UserContext);
@@ -24,8 +25,8 @@ export const DebugControls = () => {
 
     return (
         <div className="gm-page-wrapper">
-            <H1>Debug Controls</H1>
-  
+            <PageHeader title="Debug Controls"/>
+                
             <Button 
                 loading={processing}
                 onClick={onStopGameClick}

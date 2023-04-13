@@ -5,6 +5,7 @@ import { Permission, PermissionContext  } from '../../Permission';
 import { UserContext } from '../../Session';
 import "./Home.scss"
 import { Spacing } from '../../Styles/variables';
+import { PageHeader } from '../PageHeader';
 
 export const Home: React.FC = () => (
 	<UserContext.Consumer>
@@ -12,7 +13,7 @@ export const Home: React.FC = () => (
 			<PermissionContext.Consumer>
 				{([isGranted]) => (
 					<div className="gm-page-wrapper home-page-container">
-						<H2>Welcome to Orbit!</H2>
+						<PageHeader title="Home"/>
 
 						<H4 style={{ marginTop: Spacing.xl }}>Game</H4>
 

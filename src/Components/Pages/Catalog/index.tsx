@@ -5,6 +5,7 @@ import * as toaster from '../../../Toaster';
 import { Button, InputGroup } from '@blueprintjs/core';
 import { NonIdealState } from '../../NonIdealState';
 import { GameInfoCard } from './GameInfoCard';
+import { PageHeader } from '../../PageHeader';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -49,16 +50,15 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className="catalog-container gm-page-wrapper">
-				<header className="catalog-header">
-					<h1>Game Catalog</h1>
-
+				
+				<PageHeader title="Catalog">
         			<InputGroup
 						type="search"
 						leftIcon="search"
 						placeholder="Search catalog"
 						onChange={this.onSearchChange}
 					/>
-				</header>
+				</PageHeader>		
 
 				<RenderPageItems items={currrentPageItems} />
 
