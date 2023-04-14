@@ -1,4 +1,4 @@
-import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import { ApiError } from '../../../Api/errors/rocket';

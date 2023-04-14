@@ -15,7 +15,8 @@ function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
 }
 
 export const GameBoard: React.FC<IProps> = ({ board, gameState }) => {
-	useTitle('Happy Orbit - Game Board')
+	useTitle('Happy Orbit - Game Board');
+	
 	return (
 		<div id="game-board">
 			<img src={board.imageUrl} alt="Game Board Background" style={{ width: '100%' }}/>
