@@ -1,4 +1,5 @@
-import { Dialog, NonIdealState, Button, Intent, HTMLTable } from "@blueprintjs/core";
+import { Dialog, Button, Intent, HTMLTable } from "@blueprintjs/core";
+import { NonIdealState } from "../../../../../NonIdealState";
 import { useContext, useState, useEffect } from "react";
 import { PlayerUpdate, GamesModel, UpdateResultType } from "../../../../../../Api/Game-State/Models/Games";
 import { Board } from "../../../../../../Api/Game-Catalog/Models/Boards";
