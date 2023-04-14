@@ -1,4 +1,4 @@
-import { Card, H2, H4, Icon } from '@blueprintjs/core';
+import { Card, H4, Icon } from '@blueprintjs/core';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Permission, PermissionContext  } from '../../Permission';

@@ -1,4 +1,4 @@
-import {AnchorButton, Button, H2, HTMLTable, Intent} from '@blueprintjs/core';
+import {AnchorButton, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Permission} from '../../../Permission';
