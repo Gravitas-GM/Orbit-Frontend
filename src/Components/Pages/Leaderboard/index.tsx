@@ -169,9 +169,9 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 const NoData: React.FC = () => {
 	return (
 		<div className="gm-page-wrapper">
-			<div className="settings-title-container">
-				<H2>Leaderboard</H2>
+			<PageHeader title="Leaderboard" />
 
+			<div>
 				<NonIdealState title="This game doesn't have any points yet"/>
 			</div>
 		</div>
