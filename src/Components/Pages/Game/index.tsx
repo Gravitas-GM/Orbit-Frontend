@@ -27,6 +27,7 @@ import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 import { ApiError } from '../../../Api/errors/rocket';
 import { Position } from '@blueprintjs/core';
+import "./GameBoard.scss";
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
