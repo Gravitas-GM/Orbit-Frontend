@@ -15,12 +15,12 @@ function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
 
 export const GameBoard: React.FC<IProps> = ({ board, gameState }) => {
 	return (
-		<div id="game-board">
-			<img src={board.imageUrl} alt="Game Board Background" style={{ width: '100%' }}/>
-
-			{board.stages.map(stage =>
-				<GameStage stage={stage} players={getPlayersAtStage(stage, gameState.players)} key={stage.id} />
-			)}
+		<div id="game-board" className="game-board-container" style={{ backgroundImage: `url(${board.imageUrl})`}}>
+			<div className="game-stage-container" style={{ gridTemplateColumns: `repeat(${board.stages.length}, 1fr)` }}>
+				{board.stages.map(stage =>
+					<GameStage stage={stage} players={getPlayersAtStage(stage, gameState.players)} key={stage.id} />
+				)}
+			</div>
 		</div>
 	);
 };

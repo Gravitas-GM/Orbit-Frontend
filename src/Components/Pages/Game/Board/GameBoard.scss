@@ -1,0 +1,15 @@
+@import '../../../../variables';
+
+.game-board-container {
+    width: 100%; 
+    background-size: contain; 
+    background-repeat: no-repeat;
+}
+
+.game-stages-container {
+    display: grid;
+    gap: $spacing-l;
+    padding: $spacing-xl; 
+    width: 100%;
+    height: 100%;
+}

@@ -15,10 +15,7 @@ export const GameStage: React.FC<IProps> = ({ stage, players }) => {
 			key={stage.id}
 			className='game-stage-container'
 			style={{
-				left: stage.boardRegion.x,
-				top: stage.boardRegion.y,
-				width: stage.boardRegion.width,
-				height: stage.boardRegion.height,
+				marginTop: stage.boardRegion.y,
 			}}
 		>
 			{players.map(player =>
