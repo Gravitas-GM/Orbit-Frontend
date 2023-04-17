@@ -3,6 +3,7 @@ import {Board} from '../../../../Api/Game-Catalog/Models/Boards';
 import {Stage} from '../../../../Api/Game-Catalog/Models/Stages';
 import {GameState, PlayerState} from '../../../../Api/Game-State/Models/Games';
 import {GameStage} from './GameStage';
+import './GameBoard.scss';
 
 interface IProps {
 	board: Board;
