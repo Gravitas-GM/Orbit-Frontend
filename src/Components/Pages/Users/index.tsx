@@ -1,10 +1,11 @@
-import {AnchorButton, Button, H2, HTMLTable, Intent} from '@blueprintjs/core';
+import {AnchorButton, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Permission} from '../../../Permission';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import { PageHeader } from '../../PageHeader';
 import {compareStrings, renderUserName} from '../../Utility/string';
 
 interface IState {
@@ -54,7 +55,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className="gm-page-wrapper">
-				<H2>Users</H2>
+				<PageHeader title="Users" />
 
 				<HTMLTable striped={true}>
 					<thead>

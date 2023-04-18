@@ -1,4 +1,4 @@
-import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import { ApiError } from '../../../Api/errors/rocket';
@@ -10,6 +10,7 @@ import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
 import { NonIdealState } from '../../NonIdealState';
+import { PageHeader } from '../../PageHeader';
 
 interface IState {
 	players: PlayerState[];
@@ -18,7 +19,7 @@ interface IState {
 	loading: boolean;
 }
 
-export class PointSummary extends React.PureComponent<{}, IState> {
+export class Leaderboard extends React.PureComponent<{}, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
@@ -44,17 +45,19 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className="gm-page-wrapper">
-				<div className="settings-title-container">
-					<H2>Leaderboard <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
+				<PageHeader title="Leaderboard">
+					<div style={{ display: "flex", justifyContent: "space-between", width: "100%"}}>
+						<Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} />
 
-					<AnchorButton
-						text="Download"
-						icon="download"
-						intent="primary"
-						href={downloadUrl.toString()}
-						target="_blank"
-					/>
-				</div>
+						<AnchorButton
+							text="Download"
+							icon="download"
+							intent="primary"
+							href={downloadUrl.toString()}
+							target="_blank"
+						/>
+					</div>
+				</PageHeader>
 
 				<HTMLTable striped={true}>
 					<thead>
@@ -166,9 +169,9 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 const NoData: React.FC = () => {
 	return (
 		<div className="gm-page-wrapper">
-			<div className="settings-title-container">
-				<H2>Leaderboard</H2>
+			<PageHeader title="Leaderboard" />
 
+			<div>
 				<NonIdealState title="This game doesn't have any points yet"/>
 			</div>
 		</div>

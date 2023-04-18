@@ -15,8 +15,8 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import { PageHeader } from '../../PageHeader';
 import {replace} from '../../Utility/array';
-import {classNames} from '../../Utility/dom';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 
@@ -71,16 +71,16 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className="gm-page-wrapper">
-				<div className="settings-title-container">
-					<H2>Sources</H2>
-
-					<Button
-						text="Add"
-						icon="plus"
-						intent="primary"
-						onClick={this.onAddButtonClick}
-					/>
-				</div>
+				<PageHeader title="Sources">
+					<div>
+						<Button
+							text="Add"
+							icon="plus"
+							intent="primary"
+							onClick={this.onAddButtonClick}
+						/>
+					</div>
+				</PageHeader>
 
 				<HTMLTable striped={true}>
 					<thead>

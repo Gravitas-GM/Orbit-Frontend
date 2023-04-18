@@ -26,7 +26,7 @@ import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
 import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 import { AdminControlsCard } from './Sidebar/AdminControlsCard';
 import { ApiError } from '../../../Api/errors/rocket';
-import { Position } from '@blueprintjs/core';
+import "./GameBoard.scss";
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
@@ -235,7 +235,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('There are currently no active games for your account.');
 			else
-				toaster.showUnhandledErrorMessage(Position.BOTTOM_LEFT);
+				toaster.showUnhandledErrorMessage();
 
 			return;
 		}
@@ -244,16 +244,16 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			try {
 				await this.fetchGameState(false);
 			} catch (_) {
-				toaster.showUnhandledErrorMessage(Position.BOTTOM_LEFT);
+				toaster.showUnhandledErrorMessage();
 
 				return;
 			}
 		}
 		console.log('eerr here')
 		if (result)
-			toaster.notifyNextBoardResult(result.status, Position.BOTTOM_LEFT);
+			toaster.notifyNextBoardResult(result.status);
 		else
-			toaster.showUnhandledErrorMessage(Position.BOTTOM_LEFT);
+			toaster.showUnhandledErrorMessage();
 	}
 
 	private startNewGame = async (payload: GameStartPayload) => {
