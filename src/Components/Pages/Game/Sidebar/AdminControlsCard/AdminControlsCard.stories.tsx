@@ -1,6 +1,6 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {AdminControlsCard} from './';
-import { boardMock } from '../../../../../mocks/Board';
+import {boardMock} from '../../../../../mocks/Board';
 
 export default {
 	title: 'Admin Controls Card',
@@ -17,5 +17,5 @@ export const Basic = Template.bind({});
 Basic.args = {
 	board: boardMock,
 	goToNextBoard: () => Promise.resolve(),
-	startNewGame: () => Promise.resolve()
+	startNewGame: () => Promise.resolve(),
 };

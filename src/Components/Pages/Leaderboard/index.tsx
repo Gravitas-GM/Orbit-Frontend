@@ -125,7 +125,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 
 		let hasError = false;
 		let userPoints: UserPointsSummary[] = [];
-		
+
 		// TODO This could be simplified and parallelized by using Promise.allSettled() and then checking for any
 		//		rejected promises. /tyler
 

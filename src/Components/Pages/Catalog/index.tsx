@@ -50,7 +50,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className="catalog-container gm-page-wrapper">
-				
+
 				<PageHeader title="Catalog">
         			<InputGroup
 						type="search"
@@ -58,7 +58,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 						placeholder="Search catalog"
 						onChange={this.onSearchChange}
 					/>
-				</PageHeader>		
+				</PageHeader>
 
 				<RenderPageItems items={currrentPageItems} />
 

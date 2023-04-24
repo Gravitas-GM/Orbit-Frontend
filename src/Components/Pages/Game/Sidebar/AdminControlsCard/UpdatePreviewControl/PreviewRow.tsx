@@ -70,7 +70,7 @@ const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update })
 );
 
 
-const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board }) => (
+const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({ update, board }) => (
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>

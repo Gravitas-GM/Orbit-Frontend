@@ -1,12 +1,12 @@
-import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
-import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
-import { MenuItem2 as MenuItem } from "@blueprintjs/popover2";
-import { useState, useCallback, useEffect } from 'react';
-import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games';
-import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
+import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
+import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {useState, useCallback, useEffect} from 'react';
+import {Game, GameModel} from '../../../../../../Api/Game-Catalog/Models/Games';
+import {GameStartPayload} from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
-import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
-import { Spacing } from '../../../../../../Styles/variables';
+import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
+import {Spacing} from '../../../../../../Styles/variables';
 
 interface INewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
@@ -39,8 +39,7 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 			}
 		</>
 	);
-}
-
+};
 
 interface INewGameDialogProps {
 	onClose: () => void;
@@ -83,7 +82,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
 			{loading ? (
-				<div style={{ marginTop: Spacing.l }}>
+				<div style={{marginTop: Spacing.l}}>
 					<FrameLoadingSpinner />
 				</div>
 			) : (
@@ -99,7 +98,11 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 						>
 
-							<Button text={selectedGame ? selectedGame.name : 'Select a game'} rightIcon="double-caret-vertical" placeholder="Select a game" />
+							<Button
+								text={selectedGame ? selectedGame.name : 'Select a game'}
+								rightIcon="double-caret-vertical"
+								placeholder="Select a game"
+							/>
 						</Select>
 					</div>
 
@@ -121,9 +124,9 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	);
 };
 
-const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, modifiers }) => {
+const renderGameOption: ItemRenderer<Game> = (game, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate)
-    	return null;
+		return null;
 
 	return (
 		<MenuItem
@@ -136,4 +139,4 @@ const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, 
 			text={game.name}
 		/>
 	);
-}
+};
