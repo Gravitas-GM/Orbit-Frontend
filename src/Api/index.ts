@@ -4,6 +4,7 @@ import { Token, TokenStorage } from './jwt';
 import * as pointTrackingApi from './Point-Tracking';
 import * as gameStateApi from './Game-State';
 import * as gameCatalogApi from './Game-Catalog';
+import * as quizApi from './Quiz';
 import { history } from '../history';
 
 export interface QueryDocument {
@@ -26,6 +27,7 @@ export const hubApiClient = hubApi.init();
 export const pointTrackingClient = pointTrackingApi.init();
 export const gameStateClient = gameStateApi.init();
 export const gameCatalogClient = gameCatalogApi.init();
+export const quizClient = quizApi.init();
 
 export const tokenStorage = new TokenStorage();
 tokenStorage.initialize();
