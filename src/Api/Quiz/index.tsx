@@ -4,10 +4,10 @@ import { attachResponseHandlers } from '../errors/symfony';
 import {QuestionEndpoints} from './Models/Questions';
 import {QuestionTagEndpoints} from './Models/QuestionTags';
 import {QuizSubmissionEndpoints} from './Models/QuizSubmissions';
-import {SettingsEndpoints} from './Models/Settings';
+import {AccountsEndpoints} from './Models/Accounts';
 import {UserEndpoints} from './Models/Users';
 
-type Endpoints = QuestionEndpoints & QuizSubmissionEndpoints & UserEndpoints & SettingsEndpoints & QuestionTagEndpoints;
+type Endpoints = QuestionEndpoints & QuizSubmissionEndpoints & UserEndpoints & AccountsEndpoints & QuestionTagEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({

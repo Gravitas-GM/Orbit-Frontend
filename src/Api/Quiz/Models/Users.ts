@@ -1,7 +1,31 @@
+import {Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
 
 export interface UserEndpoints {
-	// TODO: Add endpoints
+	'/users': {
+		PUT: {
+			body: UserCreatePayload;
+			response: User;
+		};
+	};
+
+	'/users/:id': {
+		GET: {
+			params: Id;
+			response: User;
+		};
+
+		PATCH: {
+			params: Id;
+			body: UserUpdatePayload;
+			response: User;
+		};
+
+		DELETE: {
+			params: Id;
+			response: void;
+		};
+	};
 }
 
 export interface User {
@@ -9,4 +33,26 @@ export interface User {
 	name: string,
 	nextQuizTimestamp: Date,
 	assignedTags: QuestionTag[],
+}
+
+export type UserCreatePayload = Omit<User, 'id'>;
+
+export type UserUpdatePayload = Partial<Omit<User, 'id'>>;
+
+export class UserModel {
+	public static create(payload: UserCreatePayload, projection?: Projection) {
+		return quizClient.put('/users', payload);
+	}
+
+	public static read(user: Id) {
+		return quizClient.get<'/users/:id'>(`/users/${user}`);
+	}
+
+	public static update(user: Id, payload: UserUpdatePayload) {
+		return quizClient.patch<'/users/:id'>(`/users/${user}`, payload);
+	}
+
+	public static delete(user: Id) {
+		return quizClient.delete<'/users/:id'>(`/users/${user}`);
+	}
 }
