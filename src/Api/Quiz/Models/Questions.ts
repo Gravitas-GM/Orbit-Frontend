@@ -1,5 +1,3 @@
-import {User} from './Users';
-
 export interface QuestionEndpoints {
 	// TODO: Add endpoints
 }

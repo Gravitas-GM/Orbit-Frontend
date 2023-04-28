@@ -1,8 +1,9 @@
-import {Id, quizClient} from '../../index';
+import {Id, Projectable, Projection, quizClient} from '../../index';
 
 export interface AccountsEndpoints {
 	'/accounts': {
 		PUT: {
+			query: Projectable;
 			body: Account;
 			response: Account;
 		};
@@ -45,8 +46,12 @@ export enum Frequency {
 export type AccountUpdatePayload = Partial<Omit<Account, 'accountId'>>;
 
 export class SettingsModel {
-	public static create(payload: Account) {
-		return quizClient.put('/accounts', payload);
+	public static create(payload: Account, projection?: Projection) {
+		return quizClient.put('/accounts', payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static read(account: Id) {

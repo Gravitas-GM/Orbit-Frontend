@@ -4,6 +4,7 @@ import {QuestionTag} from './QuestionTags';
 export interface UserEndpoints {
 	'/users': {
 		PUT: {
+			query: Projectable;
 			body: UserCreatePayload;
 			response: User;
 		};
@@ -41,7 +42,11 @@ export type UserUpdatePayload = Partial<Omit<User, 'id'>>;
 
 export class UserModel {
 	public static create(payload: UserCreatePayload, projection?: Projection) {
-		return quizClient.put('/users', payload);
+		return quizClient.put('/users', payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static read(user: Id) {
