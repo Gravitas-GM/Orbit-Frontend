@@ -49,6 +49,14 @@ export class SettingsModel {
 		return quizClient.put('/accounts', payload);
 	}
 
+	public static read(account: Id) {
+		return quizClient.get<'/settings/:account'>(`/settings/${account}`);
+	}
+
+	public static update(account: Id, payload: AccountUpdatePayload) {
+		return quizClient.patch<'/settings/:account'>(`/settings/${account}`, payload);
+	}
+
 	public static delete(account: Id) {
 		return quizClient.delete<'/accounts/:account'>(`/accounts/${account}`);
 	}
