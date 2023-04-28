@@ -1,4 +1,4 @@
-import {QuestionTag} from './Questions';
+import {QuestionTag} from './QuestionTags';
 
 export interface UserEndpoints {
 	// TODO: Add endpoints

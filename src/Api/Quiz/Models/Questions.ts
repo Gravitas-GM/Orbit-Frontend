@@ -36,9 +36,3 @@ export interface MultipleChoiceQuestion extends BaseQuestion {
 }
 
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
-
-export interface QuestionTag {
-	id: number,
-	label: string,
-	members: User[],
-}
