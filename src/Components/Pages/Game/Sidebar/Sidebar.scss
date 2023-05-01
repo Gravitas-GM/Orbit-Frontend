@@ -7,4 +7,6 @@
 	padding: $spacing-l;
 	gap: $spacing-xl;
 	justify-content: space-between;
+	min-height: calc(100vh - 50px);
+
 }

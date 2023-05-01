@@ -11,9 +11,10 @@ interface IProps {
 }
 
 export const Sidebar: React.FC<IProps> = props => (
-	<SimpleBar style={{ maxHeight: 'calc(100vh - 50px)'}}>
-		<aside className="gm-sidebar">
-			<div>{props.children}</div>
+	<aside className="gm-sidebar">
+			<SimpleBar style={{ maxHeight: 'calc(100vh - 150px)'}}>
+				<div>{props.children}</div>
+			</SimpleBar>
 
 			<Button
 				intent={Intent.PRIMARY}
@@ -23,7 +24,6 @@ export const Sidebar: React.FC<IProps> = props => (
 				{props.buttonLabel} <Icon icon="caret-right" size={IconSize.STANDARD} />
 			</Button>
 		</aside>
-	</SimpleBar>
 );
 
 Sidebar.displayName = 'Sidebar';
