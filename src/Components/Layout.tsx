@@ -12,6 +12,7 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
+import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import './Layout.scss'
 import { DebugControls } from './Pages/Admin/DebugControls';
 import { Config } from '../config';
@@ -40,6 +41,8 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/game" component={GameBoardPage} />
 
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
+
+							<Route path="/quiz/questions" component={QuestionListPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
