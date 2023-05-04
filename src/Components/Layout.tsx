@@ -15,6 +15,7 @@ import {CatalogListPage} from './Pages/Catalog';
 import './Layout.scss'
 import { DebugControls } from './Pages/Admin/DebugControls';
 import { Config } from '../config';
+import { TagListPage } from './Pages/Quiz/TagList';
 
 interface IProps {
 	loading: boolean;
@@ -42,6 +43,7 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
+								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
