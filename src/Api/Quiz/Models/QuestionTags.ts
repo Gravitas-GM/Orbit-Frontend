@@ -1,4 +1,4 @@
-import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
 import {User} from './Users';
 
 export interface QuestionTagEndpoints {
@@ -47,7 +47,7 @@ export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account
 
 export class QuestionTagModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
-		return hubApiClient.get('/tags', {
+		return quizClient.get('/tags', {
 			params: {
 				p: projection,
 				q: query,
