@@ -8,29 +8,9 @@ import { history } from "../../../../history";
 
 // temporary dummy data and interfaces
 
-export interface Settings {
-    accountId: number,
-    quizFrequency: Frequency,
-    questionCount: number,
-    completedRewardPointSourceId: string|null,
-}
-
-export interface User {
-    id: number,
-    name: string,
-    nextQuizTimestamp: Date,
-    assignedTags: QuestionTag[],
-}
-
-export enum Frequency {
-    Daily = 'daily',
-    Weekly = 'weekly',
-    Monthly = 'monthly',
-}
-
 interface BaseQuestion {
     id: number,
-    tagId: number|null,
+    tag: { id: number, name: string },
     prompt: string,
     kind: QuestionKind,
 }
@@ -61,161 +41,197 @@ export interface MultipleChoiceQuestion extends BaseQuestion {
 
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
 
+
+export interface User {
+    id: number,
+    name: string,
+    nextQuizTimestamp: Date,
+    assignedTags: QuestionTag[],
+}
+
 export interface QuestionTag {
     id: number,
     label: string,
     members: User[],
 }
 
-export interface QuizSubmission {
-    id: number,
-    user: User,
-    timestamp: Date,
-    correctCount: number,
-    questions: QuestionResponse[],
-}
-
-interface BaseQuestionResponse extends Omit<BaseQuestion, 'tagId' | 'kind'> {
-    correct: boolean,
-}
-
-export interface FreeTextResponse extends BaseQuestionResponse, Omit<FreeTextQuestion, 'tagId'> {
-    response: string,
-}
-
-export interface BooleanResponse extends BaseQuestionResponse, Omit<BooleanQuestion, 'tagId'> {
-    response: boolean,
-}
-
-export interface MultipleChoiceResponse extends BaseQuestionResponse, Omit<MultipleChoiceQuestion, 'tagId'> {
-    response: number,
-}
-
-export type QuestionResponse = FreeTextResponse | BooleanResponse | MultipleChoiceResponse;
-
 const questions: Question[] = [
 	{
 		id: 1,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of the United States?',
 		kind: QuestionKind.FreeText,
 		answers: ['Washington, D.C.'],
 	},
 	{
 		id: 2,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Canada?',
 		kind: QuestionKind.FreeText,
 		answers: ['Ottawa'],
 	},
 	{
 		id: 3,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Mexico?',
 		kind: QuestionKind.FreeText,
 		answers: ['Mexico City'],
 	},
 	{
 		id: 4,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Brazil?',
 		kind: QuestionKind.FreeText,
 		answers: ['Brasilia'],
 	},
 	{
 		id: 5,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Argentina?',
 		kind: QuestionKind.FreeText,
 		answers: ['Buenos Aires'],
 	},
 	{
 		id: 6,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Chile?',
 		kind: QuestionKind.FreeText,
 		answers: ['Santiago'],
 	},
 	{
 		id: 7,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Peru?',
 		kind: QuestionKind.FreeText,
 		answers: ['Lima'],
 	},
 	{
 		id: 8,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Colombia?',
 		kind: QuestionKind.FreeText,
 		answers: ['Bogota'],
 	},
 	{
 		id: 9,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Venezuela?',
 		kind: QuestionKind.FreeText,
 		answers: ['Caracas'],
 	},
 	{
 		id: 10,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Ecuador?',
 		kind: QuestionKind.FreeText,
 		answers: ['Quito'],
 	},
 	{
 		id: 11,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Bolivia?',
 		kind: QuestionKind.FreeText,
 		answers: ['La Paz'],
 	},
 	{
 		id: 12,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Paraguay?',
 		kind: QuestionKind.FreeText,
 		answers: ['Asuncion'],
 	},
 	{
 		id: 13,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Uruguay?',
 		kind: QuestionKind.FreeText,
 		answers: ['Montevideo'],
 	},
 	{
 		id: 14,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Guyana?',
 		kind: QuestionKind.FreeText,
 		answers: ['Georgetown'],
 	},
 	{
 		id: 15,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Suriname?',
 		kind: QuestionKind.FreeText,
 		answers: ['Paramaribo'],
 	},
 	{
 		id: 16,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of French Guiana?',
 		kind: QuestionKind.FreeText,
 		answers: ['Cayenne'],
 	},
 	{
 		id: 17,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of Cuba?',
 		kind: QuestionKind.FreeText,
 		answers: ['Havana'],
 	},
 	{
 		id: 18,
-		tagId: 1,
+		tag: {
+			id: 1,
+			name: 'General'
+		},
 		prompt: 'What is the capital of the Dominican Republic?',
 		kind: QuestionKind.FreeText,
 		answers: ['Santo Domingo'],
@@ -251,7 +267,7 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		const { currentPage, totalPages } = this.state;
+		const { currentPage, totalPages, filteredQuestions } = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
 		const currrentPageItems = this.state.filteredQuestions.slice(startIndex, endIndex);
@@ -270,48 +286,33 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 					</div>
 				</PageHeader>
 
-				<div className="question-list">
-					<HTMLTable striped={true}>
-						<thead>
-							<tr>
-								<th>Id</th>
-								<th>Prompt</th>
-								<th>Tags</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
+				<RenderPageItems
+					items={currrentPageItems}
+					deleteCallback={this.onDeleteClick}
+					editCallback={this.onEditClick}
+				/>
 
-						<tbody>
-							<RenderPageItems
-								items={currrentPageItems}
-								editCallback={this.onEditClick}
-								deleteCallback={this.onDeleteClick}
-							/>
-						</tbody>
-					</HTMLTable>
+				{filteredQuestions.length > ITEMS_PER_PAGE ? <div className="pagination-container">
+					<Button
+						disabled={this.state.currentPage === 1}
+						onClick={this.onClickBack}
+						icon="caret-left"
+					>
+						Prev
+					</Button>
 
-					<div className="pagination-container">
-						<Button
-							disabled={this.state.currentPage === 1}
-							onClick={this.onClickBack}
-							icon="caret-left"
-						>
-							Prev
-						</Button>
+					<span>
+						{currentPage}/{totalPages}
+					</span>
 
-						<span>
-							{currentPage}/{totalPages}
-						</span>
-
-						<Button
-							disabled={this.state.currentPage >= totalPages}
-							onClick={this.onClickNext}
-							rightIcon="caret-right"
-						>
-							Next
-						</Button>
-					</div>
-				</div>
+					<Button
+						disabled={this.state.currentPage >= totalPages}
+						onClick={this.onClickNext}
+						rightIcon="caret-right"
+					>
+						Next
+					</Button>
+				</div> : "" }
 			</section>
 		);
 	};
@@ -392,31 +393,35 @@ interface IRenderPageItemsProps {
 // maybe this one can become an external component for all situations that require a list of items to be rendered
 const RenderPageItems: React.FC<IRenderPageItemsProps> = ({items, editCallback, deleteCallback}) => {
 	if (items.length === 0)
-		return <NonIdealState title="No results" />;
+		return <NonIdealState title="No questions found" />;
 
 	return (
-		<>
-			{items.map(question => (
-				<tr key={question.id}>
-					<td style={{ width: 40}}>{question.id}</td>
-
-					<td>{question.prompt}</td>
-
-					<td style={{ width: 40}}>{question.tagId}</td>
-
-					<td style={{ width: 180}}>
-						<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-							<Button icon="edit" onClick={() => editCallback(question)}>
-								Edit
-							</Button>
-
-							<Button icon="trash" onClick={() => deleteCallback(question)}>
-								Delete
-							</Button>
-						</div>
-					</td>
+		<HTMLTable striped={true}>
+			<thead>
+				<tr>
+					<th>Prompt</th>
+					<th>Tag</th>
+					<th>Actions</th>
 				</tr>
-			))}
-		</>
+			</thead>
+
+			<tbody>
+				{items.map(question => (
+					<tr key={question.id}>
+						<td>{question.prompt}</td>
+
+						<td style={{ width: 240}}>{question.tag.name}</td>
+
+						<td style={{ width: 80}}>
+							<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+								<Button icon="edit" minimal={true} onClick={() => editCallback(question)} />
+
+								<Button icon="trash" minimal={true} onClick={() => deleteCallback(question)} />
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</HTMLTable>
 	);
 };
