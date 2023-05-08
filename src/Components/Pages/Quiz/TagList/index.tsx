@@ -86,7 +86,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 	public async componentDidMount() {
 		// temporary fetch questions
 		await this.fetchTags();
-	}
+	};
 
 	public render() {
 		if (this.state.loading)
@@ -99,9 +99,9 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title="Quiz - Tags List">
+				<PageHeader title="Categories">
 					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.l }}>
-						<InputGroup type="search" leftIcon="search" placeholder="Search tags" onChange={this.onSearchChange} />
+						<InputGroup type="search" leftIcon="search" placeholder="Search categories" onChange={this.onSearchChange} />
 						<Button icon="add">Add New</Button>
 					</div>
 				</PageHeader>
@@ -129,7 +129,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 				)}
 			</section>
 		);
-	}
+	};
 
 	private fetchTags = async () => {
 		this.setState({ loading: true });
@@ -207,7 +207,7 @@ const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallbac
 	if (items.length === 0) {
 		return (
 			<div style={{ textAlign: 'center'}}>
-				<NonIdealState title="No tags found." />
+				<NonIdealState title="No categories found." />
 			</div>
 		);
 	}
@@ -217,7 +217,6 @@ const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallbac
 			<HTMLTable striped={true}>
 				<thead>
 					<tr>
-						<th>Id</th>
 						<th>Label</th>
 						<th>Members</th>
 						<th>Actions</th>
@@ -227,28 +226,17 @@ const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallbac
 				<tbody>
 					{items.map((tag) => (
 						<tr key={tag.id}>
-							<td style={{ width: 40 }}>{tag.id}</td>
-
 							<td>{tag.label}</td>
 
-							<td>
-								{tag.members.map((member, index) => (
-									<>
-										<span key={member.id}>{member.name}</span>
-										{ tag.members.length > 1 && index !== tag.members.length  -1 ? ", " : "" }
-									</>
-								))}
+							<td style={{ width: 120 }}>
+								{tag.members.length}
 							</td>
 
-							<td style={{ width: 180 }}>
+							<td style={{ width: 80 }}>
 								<div style={{ display: "flex", justifyContent: "space-between" }}>
-									<Button icon="edit" onClick={() => editCallback(tag)}>
-										Edit
-									</Button>
+									<Button icon="edit" minimal={true} onClick={() => editCallback(tag)}/>
 
-									<Button icon="trash" onClick={() => deleteCallback(tag)}>
-										Delete
-									</Button>
+									<Button icon="trash" minimal={true} onClick={() => deleteCallback(tag)}/>
 								</div>
 							</td>
 						</tr>
