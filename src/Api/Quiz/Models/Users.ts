@@ -1,5 +1,6 @@
 import {Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
+import {QuizSubmission} from './QuizSubmissions';
 
 export interface UserEndpoints {
 	'/users': {
@@ -27,6 +28,12 @@ export interface UserEndpoints {
 			response: void;
 		};
 	};
+
+	'/users/me/submissions': {
+		GET: {
+			response: QuizSubmission[];
+		}
+	}
 }
 
 export interface User {
@@ -59,5 +66,9 @@ export class UserModel {
 
 	public static delete(user: Id) {
 		return quizClient.delete<'/users/:id'>(`/users/${user}`);
+	}
+
+	public static getSubmissions() {
+		return quizClient.get('/users/me/submissions');
 	}
 }

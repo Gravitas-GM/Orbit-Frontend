@@ -8,23 +8,12 @@ export interface QuizSubmissionEndpoints {
 			query: Queryable & Projectable;
 			response: QuizSubmission[];
 		};
-
-		PUT: {
-			query: Projectable;
-			body: QuizSubmissionCreatePayload;
-			response: QuizSubmission;
-		};
 	};
 
 	'/submissions/:submission': {
 		GET: {
 			params: Id;
 			response: QuizSubmission;
-		};
-
-		DELETE: {
-			params: Id;
-			response: void;
 		};
 	};
 }
@@ -70,19 +59,7 @@ export class QuizSubmissionModel {
 		});
 	}
 
-	public static create(payload: QuizSubmissionCreatePayload, projection?: Projection) {
-		return quizClient.put('/submissions', payload, {
-			params: {
-				p: projection,
-			},
-		});
-	}
-
 	public static read(submission: Id) {
 		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`);
-	}
-
-	public static delete(submission: Id) {
-		return quizClient.delete<'/submissions/:submission'>(`/submissions/${submission}`);
 	}
 }
