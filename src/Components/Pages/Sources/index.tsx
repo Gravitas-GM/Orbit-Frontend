@@ -15,7 +15,7 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import { PageHeader } from '../../PageHeader';
+import {PageHeader} from '../../PageHeader';
 import {replace} from '../../Utility/array';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';

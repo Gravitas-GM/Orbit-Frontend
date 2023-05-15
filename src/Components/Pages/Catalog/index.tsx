@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
-import { Button, InputGroup } from '@blueprintjs/core';
-import { NonIdealState } from '../../NonIdealState';
-import { GameInfoCard } from './GameInfoCard';
-import { PageHeader } from '../../PageHeader';
+import {Button, InputGroup} from '@blueprintjs/core';
+import {NonIdealState} from '../../NonIdealState';
+import {GameInfoCard} from './GameInfoCard';
+import {PageHeader} from '../../PageHeader';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -43,7 +43,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			);
 		}
 
-		const { currentPage, totalPages } = this.state;
+		const {currentPage, totalPages} = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
 		const currrentPageItems = this.state.filteredGames.slice(startIndex, endIndex);
@@ -52,7 +52,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			<div className="catalog-container gm-page-wrapper">
 
 				<PageHeader title="Catalog">
-        			<InputGroup
+					<InputGroup
 						type="search"
 						leftIcon="search"
 						placeholder="Search catalog"
@@ -92,7 +92,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 
 		this.setState(state => ({
-			currentPage: state.currentPage + 1
+			currentPage: state.currentPage + 1,
 		}));
 	};
 
@@ -101,7 +101,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 			return;
 
 		this.setState(state => ({
-			currentPage: state.currentPage - 1
+			currentPage: state.currentPage - 1,
 		}));
 	};
 
@@ -112,7 +112,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		let games: Game[];
 
 		this.setState({
-			loading: true
+			loading: true,
 		});
 
 		try {
@@ -152,7 +152,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		}
 
 		const filteredGames = this.state.games.filter(game =>
-			game.name.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase())
+			game.name.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase()),
 		);
 
 		const totalPages = Math.ceil(filteredGames.length / ITEMS_PER_PAGE);
@@ -165,7 +165,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	};
 }
 
-const RenderPageItems: React.FC<{items: Game[]}> = ({items}) => {
+const RenderPageItems: React.FC<{ items: Game[] }> = ({items}) => {
 	if (items.length === 0)
 		return <NonIdealState title="No results" />;
 

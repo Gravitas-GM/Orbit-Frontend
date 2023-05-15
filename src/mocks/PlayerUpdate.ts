@@ -1,13 +1,14 @@
-import { PlayerUpdate, UpdateResultType } from '../Api/Game-State/Models/Games';
-import { playersMock } from './Player';
-import { stageMock, stagesMock } from './Stage';
+import {PlayerUpdate, UpdateResultType} from '../Api/Game-State/Models/Games';
+import {playersMock} from './Player';
+import {stageMock, stagesMock} from './Stage';
+
 export const playerUpdateMock: PlayerUpdate[] = [
 	{
 		type: UpdateResultType.CREATED,
 		player: playersMock[0],
 		initial_stage: stageMock,
 		history_item: {
-			id: { $oid: 'id' },
+			id: {$oid: 'id'},
 			account_id: 12,
 			timestamp: new Date(),
 			content: 'Moved to Colorado',
@@ -27,7 +28,7 @@ export const playerUpdateMock: PlayerUpdate[] = [
 			stage: stagesMock[2],
 		},
 		history_item: {
-			id: { $oid: 'id' },
+			id: {$oid: 'id'},
 			account_id: 1,
 			timestamp: new Date(),
 			content: 'Moved to Los Angeles',

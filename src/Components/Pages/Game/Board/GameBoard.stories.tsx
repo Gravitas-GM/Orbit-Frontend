@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {GameBoard} from './GameBoard';
 
 export default {
@@ -56,7 +56,7 @@ Basic.args = {
 					width: 100,
 					height: 150,
 				},
-			}
+			},
 		],
 	},
 	gameState: {

@@ -9,11 +9,11 @@ interface IProps {
 	players: PlayerState[];
 }
 
-export const GameStage: React.FC<IProps> = ({ stage, players }) => {
+export const GameStage: React.FC<IProps> = ({stage, players}) => {
 	return (
 		<div
 			key={stage.id}
-			className='game-stage-container'
+			className="game-stage-container"
 			style={{
 				left: stage.boardRegion.x,
 				top: stage.boardRegion.y,
@@ -22,7 +22,7 @@ export const GameStage: React.FC<IProps> = ({ stage, players }) => {
 			}}
 		>
 			{players.map(player =>
-				<GamePlayer player={player} key={player.hub_id} />
+				<GamePlayer player={player} key={player.hub_id} />,
 			)}
 		</div>
 	);

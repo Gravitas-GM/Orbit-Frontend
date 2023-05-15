@@ -17,16 +17,16 @@ import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History'
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {replace} from '../../Utility/array';
-import { LogHistoryCard } from './Sidebar/LogHistoryCard';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { GameAnnouncement } from './Board/GameAnnouncement';
-import { GameBoard } from './Board/GameBoard';
-import { Sidebar } from './Sidebar';
-import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
-import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
-import { AdminControlsCard } from './Sidebar/AdminControlsCard';
-import { ApiError } from '../../../Api/errors/rocket';
-import "./GameBoard.scss";
+import {LogHistoryCard} from './Sidebar/LogHistoryCard';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {GameAnnouncement} from './Board/GameAnnouncement';
+import {GameBoard} from './Board/GameBoard';
+import {Sidebar} from './Sidebar';
+import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
+import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
+import {AdminControlsCard} from './Sidebar/AdminControlsCard';
+import {ApiError} from '../../../Api/errors/rocket';
+import './GameBoard.scss';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
@@ -92,7 +92,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		return (
 			<div style={{display: 'grid', gridTemplateColumns: '10fr 2fr'}}>
-				<div style={{ display: 'flex', justifyContent: 'left' }}>
+				<div style={{display: 'flex'}}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
@@ -141,11 +141,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	private loadHistory = async () => {
-		this.setState({ loadingHistory: true });
+		this.setState({loadingHistory: true});
 
 		const history = await this.fetchHistory();
 
-		this.setState({ history, loadingHistory: false });
+		this.setState({history, loadingHistory: false});
 	};
 
 	private loadMoreHistory = async () => {
@@ -160,17 +160,17 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				response => response.data,
 			);
 
-			this.setState(({ history }) => {
+			this.setState(({history}) => {
 				if (history !== null)
-					return { history: [...history, ...items], loadingHistory: false };
+					return {history: [...history, ...items], loadingHistory: false};
 				else
-					return { history: items, loadingHistory: false };
+					return {history: items, loadingHistory: false};
 			});
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loadingHistory: false
+				loadingHistory: false,
 			});
 		}
 	};
@@ -195,7 +195,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({ redirect: true });
+				this.setState({redirect: true});
 
 			return;
 		}
@@ -208,7 +208,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({ redirect: true });
+				this.setState({redirect: true});
 
 			return;
 		}
@@ -224,7 +224,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			currentPlayer,
 			loading: false,
 		});
-	}
+	};
 
 	private goToNextBoard = async () => {
 		let result;
@@ -239,7 +239,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 			return;
 		}
-		console.log('eerr here ???')
+		console.log('eerr here ???');
 		if (result.status === NextBoardResult.Success) {
 			try {
 				await this.fetchGameState(false);
@@ -249,19 +249,19 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				return;
 			}
 		}
-		console.log('eerr here')
+		console.log('eerr here');
 		if (result)
 			toaster.notifyNextBoardResult(result.status);
 		else
 			toaster.showUnhandledErrorMessage();
-	}
+	};
 
 	private startNewGame = async (payload: GameStartPayload) => {
 		if (this.state.loading)
 			return;
 
 		this.setState({
-			loading: true
+			loading: true,
 		});
 
 		try {
@@ -283,7 +283,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(
-				async () => await GamesModel.gameInfo(this.context!.account.id).then(r => r.data)
+				async () => await GamesModel.gameInfo(this.context!.account.id).then(r => r.data),
 			);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
@@ -292,7 +292,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
@@ -302,7 +302,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.info('Game not found');
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
@@ -316,7 +316,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
@@ -329,7 +329,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			gameState,
 			loading: false,
 		});
-	}
+	};
 
 	private onStartPlayerUpdateClick = async () => {
 		if (this.state.processing)
@@ -344,8 +344,8 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		try {
 			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
 				response => response.data.filter(player =>
-					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
-				) as PlayerAnnouncement[]
+					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED,
+				) as PlayerAnnouncement[],
 			);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
@@ -366,7 +366,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.success('All players are moved.');
 
 		this.setState({
-			playerAnnouncements: playerAnnouncements.sort((a , b) => getPlayerPoints(b) - getPlayerPoints(a)),
+			playerAnnouncements: playerAnnouncements.sort((a, b) => getPlayerPoints(b) - getPlayerPoints(a)),
 			processing: false,
 		});
 	};
@@ -390,13 +390,13 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		let players = this.state.gameState!.players;
 
-		let newPlayerState : PlayerState = {
+		let newPlayerState: PlayerState = {
 			hub_id: movingPlayer.player.hub_id,
 			user_name: movingPlayer.player.user_name,
 			current_points: getPlayerPoints(movingPlayer),
 			current_stage_name: movingPlayerStage.name,
 			current_stage_id: movingPlayerStage.id,
-		}
+		};
 
 		let currentPlayerState = players.find(player => player.hub_id === movingPlayer!.player.hub_id);
 

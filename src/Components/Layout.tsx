@@ -13,8 +13,8 @@ import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
 import './Layout.scss'
-import { DebugControls } from './Pages/Admin/DebugControls';
-import { Config } from '../config';
+import {DebugControls} from './Pages/Admin/DebugControls';
+import {Config} from '../config';
 
 interface IProps {
 	loading: boolean;

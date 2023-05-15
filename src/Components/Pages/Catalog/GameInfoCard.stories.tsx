@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { GameInfoCard } from './GameInfoCard';
-import { gameMock } from '../../../mocks/Game';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {GameInfoCard} from './GameInfoCard';
+import {gameMock} from '../../../mocks/Game';
 
 export default {
 	title: 'Game Info Card',
@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof GameInfoCard> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	game: gameMock
+	game: gameMock,
 };

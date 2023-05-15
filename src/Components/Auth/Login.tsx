@@ -2,9 +2,9 @@ import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps, withRouter} from 'react-router';
 import {isAuthenticated, login, tokenStorage} from '../../Api';
-import { ApiError } from '../../Api/errors/symfony';
+import {ApiError} from '../../Api/errors/symfony';
 import {User, UserModel} from '../../Api/Hub/Models/Users';
-import { Spacing } from '../../Styles/variables';
+import {Spacing} from '../../Styles/variables';
 import * as toaster from '../../Toaster';
 import {getPreviousPathFromState} from '../Utility/router';
 import './Login.scss';
@@ -43,7 +43,7 @@ class Login extends React.PureComponent<IProps, IState> {
 
 		return (
 			<div id="login">
-				<div style={{ textAlign: 'center', marginBottom: Spacing.m }}>
+				<div style={{textAlign: 'center', marginBottom: Spacing.m}}>
 					<H1>
 						Happy Orbit
 					</H1>
@@ -55,7 +55,7 @@ class Login extends React.PureComponent<IProps, IState> {
 							value={this.state.emailAddress}
 							onChange={this.onEmailAddressChange}
 							autoFocus={true}
-						 />
+						/>
 					</FormGroup>
 
 					<FormGroup label="Password">
@@ -156,7 +156,7 @@ class Login extends React.PureComponent<IProps, IState> {
 					redirect: true,
 				}, () => this.props.onLoginSuccess(response.data));
 			});
-	}
+	};
 }
 
 const WrappedLogin = withRouter(Login);

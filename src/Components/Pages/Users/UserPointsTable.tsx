@@ -1,9 +1,9 @@
-import { Button, HTMLTable, Intent, Checkbox } from '@blueprintjs/core';
+import {Button, HTMLTable, Intent, Checkbox} from '@blueprintjs/core';
 import * as React from 'react';
-import { PointItem } from '../../../Api/Point-Tracking/Models/Points';
-import { Spacing } from '../../../Styles/variables';
-import { NonIdealState } from '../../NonIdealState';
-import { formatNumber, ucwords } from '../../Utility/string';
+import {PointItem} from '../../../Api/Point-Tracking/Models/Points';
+import {Spacing} from '../../../Styles/variables';
+import {NonIdealState} from '../../NonIdealState';
+import {formatNumber, ucwords} from '../../Utility/string';
 
 interface ITableProps {
 	onAddPointsClick: () => void;
@@ -35,7 +35,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 		<HTMLTable striped={true}>
 			<thead>
 				<tr>
-					<th style={{ width: Spacing.xl }}>
+					<th style={{width: Spacing.xl}}>
 						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
 					</th>
 
@@ -43,7 +43,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 					<th>Point Value</th>
 					<th>Timestamp</th>
 					<th>Description</th>
-					<th style={{ width: 100, textAlign: 'center' }}>Delete</th>
+					<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 				</tr>
 			</thead>
 
@@ -62,7 +62,7 @@ interface IRowProps {
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, onDelete, onSelect }) => {
+export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
 	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
@@ -73,7 +73,7 @@ export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, 
 			<td>{formatNumber(item.point_value)}</td>
 			<td>{new Date(item.timestamp).toLocaleString()}</td>
 			<td>{item.description ?? <>—</>}</td>
-			<td style={{ textAlign: 'center' }}>
+			<td style={{textAlign: 'center'}}>
 				<Button
 					icon="delete"
 					minimal={true}
@@ -82,6 +82,6 @@ export const PointsTableRow: React.FC<IRowProps> = ({ item, loading, isChecked, 
 					onClick={onDeleteClick}
 				/>
 			</td>
-		</tr >
+		</tr>
 	);
 };

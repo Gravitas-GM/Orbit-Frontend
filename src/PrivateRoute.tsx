@@ -4,20 +4,20 @@ import {isAuthenticated} from './Api';
 import {history} from './history';
 
 export const PrivateRoute: React.FC<RouteProps> = ({...routeProps}) => {
-		if (isAuthenticated()) {
-			return <Route {...routeProps} />;
-		}
+	if (isAuthenticated()) {
+		return <Route {...routeProps} />;
+	}
 
-		return (
-			<Redirect
-				to={{
-					pathname: '/login',
-					state: {
-						from: history.location.pathname,
-					},
-				}}
-			/>
-		);
+	return (
+		<Redirect
+			to={{
+				pathname: '/login',
+				state: {
+					from: history.location.pathname,
+				},
+			}}
+		/>
+	);
 };
 
-PrivateRoute.displayName = "PrivateRoute";
+PrivateRoute.displayName = 'PrivateRoute';

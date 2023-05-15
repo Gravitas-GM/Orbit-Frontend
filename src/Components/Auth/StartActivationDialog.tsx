@@ -1,6 +1,6 @@
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import { ApiError, ValidationFailures } from '../../Api/errors/symfony';
+import {ApiError, ValidationFailures} from '../../Api/errors/symfony';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import * as toaster from '../../Toaster';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
@@ -84,7 +84,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 			await UserActivationModel.startActivation(
 				{
 					userEmailAddress: this.state.emailAddress,
-					activationUrlTemplate: 'https://app.happyorbit.com/activate?token=:code'
+					activationUrlTemplate: 'https://app.happyorbit.com/activate?token=:code',
 				});
 		} catch (error) {
 			if (error instanceof ApiError && error.isValidationFailure()) {
@@ -104,7 +104,7 @@ export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 		}
 
 		toaster.success(
-			'Your activation request has been received. Please follow the instructions sent to your email.'
+			'Your activation request has been received. Please follow the instructions sent to your email.',
 		);
 
 		this.setState({

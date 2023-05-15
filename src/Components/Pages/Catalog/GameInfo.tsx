@@ -1,18 +1,18 @@
 import {Button, H2, Icon, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
+import {Redirect, RouteComponentProps} from 'react-router';
 import {ApiError} from '../../../Api/errors/rocket';
-import { Game, GameModel } from '../../../Api/Game-Catalog/Models/Games';
-import { GamesModel } from '../../../Api/Game-State/Models/Games';
-import { UserContext } from '../../../Session';
+import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
+import {GamesModel} from '../../../Api/Game-State/Models/Games';
+import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { ucwords } from '../../Utility/string';
-import { BoardInfoCard } from './BoardInfoCard';
-import { StartGameDialog } from './StartGameDialog';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {ucwords} from '../../Utility/string';
+import {BoardInfoCard} from './BoardInfoCard';
+import {StartGameDialog} from './StartGameDialog';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
-import { Link } from 'react-router-dom';
-import { Spacing } from '../../../Styles/variables';
+import {Link} from 'react-router-dom';
+import {Spacing} from '../../../Styles/variables';
 
 interface IRouteProps {
 	game: string;
@@ -69,13 +69,14 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 		return (
 			<div className="game-info-container">
-				<div className="breadcrumb"><Link to="/catalog">Catalog</Link> &gt; { ucwords(this.state.game!.name) }</div>
+				<div className="breadcrumb"><Link to="/catalog">Catalog</Link> &gt; {ucwords(this.state.game!.name)}
+				</div>
 				<div className="game-info-content">
 					<img
 						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
 						alt={`${this.state.game!.name} image`}
 						width="300"
-						style={{ borderRadius: Spacing.s }}
+						style={{borderRadius: Spacing.s}}
 					/>
 
 					<div>
@@ -119,17 +120,18 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			</div>
 		);
 	}
+
 	private onStartGameButtonClick = () => {
 		this.setState({
-			showStartGameDialog: true
+			showStartGameDialog: true,
 		});
-	}
+	};
 
 	private onStartGameDialogClose = () => {
 		this.setState({
-			showStartGameDialog: false
+			showStartGameDialog: false,
 		});
-	}
+	};
 
 	private confirmStartGame = async () => {
 		this.setState({
@@ -155,8 +157,8 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 			await GamesModel.startGame(
 				this.context!.account.id,
 				{
-					catalog_id: this.state.game!.id
-				}
+					catalog_id: this.state.game!.id,
+				},
 			);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
@@ -172,7 +174,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 
 		this.setState({
 			processing: false,
-			showStartGameDialog: false
+			showStartGameDialog: false,
 		});
-	}
+	};
 }

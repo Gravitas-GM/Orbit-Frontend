@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Card, HTMLTable } from '@blueprintjs/core';
-import { Board } from '../../../Api/Game-Catalog/Models/Boards';
-import { formatNumber, ucwords } from '../../Utility/string';
+import {Card, HTMLTable} from '@blueprintjs/core';
+import {Board} from '../../../Api/Game-Catalog/Models/Boards';
+import {formatNumber, ucwords} from '../../Utility/string';
 import './Catalog.scss';
 import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import SimpleBar from 'simplebar-react';
@@ -11,7 +11,7 @@ interface IProps {
 	board: Board;
 }
 
-export const BoardInfoCard: React.FC<IProps> = ({ board }) => {
+export const BoardInfoCard: React.FC<IProps> = ({board}) => {
 	return (
 		<Card
 			className="catalog-info-card"

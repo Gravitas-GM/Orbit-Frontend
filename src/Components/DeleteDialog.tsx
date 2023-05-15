@@ -11,19 +11,19 @@ interface IProps {
 
 export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = false, onConfirm, onCancel}) => {
 	const [confirmText, setConfirmText] = React.useState('');
-	const [processing, setProcessing] = React.useState(false)
+	const [processing, setProcessing] = React.useState(false);
 
 	const onCancelCallback = React.useCallback(() => {
 		setConfirmText('');
 		onCancel();
-		setProcessing(false)
+		setProcessing(false);
 	}, [onCancel, setConfirmText]);
 
 	const onConfirmCallback = React.useCallback(async () => {
-		setProcessing(true)
+		setProcessing(true);
 		await onConfirm();
 		setConfirmText('');
-		setProcessing(false)
+		setProcessing(false);
 	}, [onConfirm, setConfirmText]);
 
 	const onConfirmTextChange = React.useCallback(
@@ -41,11 +41,13 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 			<form onSubmit={(event) => event.preventDefault()}>
 				<div className={Classes.DIALOG_BODY}>
 					<p>
-						You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be reversed.
+						You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be
+						reversed.
 					</p>
 
 					<p>
-						To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click "Confirm."
+						To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click
+						"Confirm."
 					</p>
 
 					<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />

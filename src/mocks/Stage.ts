@@ -1,4 +1,4 @@
-import { Stage } from '../Api/Game-Catalog/Models/Stages';
+import {Stage} from '../Api/Game-Catalog/Models/Stages';
 
 export const stageMock: Stage = {
 	id: 1,

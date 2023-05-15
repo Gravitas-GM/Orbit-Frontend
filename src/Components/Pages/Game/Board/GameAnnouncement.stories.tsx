@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {UpdateResultType} from '../../../../Api/Game-State/Models/Games';
 import {GameAnnouncement} from './GameAnnouncement';
 
@@ -48,5 +48,5 @@ Basic.args = {
 			timestamp: new Date(),
 			content: 'Test History Item',
 		},
-	}
+	},
 };

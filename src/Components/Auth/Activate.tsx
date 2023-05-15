@@ -7,8 +7,8 @@ import {Token} from '../../Api/jwt';
 import * as toaster from '../../Toaster';
 import './Activate.scss';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
-import { Spacing } from '../../Styles/variables';
-import { isValidationFailureError, ValidationFailures } from '../../Api/errors/symfony';
+import {Spacing} from '../../Styles/variables';
+import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
 
 interface IState {
 	password: string;
@@ -45,7 +45,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 		return (
 			<div id="activate">
-				<div style={{ textAlign: 'center', marginBottom: Spacing.m }}>
+				<div style={{textAlign: 'center', marginBottom: Spacing.m}}>
 					<H1>
 						Happy Orbit Activation
 					</H1>

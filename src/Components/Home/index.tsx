@@ -1,11 +1,11 @@
-import { Card, H4, Icon } from '@blueprintjs/core';
+import {Card, H4, Icon} from '@blueprintjs/core';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { Permission, PermissionContext  } from '../../Permission';
-import { UserContext } from '../../Session';
-import "./Home.scss"
-import { Spacing } from '../../Styles/variables';
-import { PageHeader } from '../PageHeader';
+import {Link} from 'react-router-dom';
+import {Permission, PermissionContext} from '../../Permission';
+import {UserContext} from '../../Session';
+import './Home.scss';
+import {Spacing} from '../../Styles/variables';
+import {PageHeader} from '../PageHeader';
 
 export const Home: React.FC = () => (
 	<UserContext.Consumer>
@@ -13,14 +13,14 @@ export const Home: React.FC = () => (
 			<PermissionContext.Consumer>
 				{([isGranted]) => (
 					<div className="gm-page-wrapper home-page-container">
-						<PageHeader title="Home"/>
+						<PageHeader title="Home" />
 
-						<H4 style={{ marginTop: Spacing.xl }}>Game</H4>
+						<H4 style={{marginTop: Spacing.xl}}>Game</H4>
 
 						<div className="cards-container">
 							<Link to="/catalog">
 								<Card interactive={true}>
-									<Icon icon="layers" size={35}/>
+									<Icon icon="layers" size={35} />
 									<div>
 										<H4>Game Catalog</H4>
 										<p>Browse our Game Catalog and start playing one of our games.</p>
@@ -30,7 +30,7 @@ export const Home: React.FC = () => (
 
 							<Link to="/game">
 								<Card interactive={true}>
-									<Icon icon='star' size={35}/>
+									<Icon icon="star" size={35} />
 									<div>
 										<H4>Game Board</H4>
 
@@ -41,7 +41,7 @@ export const Home: React.FC = () => (
 
 							<Link to="/leaderboard">
 								<Card interactive={true}>
-									<Icon icon="properties" size={35}/>
+									<Icon icon="properties" size={35} />
 
 									<div>
 										<H4>Leaderboard</H4>
@@ -55,13 +55,12 @@ export const Home: React.FC = () => (
 						{
 							isGranted(Permission.ADMIN) &&
 							<>
-								<H4 style={{ marginTop: Spacing.xl }}>Admin</H4>
-
+								<H4 style={{marginTop: Spacing.xl}}>Admin</H4>
 
 								<div className="cards-container admin">
 									<Link to="/users">
 										<Card interactive={true}>
-											<Icon icon="people" size={35}/>
+											<Icon icon="people" size={35} />
 											<div>
 												<H4>Users List</H4>
 
@@ -70,10 +69,9 @@ export const Home: React.FC = () => (
 										</Card>
 									</Link>
 
-
 									<Link to="/sources">
 										<Card interactive={true}>
-											<Icon icon="bank-account" size={35}/>
+											<Icon icon="bank-account" size={35} />
 											<div>
 												<H4>Sources</H4>
 

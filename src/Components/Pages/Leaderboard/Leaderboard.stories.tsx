@@ -1,8 +1,8 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { Leaderboard } from '.';
-import { userPointsSummaryMock } from '../../../mocks/UserPointSummary';
-import { pointSourceItemsMock } from '../../../mocks/PointSourceItem';
-import { gameStateMock } from '../../../mocks/GameState';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {Leaderboard} from '.';
+import {userPointsSummaryMock} from '../../../mocks/UserPointSummary';
+import {pointSourceItemsMock} from '../../../mocks/PointSourceItem';
+import {gameStateMock} from '../../../mocks/GameState';
 
 export default {
 	title: 'Leaderboard Page',
@@ -42,7 +42,7 @@ Basic.parameters = {
 const NoSources = Template.bind({});
 
 NoSources.parameters = {
-		mockData: [
+	mockData: [
 		{
 			url: 'http://points.test.api.happyorbit.com/points/account/0/total',
 			method: 'GET',
@@ -95,5 +95,4 @@ NoPointsAssigned.parameters = {
 	],
 } as ComponentMeta<typeof Leaderboard>;
 
-
-export { Basic, NoPointsAssigned, NoSources }
+export {Basic, NoPointsAssigned, NoSources};
