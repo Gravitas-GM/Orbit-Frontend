@@ -241,7 +241,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 			return;
 		}
-		console.log('eerr here ???');
+
 		if (result.status === NextBoardResult.Success) {
 			try {
 				await this.fetchGameState(false);
@@ -251,7 +251,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				return;
 			}
 		}
-		console.log('eerr here');
+
 		if (result)
 			toaster.notifyNextBoardResult(result.status);
 		else
