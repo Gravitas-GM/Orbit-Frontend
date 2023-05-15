@@ -92,10 +92,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		return (
 			<div style={{display: 'grid', gridTemplateColumns: '10fr 2fr'}}>
-				<div style={{display: 'flex'}}>
+				<div style={{display: 'flex', position: 'relative', width: '100%'}}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					<div style={{display: 'flex', justifyContent: 'center', width: '100%', position: 'absolute'}}>
+					<div style={{display: 'flex', justifyContent: 'center', width: 'inherit', position: 'absolute'}}>
 						<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
 					</div>
 				</div>
