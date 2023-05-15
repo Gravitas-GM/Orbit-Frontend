@@ -6,7 +6,10 @@ export const playerUpdateMock: PlayerUpdate[] = [
 	{
 		type: UpdateResultType.CREATED,
 		player: playersMock[0],
-		initial_stage: stageMock,
+		initial_stage: {
+			stage: stageMock,
+			index: 1,
+		},
 		history_item: {
 			id: {$oid: 'id'},
 			account_id: 12,
