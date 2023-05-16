@@ -13,7 +13,7 @@ export const GamePlayer: React.FC<IProps> = ({player}) => {
 	return (
 		<Popover
 			content={
-				<div style={{padding: Spacing.m}}>
+				<div style={{padding: Spacing.medium}}>
 					<H5>{ucwords(player.user_name)}</H5>
 
 					<H6 style={{display: 'flex', justifyContent: 'center'}}>

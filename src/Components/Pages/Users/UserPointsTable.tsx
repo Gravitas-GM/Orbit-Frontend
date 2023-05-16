@@ -35,7 +35,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 		<HTMLTable striped={true}>
 			<thead>
 				<tr>
-					<th style={{width: Spacing.xl}}>
+					<th style={{width: Spacing.xLarge}}>
 						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
 					</th>
 

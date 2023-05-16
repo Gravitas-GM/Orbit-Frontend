@@ -1,13 +1,13 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
 //spacings
-$spacing-px: 1px;
-$spacing-xs: 2px;
-$spacing-s: 4px;
-$spacing-m: 10px;
-$spacing-l: 16px;
-$spacing-xl: 24px;
-$spacing-xxl: 48px;
+$spacing-pixel: 1px;
+$spacing-xSmall: 2px;
+$spacing-small: 4px;
+$spacing-medium: 10px;
+$spacing-large: 16px;
+$spacing-xLarge: 24px;
+$spacing-xxLarge: 48px;
 
 // colors
 $orbit-blue: #0b2540;
@@ -16,8 +16,8 @@ $pt-app-background-color: $dark-gray4;
 $gm-main-frame-background-color: $gray4;
 
 // styles
-$gm-content-padding-vertical: $spacing-l;
-$gm-content-padding-horizontal: $spacing-l;
+$gm-content-padding-vertical: $spacing-large;
+$gm-content-padding-horizontal: $spacing-large;
 $gm-content-padding: $gm-content-padding-vertical $gm-content-padding-horizontal;
 
 $gm-navbar-background-color: $orbit-blue;

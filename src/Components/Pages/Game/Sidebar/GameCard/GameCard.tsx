@@ -23,7 +23,7 @@ export const GameCard: React.FC<IProps> = ({fill, title, icon, children}) => {
 	return (
 		<details className={classNames(Classes.CARD, !open && 'collapsed', fill && 'fill')} open={open}>
 			<summary className={Classes.CARD_HEADER} onClick={onCollapseToggle}>
-				<Icon icon={icon} style={{marginRight: Spacing.m}} />
+				<Icon icon={icon} style={{marginRight: Spacing.medium}} />
 				{title}
 			</summary>
 

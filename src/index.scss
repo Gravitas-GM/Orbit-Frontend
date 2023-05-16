@@ -33,11 +33,11 @@ h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
 		}
 
 		.#{$ns}-button {
-			height: $spacing-xl;
+			height: $spacing-xLarge;
 		}
 
-		padding-top: $spacing-l;
-		gap: $spacing-l;
+		padding-top: $spacing-large;
+		gap: $spacing-large;
 	}
 
 	.main-frame {
@@ -45,12 +45,12 @@ h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
 	}
 
 	.gm-page-wrapper {
-		padding: $spacing-m $spacing-l;
+		padding: $spacing-medium $spacing-large;
 		width: 75vw;
 		margin: 0 auto;
 
 		header {
-			margin: $spacing-l 0;
+			margin: $spacing-large 0;
 		}
 	}
 }
@@ -69,14 +69,14 @@ table.#{$ns}-html-table {
 
 	span {
 		flex: 1;
-		padding-right: $spacing-l;
+		padding-right: $spacing-large;
 	}
 
 	.#{$ns}-switch {
-		margin: $spacing-m 0 $spacing-m 0;
+		margin: $spacing-medium 0 $spacing-medium 0;
 
 		.#{$ns}-control-indicator {
-			padding-bottom: $spacing-l;
+			padding-bottom: $spacing-large;
 		}
 	}
 }

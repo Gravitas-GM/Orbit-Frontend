@@ -15,14 +15,14 @@
 .catalog-list-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
-	gap: $spacing-xl;
+	gap: $spacing-xLarge;
 	width: 100%;
 }
 
 .catalog-games-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-	gap: $spacing-l;
+	gap: $spacing-large;
 }
 
 .catalog-info-card {
@@ -30,7 +30,7 @@
 	padding: 0;
 	flex-direction: column;
 	border-color: rgba(255, 255, 255, 0.2);
-	border-radius: $spacing-s;
+	border-radius: $spacing-small;
 	border-style: solid;
 	flex: 1;
 	transition: all 0.3s;
@@ -54,7 +54,7 @@
 .catalog-card-description {
 	display: flex;
 	flex-direction: column;
-	padding: $spacing-l;
+	padding: $spacing-large;
 
 	p {
 		overflow: hidden;
@@ -73,19 +73,19 @@
 .board-list-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-	gap: $spacing-l;
+	gap: $spacing-large;
 }
 
 .board-card-content {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	padding: $spacing-l;
+	padding: $spacing-large;
 
 	h2 {
-		font-size: $spacing-xl;
+		font-size: $spacing-xLarge;
 		margin: unset;
-		padding: 0 0 0 $spacing-l;
+		padding: 0 0 0 $spacing-large;
 	}
 }
 
@@ -94,16 +94,16 @@
 	flex-direction: column;
 	width: 75vw;
 	margin: 0 auto;
-	padding: $spacing-xl 0;
+	padding: $spacing-xLarge 0;
 }
 
 .game-info-content {
 	display: flex;
-	gap: $spacing-xl;
+	gap: $spacing-xLarge;
 }
 
 .game-info-description {
-	padding-bottom: $spacing-l;
+	padding-bottom: $spacing-large;
 	font-size: 1.2rem;
 	line-height: 150%;
 }
@@ -112,19 +112,19 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: $spacing-xl;
+	padding: $spacing-xLarge;
 	width: 100%;
-	gap: $spacing-xl;
+	gap: $spacing-xLarge;
 }
 
 .breadcrumb {
-	margin-bottom: $spacing-xl;
+	margin-bottom: $spacing-xLarge;
 }
 
 .catalog-table-container {
 	display: flex;
 	flex-direction: column;
-	padding-top: $spacing-l;
+	padding-top: $spacing-large;
 }
 
 .fixed-height {
@@ -140,5 +140,5 @@
 
 .game-info-subheading {
 	font-size: 2rem;
-	padding: $spacing-xl 0;
+	padding: $spacing-xLarge 0;
 }

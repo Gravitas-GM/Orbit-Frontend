@@ -8,35 +8,35 @@
 		margin: 0;
 		padding: 0;
 		&:not(:first-child) {
-			margin-top: $spacing-m;
+			margin-top: $spacing-medium;
 		}
 	}
 	.item-date {
 		text-align: center;
-		border-bottom: solid $spacing-px #000;
-		margin-bottom: $spacing-s;
+		border-bottom: solid $spacing-pixel #000;
+		margin-bottom: $spacing-small;
 	}
 
 	&:last-of-type {
-		margin-bottom: $spacing-l;
+		margin-bottom: $spacing-large;
 	}
 
 	li {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		gap: $spacing-m;
+		gap: $spacing-medium;
 
 		&:not(:first-child) {
-			margin-top: $spacing-s;
+			margin-top: $spacing-small;
 		}
 
 		&:last-child {
-			margin-bottom: $spacing-l;
+			margin-bottom: $spacing-large;
 		}
 
 		.item-content {
-			margin-left: $spacing-xs;
+			margin-left: $spacing-xSmall;
 		}
 	}
 }

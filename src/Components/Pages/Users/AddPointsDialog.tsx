@@ -48,7 +48,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Preset Source"
 							onClick={this.onShowSourceFormClick}
 							disabled={this.props.processing}
-							style={{marginRight: Spacing.m}}
+							style={{marginRight: Spacing.medium}}
 						/>
 
 						<Button

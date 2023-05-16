@@ -43,7 +43,7 @@ class Login extends React.PureComponent<IProps, IState> {
 
 		return (
 			<div id="login">
-				<div style={{textAlign: 'center', marginBottom: Spacing.m}}>
+				<div style={{textAlign: 'center', marginBottom: Spacing.medium}}>
 					<H1>
 						Happy Orbit
 					</H1>
