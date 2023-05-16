@@ -82,7 +82,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 									}}
 								/>
 
-								<div style={{paddingTop: Spacing.medium}}>
+								<div style={{paddingTop: Spacing.Medium}}>
 									<Button
 										text="Clear"
 										icon="minus"

@@ -76,7 +76,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 						src={this.state.game!.thumbnailUrl ?? Images.NotFound}
 						alt={`${this.state.game!.name} image`}
 						width="300"
-						style={{borderRadius: Spacing.small}}
+						style={{borderRadius: Spacing.Small}}
 					/>
 
 					<div>

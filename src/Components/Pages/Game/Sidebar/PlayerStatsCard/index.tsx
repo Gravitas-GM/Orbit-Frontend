@@ -20,12 +20,12 @@ export const PlayerStatsCard: React.FC<IProps> = ({player}) => {
 	return (
 		<GameCard title="Player Stats" icon="user">
 			<div className="card-content-wrapper">
-				<span style={{marginBottom: Spacing.large}}>
+				<span style={{marginBottom: Spacing.Large}}>
 					{player.user_name} ({player.current_points} points)
 				</span>
 
 				<span>
-					<Icon icon="flag" style={{marginRight: Spacing.medium}} /> {player.current_stage_name}
+					<Icon icon="flag" style={{marginRight: Spacing.Medium}} /> {player.current_stage_name}
 				</span>
 			</div>
 		</GameCard>

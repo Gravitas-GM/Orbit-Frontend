@@ -38,7 +38,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board,
 	if (processing) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
-				<div style={{margin: Spacing.large}}>
+				<div style={{margin: Spacing.Large}}>
 					<FrameLoadingSpinner />
 				</div>
 			</Dialog>

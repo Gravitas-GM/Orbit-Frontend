@@ -15,7 +15,7 @@
 .catalog-list-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
-	gap: $spacing-xLarge;
+	gap: $spacing-xlarge;
 	width: 100%;
 }
 
@@ -83,7 +83,7 @@
 	padding: $spacing-large;
 
 	h2 {
-		font-size: $spacing-xLarge;
+		font-size: $spacing-xlarge;
 		margin: unset;
 		padding: 0 0 0 $spacing-large;
 	}
@@ -94,12 +94,12 @@
 	flex-direction: column;
 	width: 75vw;
 	margin: 0 auto;
-	padding: $spacing-xLarge 0;
+	padding: $spacing-xlarge 0;
 }
 
 .game-info-content {
 	display: flex;
-	gap: $spacing-xLarge;
+	gap: $spacing-xlarge;
 }
 
 .game-info-description {
@@ -112,13 +112,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: $spacing-xLarge;
+	padding: $spacing-xlarge;
 	width: 100%;
-	gap: $spacing-xLarge;
+	gap: $spacing-xlarge;
 }
 
 .breadcrumb {
-	margin-bottom: $spacing-xLarge;
+	margin-bottom: $spacing-xlarge;
 }
 
 .catalog-table-container {
@@ -140,5 +140,5 @@
 
 .game-info-subheading {
 	font-size: 2rem;
-	padding: $spacing-xLarge 0;
+	padding: $spacing-xlarge 0;
 }

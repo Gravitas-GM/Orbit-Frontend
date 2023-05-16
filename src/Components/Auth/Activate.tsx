@@ -45,7 +45,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 		return (
 			<div id="activate">
-				<div style={{textAlign: 'center', marginBottom: Spacing.medium}}>
+				<div style={{textAlign: 'center', marginBottom: Spacing.Medium}}>
 					<H1>
 						Happy Orbit Activation
 					</H1>

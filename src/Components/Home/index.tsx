@@ -18,7 +18,7 @@ export const Home: React.FC = () => (
 					<div className={classNames(Classes.PAGE_WRAPPER, 'home-page-container')}>
 						<PageHeader title="Home" />
 
-						<H4 style={{marginTop: Spacing.xLarge}}>Game</H4>
+						<H4 style={{marginTop: Spacing.XLarge}}>Game</H4>
 
 						<div className="cards-container">
 							<Link to="/catalog">
@@ -58,7 +58,7 @@ export const Home: React.FC = () => (
 						{
 							isGranted(Permission.ADMIN) &&
 							<>
-								<H4 style={{marginTop: Spacing.xLarge}}>Admin</H4>
+								<H4 style={{marginTop: Spacing.XLarge}}>Admin</H4>
 
 								<div className="cards-container admin">
 									<Link to="/users">

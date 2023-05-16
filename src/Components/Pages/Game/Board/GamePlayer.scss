@@ -1,8 +1,8 @@
 @import "../../../../variables";
 
 #game-board .player-button {
-	margin: $spacing-xSmall;
-	border-radius: $spacing-xxLarge;
+	margin: $spacing-xsmall;
+	border-radius: $spacing-xxlarge;
 	padding: $spacing-medium;
 
 	width: 40px;
@@ -10,6 +10,6 @@
 	color: #0b2540;
 	border-color: #0b2540;
 	border-style: solid;
-	border-width: $spacing-xSmall;
+	border-width: $spacing-xsmall;
 	font-weight: bold;
 }

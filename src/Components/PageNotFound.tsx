@@ -6,7 +6,7 @@ import {
 } from '../Styles/variables';
 
 export const PageNotFound: React.FC = () => (
-	<div style={{margin: '0 auto', padding: `${Spacing.xLarge} ${Spacing.medium}`}}>
+	<div style={{margin: '0 auto', padding: `${Spacing.XLarge} ${Spacing.Medium}`}}>
 		<NonIdealState
 			icon="help"
 			title="Page Not Found"

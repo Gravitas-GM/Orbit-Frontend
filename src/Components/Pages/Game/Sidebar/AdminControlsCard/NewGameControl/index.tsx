@@ -82,7 +82,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({onClose, onConfirm
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
 			{loading ? (
-				<div style={{marginTop: Spacing.large}}>
+				<div style={{marginTop: Spacing.Large}}>
 					<FrameLoadingSpinner />
 				</div>
 			) : (
