@@ -1,6 +1,7 @@
 import {Button} from '@blueprintjs/core';
 import {useCallback, useContext, useState} from 'react';
 import {GamesModel} from '../../../Api/Game-State/Models/Games';
+import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {PageHeader} from '../../PageHeader';
@@ -24,7 +25,7 @@ export const DebugControls = () => {
 	}, []);
 
 	return (
-		<div className="gm-page-wrapper">
+		<div className={Classes.PAGE_WRAPPER}>
 			<PageHeader title="Debug Controls" />
 
 			<Button
