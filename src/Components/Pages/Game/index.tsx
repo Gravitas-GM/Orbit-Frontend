@@ -26,7 +26,6 @@ import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
 import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
 import {AdminControlsCard} from './Sidebar/AdminControlsCard';
 import {ApiError} from '../../../Api/errors/rocket';
-import './GameBoard.scss';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
