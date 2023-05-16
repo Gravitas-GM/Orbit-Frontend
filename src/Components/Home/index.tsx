@@ -2,6 +2,7 @@ import {Card, H4, Icon} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {Classes} from '../../classes';
+import {IconSize} from '../../IconSize';
 import {Permission, PermissionContext} from '../../Permission';
 import {UserContext} from '../../Session';
 import './Home.scss';
@@ -22,7 +23,7 @@ export const Home: React.FC = () => (
 						<div className="cards-container">
 							<Link to="/catalog">
 								<Card interactive={true}>
-									<Icon icon="layers" size={35} />
+									<Icon icon="layers" size={IconSize.XLARGE} />
 									<div>
 										<H4>Game Catalog</H4>
 										<p>Browse our Game Catalog and start playing one of our games.</p>
