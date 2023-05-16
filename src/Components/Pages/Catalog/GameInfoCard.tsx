@@ -34,7 +34,7 @@ export const GameInfoCard: React.FC<IProps> = ({game}) => {
 
 						{!game.publishedDate && (
 							<p className="catalog-card-under-construction">
-								<Icon style={{paddingRight: 5}} icon={'build'} /> Under Construction
+								<Icon style={{paddingRight: 5}} icon="build" /> Under Construction
 							</p>
 						)}
 					</div>
