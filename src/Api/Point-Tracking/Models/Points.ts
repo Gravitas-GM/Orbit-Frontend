@@ -102,7 +102,7 @@ export class PointsModel {
 
 	public static getFull(userId: Id) {
 		return pointTrackingClient.get<'/points/users/:user'>(`/points/users/${userId}`).then(response => {
-			response.data.points = response.data.points.map(this.denormalizePointItem);
+			response.data.points = response.data.points.map(PointsModel.denormalizePointItem);
 
 			return response;
 		});
@@ -115,7 +115,7 @@ export class PointsModel {
 	public static getAll(accountId: Id) {
 		return pointTrackingClient.get<'/points/account/:account'>(`/points/account/${accountId}`).then(response => {
 			response.data = response.data.map(userPoints => {
-				userPoints.points = userPoints.points.map(this.denormalizePointItem);
+				userPoints.points = userPoints.points.map(PointsModel.denormalizePointItem);
 
 				return userPoints;
 			});
