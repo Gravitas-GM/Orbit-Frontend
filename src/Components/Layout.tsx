@@ -2,6 +2,7 @@ import {Intent, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {Permission, PermissionContext} from '../Permission';
+import {FrameLoadingSpinner} from './FrameLoadingSpinner';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
@@ -22,9 +23,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div className="loading-container">
-			<Spinner intent={Intent.PRIMARY} />
-		</div>
+		<FrameLoadingSpinner />
 	) : (
 		<div style={{flex: 12, height: '100%'}}>
 			<NavHeader loading={props.loading} />
