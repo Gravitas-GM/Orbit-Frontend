@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Redirect} from 'react-router';
+import {ApiError} from '../../../Api/errors/rocket';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
 import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
 import {
@@ -16,37 +17,42 @@ import {
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import {replace} from '../../Utility/array';
-import {LogHistoryCard} from './Sidebar/LogHistoryCard';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {replace} from '../../Utility/array';
 import {GameAnnouncement} from './Board/GameAnnouncement';
 import {GameBoard} from './Board/GameBoard';
 import {Sidebar} from './Sidebar';
+import {AdminControlsCard} from './Sidebar/AdminControlsCard';
+import {LogHistoryCard} from './Sidebar/LogHistoryCard';
 import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
 import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
-import {AdminControlsCard} from './Sidebar/AdminControlsCard';
-import {ApiError} from '../../../Api/errors/rocket';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
 export function getPlayerStage(player?: PlayerAnnouncement | null): Stage | null {
-	if (player?.type === UpdateResultType.MOVED)
-		return player.new_stage.stage;
+	switch (player?.type) {
+		case UpdateResultType.MOVED:
+			return player.new_stage.stage;
 
-	else if (player?.type === UpdateResultType.CREATED)
-		return player.initial_stage?.stage;
+		case UpdateResultType.CREATED:
+			return player.initial_stage?.stage;
 
-	return null;
+		default:
+			return null;
+	}
 }
 
 export function getPlayerPoints(player?: PlayerAnnouncement | null): number {
-	if (player?.type === UpdateResultType.MOVED)
-		return player.new_point_total;
+	switch (player?.type) {
+		case UpdateResultType.MOVED:
+			return player.new_point_total;
 
-	else if (player?.type === UpdateResultType.CREATED)
-		return player.player.current_points;
+		case UpdateResultType.CREATED:
+			return player.player.current_points;
 
-	return 0;
+		default:
+			return 0;
+	}
 }
 
 interface IState {
