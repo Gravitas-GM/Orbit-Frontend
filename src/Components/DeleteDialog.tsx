@@ -11,19 +11,19 @@ interface IProps {
 
 export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = false, onConfirm, onCancel}) => {
 	const [confirmText, setConfirmText] = React.useState('');
-	const [processing, setProcessing] = React.useState(false)
+	const [processing, setProcessing] = React.useState(false);
 
 	const onCancelCallback = React.useCallback(() => {
 		setConfirmText('');
 		onCancel();
-		setProcessing(false)
+		setProcessing(false);
 	}, [onCancel, setConfirmText]);
 
 	const onConfirmCallback = React.useCallback(async () => {
-		setProcessing(true)
+		setProcessing(true);
 		await onConfirm();
 		setConfirmText('');
-		setProcessing(false)
+		setProcessing(false);
 	}, [onConfirm, setConfirmText]);
 
 	const onConfirmTextChange = React.useCallback(
@@ -38,31 +38,36 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 			onClose={onCancelCallback}
 			isCloseButtonShown={!processing}
 		>
-			<div className={Classes.DIALOG_BODY}>
-				<p>
-					You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be reversed.
-				</p>
+			<form onSubmit={(event) => event.preventDefault()}>
+				<div className={Classes.DIALOG_BODY}>
+					<p>
+						You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action cannot be
+						reversed.
+					</p>
 
-				<p>
-					To confirm, please type "{multiple ? 'DELETE' : subject}" in the box below, then click "Confirm."
-				</p>
+					<p>
+						To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click
+						"Confirm."
+					</p>
 
-				<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
-			</div>
-
-			<div className={Classes.DIALOG_FOOTER}>
-				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<Button text="Cancel" onClick={onCancelCallback} disabled={processing} loading={processing} />
-
-					<Button
-						text="Confirm"
-						intent={Intent.WARNING}
-						onClick={onConfirmCallback}
-						loading={processing}
-						disabled={subject !== confirmText || processing}
-					/>
+					<InputGroup value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
 				</div>
-			</div>
+
+				<div className={Classes.DIALOG_FOOTER}>
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button text="Cancel" onClick={onCancelCallback} disabled={processing} loading={processing} />
+
+						<Button
+							type="submit"
+							text="Confirm"
+							intent={Intent.WARNING}
+							onClick={onConfirmCallback}
+							loading={processing}
+							disabled={processing || subject?.toLowerCase() !== confirmText.toLowerCase()}
+						/>
+					</div>
+				</div>
+			</form>
 		</Dialog>
 	);
 };

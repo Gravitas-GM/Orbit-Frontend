@@ -1,31 +1,59 @@
 import * as React from 'react';
-import { Redirect } from 'react-router';
-import { Board, BoardModel } from '../../../Api/Game-Catalog/Models/Boards';
+import {Redirect} from 'react-router';
+import {ApiError} from '../../../Api/errors/rocket';
+import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
+import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
 import {
 	GamesModel,
 	GameStartPayload,
 	GameState,
-	PlayerState,
-	NextBoardResult,
 	isGameStartError,
-	UpdateResultType,
+	NextBoardResult,
 	PlayerCreated,
 	PlayerMoved,
+	PlayerState,
+	UpdateResultType,
 } from '../../../Api/Game-State/Models/Games';
-import { HistoryItem, HistoryModel } from '../../../Api/Game-State/Models/History';
-import { UserContext } from '../../../Session';
+import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
+import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import { LogHistoryCard } from './Sidebar/LogHistoryCard';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { GameAnnouncement } from './Board/GameAnnouncement';
-import { GameBoard } from './Board/GameBoard';
-import { Sidebar } from './Sidebar';
-import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
-import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
-import { AdminControlsCard } from './Sidebar/AdminControlsCard';
-import { ApiError } from '../../../Api/errors/rocket';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {replace} from '../../Utility/array';
+import {GameAnnouncement} from './Board/GameAnnouncement';
+import {GameBoard} from './Board/GameBoard';
+import {Sidebar} from './Sidebar';
+import {AdminControlsCard} from './Sidebar/AdminControlsCard';
+import {LogHistoryCard} from './Sidebar/LogHistoryCard';
+import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
+import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
+
+export function getPlayerStage(player?: PlayerAnnouncement | null): Stage | null {
+	switch (player?.type) {
+		case UpdateResultType.MOVED:
+			return player.new_stage.stage;
+
+		case UpdateResultType.CREATED:
+			return player.initial_stage?.stage;
+
+		default:
+			return null;
+	}
+}
+
+export function getPlayerPoints(player?: PlayerAnnouncement | null): number {
+	switch (player?.type) {
+		case UpdateResultType.MOVED:
+			return player.new_point_total;
+
+		case UpdateResultType.CREATED:
+			return player.player.current_points;
+
+		default:
+			return 0;
+	}
+}
 
 interface IState {
 	board: Board | null;
@@ -68,11 +96,13 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{display: 'grid', gridTemplateColumns: '5fr 2fr'}}>
-				<div style={{ display: 'flex', justifyContent: 'center' }}>
+			<div style={{display: 'grid', gridTemplateColumns: '10fr 2fr'}}>
+				<div style={{display: 'flex', position: 'relative', width: '100%'}}>
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
-					<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
+					<div style={{display: 'flex', justifyContent: 'center', width: 'inherit', position: 'absolute'}}>
+						<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
+					</div>
 				</div>
 
 				<div>
@@ -118,11 +148,11 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	private loadHistory = async () => {
-		this.setState({ loadingHistory: true });
+		this.setState({loadingHistory: true});
 
 		const history = await this.fetchHistory();
 
-		this.setState({ history, loadingHistory: false });
+		this.setState({history, loadingHistory: false});
 	};
 
 	private loadMoreHistory = async () => {
@@ -137,17 +167,17 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				response => response.data,
 			);
 
-			this.setState(({ history }) => {
+			this.setState(({history}) => {
 				if (history !== null)
-					return { history: [...history, ...items], loadingHistory: false };
+					return {history: [...history, ...items], loadingHistory: false};
 				else
-					return { history: items, loadingHistory: false };
+					return {history: items, loadingHistory: false};
 			});
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loadingHistory: false
+				loadingHistory: false,
 			});
 		}
 	};
@@ -172,7 +202,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({ redirect: true });
+				this.setState({redirect: true});
 
 			return;
 		}
@@ -185,7 +215,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({ redirect: true });
+				this.setState({redirect: true});
 
 			return;
 		}
@@ -201,20 +231,23 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			currentPlayer,
 			loading: false,
 		});
-	}
+	};
 
-	public goToNextBoard = async () => {
-		let result: NextBoardResult;
+	private goToNextBoard = async () => {
+		let result;
 
 		try {
-			result = await GamesModel.nextBoard(this.state.gameState!.account_id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+			result = await GamesModel.nextBoard(this.state.gameState!.account_id);
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			return;
 		}
 
-		if (result === NextBoardResult.Success) {
+		if (result.status === NextBoardResult.Success) {
 			try {
 				await this.fetchGameState(false);
 			} catch (_) {
@@ -224,26 +257,49 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			}
 		}
 
-		toaster.notifyNextBoardResult(result);
-	}
+		if (result)
+			toaster.notifyNextBoardResult(result.status);
+		else
+			toaster.showUnhandledErrorMessage();
+	};
 
-	public startNewGame = async (payload: GameStartPayload) => {
+	private startNewGame = async (payload: GameStartPayload) => {
 		if (this.state.loading)
 			return;
 
 		this.setState({
-			loading: true
+			loading: true,
 		});
+
+		try {
+			await GamesModel.deleteGameState(this.context!.account.id);
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				processing: false,
+			});
+
+			return;
+		}
 
 		let gameState;
 
 		try {
-			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(
+				async () => await GamesModel.gameInfo(this.context!.account.id).then(r => r.data),
+			);
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('Could not find specified game to start.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
@@ -253,7 +309,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.info('Game not found');
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
@@ -263,22 +319,24 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 		try {
 			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
-		} catch (_) {
+		} catch (e) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
 			return;
 		}
+
+		toaster.success('New game started successfully');
 
 		this.setState({
 			board,
 			gameState,
 			loading: false,
 		});
-	}
+	};
 
 	private onStartPlayerUpdateClick = async () => {
 		if (this.state.processing)
@@ -293,11 +351,14 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		try {
 			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
 				response => response.data.filter(player =>
-					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED
-				) as PlayerAnnouncement[]
+					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED,
+				) as PlayerAnnouncement[],
 			);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('There are currently no active games for your account.');
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				processing: false,
@@ -306,10 +367,13 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		toaster.success('Game is ready to play!');
+		if (playerAnnouncements.length > 0)
+			toaster.success('Game is ready to play!');
+		else if (playerAnnouncements.length === 0)
+			toaster.success('All players are moved.');
 
 		this.setState({
-			playerAnnouncements,
+			playerAnnouncements: playerAnnouncements.sort((a, b) => getPlayerPoints(b) - getPlayerPoints(a)),
 			processing: false,
 		});
 	};
@@ -318,16 +382,43 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let movingPlayer = this.state.playerAnnouncements.pop() ?? null;
 
 		if (!movingPlayer) {
-			toaster.success('All players moved!');
+			toaster.success('All players are moved.');
 
 			return;
 		}
 
-		const historyItem = movingPlayer.history_item;
+		const movingPlayerStage = getPlayerStage(movingPlayer);
+
+		if (!movingPlayerStage) {
+			toaster.error('Could not find Player\'s stage');
+
+			return;
+		}
+
+		let players = this.state.gameState!.players;
+
+		let newPlayerState: PlayerState = {
+			hub_id: movingPlayer.player.hub_id,
+			user_name: movingPlayer.player.user_name,
+			current_points: getPlayerPoints(movingPlayer),
+			current_stage_name: movingPlayerStage.name,
+			current_stage_id: movingPlayerStage.id,
+		};
+
+		let currentPlayerState = players.find(player => player.hub_id === movingPlayer!.player.hub_id);
+
+		if (currentPlayerState)
+			players = replace(players, currentPlayerState, newPlayerState);
+		else
+			players = [...players, newPlayerState];
 
 		this.setState(state => ({
 			movingPlayer,
-			history: state.history ? [...state.history, historyItem] : [historyItem],
+			history: state.history ? [...state.history, movingPlayer!.history_item] : [movingPlayer!.history_item],
+			gameState: {
+				...state.gameState!,
+				players,
+			},
 		}));
 	};
 }

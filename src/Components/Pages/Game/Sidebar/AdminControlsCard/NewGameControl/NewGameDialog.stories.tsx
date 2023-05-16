@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { NewGameDialog } from './';
-import { gamesMock } from '../../../../../../mocks/Game';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {NewGameDialog} from './';
+import {gameMock} from '../../../../../../mocks/Game';
 
 export default {
 	title: 'New Game Dialog',
@@ -11,7 +11,7 @@ export default {
 				url: `${process.env.GAME_CATALOG_URL}/games`,
 				method: 'GET',
 				status: 200,
-				response: gamesMock,
+				response: gameMock,
 				delay: 1500,
 			},
 		],

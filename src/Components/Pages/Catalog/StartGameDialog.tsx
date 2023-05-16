@@ -1,6 +1,6 @@
-import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
+import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import { Game } from '../../../Api/Game-Catalog/Models/Games';
+import {Game} from '../../../Api/Game-Catalog/Models/Games';
 
 interface IProps {
 	isOpen: boolean;
@@ -10,8 +10,7 @@ interface IProps {
 	game: Game;
 }
 
-export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, onConfirm, onCancel }) => {
-
+export const StartGameDialog: React.FC<IProps> = ({isOpen, game, processing, onConfirm, onCancel}) => {
 	return (
 		<Dialog
 			isOpen={isOpen}
@@ -19,7 +18,7 @@ export const StartGameDialog: React.FC<IProps> = ({ isOpen, game, processing, on
 			onClose={onCancel}
 		>
 			<div className={Classes.DIALOG_BODY}>
-				<p style={{ lineHeight: '175%' }}>
+				<p style={{lineHeight: '175%'}}>
 					Would you like to start {game.name}?<br />
 					This will reset all points for all users and start a new game.
 				</p>

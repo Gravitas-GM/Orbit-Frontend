@@ -6,15 +6,15 @@ import {
 	PlayerDeleted,
 	PlayerMoved,
 } from '../../../../../../Api/Game-State/Models/Games';
-import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import { formatNumber, ucwords } from '../../../../../Utility/string';
+import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {formatNumber, ucwords} from '../../../../../Utility/string';
 
 interface IProps {
 	board: Board;
 	update: PlayerUpdate;
 }
 
-export const PreviewRow: React.FC<IProps> = ({ board, update }) => {
+export const PreviewRow: React.FC<IProps> = ({board, update}) => {
 	switch (update.type) {
 		case UpdateResultType.CREATED:
 			return <CreatedPlayerRow board={board} update={update} />;
@@ -35,7 +35,7 @@ interface TypedRowProps<T extends PlayerUpdate> {
 	update: T;
 }
 
-const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, update }) => (
+const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({board, update}) => (
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>
@@ -46,7 +46,7 @@ const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({ board, updat
 	</tr>
 );
 
-const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, update }) => (
+const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({board, update}) => (
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>
@@ -57,8 +57,7 @@ const ChangedPlayerRow: React.FC<TypedRowProps<PlayerChanged>> = ({ board, updat
 	</tr>
 );
 
-
-const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update }) => (
+const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({board, update}) => (
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>
@@ -69,8 +68,7 @@ const MovedPlayerRow: React.FC<TypedRowProps<PlayerMoved>> = ({ board, update })
 	</tr>
 );
 
-
-const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board }) => (
+const DeletedPlayerRow: React.FC<TypedRowProps<PlayerDeleted>> = ({update, board}) => (
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>

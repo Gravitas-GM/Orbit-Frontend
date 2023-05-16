@@ -1,30 +1,26 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
-$pt-app-background-color: $dark-gray4;
-
-$gm-nav-header-height: $pt-navbar-height;
-
-$gm-main-frame-height: calc(100% - #{$gm-nav-header-height});
-
-$gm-content-padding-vertical: 20px;
-$gm-content-padding-horizontal: 30px;
-$gm-content-padding: $gm-content-padding-vertical $gm-content-padding-horizontal;
-
-$gm-main-frame-background-color: $gray4;
-
-// tokens for matching new board design
+//spacings
+$spacing-pixel: 1px;
+$spacing-xsmall: 2px;
+$spacing-small: 4px;
+$spacing-medium: 10px;
+$spacing-large: 16px;
+$spacing-xlarge: 24px;
+$spacing-xxlarge: 48px;
 
 // colors
 $orbit-blue: #0b2540;
 
-// styles
-$gm-navbar-background-color: $orbit-blue;
+$pt-app-background-color: $dark-gray4;
+$gm-main-frame-background-color: $gray4;
 
-//spacings
-$spacing-px: 1px;
-$spacing-1: 4px;
-$spacing-2: 8px;
-$spacing-3: 16px;
-$spacing-4: 24px;
-$spacing-5: 32px;
-$spacing-6: 40px;
+// styles
+$gm-content-padding-vertical: $spacing-large;
+$gm-content-padding-horizontal: $spacing-large;
+$gm-content-padding: $gm-content-padding-vertical $gm-content-padding-horizontal;
+
+$gm-navbar-background-color: $orbit-blue;
+$gm-nav-header-height: $pt-navbar-height;
+
+$gm-main-frame-height: calc(100% - #{$gm-nav-header-height});

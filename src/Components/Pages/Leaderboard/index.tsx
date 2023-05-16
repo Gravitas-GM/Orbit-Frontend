@@ -1,14 +1,17 @@
-import {AnchorButton, Button, H2, HTMLTable} from '@blueprintjs/core';
+import {AnchorButton, Button, HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
 import {tokenStorage} from '../../../Api';
-import { ApiError } from '../../../Api/errors/rocket';
+import {ApiError} from '../../../Api/errors/rocket';
 import {GamesModel, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
+import {NonIdealState} from '../../NonIdealState';
+import {PageHeader} from '../../PageHeader';
 
 interface IState {
 	players: PlayerState[];
@@ -17,7 +20,7 @@ interface IState {
 	loading: boolean;
 }
 
-export class PointSummary extends React.PureComponent<{}, IState> {
+export class Leaderboard extends React.PureComponent<{}, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
@@ -36,21 +39,26 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
+		if (this.state.userPoints.length === 0)
+			return <NoData />;
+
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
-			<div className="gm-page-wrapper">
-				<div className="settings-title-container">
-					<H2>Leaderboard <Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} /></H2>
+			<div className={Classes.PAGE_WRAPPER}>
+				<PageHeader title="Leaderboard">
+					<div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+						<Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} />
 
-					<AnchorButton
-						text="Download"
-						icon="download"
-						intent="primary"
-						href={downloadUrl.toString()}
-						target="_blank"
-					/>
-				</div>
+						<AnchorButton
+							text="Download"
+							icon="download"
+							intent="primary"
+							href={downloadUrl.toString()}
+							target="_blank"
+						/>
+					</div>
+				</PageHeader>
 
 				<HTMLTable striped={true}>
 					<thead>
@@ -118,7 +126,7 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 
 		let hasError = false;
 		let userPoints: UserPointsSummary[] = [];
-		
+
 		// TODO This could be simplified and parallelized by using Promise.allSettled() and then checking for any
 		//		rejected promises. /tyler
 
@@ -158,3 +166,15 @@ export class PointSummary extends React.PureComponent<{}, IState> {
 		});
 	};
 }
+
+const NoData: React.FC = () => {
+	return (
+		<div className={Classes.PAGE_WRAPPER}>
+			<PageHeader title="Leaderboard" />
+
+			<div>
+				<NonIdealState title="This game doesn't have any points yet" />
+			</div>
+		</div>
+	);
+};

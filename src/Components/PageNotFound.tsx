@@ -1,9 +1,12 @@
 import {NonIdealState} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
+import {
+	Spacing,
+} from '../Styles/variables';
 
 export const PageNotFound: React.FC = () => (
-	<div style={{margin: '0 auto', padding: '30px 10px'}}>
+	<div style={{margin: '0 auto', padding: `${Spacing.XLarge} ${Spacing.Medium}`}}>
 		<NonIdealState
 			icon="help"
 			title="Page Not Found"

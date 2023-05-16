@@ -1,13 +1,13 @@
-import { Button, Intent } from '@blueprintjs/core';
-import { useState, useCallback } from 'react';
-import { Board } from '../../../../../../Api/Game-Catalog/Models/Boards';
-import { UpdatePreviewDialog } from './UpdatePreviewDialog';
+import {Button, Intent} from '@blueprintjs/core';
+import {useState, useCallback} from 'react';
+import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {UpdatePreviewDialog} from './UpdatePreviewDialog';
 
 interface IUpdatePreviewProps {
 	board: Board;
 }
 
-export const UpdatePreviewControl: React.FC<IUpdatePreviewProps> = ({ board }) => {
+export const UpdatePreviewControl: React.FC<IUpdatePreviewProps> = ({board}) => {
 	const [showUpdatePreviewDialog, setShowUpdatePreviewDialog] = useState(false);
 
 	const onPreviewClick = useCallback(() => {
@@ -36,4 +36,4 @@ export const UpdatePreviewControl: React.FC<IUpdatePreviewProps> = ({ board }) =
 			)}
 		</>
 	);
-}
+};

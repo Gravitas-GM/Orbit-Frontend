@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { Icon, IconName } from '@blueprintjs/core';
+import React, {useState, useCallback} from 'react';
+import {Icon, IconName} from '@blueprintjs/core';
 import './GameCard.scss';
-import { classNames } from '../../../../Utility/dom';
-import { Classes } from '../../../../../classes';
+import {classNames} from '../../../../Utility/dom';
+import {Classes} from '../../../../../classes';
+import {Spacing} from '../../../../../Styles/variables';
 
 interface IProps {
 	title: string;
@@ -11,7 +12,7 @@ interface IProps {
 	children?: React.ReactNode;
 }
 
-export const GameCard: React.FC<IProps> = ({ fill, title, icon, children }) => {
+export const GameCard: React.FC<IProps> = ({fill, title, icon, children}) => {
 	const [open, setOpen] = useState(true);
 
 	const onCollapseToggle = useCallback((e: React.MouseEvent<HTMLDetailsElement>) => {
@@ -22,7 +23,7 @@ export const GameCard: React.FC<IProps> = ({ fill, title, icon, children }) => {
 	return (
 		<details className={classNames(Classes.CARD, !open && 'collapsed', fill && 'fill')} open={open}>
 			<summary className={Classes.CARD_HEADER} onClick={onCollapseToggle}>
-				<Icon icon={icon} style={{ marginRight: '0.5rem' }} />
+				<Icon icon={icon} style={{marginRight: Spacing.Medium}} />
 				{title}
 			</summary>
 

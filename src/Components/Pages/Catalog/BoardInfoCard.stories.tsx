@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { BoardInfoCard } from './BoardInfoCard';
-import { catalogGameBoardMock } from '../../../mocks/GameBoard';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {BoardInfoCard} from './BoardInfoCard';
+import {catalogGameBoardMock} from '../../../mocks/GameBoard';
 
 export default {
 	title: 'Board Info Card',
@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof BoardInfoCard> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	board: catalogGameBoardMock
+	board: catalogGameBoardMock,
 };

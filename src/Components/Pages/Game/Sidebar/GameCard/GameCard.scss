@@ -4,14 +4,14 @@
 // currently include light and dark modes for the game board. This will likely change in the future,
 // assuming we want to support light and dark modes.
 $text-color: $pt-text-color;
-$border-radius: 1rem;
-$padding: 0.5rem 1rem;
+$border-radius: $spacing-large;
+$padding: $spacing-medium $spacing-large;
 
 .gm-card {
-	box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px $spacing-pixel $spacing-xsmall 0px;
 	border-radius: $border-radius;
 	display: flex;
-	padding-bottom: 15px;
+	padding-bottom: $spacing-large;
 
 	&.fill {
 		flex-grow: 1;
@@ -38,6 +38,7 @@ $padding: 0.5rem 1rem;
 		color: $pt-text-color;
 		padding: $padding;
 		border-radius: 0 0 $border-radius $border-radius;
+		box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 	}
 
 	.button-wrapper {

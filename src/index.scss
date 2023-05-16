@@ -10,10 +10,16 @@ html,
 body {
 	padding-top: $pt-navbar-height;
 	margin: 0;
+	box-sizing: border-box;
 
 	&.#{$ns}-dark {
 		background-color: $pt-dark-app-background-color;
 	}
+}
+// Reset default margin and padding for text elements
+h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
+	margin: 0;
+	padding: 0;
 }
 
 #app-root {
@@ -27,8 +33,11 @@ body {
 		}
 
 		.#{$ns}-button {
-			height: 30px;
+			height: $spacing-xlarge;
 		}
+
+		padding-top: $spacing-large;
+		gap: $spacing-large;
 	}
 
 	.main-frame {
@@ -36,7 +45,13 @@ body {
 	}
 
 	.gm-page-wrapper {
-		padding: 10px 20px;
+		padding: $spacing-medium $spacing-large;
+		width: 75vw;
+		margin: 0 auto;
+
+		header {
+			margin: $spacing-large 0;
+		}
 	}
 }
 
@@ -54,14 +69,14 @@ table.#{$ns}-html-table {
 
 	span {
 		flex: 1;
-		padding-right: 20px;
+		padding-right: $spacing-large;
 	}
 
 	.#{$ns}-switch {
-		margin: 10px 0 10px 0;
+		margin: $spacing-medium 0 $spacing-medium 0;
 
 		.#{$ns}-control-indicator {
-			padding-bottom: 20px;
+			padding-bottom: $spacing-large;
 		}
 	}
 }
@@ -82,4 +97,14 @@ a.plain-link {
 .#{$ns}-popover2 {
 	max-height: 300px;
 	overflow-y: auto;
+}
+
+.empty-state-wrapper {
+	padding: 1rem 0;
+}
+
+.card-content-wrapper {
+	padding: 0.5rem 0;
+	display: flex;
+	flex-direction: column;
 }

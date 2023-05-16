@@ -1,8 +1,7 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { SourcesList } from '.';
-import { pointSourceItemsMock } from '../../../mocks/PointSourceItem';
-import { userMock } from '../../../mocks/User';
-
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {SourcesList} from '.';
+import {pointSourceItemsMock} from '../../../mocks/PointSourceItem';
+import {userMock} from '../../../mocks/User';
 
 export default {
 	title: 'Sources Page',
@@ -43,8 +42,8 @@ export default {
 				status: 200,
 				response: pointSourceItemsMock[0],
 				delay: 500,
-			}
-		]
+			},
+		],
 	},
 } as ComponentMeta<typeof SourcesList>;
 

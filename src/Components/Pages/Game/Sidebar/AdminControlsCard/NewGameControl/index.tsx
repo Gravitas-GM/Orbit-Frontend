@@ -1,17 +1,18 @@
-import { Button, Classes, Dialog, Intent } from '@blueprintjs/core';
-import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
-import { MenuItem2 as MenuItem } from "@blueprintjs/popover2";
-import { useState, useCallback, useEffect } from 'react';
-import { Game, GameModel } from '../../../../../../Api/Game-Catalog/Models/Games';
-import { GameStartPayload } from '../../../../../../Api/Game-State/Models/Games';
+import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
+import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {useState, useCallback, useEffect} from 'react';
+import {Game, GameModel} from '../../../../../../Api/Game-Catalog/Models/Games';
+import {GameStartPayload} from '../../../../../../Api/Game-State/Models/Games';
 import * as toaster from '../../../../../../Toaster';
-import { FrameLoadingSpinner } from '../../../../../FrameLoadingSpinner';
+import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
+import {Spacing} from '../../../../../../Styles/variables';
 
 interface INewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
+export const NewGameControl: React.FC<INewGameProps> = ({startNewGame}) => {
 	const [showNewGameDialog, setShowNewGameDialog] = useState(false);
 
 	const closeNewGameDialog = useCallback(() => setShowNewGameDialog(false), []);
@@ -38,15 +39,14 @@ export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
 			}
 		</>
 	);
-}
-
+};
 
 interface INewGameDialogProps {
 	onClose: () => void;
 	onConfirm: (payload: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfirm }) => {
+export const NewGameDialog: React.FC<INewGameDialogProps> = ({onClose, onConfirm}) => {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState(false);
@@ -70,7 +70,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 		setIsLoading(true);
 
 		GameModel.list()
-			.then(response => setGamesList(response.data))
+			.then(response => setGamesList(response.data.filter(game => game.publishedDate !== null)))
 			.then(() => setIsLoading(false))
 			.catch((_) => {
 				toaster.error('Could not obtain available games.');
@@ -82,7 +82,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
 			{loading ? (
-				<div style={{ marginTop: '1rem' }}>
+				<div style={{marginTop: Spacing.Large}}>
 					<FrameLoadingSpinner />
 				</div>
 			) : (
@@ -98,7 +98,11 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 						>
 
-							<Button text={selectedGame ? selectedGame.name : 'Select a game'} rightIcon="double-caret-vertical" placeholder="Select a game" />
+							<Button
+								text={selectedGame ? selectedGame.name : 'Select a game'}
+								rightIcon="double-caret-vertical"
+								placeholder="Select a game"
+							/>
 						</Select>
 					</div>
 
@@ -120,9 +124,9 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	);
 };
 
-const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, modifiers }) => {
+const renderGameOption: ItemRenderer<Game> = (game, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate)
-    	return null;
+		return null;
 
 	return (
 		<MenuItem
@@ -135,4 +139,4 @@ const renderGameOption: ItemRenderer<Game> = (game, { handleClick, handleFocus, 
 			text={game.name}
 		/>
 	);
-}
+};

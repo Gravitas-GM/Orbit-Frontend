@@ -8,6 +8,7 @@ import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
 import {allSettled} from '../Utility/promise';
 import {ucwords} from '../Utility/string';
 import * as toaster from '../../Toaster';
+import {Spacing} from '../../Styles/variables';
 
 interface IProps {
 	onClose: () => void;
@@ -65,8 +66,8 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 								<MultiSelect
 									tagInputProps={{
 										inputProps: {
-											autoFocus: true
-										}
+											autoFocus: true,
+										},
 									}}
 									selectedItems={this.state.selectedSources}
 									items={this.state.sources}
@@ -81,7 +82,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 									}}
 								/>
 
-								<div style={{paddingTop: 10}}>
+								<div style={{paddingTop: Spacing.Medium}}>
 									<Button
 										text="Clear"
 										icon="minus"
@@ -177,9 +178,9 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 
 	private tagRenderer = (source: PointSourceItem) => {
 		return ucwords(source.name);
-	}
+	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers}) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}

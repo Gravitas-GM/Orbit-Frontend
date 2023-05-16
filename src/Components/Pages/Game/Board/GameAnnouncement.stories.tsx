@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {UpdateResultType} from '../../../../Api/Game-State/Models/Games';
 import {GameAnnouncement} from './GameAnnouncement';
 
@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof GameAnnouncement> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	player: {
+	playerAnnouncement: {
 		type: UpdateResultType.MOVED,
 		player: {
 			hub_id: 1,
@@ -48,5 +48,5 @@ Basic.args = {
 			timestamp: new Date(),
 			content: 'Test History Item',
 		},
-	}
+	},
 };

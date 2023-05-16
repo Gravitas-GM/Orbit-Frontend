@@ -3,16 +3,17 @@ import {Button, H5, H6, Popover} from '@blueprintjs/core';
 import {PlayerState} from '../../../../Api/Game-State/Models/Games';
 import {formatNumber, renderPlayerInitials, ucwords} from '../../../Utility/string';
 import './GamePlayer.scss';
+import {Spacing} from '../../../../Styles/variables';
 
 interface IProps {
 	player: PlayerState;
 }
 
-export const GamePlayer: React.FC<IProps> = ({ player }) => {
+export const GamePlayer: React.FC<IProps> = ({player}) => {
 	return (
 		<Popover
 			content={
-				<div style={{padding: 10}}>
+				<div style={{padding: Spacing.Medium}}>
 					<H5>{ucwords(player.user_name)}</H5>
 
 					<H6 style={{display: 'flex', justifyContent: 'center'}}>
@@ -22,7 +23,7 @@ export const GamePlayer: React.FC<IProps> = ({ player }) => {
 			}
 		>
 			<Button
-				className='player-button'
+				className="player-button"
 				text={renderPlayerInitials(player)}
 			/>
 		</Popover>

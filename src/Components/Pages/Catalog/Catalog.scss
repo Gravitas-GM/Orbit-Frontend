@@ -1,8 +1,8 @@
+@import '../../../variables';
+
 .catalog-container {
 	display: flex;
 	flex-direction: column;
-	width: 75vw;
-	margin: 0 auto;
 }
 
 .catalog-header {
@@ -12,10 +12,17 @@
 	width: 100%;
 }
 
+.catalog-list-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 300px));
+	gap: $spacing-xlarge;
+	width: 100%;
+}
+
 .catalog-games-list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-	gap: 1rem;
+	gap: $spacing-large;
 }
 
 .catalog-info-card {
@@ -23,7 +30,7 @@
 	padding: 0;
 	flex-direction: column;
 	border-color: rgba(255, 255, 255, 0.2);
-	border-radius: 5px;
+	border-radius: $spacing-small;
 	border-style: solid;
 	flex: 1;
 	transition: all 0.3s;
@@ -41,13 +48,13 @@
 
 .catalog-card-content {
 	display: flex;
-	flex-direction:column;
+	flex-direction: column;
 }
 
 .catalog-card-description {
-	 display: flex;
-	 flex-direction: column;
-	 padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	padding: $spacing-large;
 
 	p {
 		overflow: hidden;
@@ -59,22 +66,26 @@
 	}
 }
 
+.catalog-card-under-construction {
+	color: $pt-intent-warning;
+}
+
 .board-list-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-	gap: 1rem;
+	gap: $spacing-large;
 }
 
 .board-card-content {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-	padding: 1rem;
+	padding: $spacing-large;
 
 	h2 {
-		font-size: 2rem;
+		font-size: $spacing-xlarge;
 		margin: unset;
-		padding: 0 0 0 20px;
+		padding: 0 0 0 $spacing-large;
 	}
 }
 
@@ -83,16 +94,16 @@
 	flex-direction: column;
 	width: 75vw;
 	margin: 0 auto;
-	padding: 2rem 0;
+	padding: $spacing-xlarge 0;
 }
 
 .game-info-content {
 	display: flex;
-	gap: 2rem;
+	gap: $spacing-xlarge;
 }
 
 .game-info-description {
-	padding-bottom: 20px;
+	padding-bottom: $spacing-large;
 	font-size: 1.2rem;
 	line-height: 150%;
 }
@@ -101,21 +112,33 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 2rem;
+	padding: $spacing-xlarge;
 	width: 100%;
-	gap: 2rem;
+	gap: $spacing-xlarge;
 }
 
 .breadcrumb {
-	margin-bottom: 2rem;
+	margin-bottom: $spacing-xlarge;
 }
 
-.table-container {
+.catalog-table-container {
 	display: flex;
 	flex-direction: column;
-	padding-top: 20px
+	padding-top: $spacing-large;
 }
 
 .fixed-height {
-	min-height: 465px;
+	height: 270px;
+}
+
+.game-image-wrapper {
+	height: 150px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+.game-info-subheading {
+	font-size: 2rem;
+	padding: $spacing-xlarge 0;
 }

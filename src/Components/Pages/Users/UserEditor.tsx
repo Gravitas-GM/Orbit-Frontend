@@ -1,20 +1,23 @@
-import { Button, H2, H6, Icon } from '@blueprintjs/core';
+import {Button, H2, H6, Icon} from '@blueprintjs/core';
 import * as React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router';
-import { User, UserModel } from '../../../Api/Hub/Models/Users';
-import { PointItem, PointsModel, UserPoints } from '../../../Api/Point-Tracking/Models/Points';
-import { PointSourceItem, PointSourceModel } from '../../../Api/Point-Tracking/Models/Sources';
-import { Permission } from '../../../Permission';
-import { UserContext } from '../../../Session';
+import {Redirect, RouteComponentProps} from 'react-router';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../classes';
+import {Permission} from '../../../Permission';
+import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
-import { DeleteDialog } from '../../DeleteDialog';
-import { FrameLoadingSpinner } from '../../FrameLoadingSpinner';
-import { allSettled, isRejectedResult } from '../../Utility/promise';
-import { AddPointsDialog } from './AddPointsDialog';
-import { PointsTable, PointsTableRow } from './UserPointsTable';
-import { renderUserName } from '../../Utility/string';
-import { UpdatableUserData, UserEditDialog } from './UserEditDialog';
-import { ApiError } from '../../../Api/errors/rocket';
+import {DeleteDialog} from '../../DeleteDialog';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {AddPointsDialog} from './AddPointsDialog';
+import {PointsTable, PointsTableRow} from './UserPointsTable';
+import {renderUserName} from '../../Utility/string';
+import {UpdatableUserData, UserEditDialog} from './UserEditDialog';
+import {isAxiosErrorResponse} from '../../../Api/errors';
+import {Spacing} from '../../../Styles/variables';
+import {ApiError} from '../../../Api/errors/rocket';
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -111,7 +114,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={Classes.PAGE_WRAPPER}>
 				<div className="settings-title-container">
 					<H2>{renderUserName(this.state.user!)}</H2>
 
@@ -123,18 +126,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<div style={{ display: 'flex' }}>
-					<H6 style={{ flex: 1 }}>{this.state.user!.emailAddress}</H6>
+				<div style={{display: 'flex'}}>
+					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
-						<H6 style={{ paddingLeft: 10 }}>
-							<Icon icon={'person'} style={{ paddingRight: 5 }} intent="warning" />
+						<H6 style={{paddingLeft: Spacing.Medium}}>
+							<Icon icon={'person'} style={{paddingRight: Spacing.Small}} intent="warning" />
 							Admin
 						</H6>
 					)}
 				</div>
 
-				<div className="settings-title-container" style={{ paddingTop: 25, display: 'flex', gap: '1rem' }}>
+				<div className="settings-title-container">
 					<H2>Points</H2>
 
 					{this.state.selectedItems.length > 0 && (
@@ -251,7 +254,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onBulkDeleteButtonClick = () => this.setState({
-		deleteSubject: 'delete',
+		deleteSubject: 'Delete',
 		showDeleteDialog: true,
 		deleteTargets: this.state.selectedItems,
 	});
@@ -262,7 +265,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			deleteTargets: items,
 			showDeleteDialog: true,
 		}));
-	}
+	};
 
 	private onDeleteCancel = () => this.setState({
 		showDeleteDialog: false,
@@ -360,11 +363,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
-			this.setState(state => ({ selectedItems: state.selectedItems.filter(target => target !== item) }));
+			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
 			return;
 		}
 		this.setState((state) => ({
-			selectedItems: [...state.selectedItems, item]
+			selectedItems: [...state.selectedItems, item],
 		}));
 	};
 

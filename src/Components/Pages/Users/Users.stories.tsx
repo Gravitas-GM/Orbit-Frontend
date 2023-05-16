@@ -1,7 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { UsersList } from '.';
-import { userMock } from '../../../mocks/User';
-
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {UsersList} from '.';
+import {userMock} from '../../../mocks/User';
 
 export default {
 	title: 'Users List Page',
@@ -21,8 +20,8 @@ export default {
 				status: 200,
 				response: userMock,
 				delay: 500,
-			}
-		]
+			},
+		],
 	},
 } as ComponentMeta<typeof UsersList>;
 

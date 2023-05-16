@@ -1,0 +1,8 @@
+@import '../../../../../variables';
+
+.admin-controls-container {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-large;
+	padding: $spacing-large 0;
+}

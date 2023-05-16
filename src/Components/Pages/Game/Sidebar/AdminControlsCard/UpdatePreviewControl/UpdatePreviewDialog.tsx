@@ -1,19 +1,21 @@
-import { Dialog, NonIdealState, Button, Intent, HTMLTable } from "@blueprintjs/core";
-import { useContext, useState, useEffect } from "react";
-import { PlayerUpdate, GamesModel, UpdateResultType } from "../../../../../../Api/Game-State/Models/Games";
-import { Board } from "../../../../../../Api/Game-Catalog/Models/Boards";
-import { UserContext } from "../../../../../../Session";
-import { FrameLoadingSpinner } from "../../../../../FrameLoadingSpinner";
-import { PreviewRow } from "./PreviewRow";
+import {Dialog, Button, Intent, HTMLTable} from '@blueprintjs/core';
+import {NonIdealState} from '../../../../../NonIdealState';
+import {useContext, useState, useEffect} from 'react';
+import {PlayerUpdate, GamesModel, UpdateResultType} from '../../../../../../Api/Game-State/Models/Games';
+import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {UserContext} from '../../../../../../Session';
+import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
+import {PreviewRow} from './PreviewRow';
 import * as toaster from '../../../../../../Toaster';
 import './UpdatePreviewDialog.scss';
+import {Spacing} from '../../../../../../Styles/variables';
 
 interface IUpdatePreviewDialogProps {
 	onClose: () => void;
-	board: Board
+	board: Board;
 }
 
-export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board, onClose }) => {
+export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board, onClose}) => {
 	const User = useContext(UserContext);
 
 	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
@@ -36,16 +38,16 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 	if (processing) {
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
-				<div style={{ margin: '1rem' }}>
+				<div style={{margin: Spacing.Large}}>
 					<FrameLoadingSpinner />
 				</div>
 			</Dialog>
 		);
 	}
 
-	if (!updateData) {
+	if (!updateData || updateData.length === 0) {
 		return (
-			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}  className="gm-dialog-large">
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
 				<NonIdealState
 					title="No preview data available"
 					action={(
@@ -60,7 +62,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 		);
 	} else {
 		return (
-			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose}  className="gm-dialog-large">
+			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
 				<div className="table-container">
 					<HTMLTable striped>
 						<thead>
@@ -80,7 +82,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({ board
 									board={board}
 									update={update}
 									key={update.player.hub_id}
-								/>
+								/>,
 							)}
 						</tbody>
 					</HTMLTable>

@@ -1,6 +1,6 @@
-import {gameStateClient, Id} from '../..';
+import {gameStateClient, Id, pointTrackingClient} from '../..';
 import { Stage } from '../../Game-Catalog/Models/Stages';
-import {HistoryItem} from './History';
+import {denormalizeHistoryItem, HistoryItem } from './History';
 
 export interface GamesEndpoints {
 	'/games/accounts/:account': {
@@ -13,6 +13,11 @@ export interface GamesEndpoints {
 			params: Id;
 			body: GameStartPayload;
 			response: GameState | GameNotFoundResponse;
+		};
+
+		DELETE: {
+			params: Id;
+			response: void;
 		};
 	};
 
@@ -31,7 +36,7 @@ export interface GamesEndpoints {
 	'/games/accounts/:account/next': {
 		POST: {
 			params: Id;
-			response: NextBoardResult;
+			response: void;
 		};
 	}
 }
@@ -46,7 +51,7 @@ export enum UpdateResultType {
 export interface PlayerCreated {
 	type: UpdateResultType.CREATED,
 	player: Player,
-	initial_stage: Stage,
+	initial_stage: StageDescriptor,
 	history_item: HistoryItem,
 }
 
@@ -107,10 +112,10 @@ export interface Board {
 }
 
 export enum NextBoardResult {
-	Success,
-	NoActiveGame,
-	NoRemainingBoards,
-	BoardNotFound,
+	Success = 204,
+	NoActiveGame = 404,
+	NoRemainingBoards = 400,
+	BoardNotFound = 500,
 }
 
 export interface GameNotFoundResponse {
@@ -131,15 +136,36 @@ export class GamesModel {
 	}
 
 	public static update(account: Id) {
-		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
+			.then(response => {
+				response.data = response.data.map(GamesModel.denormalizePlayerUpdate);
+
+				return response;
+			});
 	}
 
 	public static updatePreview(account: Id) {
-		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`);
+		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
+			.then(response => {
+				response.data = response.data.map(GamesModel.denormalizePlayerUpdate);
+
+				return response;
+			});
 	}
 
 	public static nextBoard(account: Id) {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
+	}
+
+	public static deleteGameState(accountId: Id) {
+		return gameStateClient.delete<'/games/accounts/:account'>(`/games/accounts/${accountId}`);
+	}
+
+	private static denormalizePlayerUpdate(playerUpdate: PlayerUpdate) {
+		if (playerUpdate.type === UpdateResultType.CREATED || playerUpdate.type === UpdateResultType.MOVED)
+			playerUpdate.history_item = denormalizeHistoryItem(playerUpdate.history_item);
+
+		return playerUpdate;
 	}
 }
 
