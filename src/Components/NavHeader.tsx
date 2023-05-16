@@ -132,7 +132,7 @@ export const NavHeader: React.FC<IProps> = props => {
 													icon="person"
 												/>
 
-												{isGranted(Permission.ADMIN) && Config.isDev &&
+												{Config.isDev && isGranted(Permission.ADMIN) &&
 													<Link to="/debug-controls" className="plain-link">
 														<MenuItem
 															tagName="span"

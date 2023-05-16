@@ -48,7 +48,7 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 							]}
 
-							{isGranted(Permission.ADMIN) && Config.isDev && [
+							{Config.isDev && isGranted(Permission.ADMIN) && [
 								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
 							]}
 
