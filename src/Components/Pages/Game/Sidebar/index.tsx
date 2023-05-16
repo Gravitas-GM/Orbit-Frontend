@@ -12,7 +12,7 @@ interface IProps {
 
 export const Sidebar: React.FC<IProps> = props => (
 	<aside className="gm-sidebar">
-		<SimpleBar style={{maxHeight: 'calc(100vh - 150px)'}}>
+		<SimpleBar className="gameboard-sidebar">
 			<div>{props.children}</div>
 		</SimpleBar>
 
