@@ -4,13 +4,13 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {ApiError} from '../../../Api/errors/rocket';
 import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
 import {GamesModel} from '../../../Api/Game-State/Models/Games';
+import {Images} from '../../../Images';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {ucwords} from '../../Utility/string';
 import {BoardInfoCard} from './BoardInfoCard';
 import {StartGameDialog} from './StartGameDialog';
-import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import {Link} from 'react-router-dom';
 import {Spacing} from '../../../Styles/variables';
 
@@ -73,7 +73,7 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 				</div>
 				<div className="game-info-content">
 					<img
-						src={this.state.game!.thumbnailUrl ?? ImageNotFound}
+						src={this.state.game!.thumbnailUrl ?? Images.NotFound}
 						alt={`${this.state.game!.name} image`}
 						width="300"
 						style={{borderRadius: Spacing.small}}

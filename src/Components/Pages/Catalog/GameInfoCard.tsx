@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Card, H2, Icon} from '@blueprintjs/core';
 import {Game} from '../../../Api/Game-Catalog/Models/Games';
+import {Images} from '../../../Images';
 import {ucwords} from '../../Utility/string';
 import './Catalog.scss';
-import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import {Link} from 'react-router-dom';
 
 interface IProps {
@@ -21,7 +21,7 @@ export const GameInfoCard: React.FC<IProps> = ({game}) => {
 				<div className="catalog-card-content">
 					<figure className="game-image-wrapper">
 						<img
-							src={game.thumbnailUrl ?? ImageNotFound}
+							src={game.thumbnailUrl ?? Images.NotFound}
 							alt={`${game.name} image`}
 							style={{width: '100%'}}
 						/>

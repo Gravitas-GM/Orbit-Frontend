@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Card, HTMLTable} from '@blueprintjs/core';
 import {Board} from '../../../Api/Game-Catalog/Models/Boards';
+import {Images} from '../../../Images';
 import {formatNumber, ucwords} from '../../Utility/string';
 import './Catalog.scss';
-import ImageNotFound from '../../../Assets/ImageNotFound.png';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
@@ -20,7 +20,7 @@ export const BoardInfoCard: React.FC<IProps> = ({board}) => {
 			<div>
 				<div className="board-card-content">
 					<img
-						src={board.imageUrl ?? ImageNotFound}
+						src={board.imageUrl ?? Images.NotFound}
 						alt={`${board.name} image`}
 						height="80"
 					/>
