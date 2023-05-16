@@ -1,9 +1,11 @@
 import * as React from 'react';
+import {Classes} from '../../../classes';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
 import * as toaster from '../../../Toaster';
 import {Button, InputGroup} from '@blueprintjs/core';
 import {NonIdealState} from '../../NonIdealState';
+import {classNames} from '../../Utility/dom';
 import {GameInfoCard} from './GameInfoCard';
 import {PageHeader} from '../../PageHeader';
 
@@ -49,7 +51,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 		const currrentPageItems = this.state.filteredGames.slice(startIndex, endIndex);
 
 		return (
-			<div className="catalog-container gm-page-wrapper">
+			<div className={classNames(Classes.PAGE_WRAPPER, 'catalog-container')}>
 
 				<PageHeader title="Catalog">
 					<InputGroup

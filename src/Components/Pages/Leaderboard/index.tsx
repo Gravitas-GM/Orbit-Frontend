@@ -5,6 +5,7 @@ import {ApiError} from '../../../Api/errors/rocket';
 import {GamesModel, PlayerState} from '../../../Api/Game-State/Models/Games';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
@@ -44,7 +45,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={Classes.PAGE_WRAPPER}>
 				<PageHeader title="Leaderboard">
 					<div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
 						<Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} />
@@ -168,7 +169,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 
 const NoData: React.FC = () => {
 	return (
-		<div className="gm-page-wrapper">
+		<div className={Classes.PAGE_WRAPPER}>
 			<PageHeader title="Leaderboard" />
 
 			<div>

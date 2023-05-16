@@ -1,6 +1,7 @@
 import {AnchorButton, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
@@ -54,7 +55,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={Classes.PAGE_WRAPPER}>
 				<PageHeader title="Users" />
 
 				<HTMLTable striped={true}>

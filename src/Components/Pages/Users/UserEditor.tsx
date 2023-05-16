@@ -4,6 +4,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
@@ -113,7 +114,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={Classes.PAGE_WRAPPER}>
 				<div className="settings-title-container">
 					<H2>{renderUserName(this.state.user!)}</H2>
 

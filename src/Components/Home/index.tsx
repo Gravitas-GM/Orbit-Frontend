@@ -1,18 +1,20 @@
 import {Card, H4, Icon} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
+import {Classes} from '../../classes';
 import {Permission, PermissionContext} from '../../Permission';
 import {UserContext} from '../../Session';
 import './Home.scss';
 import {Spacing} from '../../Styles/variables';
 import {PageHeader} from '../PageHeader';
+import {classNames} from '../Utility/dom';
 
 export const Home: React.FC = () => (
 	<UserContext.Consumer>
 		{() => (
 			<PermissionContext.Consumer>
 				{([isGranted]) => (
-					<div className="gm-page-wrapper home-page-container">
+					<div className={classNames(Classes.PAGE_WRAPPER, 'home-page-container')}>
 						<PageHeader title="Home" />
 
 						<H4 style={{marginTop: Spacing.xLarge}}>Game</H4>

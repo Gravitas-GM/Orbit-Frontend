@@ -19,6 +19,7 @@ import {PageHeader} from '../../PageHeader';
 import {replace} from '../../Utility/array';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
+import {Classes as GmClasses} from '../../../classes';
 
 interface IState {
 	deleteTarget: PointSourceItem | null;
@@ -70,7 +71,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={GmClasses.PAGE_WRAPPER}>
 				<PageHeader title="Sources">
 					<div>
 						<Button
