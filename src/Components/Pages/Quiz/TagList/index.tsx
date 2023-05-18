@@ -1,13 +1,13 @@
 import React from "react";
 import { PageHeader } from "../../../PageHeader";
-import { Button, HTMLTable, InputGroup } from "@blueprintjs/core";
+import { Button, Classes, Dialog, HTMLTable, InputGroup, Intent } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { history } from "../../../../history";
+import { TagEditorDialog } from "./TagEditorDialog";
+
 
 // temporary dummy data and interfaces
-
 export interface User {
 	id: number;
 	name: string;
@@ -63,13 +63,16 @@ const curentTags: QuestionTag[] = [
 ];
 
 // end temporary dummy data and interfaces
-
 interface ITagListState {
 	tags: QuestionTag[];
+	tagToDelete: QuestionTag | null;
+	tagToEdit: QuestionTag | null;
 	loading: boolean;
 	filteredTags: QuestionTag[];
 	currentPage: number;
 	totalPages: number;
+	showEditDialog: boolean;
+	showDeleteDialog: boolean;
 }
 
 const ITEMS_PER_PAGE = 10;
@@ -78,9 +81,13 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 	public state: Readonly<ITagListState> = {
 		loading: false,
 		tags: [],
+		tagToEdit: null,
+		tagToDelete: null,
 		filteredTags: [],
 		currentPage: 1,
 		totalPages: 1,
+		showDeleteDialog: false,
+		showEditDialog: false
 	};
 
 	public async componentDidMount() {
@@ -99,10 +106,10 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title="Categories">
+				<PageHeader title="Tags">
 					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.l }}>
-						<InputGroup type="search" leftIcon="search" placeholder="Search categories" onChange={this.onSearchChange} />
-						<Button icon="add">Add New</Button>
+						<InputGroup type="search" leftIcon="search" placeholder="Search tags" onChange={this.onSearchChange} />
+						<Button icon="add" onClick={this.toggleEditTagDialog}>Add New</Button>
 					</div>
 				</PageHeader>
 
@@ -127,6 +134,19 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 						</Button>
 					</div>
 				)}
+
+			<TagEditorDialog
+				isOpen={this.state.showEditDialog}
+				onClose={this.toggleEditTagDialog}
+				tag={this.state.tagToEdit}
+			/>
+
+			<DeleteDialog
+				isOpen={this.state.showDeleteDialog}
+				onCancel={this.toggleDeleteTagDialog}
+				onConfirm={() => Promise.resolve(this.onConfirmDelete())}
+				subject={this.state.tagToDelete?.label}
+			/>
 			</section>
 		);
 	};
@@ -145,13 +165,43 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 		});
 	};
 
+	private toggleDeleteTagDialog = () => {
+		this.setState((state) => ({
+			tagToDelete: null,
+			showDeleteDialog: !state.showDeleteDialog
+		}));
+	};
+
+	private toggleEditTagDialog = () => {
+		this.setState((state) => ({
+			tagToEdit: null,
+			showEditDialog: !state.showEditDialog
+		}));
+	};
+
+
 	private onEditClick = (tag: QuestionTag) => {
-		history.push(`/quiz/tags/${tag.id}`);
+		this.setState({
+			tagToEdit: tag,
+			showEditDialog: true
+		});
 	};
 
 	private onDeleteClick = (tag: QuestionTag) => {
-		return;
+		this.setState({
+			tagToDelete: tag,
+			showDeleteDialog: true
+		});
 	};
+
+	private onConfirmDelete = async () => {
+		console.log(this.state.tagToDelete, 'on confirm delete');
+
+		this.setState({
+			tagToDelete: null,
+			showDeleteDialog: false
+		});
+	}
 
 	private onClickNext = () => {
 		if (this.state.currentPage === this.state.totalPages) return;
@@ -204,10 +254,11 @@ interface IRenderTableItemsProps {
 
 // maybe this one can become an external component for all situations that require a list of items to be rendered
 const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallback, deleteCallback }) => {
+
 	if (items.length === 0) {
 		return (
 			<div style={{ textAlign: 'center'}}>
-				<NonIdealState title="No categories found." />
+				<NonIdealState title="No tags found." />
 			</div>
 		);
 	}
@@ -244,5 +295,73 @@ const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallbac
 				</tbody>
 			</HTMLTable>
 		</div>
+	);
+};
+
+interface IDeleteDialogProps {
+	isOpen: boolean,
+	subject: string | undefined,
+	onConfirm: () => Promise<void>,
+	onCancel: () => void,
+}
+
+export const DeleteDialog: React.FC<IDeleteDialogProps> = ({isOpen, subject, onConfirm, onCancel}) => {
+	const [confirmText, setConfirmText] = React.useState('');
+	const [processing, setProcessing] = React.useState(false)
+
+	const onCancelCallback = React.useCallback(() => {
+		setConfirmText('');
+		onCancel();
+		setProcessing(false)
+	}, [onCancel, setConfirmText]);
+
+	const onConfirmCallback = React.useCallback(async () => {
+		setProcessing(true)
+		await onConfirm();
+		setConfirmText('');
+		setProcessing(false)
+	}, [onConfirm, setConfirmText]);
+
+	const onConfirmTextChange = React.useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => setConfirmText(event.currentTarget.value),
+		[setConfirmText],
+	);
+
+	return (
+		<Dialog
+			isOpen={isOpen}
+			title="Confirm Delete"
+			onClose={onCancelCallback}
+			isCloseButtonShown={!processing}
+		>
+			<form onSubmit={(event) => event.preventDefault()}>
+				<div className={Classes.DIALOG_BODY}>
+					<p>
+						You are about to delete {`"${subject}"`}. This action cannot be reversed.
+					</p>
+
+					<p>
+						To confirm, please type "{subject}" in the box below, then click "Confirm."
+					</p>
+
+					<InputGroup style={{ marginTop: Spacing.l }} value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
+				</div>
+
+				<div className={Classes.DIALOG_FOOTER}>
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button text="Cancel" onClick={onCancelCallback} disabled={processing} loading={processing} />
+
+						<Button
+							type="submit"
+							text="Confirm"
+							intent={Intent.WARNING}
+							onClick={onConfirmCallback}
+							loading={processing}
+							disabled={subject?.toLowerCase() !== confirmText.toLowerCase() || processing}
+						/>
+					</div>
+				</div>
+			</form>
+		</Dialog>
 	);
 };
