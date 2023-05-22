@@ -7,41 +7,11 @@ import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { RouteComponentProps } from "react-router";
 import { ItemRenderer, Select2 as Select } from "@blueprintjs/select";
 import { ucwords } from "../../../Utility/string";
+import { Question, QuestionKind, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
+
 
 // temporary dummy data and interfaces
-
-interface BaseQuestion {
-	id: number;
-	tag: { id: number; name: string };
-	prompt: string;
-	kind: QuestionKind;
-}
-
-export enum QuestionKind {
-	FreeText = "free text",
-	Boolean = "boolean",
-	MultipleChoice = "multiple choice",
-}
-
-export interface FreeTextQuestion extends BaseQuestion {
-	kind: QuestionKind.FreeText;
-	answers: string[];
-}
-
-export interface BooleanQuestion extends BaseQuestion {
-	kind: QuestionKind.Boolean;
-	answer: boolean;
-	trueLabel: string | null;
-	falseLabel: string | null;
-}
-
-export interface MultipleChoiceQuestion extends BaseQuestion {
-	kind: QuestionKind.MultipleChoice;
-	choices: string[];
-	answerIndex: number;
-}
-
-export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
+import { questions } from "../../../../mocks/Questions";
 
 export interface User {
 	id: number;
@@ -56,16 +26,7 @@ export interface QuestionTag {
 	members: User[];
 }
 
-const question_example: Question = {
-	id: 1,
-	tag: {
-		id: 1,
-		name: "General",
-	},
-	prompt: "What is the capital of the United States?",
-	kind: QuestionKind.FreeText,
-	answers: ["Washington, D.C."],
-};
+const question_example: Question = questions[0];
 
 // end temporary dummy data and interfaces
 
@@ -122,9 +83,9 @@ export class QuestionEditorPage extends React.PureComponent<
 				<PageHeader title={this.props.match.params.question ? `Edit Question` : `Add Question`} />
 
 				<form>
-					<div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: Spacing.xl }}>
+					<div style={{ display: "flex", flexDirection: "column", width: "100%", gap: Spacing.xl }}>
 						<div>
-							<label htmlFor="prompt" style={{ marginBottom: Spacing.m, display: 'block' }}>
+							<label htmlFor="prompt" style={{ marginBottom: Spacing.m, display: "block" }}>
 								Prompt
 							</label>
 
@@ -137,7 +98,7 @@ export class QuestionEditorPage extends React.PureComponent<
 						</div>
 
 						<div>
-							<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: 'block' }}>
+							<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: "block" }}>
 								Question Kind
 							</label>
 
@@ -162,7 +123,7 @@ export class QuestionEditorPage extends React.PureComponent<
 						</div>
 					</div>
 
-					<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: '0.3' }} />
+					<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: "0.3" }} />
 
 					{/* there are different types of answers according to question type */}
 					<RenderAnswerForm
@@ -176,6 +137,7 @@ export class QuestionEditorPage extends React.PureComponent<
 			</section>
 		);
 	}
+
 	private removeAnswer = (index: number) => {
 		if (this.state.textAnswers.length <= 1) {
 			// alert that you can't remove the last answer
@@ -197,8 +159,7 @@ export class QuestionEditorPage extends React.PureComponent<
 		this.setState(({ textAnswers }) => ({ textAnswers: [...textAnswers, newAnswer] }));
 	};
 
-	private saveQuestion = async () => {
-	}
+	private saveQuestion = async () => {};
 
 	private selectQuestionKind = (kind: QuestionKind) => {
 		switch (kind.toLocaleLowerCase()) {
@@ -220,41 +181,60 @@ export class QuestionEditorPage extends React.PureComponent<
 	};
 
 	private fetchQuestion = async () => {
+		this.setState({ loading: true });
+
+		let question: Question | null = null;
+
+		try {
+			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
+			this.setState({ question: question, loading: false });
+		} catch (err) {
+			console.error(err);
+			this.setState({ loading: false });
+		}
+
+		if (!question)
+			return;
+
 		// TODO: after fetching, set state according to quetion type:
-		switch (question_example.kind) {
+		switch (question.kind) {
 			case QuestionKind.FreeText:
 				this.setState({
-					question: question_example,
+					question: question,
 					loading: false,
-					kind: question_example.kind,
-					textAnswers: question_example.answers,
+					kind: question.kind,
+					textAnswers: question.answers,
 				});
 				break;
 
 			case QuestionKind.Boolean:
 				this.setState({
-					question: question_example,
+					question: question,
 					loading: false,
-					kind: question_example.kind,
+					kind: question.kind,
 					textAnswers: ["1", "2"],
 				});
 				break;
 
 			case QuestionKind.MultipleChoice:
 				this.setState({
-					question: question_example,
+					question: question,
 					loading: false,
-					kind: question_example.kind,
-					textAnswers: question_example.choices,
-					answerIndex: question_example.answerIndex,
+					kind: question.kind,
+					textAnswers: question.choices,
+					answerIndex: question.answerIndex,
 				});
+				break;
+
+			default:
+				break;
+
 		}
 	};
 }
 
 const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, { handleClick, handleFocus, modifiers }) => {
-	if (!modifiers.matchesPredicate)
-		return null;
+	if (!modifiers.matchesPredicate) return null;
 
 	return (
 		<MenuItem
@@ -284,7 +264,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 	answerIndex,
 	addAnswer,
 	removeAnswer,
-	saveQuestion
+	saveQuestion,
 }) => {
 	const [currentAnswerIndex, setCurrentAnswerIndex] = useState<number>();
 
@@ -309,8 +289,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 		}
 	}, [kind]);
 
-	if (!kind)
-		return null;
+	if (!kind) return null;
 
 	return (
 		<>
@@ -319,13 +298,13 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 					<H3>Free Text Alternatives</H3>
 
 					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: 'grid', gridTemplateColumns: '3fr,2fr' }}>
+						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr" }}>
 							<div
 								style={{
-									display: 'flex',
+									display: "flex",
 									gap: Spacing.m,
-									width: '100%',
-									alignItems: 'center',
+									width: "100%",
+									alignItems: "center",
 									marginBottom: Spacing.xl,
 								}}
 							>
@@ -334,7 +313,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 									placeholder={"Answer"}
 									defaultValue={answer}
 									large={true}
-									style={{ width: '100%' }}
+									style={{ width: "100%" }}
 								/>
 								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
 							</div>
@@ -350,17 +329,16 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 					<H3>Boolean Labels</H3>
 
 					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: 'grid', gridTemplateColumns: '3fr,2fr', marginBottom: Spacing.xl }}>
+						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
 							<div
 								style={{
-									display: 'flex',
+									display: "flex",
 									gap: Spacing.m,
-									width: '100%',
-									alignItems: 'center',
+									width: "100%",
+									alignItems: "center",
 									marginBottom: Spacing.m,
 								}}
 							>
-
 								<Icon icon={index === 0 ? "confirm" : "cross"} />
 
 								<InputGroup
@@ -368,7 +346,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 									placeholder={"Answer"}
 									defaultValue={answer}
 									large={true}
-									style={{ width: '100%' }}
+									style={{ width: "100%" }}
 								/>
 							</div>
 						</div>
@@ -381,13 +359,13 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 					<H3>Multiple Choice Options</H3>
 
 					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: 'grid', gridTemplateColumns: '3fr,2fr', marginBottom: Spacing.xl }}>
+						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
 							<div
 								style={{
-									display: 'flex',
+									display: "flex",
 									gap: Spacing.m,
-									width: '100%',
-									alignItems: 'center',
+									width: "100%",
+									alignItems: "center",
 									marginBottom: Spacing.m,
 								}}
 							>
@@ -396,7 +374,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 									placeholder={"Answer"}
 									defaultValue={answer}
 									large={true}
-									style={{ width: '100%' }}
+									style={{ width: "100%" }}
 								/>
 								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
 							</div>
@@ -413,7 +391,7 @@ const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
 				</div>
 			)}
 
-			<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: '0.3' }} />
+			<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: "0.3" }} />
 
 			<Button
 				large={true}

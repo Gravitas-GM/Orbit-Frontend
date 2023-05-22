@@ -5,43 +5,10 @@ import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { history } from "../../../../history";
+import { Question, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
 
 // temporary dummy data and interfaces
-
-interface BaseQuestion {
-    id: number,
-    tag: { id: number, name: string },
-    prompt: string,
-    kind: QuestionKind,
-}
-
-export enum QuestionKind {
-    FreeText = 'free text',
-    Boolean = 'boolean',
-    MultipleChoice = 'multiple choice',
-}
-
-export interface FreeTextQuestion extends BaseQuestion {
-    kind: QuestionKind.FreeText,
-    answers: string[],
-}
-
-export interface BooleanQuestion extends BaseQuestion {
-    kind: QuestionKind.Boolean,
-    answer: boolean,
-    trueLabel: string|null,
-    falseLabel: string|null,
-}
-
-export interface MultipleChoiceQuestion extends BaseQuestion {
-    kind: QuestionKind.MultipleChoice,
-    choices: string[],
-    answerIndex: number,
-}
-
-export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
-
-
+import { questions as mockQuestions } from "../../../../mocks/Questions";
 export interface User {
     id: number,
     name: string,
@@ -54,189 +21,6 @@ export interface QuestionTag {
     label: string,
     members: User[],
 }
-
-const questions: Question[] = [
-	{
-		id: 1,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of the United States?',
-		kind: QuestionKind.FreeText,
-		answers: ['Washington, D.C.'],
-	},
-	{
-		id: 2,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Canada?',
-		kind: QuestionKind.FreeText,
-		answers: ['Ottawa'],
-	},
-	{
-		id: 3,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Mexico?',
-		kind: QuestionKind.FreeText,
-		answers: ['Mexico City'],
-	},
-	{
-		id: 4,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Brazil?',
-		kind: QuestionKind.FreeText,
-		answers: ['Brasilia'],
-	},
-	{
-		id: 5,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Argentina?',
-		kind: QuestionKind.FreeText,
-		answers: ['Buenos Aires'],
-	},
-	{
-		id: 6,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Chile?',
-		kind: QuestionKind.FreeText,
-		answers: ['Santiago'],
-	},
-	{
-		id: 7,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Peru?',
-		kind: QuestionKind.FreeText,
-		answers: ['Lima'],
-	},
-	{
-		id: 8,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Colombia?',
-		kind: QuestionKind.FreeText,
-		answers: ['Bogota'],
-	},
-	{
-		id: 9,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Venezuela?',
-		kind: QuestionKind.FreeText,
-		answers: ['Caracas'],
-	},
-	{
-		id: 10,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Ecuador?',
-		kind: QuestionKind.FreeText,
-		answers: ['Quito'],
-	},
-	{
-		id: 11,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Bolivia?',
-		kind: QuestionKind.FreeText,
-		answers: ['La Paz'],
-	},
-	{
-		id: 12,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Paraguay?',
-		kind: QuestionKind.FreeText,
-		answers: ['Asuncion'],
-	},
-	{
-		id: 13,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Uruguay?',
-		kind: QuestionKind.FreeText,
-		answers: ['Montevideo'],
-	},
-	{
-		id: 14,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Guyana?',
-		kind: QuestionKind.FreeText,
-		answers: ['Georgetown'],
-	},
-	{
-		id: 15,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Suriname?',
-		kind: QuestionKind.FreeText,
-		answers: ['Paramaribo'],
-	},
-	{
-		id: 16,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of French Guiana?',
-		kind: QuestionKind.FreeText,
-		answers: ['Cayenne'],
-	},
-	{
-		id: 17,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of Cuba?',
-		kind: QuestionKind.FreeText,
-		answers: ['Havana'],
-	},
-	{
-		id: 18,
-		tag: {
-			id: 1,
-			name: 'General'
-		},
-		prompt: 'What is the capital of the Dominican Republic?',
-		kind: QuestionKind.FreeText,
-		answers: ['Santo Domingo'],
-	}
-];
 // end temporary dummy data and interfaces
 
 interface IQuestionListState {
@@ -282,7 +66,7 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 							placeholder="Search questions"
 							onChange={this.onSearchChange}
 						/>
-						<Button icon="add">Add New</Button>
+						<Button icon="add" onClick={this.onAddQuestionClick}>Add New</Button>
 					</div>
 				</PageHeader>
 
@@ -318,7 +102,20 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	private fetchQuestions = async () => {
+		//  mock fetch questions
 		this.setState({ loading: true });
+
+		let questions: Question[] = [];
+
+		try {
+			// questions = await QuestionModel.list().then(response => response.data);
+			questions = mockQuestions;
+		} catch (error) {
+			console.error(error);
+			this.setState({ loading: false });
+			return;
+		}
+
 		const totalPages = Math.ceil(questions.length / ITEMS_PER_PAGE);
 
 		this.setState({
@@ -329,8 +126,12 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 		});
 	;}
 
-	private onEditClick = (question: Question) => {
-		history.push(`/questions/${question.id}`);
+	private onAddQuestionClick = () => {
+		history.push('/quiz/questions/new');
+	};
+
+	private onEditClick = (questionId: number) => {
+		history.push(`/quiz/questions/${questionId}`);
 	};
 
 	private onDeleteClick = (question: Question) => {
@@ -380,13 +181,11 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 			totalPages,
 		});
 	};
-
-
 }
 
 interface IRenderPageItemsProps {
 	items: Question[],
-	editCallback: (question: Question) => void,
+	editCallback: (questionId: number) => void,
 	deleteCallback: (question: Question) => void,
 }
 
@@ -414,7 +213,7 @@ const RenderPageItems: React.FC<IRenderPageItemsProps> = ({items, editCallback, 
 
 						<td style={{ width: 80}}>
 							<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-								<Button icon="edit" minimal={true} onClick={() => editCallback(question)} />
+								<Button icon="edit" minimal={true} onClick={() => editCallback(question.id)} />
 
 								<Button icon="trash" minimal={true} onClick={() => deleteCallback(question)} />
 							</div>
