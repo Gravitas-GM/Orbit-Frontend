@@ -1,33 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { PageHeader } from "../../../PageHeader";
-import { Button, H3, Icon, InputGroup, Intent, MenuItem, Radio } from "@blueprintjs/core";
+import { Button, InputGroup, MenuItem } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { RouteComponentProps } from "react-router";
 import { ItemRenderer, Select2 as Select } from "@blueprintjs/select";
 import { ucwords } from "../../../Utility/string";
-import { Question, QuestionKind, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
-
+import { QuestionTag, QuestionTagModel } from "../../../../Api/Quiz/Models/QuestionTags";
+import { Question, QuestionKind } from "../../../../Api/Quiz/Models/Questions";
+import { AnswerForm } from "./AnswerForm";
 
 // temporary dummy data and interfaces
 import { questions } from "../../../../mocks/Questions";
-
-export interface User {
-	id: number;
-	name: string;
-	nextQuizTimestamp: Date;
-	assignedTags: QuestionTag[];
-}
-
-export interface QuestionTag {
-	id: number;
-	label: string;
-	members: User[];
-}
-
+import { questionTagsMock } from "../../../../mocks/QuestionTags";
 const question_example: Question = questions[0];
-
 // end temporary dummy data and interfaces
 
 interface IQuestionEditorState {
@@ -37,6 +24,8 @@ interface IQuestionEditorState {
 	prompt?: string;
 	answerIndex?: number;
 	kind?: QuestionKind;
+	tags: QuestionTag[];
+	selectedTag?: QuestionTag;
 }
 
 interface IQuestionEditorProps {
@@ -61,17 +50,24 @@ export class QuestionEditorPage extends React.PureComponent<
 			kind: undefined,
 			answerIndex: undefined,
 			textAnswers: [],
+			tags: [],
+			selectedTag: undefined,
 		};
 	}
 
 	public async componentDidMount() {
-		// temporary fetch questions
+		// temporary fetch questions and tags
 		// if has route param, fetch question
+		// promise all settled should be used here?
+
 		if (this.props.match.params.question) {
 			await this.fetchQuestion();
-		} else {
-			this.setState({ loading: false });
+			await this.fetchTags();
+
+			return;
 		}
+
+		await this.fetchTags();
 	}
 
 	public render() {
@@ -94,41 +90,70 @@ export class QuestionEditorPage extends React.PureComponent<
 								type="text"
 								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
 								large={true}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ prompt: e.target.value })}
 							/>
 						</div>
 
-						<div>
-							<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: "block" }}>
-								Question Kind
-							</label>
-
-							<Select<QuestionKind>
-								// can you change question kind? I'll disable for now.
-								disabled={this.state.question !== null}
-								inputProps={{ name: "kind" }}
-								items={QuestionKindNames}
-								onItemSelect={this.selectQuestionKind}
-								filterable={false}
-								itemRenderer={renderQuestionKindOption}
-								noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
-							>
-								<Button
-									style={{ minWidth: 200 }}
-									text={this.state.kind ? ucwords(this.state.kind) : "Select question kind"}
-									rightIcon="double-caret-vertical"
-									placeholder="Select question kind"
+						<div style={{ display: 'flex', gap: Spacing.l}}>
+							<div>
+								<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: "block" }}>
+									Question Kind
+								</label>
+								<Select<QuestionKind>
+									// can you change question kind? I'll disable for now.
 									disabled={this.state.question !== null}
-								/>
-							</Select>
+									inputProps={{ name: "kind" }}
+									items={QuestionKindNames}
+									onItemSelect={this.selectQuestionKind}
+									filterable={false}
+									itemRenderer={renderQuestionKindOption}
+									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+								>
+									<Button
+										style={{ minWidth: 200 }}
+										text={this.state.kind ? ucwords(this.state.kind) : "Select question kind"}
+										rightIcon="double-caret-vertical"
+										placeholder="Select question kind"
+										disabled={this.state.question !== null}
+									/>
+								</Select>
+							</div>
+
+
+							<div>
+								<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: "block" }}>
+									Question Tag
+								</label>
+								<Select<QuestionTag>
+									disabled={this.state.question !== null}
+									inputProps={{ name: "question_tag" }}
+									items={questionTagsMock}
+									onItemSelect={this.selectTag}
+									filterable={false}
+									itemRenderer={renderTagOption}
+									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+								>
+									<Button
+										style={{ minWidth: 200 }}
+										text={this.state.selectedTag ? ucwords(this.state.selectedTag.label) : "Select question tag"}
+										rightIcon="double-caret-vertical"
+										placeholder="Select question tag"
+										disabled={this.state.question !== null}
+									/>
+								</Select>
+							</div>
+
 						</div>
 					</div>
 
 					<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: "0.3" }} />
 
 					{/* there are different types of answers according to question type */}
-					<RenderAnswerForm
-						addAnswer={this.addAnswer}
+					<AnswerForm
 						kind={this.state.kind}
+						prompt={this.state.prompt}
+						tag={this.state.selectedTag}
+						addAnswer={this.addAnswer}
 						answers={this.state.textAnswers}
 						removeAnswer={this.removeAnswer}
 						saveQuestion={this.saveQuestion}
@@ -138,6 +163,24 @@ export class QuestionEditorPage extends React.PureComponent<
 		);
 	}
 
+	private fetchTags = async () => {
+		// fetch tags
+		try {
+			// const tags = await QuestionTagModel.list().then((res) => res.data);
+			const tags =  questionTagsMock;
+			this.setState({ tags, loading: false });
+		} catch (err) {
+			// handle error
+		}
+	};
+
+	private selectTag = (tag: QuestionTag) => {
+		this.setState({selectedTag: tag});
+	 };
+
+
+
+	// seems unnecessary
 	private removeAnswer = (index: number) => {
 		if (this.state.textAnswers.length <= 1) {
 			// alert that you can't remove the last answer
@@ -159,7 +202,9 @@ export class QuestionEditorPage extends React.PureComponent<
 		this.setState(({ textAnswers }) => ({ textAnswers: [...textAnswers, newAnswer] }));
 	};
 
-	private saveQuestion = async () => {};
+	private saveQuestion = async () => {
+
+	};
 
 	private selectQuestionKind = (kind: QuestionKind) => {
 		switch (kind.toLocaleLowerCase()) {
@@ -186,7 +231,8 @@ export class QuestionEditorPage extends React.PureComponent<
 		let question: Question | null = null;
 
 		try {
-			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
+			// question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
+			question = question_example;
 			this.setState({ question: question, loading: false });
 		} catch (err) {
 			console.error(err);
@@ -196,7 +242,6 @@ export class QuestionEditorPage extends React.PureComponent<
 		if (!question)
 			return;
 
-		// TODO: after fetching, set state according to quetion type:
 		switch (question.kind) {
 			case QuestionKind.FreeText:
 				this.setState({
@@ -249,157 +294,18 @@ const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, { handleClic
 	);
 };
 
-interface IRenderAnswerFormProps {
-	kind?: QuestionKind;
-	answers: string[];
-	answerIndex?: number;
-	addAnswer: () => void;
-	removeAnswer: (index: number) => void;
-	saveQuestion: (question: Question) => void;
-}
-
-const RenderAnswerForm: React.FC<IRenderAnswerFormProps> = ({
-	kind,
-	answers,
-	answerIndex,
-	addAnswer,
-	removeAnswer,
-	saveQuestion,
-}) => {
-	const [currentAnswerIndex, setCurrentAnswerIndex] = useState<number>();
-
-	useEffect(() => {
-		setCurrentAnswerIndex(answerIndex);
-	}, [answerIndex]);
-
-	const saveQuestionCallback = useCallback(() => {
-		// switch by kind and create question object
-		switch (kind) {
-			case QuestionKind.FreeText:
-				saveQuestion(question_example);
-				break;
-			case QuestionKind.Boolean:
-				saveQuestion(question_example);
-				break;
-			case QuestionKind.MultipleChoice:
-				saveQuestion(question_example);
-				break;
-			default:
-				break;
-		}
-	}, [kind]);
-
-	if (!kind) return null;
+const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFocus, modifiers }) => {
+	if (!modifiers.matchesPredicate) return null;
 
 	return (
-		<>
-			{kind === QuestionKind.FreeText && (
-				<div>
-					<H3>Free Text Alternatives</H3>
-
-					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr" }}>
-							<div
-								style={{
-									display: "flex",
-									gap: Spacing.m,
-									width: "100%",
-									alignItems: "center",
-									marginBottom: Spacing.xl,
-								}}
-							>
-								<InputGroup
-									type="text"
-									placeholder={"Answer"}
-									defaultValue={answer}
-									large={true}
-									style={{ width: "100%" }}
-								/>
-								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
-							</div>
-						</div>
-					))}
-
-					<Button text="Add Answer" icon="plus" onClick={addAnswer} />
-				</div>
-			)}
-
-			{kind === QuestionKind.Boolean && (
-				<div>
-					<H3>Boolean Labels</H3>
-
-					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
-							<div
-								style={{
-									display: "flex",
-									gap: Spacing.m,
-									width: "100%",
-									alignItems: "center",
-									marginBottom: Spacing.m,
-								}}
-							>
-								<Icon icon={index === 0 ? "confirm" : "cross"} />
-
-								<InputGroup
-									type="text"
-									placeholder={"Answer"}
-									defaultValue={answer}
-									large={true}
-									style={{ width: "100%" }}
-								/>
-							</div>
-						</div>
-					))}
-				</div>
-			)}
-
-			{kind === QuestionKind.MultipleChoice && (
-				<div>
-					<H3>Multiple Choice Options</H3>
-
-					{answers.map((answer, index) => (
-						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
-							<div
-								style={{
-									display: "flex",
-									gap: Spacing.m,
-									width: "100%",
-									alignItems: "center",
-									marginBottom: Spacing.m,
-								}}
-							>
-								<InputGroup
-									type="text"
-									placeholder={"Answer"}
-									defaultValue={answer}
-									large={true}
-									style={{ width: "100%" }}
-								/>
-								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
-							</div>
-
-							<Radio
-								label="Correct Answer"
-								checked={index === currentAnswerIndex}
-								onClick={() => setCurrentAnswerIndex(index)}
-							/>
-						</div>
-					))}
-
-					<Button text="Add Answer" icon="plus" onClick={addAnswer} />
-				</div>
-			)}
-
-			<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: "0.3" }} />
-
-			<Button
-				large={true}
-				intent={Intent.PRIMARY}
-				text="Save Question"
-				icon="floppy-disk"
-				onClick={saveQuestionCallback}
-			/>
-		</>
+		<MenuItem
+			active={modifiers.active}
+			disabled={modifiers.disabled}
+			key={tag.label}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			roleStructure="listoption"
+			text={tag.label}
+		/>
 	);
 };
