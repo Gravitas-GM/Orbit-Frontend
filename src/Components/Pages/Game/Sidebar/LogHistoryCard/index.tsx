@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {Button, Icon} from '@blueprintjs/core';
+import SimpleBar from 'simplebar-react';
 import {NonIdealState} from '../../../../NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 import {formatDate} from '../../../../Utility/date';
@@ -56,7 +57,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 
 	return (
 		<GameCard title="Log" icon="history">
-			<div className="card-content-wrapper gm-log-history-card">
+			<SimpleBar className="card-content-wrapper gm-log-history-card">
 				{Object.keys(groupedDates).map(date => {
 					return (
 						<ul key={date}>
@@ -74,7 +75,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 						Load More...
 					</Button>
 				</div>
-			</div>
+			</SimpleBar>
 		</GameCard>
 	);
 };
