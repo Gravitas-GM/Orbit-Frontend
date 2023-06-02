@@ -1,4 +1,4 @@
-import { UserPointsSummary } from '../Api/Point-Tracking/Models/Points';
+import {UserPointsSummary} from '../Api/Point-Tracking/Models/Points';
 
 export const userPointsSummaryMock: UserPointsSummary[] = [
 	{

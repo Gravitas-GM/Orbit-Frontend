@@ -1,6 +1,6 @@
-import { PlayerState } from '../Api/Game-State/Models/Games';
-import { playersMock } from './Player';
-import { stagesMock } from './Stage';
+import {PlayerState} from '../Api/Game-State/Models/Games';
+import {playersMock} from './Player';
+import {stagesMock} from './Stage';
 
 export const playerStateMock: PlayerState[] = [
 	{

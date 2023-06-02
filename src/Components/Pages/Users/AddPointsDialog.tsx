@@ -6,7 +6,7 @@ import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
 import * as toaster from '../../../Toaster';
-import { Spacing } from '../../../Styles/variables';
+import {Spacing} from '../../../Styles/variables';
 
 interface IProps {
 	sources: PointSourceItem[];
@@ -48,7 +48,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Preset Source"
 							onClick={this.onShowSourceFormClick}
 							disabled={this.props.processing}
-							style={{ marginRight: Spacing.m }}
+							style={{marginRight: Spacing.Medium}}
 						/>
 
 						<Button
@@ -67,8 +67,8 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								<MultiSelect
 									tagInputProps={{
 										inputProps: {
-											autoFocus: true
-										}
+											autoFocus: true,
+										},
 									}}
 									selectedItems={this.state.selectedSources}
 									items={this.props.sources}
@@ -89,7 +89,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					{this.state.showCustomSourceForm && (
 						<form>
 							<FormGroup label="Name">
-								<InputGroup value={this.state.sourceName} onChange={this.onSourceNameChange} autoFocus />
+								<InputGroup
+									value={this.state.sourceName}
+									onChange={this.onSourceNameChange}
+									autoFocus
+								/>
 							</FormGroup>
 
 							<FormGroup label="Point Value">
@@ -158,8 +162,8 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			const dialogPointItems = this.state.selectedSources.map((source: PointSourceItem) => (
 				{
 					sourceName: source.name,
-					pointValue: source.point_value
-				})
+					pointValue: source.point_value,
+				}),
 			);
 
 			this.props.onSubmit(dialogPointItems);
@@ -173,14 +177,16 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		this.props.onSubmit([{
-			sourceName: this.state.sourceName,
-			pointValue: this.state.pointValue,
-			description: this.state.description,
-		}]);
+		this.props.onSubmit([
+			{
+				sourceName: this.state.sourceName,
+				pointValue: this.state.pointValue,
+				description: this.state.description,
+			},
+		]);
 	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers }) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}
@@ -212,8 +218,8 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 	private onRemoveSourceItem = (item: PointSourceItem) => {
 		this.setState(state => {
 			return {
-				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item))
-			}
+				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item)),
+			};
 		});
 	};
 }

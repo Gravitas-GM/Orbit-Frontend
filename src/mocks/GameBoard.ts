@@ -1,4 +1,5 @@
-import { Board } from "../Api/Game-Catalog/Models/Boards"
+import {Board} from '../Api/Game-Catalog/Models/Boards';
+
 export const catalogGameBoardMock: Board = {
 	id: 1,
 	game: 1,
@@ -41,6 +42,6 @@ export const catalogGameBoardMock: Board = {
 				width: 100,
 				height: 150,
 			},
-		}
+		},
 	],
-}
+};

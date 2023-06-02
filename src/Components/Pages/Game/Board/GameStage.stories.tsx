@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {GameStage} from './GameStage';
 
 export default {
@@ -47,6 +47,6 @@ Basic.args = {
 			current_stage_id: 1,
 			current_stage_name: 'The Shire',
 			current_points: 10,
-		}
+		},
 	],
 };

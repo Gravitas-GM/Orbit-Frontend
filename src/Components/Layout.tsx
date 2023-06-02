@@ -2,6 +2,7 @@ import {Intent, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {Permission, PermissionContext} from '../Permission';
+import {FrameLoadingSpinner} from './FrameLoadingSpinner';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
 import {PageNotFound} from './PageNotFound';
@@ -14,9 +15,9 @@ import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import './Layout.scss'
-import { DebugControls } from './Pages/Admin/DebugControls';
-import { Config } from '../config';
-import { QuestionEditorPage } from './Pages/Quiz/QuestionEditor';
+import {DebugControls} from './Pages/Admin/DebugControls';
+import {Config} from '../config';
+import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 
 interface IProps {
 	loading: boolean;
@@ -24,9 +25,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = props => (
 	props.loading ? (
-		<div className="loading-container">
-			<Spinner intent={Intent.PRIMARY} />
-		</div>
+		<FrameLoadingSpinner />
 	) : (
 		<div style={{flex: 12, height: '100%'}}>
 			<NavHeader loading={props.loading} />
@@ -53,7 +52,7 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/quiz/questions/new"  key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
 							]}
 
-							{isGranted(Permission.ADMIN) && Config.isDev && [
+							{Config.isDev && isGranted(Permission.ADMIN) && [
 								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
 							]}
 

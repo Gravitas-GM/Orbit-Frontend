@@ -1,11 +1,12 @@
 import {AnchorButton, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import { PageHeader } from '../../PageHeader';
+import {PageHeader} from '../../PageHeader';
 import {compareStrings, renderUserName} from '../../Utility/string';
 
 interface IState {
@@ -54,7 +55,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div className="gm-page-wrapper">
+			<div className={Classes.PAGE_WRAPPER}>
 				<PageHeader title="Users" />
 
 				<HTMLTable striped={true}>
@@ -76,7 +77,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 								<td>{user.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
 								<td style={{textAlign: 'center'}}>
 									<AnchorButton
-										icon='edit'
+										icon="edit"
 										minimal={true}
 										href={`/users/${user.id}`}
 									/>

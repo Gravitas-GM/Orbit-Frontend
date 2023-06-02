@@ -1,7 +1,7 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { boardMock } from '../../../../../../mocks/Board';
-import { UpdatePreviewDialog } from './UpdatePreviewDialog';
-import { playerUpdateMock } from '../../../../../../mocks/PlayerUpdate';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {boardMock} from '../../../../../../mocks/Board';
+import {UpdatePreviewDialog} from './UpdatePreviewDialog';
+import {playerUpdateMock} from '../../../../../../mocks/PlayerUpdate';
 
 export default {
 	title: 'Update Preview Dialog',
@@ -18,7 +18,6 @@ export const Basic = Template.bind({});
 
 export const NoData = Template.bind({});
 
-
 Basic.parameters = {
 	mockData: [
 		{
@@ -31,10 +30,10 @@ Basic.parameters = {
 	],
 },
 
-Basic.args = {
-	board: boardMock,
-	onClose: () => null,
-};
+	Basic.args = {
+		board: boardMock,
+		onClose: () => null,
+	};
 
 NoData.parameters = {
 	mockData: [
@@ -48,7 +47,7 @@ NoData.parameters = {
 	],
 },
 
-NoData.args = {
-	board: boardMock,
-	onClose: () => null,
-};
+	NoData.args = {
+		board: boardMock,
+		onClose: () => null,
+	};

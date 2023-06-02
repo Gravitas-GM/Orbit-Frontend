@@ -1,5 +1,5 @@
-import { Game } from "../Api/Game-Catalog/Models/Games";
-import { catalogGameBoardMock } from "./GameBoard";
+import {Game} from "../Api/Game-Catalog/Models/Games";
+import {catalogGameBoardMock} from "./GameBoard";
 
 export const gameMock: Game = {
 	id: 1,
