@@ -1,9 +1,11 @@
 import { H3, InputGroup, Button, Icon, Radio, Intent } from "@blueprintjs/core";
 import { useContext, useState, useEffect, useCallback } from "react";
-import { QuestionKind, QuestionCreatePayload } from "../../../../Api/Quiz/Models/Questions";
+import { QuestionKind, QuestionCreatePayload, Question } from "../../../../Api/Quiz/Models/Questions";
 import { UserContext } from "../../../../Session";
 import { Spacing } from "../../../../Styles/variables";
 import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
+import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
+import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 
 interface IAnswerFormProps {
 	prompt?: string;
@@ -11,9 +13,10 @@ interface IAnswerFormProps {
 	tag?: QuestionTag;
 	answers: string[];
 	answerIndex?: number;
+	failures: ValidationFailures | null;
 	addAnswer: () => void;
 	removeAnswer: (index: number) => void;
-	saveQuestion: (question: QuestionCreatePayload) => void;
+	saveQuestion: (question: QuestionCreatePayload) => Promise<Question | undefined>;
 }
 
 export const AnswerForm: React.FC<IAnswerFormProps> = ({
@@ -22,17 +25,17 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 	tag,
 	answers,
 	answerIndex,
+	failures,
 	addAnswer,
 	removeAnswer,
 	saveQuestion,
 }) => {
-
 	const User = useContext(UserContext);
 
-	// question related
+	// base question related
 	const [currentKind, setCurrentKind] = useState<QuestionKind | undefined>(kind);
 	const [currentPrompt, setCurrentPrompt] = useState(prompt);
-	const [currentTag, setCurrentTag] = useState<QuestionTag>(tag);
+	const [currentTag, setCurrentTag] = useState<QuestionTag | undefined>(tag);
 
 	// free text kind
 	const [currentAnswers, setCurrentAnswers] = useState<string[]>(answers);
@@ -46,6 +49,9 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 	const [currentTrueLabel, setCurrentTrueLabel] = useState<string>();
 	const [currentFalseLabel, setCurrentFalseLabel] = useState<string>();
 
+	// failures
+	const [validationFailures, setValidationFailures] = useState<ValidationFailures | null>(null);
+
 	useEffect(() => {
 		setCurrentAnswerIndex(answerIndex);
 		setCurrentAnswers(answers);
@@ -53,7 +59,8 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 		setCurrentPrompt(prompt);
 		setCurrentKind(kind);
 		setCurrentTag(tag);
-	}, [answerIndex, answers, prompt, kind, tag]);
+		setValidationFailures(failures);
+	}, [answerIndex, answers, prompt, kind, tag, failures]);
 
 	const setBooleanLabel = useCallback((index: number, label: string) => {
 		if (index === 0) {
@@ -61,7 +68,7 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 		} else {
 			setCurrentFalseLabel(label);
 		}
-	},[]);
+	}, []);
 
 	const setBooleanAnswer = useCallback((index: number) => {
 		if (index === 0) {
@@ -71,8 +78,10 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 		}
 	}, []);
 
-	const saveQuestionCallback = useCallback(() => {
+	const saveQuestionCallback = useCallback(async () => {
 		const accountId = User!.id;
+		const tagId = currentTag!.id as number;
+
 		// switch by kind and create question object
 		switch (kind) {
 			case QuestionKind.FreeText:
@@ -81,12 +90,13 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 					kind: currentKind!,
 					answers: currentAnswers,
 					accountId,
-					tagId: currentTag.id
+					tagId,
 				};
 
-				console.log(freeTextQuestion);
-				// saveQuestion(freeTextQuestion);
+				await saveQuestion(freeTextQuestion);
+
 				break;
+
 			case QuestionKind.Boolean:
 				const booleanQuestion = {
 					prompt: currentPrompt!,
@@ -95,12 +105,13 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 					trueLabel: currentTrueLabel!,
 					falseLabel: currentFalseLabel!,
 					accountId,
-					tagId: currentTag.id
+					tagId,
 				};
 
-				console.log(booleanQuestion);
-				// saveQuestion(booleanQuestion);
+				await saveQuestion(booleanQuestion);
+
 				break;
+
 			case QuestionKind.MultipleChoice:
 				const multipleChoiceQuestion = {
 					prompt: currentPrompt!,
@@ -108,18 +119,35 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 					answerIndex: currentAnswerIndex!,
 					choices: currentChoices,
 					accountId,
-					tagId: currentTag.id
+					tagId,
 				};
 
-				console.log(multipleChoiceQuestion);
-				// saveQuestion(multipleChoiceQuestion);
+				await saveQuestion(multipleChoiceQuestion);
+
 				break;
+
 			default:
 				break;
 		}
-	}, [currentKind, currentAnswer, currentAnswer, currentAnswerIndex, currentChoices, currentPrompt, currentTrueLabel, currentFalseLabel, currentAnswers, kind, saveQuestion]);
+	}, [
+		currentKind,
+		currentAnswer,
+		currentAnswer,
+		currentAnswerIndex,
+		currentChoices,
+		currentPrompt,
+		currentTrueLabel,
+		validationFailures,
+		currentFalseLabel,
+		currentAnswers,
+		currentTag,
+		kind,
+		failures,
+		saveQuestion,
+	]);
 
-	if (!kind) return null;
+	if (!kind || !tag)
+		return null;
 
 	return (
 		<>
@@ -128,7 +156,12 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 					<H3>Free Text Alternatives</H3>
 
 					{currentAnswers.map((answer, index) => (
-						<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr" }}>
+						<ValidationAwareFormGroup
+							labelFor={`answer-${index}`}
+							failures={validationFailures}
+							key={answer}
+							style={{ display: "grid", gridTemplateColumns: "3fr,2fr" }}
+						>
 							<div
 								style={{
 									display: "flex",
@@ -139,19 +172,24 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 								}}
 							>
 								<InputGroup
+									id={`answer-${index}`}
+									name={`answer-${index}`}
 									type="text"
 									placeholder={"Answer"}
 									defaultValue={answer}
 									large={true}
 									style={{ width: "100%" }}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-										setCurrentAnswers((answers)=> { answers[index] = e.target.value; return answers; });
+										setCurrentAnswers((answers) => {
+											answers[index] = e.target.value;
+											return answers;
+										});
 									}}
 								/>
 
 								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
 							</div>
-						</div>
+						</ValidationAwareFormGroup>
 					))}
 
 					<Button text="Add Answer" icon="plus" onClick={addAnswer} />
@@ -175,20 +213,27 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 							>
 								<Icon icon={index === 0 ? "confirm" : "cross"} />
 
-								<InputGroup
-									type="text"
-									placeholder={answer}
-									large={true}
-									style={{ width: "100%" }}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-										setBooleanLabel(index, e.target.value);
-									}}
-								/>
-								<Radio
-									label="Correct Answer"
-									checked={index === 0 ? currentAnswer === true : currentAnswer === false}
-									onChange={() => setBooleanAnswer(index)}
-								/>
+								<ValidationAwareFormGroup labelFor={`boolean-label-${index}`} failures={validationFailures}>
+									<InputGroup
+										id={`boolean-label-${index}`}
+										type="text"
+										placeholder={answer}
+										large={true}
+										style={{ width: "100%" }}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+											setBooleanLabel(index, e.target.value);
+										}}
+									/>
+								</ValidationAwareFormGroup>
+
+								<ValidationAwareFormGroup labelFor="correct-answer" failures={validationFailures}>
+									<Radio
+										id="correct-answer"
+										label="Correct Answer"
+										checked={index === 0 ? currentAnswer === true : currentAnswer === false}
+										onChange={() => setBooleanAnswer(index)}
+									/>
+								</ValidationAwareFormGroup>
 							</div>
 						</div>
 					))}
@@ -210,21 +255,28 @@ export const AnswerForm: React.FC<IAnswerFormProps> = ({
 									marginBottom: Spacing.m,
 								}}
 							>
-								<InputGroup
-									type="text"
-									placeholder={"Answer"}
-									defaultValue={answer}
-									large={true}
-									style={{ width: "100%" }}
-								/>
+								<ValidationAwareFormGroup labelFor={`answer-${index}`} failures={validationFailures}>
+									<InputGroup
+										id={`answer-${index}`}
+										type="text"
+										placeholder={"Answer"}
+										defaultValue={answer}
+										large={true}
+										style={{ width: "100%" }}
+									/>
+								</ValidationAwareFormGroup>
+
 								<Button icon="remove" minimal onClick={() => removeAnswer(index)} />
 							</div>
 
-							<Radio
-								label="Correct Answer"
-								checked={index === currentAnswerIndex}
-								onChange={() => setCurrentAnswerIndex(index)}
-							/>
+							<ValidationAwareFormGroup labelFor="correct_answer" failures={validationFailures}>
+								<Radio
+									id="correct_answer"
+									label="Correct Answer"
+									checked={index === currentAnswerIndex}
+									onChange={() => setCurrentAnswerIndex(index)}
+								/>
+							</ValidationAwareFormGroup>
 						</div>
 					))}
 
