@@ -1,6 +1,6 @@
 import React from "react";
 import { PageHeader } from "../../../PageHeader";
-import { Button, InputGroup, MenuItem, Toaster } from "@blueprintjs/core";
+import { Button, InputGroup, MenuItem } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
@@ -84,10 +84,10 @@ export class QuestionEditorPage extends React.PureComponent<
 			<section className="gm-page-wrapper">
 				<PageHeader title={this.props.match.params.question ? `Edit Question` : `Add Question`} />
 
-				<form style={{ marginTop: Spacing.xl }}>
-					<div style={{ display: "flex", flexDirection: "column", width: "100%", gap: Spacing.xl }}>
+				<form style={{ marginTop: Spacing.XLarge }}>
+					<div style={{ display: "flex", flexDirection: "column", width: "100%", gap: Spacing.XLarge }}>
 						<div>
-							<label htmlFor="prompt" style={{ marginBottom: Spacing.m, display: "block" }}>
+							<label htmlFor="prompt" style={{ marginBottom: Spacing.Medium, display: "block" }}>
 								Prompt
 							</label>
 
@@ -103,9 +103,9 @@ export class QuestionEditorPage extends React.PureComponent<
 							</ValidationAwareFormGroup>
 						</div>
 
-						<div style={{ display: "flex", gap: Spacing.l }}>
+						<div style={{ display: "flex", gap: Spacing.Large }}>
 							<div>
-								<label htmlFor="question_kind" style={{ marginBottom: Spacing.m, display: "block" }}>
+								<label htmlFor="question_kind" style={{ marginBottom: Spacing.Medium, display: "block" }}>
 									Question Kind
 								</label>
 								<ValidationAwareFormGroup labelFor="question_kind" failures={this.state.validationFailures}>
@@ -131,7 +131,7 @@ export class QuestionEditorPage extends React.PureComponent<
 							</div>
 
 							<div>
-								<label htmlFor="kind" style={{ marginBottom: Spacing.m, display: "block" }}>
+								<label htmlFor="kind" style={{ marginBottom: Spacing.Medium, display: "block" }}>
 									Question Tag
 								</label>
 								<ValidationAwareFormGroup labelFor="question_tag" failures={this.state.validationFailures}>
@@ -157,7 +157,7 @@ export class QuestionEditorPage extends React.PureComponent<
 						</div>
 					</div>
 
-					<hr style={{ marginTop: Spacing.xl, marginBottom: Spacing.xl, opacity: "0.3" }} />
+					<hr style={{ marginTop: Spacing.XLarge, marginBottom: Spacing.XLarge, opacity: "0.3" }} />
 
 					{/* there are different types of answers according to question type */}
 
@@ -198,7 +198,7 @@ export class QuestionEditorPage extends React.PureComponent<
 			// alert that you can't remove the last answer
 			return;
 		}
-
+		console.log("removing answer", index, this.state.textAnswers)
 		this.setState(({ textAnswers }) => ({
 			textAnswers: textAnswers.filter((_, i) => i !== index),
 		}));
@@ -210,7 +210,7 @@ export class QuestionEditorPage extends React.PureComponent<
 			// alert that you can't add more than 5 answers
 			return;
 		}
-
+		console.log("adding answer", this.state.textAnswers)
 		this.setState(({ textAnswers }) => ({ textAnswers: [...textAnswers, newAnswer] }));
 	};
 
