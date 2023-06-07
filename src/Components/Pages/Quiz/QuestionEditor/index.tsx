@@ -2,7 +2,7 @@ import React from "react";
 import { PageHeader } from "../../../PageHeader";
 import { Button, InputGroup, MenuItem } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
-import { NonIdealState } from "../../../NonIdealState";
+import { NonIdealState } from "../../../NonIdealState"; // dont know if this is needed yet
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { RouteComponentProps } from "react-router";
 import { ItemRenderer, Select2 as Select } from "@blueprintjs/select";
@@ -192,13 +192,13 @@ export class QuestionEditorPage extends React.PureComponent<
 		this.setState({ selectedTag: tag });
 	};
 
-	// seems unnecessary to be here, maybe we can move it to the answer form component
 	private removeAnswer = (index: number) => {
 		if (this.state.textAnswers.length <= 1) {
-			// alert that you can't remove the last answer
+			toaster.info("You must have at least one answer");
+
 			return;
 		}
-		console.log("removing answer", index, this.state.textAnswers)
+
 		this.setState(({ textAnswers }) => ({
 			textAnswers: textAnswers.filter((_, i) => i !== index),
 		}));
@@ -206,25 +206,26 @@ export class QuestionEditorPage extends React.PureComponent<
 
 	private addAnswer = () => {
 		const newAnswer = "Answer " + (this.state.textAnswers.length + 1);
-		if (this.state.textAnswers.length >= 5) {
-			// alert that you can't add more than 5 answers
-			return;
-		}
-		console.log("adding answer", this.state.textAnswers)
+
 		this.setState(({ textAnswers }) => ({ textAnswers: [...textAnswers, newAnswer] }));
 	};
 
 	private saveQuestion = async (questionCreatePayload: QuestionCreatePayload) => {
-		console.log(questionCreatePayload, "this will be created");
+		console.log(questionCreatePayload, "this question will be created");
+
 		let question: Question;
+
 		try {
 			question = await QuestionModel.create(questionCreatePayload).then((res) => res.data);
 		} catch (err) {
 			if (isValidationFailureError(err)) {
 				toaster.error("Validation failed");
+
 				this.setState({ validationFailures: err.context.failures });
+
 				return;
 			}
+
 			return;
 		}
 
@@ -265,7 +266,8 @@ export class QuestionEditorPage extends React.PureComponent<
 			this.setState({ loading: false });
 		}
 
-		if (!question) return;
+		if (!question)
+			return;
 
 		switch (question.kind) {
 			case QuestionKind.FreeText:

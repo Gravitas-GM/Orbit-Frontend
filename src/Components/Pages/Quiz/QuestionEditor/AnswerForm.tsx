@@ -90,14 +90,12 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 											gap: Spacing.Medium,
 											width: "100%",
 											alignItems: "center",
-											marginBottom: Spacing.XLarge,
 										}}
 									>
 										<InputGroup
 											id={`answer-${index}`}
 											name={`answer-${index}`}
 											type="text"
-											placeholder={"Answer"}
 											defaultValue={answer}
 											large={true}
 											style={{ width: "100%" }}
@@ -116,7 +114,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 							)}
 						)}
 
-						<Button text="Add Answer" icon="plus" onClick={this.props.addAnswer} />
+						<Button style={{ marginTop: Spacing.Medium }}text="Add Answer" icon="plus" onClick={this.props.addAnswer} />
 					</div>
 				)}
 
@@ -169,14 +167,13 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 						<H3>Multiple Choice Options</H3>
 
 						{this.state.currentChoices.map((answer, index) => (
-							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
+							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.Large }}>
 								<div
 									style={{
 										display: "flex",
 										gap: Spacing.Medium,
 										width: "100%",
 										alignItems: "center",
-										marginBottom: Spacing.Medium,
 									}}
 								>
 									<ValidationAwareFormGroup labelFor={`answer-${index}`} failures={this.state.validationFailures}>
@@ -222,7 +219,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 					intent={Intent.PRIMARY}
 					text="Save Question"
 					icon="floppy-disk"
-					onClick={this.saveQuestionCallback}
+					onClick={this.onSaveQuestionClick}
 				/>
 			</>
 		);
@@ -244,7 +241,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 		}
 	};
 
-	private saveQuestionCallback = () => {
+	private onSaveQuestionClick = async () => {
 		const accountId = this.context!.id;
 		const tagId = this.state.currentTag!.id as number;
 
@@ -259,9 +256,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 					tagId,
 				};
 
-				this.props.saveQuestion(freeTextQuestion).catch((err) => {
-					console.log(err);
-				});
+				await this.props.saveQuestion(freeTextQuestion);
 
 				break;
 
@@ -276,9 +271,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 					tagId,
 				};
 
-				this.props.saveQuestion(booleanQuestion).catch((err) => {
-					console.log(err);
-				});
+				await this.props.saveQuestion(booleanQuestion);
 
 				break;
 
@@ -292,9 +285,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 					tagId,
 				};
 
-				this.props.saveQuestion(multipleChoiceQuestion).catch((err) => {
-					console.log(err);
-				});
+				await this.props.saveQuestion(multipleChoiceQuestion);
 
 				break;
 
