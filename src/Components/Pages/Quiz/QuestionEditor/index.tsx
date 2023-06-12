@@ -13,10 +13,10 @@ import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { AnswerForm } from "./AnswerForm";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 import * as toaster from "../../../../Toaster";
+import { history } from "../../../../history";
 
 // temporary dummy data and interfaces
 import { questions } from "../../../../mocks/Questions";
-import { questionTagsMock } from "../../../../mocks/QuestionTags";
 const question_example: Question = questions[0];
 // end temporary dummy data and interfaces
 
@@ -110,8 +110,6 @@ export class QuestionEditorPage extends React.PureComponent<
 								</label>
 								<ValidationAwareFormGroup labelFor="question_kind" failures={this.state.validationFailures}>
 									<Select<QuestionKind>
-										// can you change question kind? I'll disable for now.
-										disabled={this.state.question !== null}
 										inputProps={{ name: "question_kind", id: "question_kind" }}
 										items={QuestionKindNames}
 										onItemSelect={this.selectQuestionKind}
@@ -138,7 +136,7 @@ export class QuestionEditorPage extends React.PureComponent<
 									<Select<QuestionTag>
 										disabled={this.state.question !== null}
 										inputProps={{ name: "question_tag", id: "question_tag" }}
-										items={questionTagsMock}
+										items={this.state.tags}
 										onItemSelect={this.selectTag}
 										filterable={false}
 										itemRenderer={renderTagOption}
@@ -160,6 +158,7 @@ export class QuestionEditorPage extends React.PureComponent<
 					<hr style={{ marginTop: Spacing.XLarge, marginBottom: Spacing.XLarge, opacity: "0.3" }} />
 
 					{/* there are different types of answers according to question type */}
+					{/* so i created a separated component to show different a form to fill, according question kind */}
 
 					<AnswerForm
 						kind={this.state.kind}
@@ -177,10 +176,9 @@ export class QuestionEditorPage extends React.PureComponent<
 	}
 
 	private fetchTags = async () => {
-		// fetch tags
 		try {
 			const tags = await QuestionTagModel.list().then((res) => res.data);
-			// const tags =  questionTagsMock
+			// show banner if there are none
 			this.setState({ tags, loading: false });
 		} catch (err) {
 			// redirect?
@@ -211,7 +209,9 @@ export class QuestionEditorPage extends React.PureComponent<
 	};
 
 	private saveQuestion = async (questionCreatePayload: QuestionCreatePayload) => {
-		console.log(questionCreatePayload, "this question will be created");
+		console.log(questionCreatePayload, "this question will be created"); // temp, just for debugging
+
+		this.setState({ loading: true });
 
 		let question: Question;
 
@@ -231,6 +231,10 @@ export class QuestionEditorPage extends React.PureComponent<
 
 		return question;
 	};
+
+
+	// maybe this should be inside the AnswerForm component
+	// leaving all question state inside it, and only storing the final (or current) question in this component
 
 	private selectQuestionKind = (kind: QuestionKind) => {
 		switch (kind.toLocaleLowerCase()) {
@@ -258,12 +262,16 @@ export class QuestionEditorPage extends React.PureComponent<
 
 		try {
 			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
-			this.setState({ question: question, loading: false });
+
+			this.setState({
+				question: question,
+			});
 		} catch (err) {
 			toaster.error("Error fetching question");
-			// redirect?
 
 			this.setState({ loading: false });
+
+			history.push("/");
 		}
 
 		if (!question)

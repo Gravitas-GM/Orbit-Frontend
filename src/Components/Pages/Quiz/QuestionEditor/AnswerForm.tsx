@@ -30,6 +30,7 @@ interface IAnswerFormState {
 	currentTrueLabel: string | undefined;
 	currentFalseLabel: string | undefined;
 	validationFailures: ValidationFailures | null;
+	loading: boolean;
 }
 
 export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFormState> {
@@ -44,6 +45,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 		currentTrueLabel: undefined,
 		currentFalseLabel: undefined,
 		validationFailures: this.props.failures,
+		loading: false,
 	};
 
 	public componentDidUpdate(prevProps: Readonly<IAnswerFormProps>): void {
@@ -123,7 +125,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 						<H3>Boolean Labels</H3>
 
 						{this.state.currentAnswers.map((answer, index) => (
-							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.xl }}>
+							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.XLarge }}>
 								<div
 									style={{
 										display: "flex",
@@ -215,6 +217,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 				<hr style={{ marginTop: Spacing.XLarge, marginBottom: Spacing.XLarge, opacity: "0.3" }} />
 
 				<Button
+					loading={this.state.loading}
 					large={true}
 					intent={Intent.PRIMARY}
 					text="Save Question"
@@ -244,6 +247,7 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 	private onSaveQuestionClick = async () => {
 		const accountId = this.context!.id;
 		const tagId = this.state.currentTag!.id as number;
+		this.setState({ loading: true });
 
 		// switch by kind and create question object
 		switch (this.props.kind) {
@@ -285,7 +289,9 @@ export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFor
 					tagId,
 				};
 
-				await this.props.saveQuestion(multipleChoiceQuestion);
+				await this.props.saveQuestion(multipleChoiceQuestion).then(() => {
+					this.setState({ loading: false });
+				});
 
 				break;
 
