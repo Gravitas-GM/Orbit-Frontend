@@ -6,22 +6,7 @@ import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { history } from "../../../../history";
 import { Question, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
-
-// temporary dummy data and interfaces
-import { questions as mockQuestions } from "../../../../mocks/Questions";
-export interface User {
-    id: number,
-    name: string,
-    nextQuizTimestamp: Date,
-    assignedTags: QuestionTag[],
-}
-
-export interface QuestionTag {
-    id: number,
-    label: string,
-    members: User[],
-}
-// end temporary dummy data and interfaces
+import * as toaster from "../../../../Toaster";
 
 interface IQuestionListState {
 	questions: Question[],
@@ -43,7 +28,6 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	public async componentDidMount() {
-		// temporary fetch questions
 		await this.fetchQuestions();
 	};
 
@@ -59,7 +43,7 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title="Quiz - Questions List">
-					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.l}}>
+					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.Large}}>
 						<InputGroup
 							type="search"
 							leftIcon="search"
@@ -102,17 +86,18 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	private fetchQuestions = async () => {
-		//  mock fetch questions
 		this.setState({ loading: true });
 
 		let questions: Question[] = [];
 
 		try {
-			// questions = await QuestionModel.list().then(response => response.data);
-			questions = mockQuestions;
+			questions = await QuestionModel.list().then(response => response.data);
 		} catch (error) {
-			console.error(error);
+			toaster.error("Failed to fetch questions");
+
 			this.setState({ loading: false });
+
+			history.push("/");
 			return;
 		}
 
@@ -127,15 +112,25 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	;}
 
 	private onAddQuestionClick = () => {
-		history.push('/quiz/questions/new');
+		history.push("/quiz/questions/new");
 	};
 
 	private onEditClick = (questionId: number) => {
 		history.push(`/quiz/questions/${questionId}`);
 	};
 
-	private onDeleteClick = (question: Question) => {
-		return;
+	private onDeleteClick = async (question: Question) => {
+		this.setState({loading: true});
+
+		try {
+			await QuestionModel.delete(question.id).then(() => {
+				toaster.success("Question deleted successfully");
+			});
+		} catch (error) {
+			toaster.error("Failed to delete question");
+		} finally {
+			this.setState({loading: false});
+		}
 	};
 
 	private onClickNext = () => {
@@ -157,7 +152,7 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.currentTarget.value === '') {
+		if (event.currentTarget.value === "") {
 			const totalPages = Math.ceil(this.state.questions.length / ITEMS_PER_PAGE);
 
 			this.setState({
@@ -209,7 +204,7 @@ const RenderPageItems: React.FC<IRenderPageItemsProps> = ({items, editCallback, 
 					<tr key={question.id}>
 						<td>{question.prompt}</td>
 
-						<td style={{ width: 240}}>{question.tag.name}</td>
+						<td style={{ width: 240}}>{question.tagId}</td>
 
 						<td style={{ width: 80}}>
 							<div style={{ display: 'flex', justifyContent: 'space-between' }}>
