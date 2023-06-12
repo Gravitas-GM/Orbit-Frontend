@@ -1,7 +1,7 @@
-import { Button, Classes, Dialog, FormGroup, Intent, Switch } from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, Intent, Switch} from '@blueprintjs/core';
 import * as React from 'react';
-import { User } from '../../../Api/Hub/Models/Users';
-import { Permission } from '../../../Permission';
+import {User} from '../../../Api/Hub/Models/Users';
+import {Permission} from '../../../Permission';
 
 export type UpdatableUserData = Pick<User, 'permissions'>;
 

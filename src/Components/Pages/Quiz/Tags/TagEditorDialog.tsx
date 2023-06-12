@@ -12,7 +12,6 @@ import * as toaster from "../../../../Toaster";
 import { Id } from "../../../../Api";
 import { UserContext } from "../../../../Session";
 
-
 interface ITagEditorDialogProps {
 	isOpen: boolean;
 	onClose: () => void;

@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { CatalogListPage } from './';
-import { gameCatalogMock } from '../../../mocks/GameCatalog';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {CatalogListPage} from './';
+import {gameCatalogMock} from '../../../mocks/GameCatalog';
 
 export default {
 	title: 'Catalog List Page',
@@ -18,6 +18,6 @@ export default {
 	},
 } as ComponentMeta<typeof CatalogListPage>;
 
-const Template: ComponentStory<typeof CatalogListPage> = () =>	<CatalogListPage />;
+const Template: ComponentStory<typeof CatalogListPage> = () => <CatalogListPage />;
 
 export const Basic = Template.bind({});

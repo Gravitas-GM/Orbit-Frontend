@@ -1,5 +1,5 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { GameCard } from './GameCard';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {GameCard} from './GameCard';
 
 export default {
 	title: 'Game Card',

@@ -1,5 +1,5 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { ConfirmNextBoardDialog } from './';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {ConfirmNextBoardDialog} from './';
 
 export default {
 	title: 'Confirm Next Board Dialog',
@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof ConfirmNextBoardDialog> = args => (
 export const Basic = Template.bind({});
 Basic.args = {
 	onClose: () => null,
-	onConfirm: Promise.resolve
+	onConfirm: Promise.resolve,
 };

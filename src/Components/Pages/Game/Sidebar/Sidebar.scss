@@ -1,12 +1,17 @@
 @import '../../../../variables';
 
+$sidebar-footer-height: 100px;
+
 .gm-sidebar {
 	display: flex;
 	flex-direction: column;
 	background: #fff;
-	padding: $spacing-l;
-	gap: $spacing-xl;
+	padding: $spacing-large;
+	gap: $spacing-xlarge;
 	justify-content: space-between;
-	height: calc(100vh - 50px);
-	overflow-y: scroll;
+	min-height: calc(100vh - $gm-nav-header-height);
+}
+
+.gameboard-sidebar {
+	max-height: calc(100vh - $gm-nav-header-height - $sidebar-footer-height);
 }

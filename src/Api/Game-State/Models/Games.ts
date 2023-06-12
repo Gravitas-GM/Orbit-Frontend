@@ -138,7 +138,7 @@ export class GamesModel {
 	public static update(account: Id) {
 		return gameStateClient.post<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
 			.then(response => {
-				response.data = response.data.map(this.denormalizePlayerUpdate);
+				response.data = response.data.map(GamesModel.denormalizePlayerUpdate);
 
 				return response;
 			});
@@ -147,7 +147,7 @@ export class GamesModel {
 	public static updatePreview(account: Id) {
 		return gameStateClient.get<'/games/accounts/:account/update'>(`/games/accounts/${account}/update`)
 			.then(response => {
-				response.data = response.data.map(this.denormalizePlayerUpdate);
+				response.data = response.data.map(GamesModel.denormalizePlayerUpdate);
 
 				return response;
 			});

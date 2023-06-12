@@ -1,11 +1,9 @@
-enum Spacing {
-	px = "1px",
-	xs = "2px",
-	s = "4px",
-	m = "8px",
-	l = "16px",
-	xl = "24px",
-	xxl = "48px",
-};
-
-export { Spacing };
+export enum Spacing {
+	Pixel = '1px',
+	XSmall = '2px',
+	Small = '4px',
+	Medium = '8px',
+	Large = '16px',
+	XLarge = '24px',
+	XXLarge = '48px',
+}

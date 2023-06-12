@@ -1,5 +1,5 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { StartGameDialog } from './StartGameDialog';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {StartGameDialog} from './StartGameDialog';
 
 export default {
 	title: 'Start Game Dialog',
@@ -25,6 +25,6 @@ Basic.args = {
 	},
 	isOpen: true,
 	onCancel: () => null,
-	onConfirm:  () => Promise.resolve(),
+	onConfirm: () => Promise.resolve(),
 	processing: false,
 };

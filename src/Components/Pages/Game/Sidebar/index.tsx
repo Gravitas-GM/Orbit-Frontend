@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Button, Icon, IconSize, Intent} from '@blueprintjs/core';
 import './Sidebar.scss';
+import SimpleBar from 'simplebar-react';
 
 interface IProps {
 	children: React.ReactNode;
@@ -11,7 +12,9 @@ interface IProps {
 
 export const Sidebar: React.FC<IProps> = props => (
 	<aside className="gm-sidebar">
-		<div>{props.children}</div>
+		<SimpleBar className="gameboard-sidebar">
+			<div>{props.children}</div>
+		</SimpleBar>
 
 		<Button
 			intent={Intent.PRIMARY}

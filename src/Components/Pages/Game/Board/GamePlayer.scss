@@ -1,15 +1,15 @@
 @import "../../../../variables";
 
 #game-board .player-button {
-	margin: $spacing-xs;
-	border-radius: $spacing-xxl;
-	padding: $spacing-m;
+	margin: $spacing-xsmall;
+	border-radius: $spacing-xxlarge;
+	padding: $spacing-medium;
 
 	width: 40px;
 	background-color: #eef2f1;
 	color: #0b2540;
 	border-color: #0b2540;
 	border-style: solid;
-	border-width: $spacing-xs;
+	border-width: $spacing-xsmall;
 	font-weight: bold;
 }

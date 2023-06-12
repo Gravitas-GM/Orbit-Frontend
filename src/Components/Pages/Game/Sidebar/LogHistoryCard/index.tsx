@@ -25,7 +25,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 				<NonIdealState
 					icon={null}
 					title={(
-						history !== null ? "There isn't any history yet." : "There was an error getting history data."
+						history !== null ? 'There isn\'t any history yet.' : 'There was an error getting history data.'
 					)}
 					action={(
 						<Button icon="refresh" text="Refresh history" onClick={refresh} loading={processing} />
@@ -79,7 +79,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 	);
 };
 
-const LogItem: React.FC<{children: React.ReactNode}> = ({children}) => {
+const LogItem: React.FC<{ children: React.ReactNode }> = ({children}) => {
 	return (
 		<li>
 			<Icon icon="direction-right" size={IconSize.SMALL} />

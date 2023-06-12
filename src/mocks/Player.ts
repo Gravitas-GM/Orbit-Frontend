@@ -1,4 +1,4 @@
-import { Player } from '../Api/Game-State/Models/Games';
+import {Player} from '../Api/Game-State/Models/Games';
 
 export const singlePlayerMock: Player = {
 	hub_id: 3333,

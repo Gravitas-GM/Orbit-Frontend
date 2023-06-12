@@ -1,4 +1,4 @@
-export function replace<T>(items: T[], old: T, replacement: T, inline: boolean = false){
+export function replace<T>(items: T[], old: T, replacement: T, inline: boolean = false) {
 	if (!inline)
 		items = [...items];
 

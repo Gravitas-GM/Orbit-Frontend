@@ -12,7 +12,7 @@ interface INewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameControl: React.FC<INewGameProps> = ({ startNewGame }) => {
+export const NewGameControl: React.FC<INewGameProps> = ({startNewGame}) => {
 	const [showNewGameDialog, setShowNewGameDialog] = useState(false);
 
 	const closeNewGameDialog = useCallback(() => setShowNewGameDialog(false), []);
@@ -46,7 +46,7 @@ interface INewGameDialogProps {
 	onConfirm: (payload: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfirm }) => {
+export const NewGameDialog: React.FC<INewGameDialogProps> = ({onClose, onConfirm}) => {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState(false);
@@ -82,7 +82,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({ onClose, onConfir
 	return (
 		<Dialog isOpen title="Start new game" onClose={onClose}>
 			{loading ? (
-				<div style={{marginTop: Spacing.l}}>
+				<div style={{marginTop: Spacing.Large}}>
 					<FrameLoadingSpinner />
 				</div>
 			) : (
