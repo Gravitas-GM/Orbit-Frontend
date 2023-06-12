@@ -116,7 +116,7 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 						placeholder="Tag name"
 						fill={true}
 						autoFocus={true}
-						style={{ marginBottom: Spacing.l }}
+						style={{ marginBottom: Spacing.Large }}
 						value={newTagName}
 						onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewTagName(event.currentTarget.value)}
 					/>
@@ -142,7 +142,7 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 					/>
 				</ValidationAwareFormGroup>
 
-				<div style={{ paddingTop: Spacing.m }}>
+				<div style={{ paddingTop: Spacing.Medium }}>
 					<Button small={true} minimal={true} text="Clear" icon="minus" onClick={() => setSelectedUsers([])} />
 				</div>
 

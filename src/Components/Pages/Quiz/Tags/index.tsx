@@ -7,7 +7,7 @@ import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { TagEditorDialog } from "./TagEditorDialog";
 import { QuestionTagModel, QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
 import * as toaster from "../../../../Toaster";
-import { questionTagsMock } from "../../../../mocks/QuestionTags";
+
 import { history } from "../../../../history";
 
 interface ITagListState {
@@ -53,7 +53,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title="Tags">
-					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.l }}>
+					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.Large }}>
 						<InputGroup type="search" leftIcon="search" placeholder="Search tags" onChange={this.onSearchChange} />
 						<Button icon="add" onClick={this.toggleEditTagDialog}>Add New</Button>
 					</div>
@@ -321,7 +321,7 @@ export const ConfirmDeleteDialog: React.FC<IDeleteDialogProps> = ({isOpen, subje
 						To confirm, please type "{subject}" in the box below, then click "Confirm."
 					</p>
 
-					<InputGroup style={{ marginTop: Spacing.l }} value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
+					<InputGroup style={{ marginTop: Spacing.Large }} value={confirmText} onChange={onConfirmTextChange} autoFocus={true} />
 				</div>
 
 				<div className={Classes.DIALOG_FOOTER}>
