@@ -61,12 +61,15 @@ export const AccountSettings: React.FC = () => {
 					}
 
 					if (isAccountModel(result.value.data)) {
+						console.log(result.value.data.completedRewardPointSourceId, 'source id')
+						console.log(result.value.data, 'sources')
 						setFrequency(result.value.data.quizFrequency);
 
 						setQuestionCount(result.value.data.questionCount);
 
 						const sourceId = result.value.data.completedRewardPointSourceId;
-						const source = pointSourceItems.find((source) => source.id.$oid === sourceId);
+						const source = pointSourceItems.find((source) => source.id.$oid === sourceId?.toString());
+						console.log(source, 'source')
 
 						if (source) {
 							setCompletedRewardSource(source);
@@ -132,7 +135,7 @@ export const AccountSettings: React.FC = () => {
 
 							<Button
 								style={{ width: '250px' }}
-								text={frequency ? frequency : 'Select quiz frequency'}
+								text={frequency ? ucwords(frequency) : 'Select quiz frequency'}
 								rightIcon="double-caret-vertical"
 								placeholder="Select quiz frequency"
 							/>
@@ -146,6 +149,7 @@ export const AccountSettings: React.FC = () => {
 						style={{ maxWidth: '250px' }}
 						id="question-count"
 						type="number"
+						value={questionCount?.toString()}
 						placeholder="0"
 						onChange={(event: React.FormEvent<HTMLInputElement>) => {
 							setQuestionCount(parseInt(event.currentTarget.value));
