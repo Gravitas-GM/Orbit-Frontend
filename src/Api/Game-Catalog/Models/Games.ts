@@ -28,7 +28,11 @@ export interface Game {
 
 export class GameModel {
 	public static list() {
-		return gameCatalogClient.get('/games');
+		return gameCatalogClient.get('/games', {
+			params: {
+				q: {hidden: false},
+			},
+		});
 	}
 
 	public static read(game: Id) {
