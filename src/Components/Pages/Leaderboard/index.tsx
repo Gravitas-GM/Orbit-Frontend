@@ -12,6 +12,7 @@ import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {NonIdealState} from '../../NonIdealState';
 import {PageHeader} from '../../PageHeader';
+import './index.scss';
 
 interface IState {
 	players: PlayerState[];
@@ -45,7 +46,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
-			<div className={Classes.PAGE_WRAPPER}>
+			<div className="leaderboard-container">
 				<PageHeader title="Leaderboard">
 					<div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
 						<Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} />
