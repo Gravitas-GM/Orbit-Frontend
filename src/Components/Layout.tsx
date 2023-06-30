@@ -16,6 +16,7 @@ import {CatalogListPage} from './Pages/Catalog';
 import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
+import { QuizHistoryPage } from './Pages/Quiz/History';
 
 interface IProps {
 	loading: boolean;
@@ -39,6 +40,8 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/game" component={GameBoardPage} />
 
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
+
+							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
