@@ -66,13 +66,13 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 						<tr>
 							<th>Name</th>
 
-							{this.state.sources.map(item => (
-								<th key={item.id.$oid}>{ucwords(item.name)}</th>
-							))}
-
 							<th>Total Points</th>
 
 							<th>Stage</th>
+
+							{this.state.sources.map(item => (
+								<th key={item.id.$oid}>{ucwords(item.name)}</th>
+							))}
 						</tr>
 					</thead>
 
@@ -81,11 +81,11 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 							<tr key={`point-summary-${item.id}`}>
 								<td>{ucwords(item.user_name)}</td>
 
-								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
-
 								<td>{formatNumber(item.total_points)}</td>
 
 								<td>{this.renderStageCell(item)}</td>
+
+								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
 							</tr>
 						))}
 					</tbody>
