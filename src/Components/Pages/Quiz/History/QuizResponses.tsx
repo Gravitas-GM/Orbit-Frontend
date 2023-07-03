@@ -5,43 +5,43 @@ import {
 	MultipleChoiceResponse,
 	QuestionResponse,
 } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { Icon } from "@blueprintjs/core";
+import { Icon, Intent } from "@blueprintjs/core";
 import "./QuizHistory.scss";
 import { IconSize } from "../../../../IconSize";
 import SimpleBar from "simplebar-react";
 interface IProps {
 	questions: QuestionResponse[];
 }
-const QuestionSummaryMaxHeight = 260;
+const QuizResponsesMaxHeight = 260;
 
-export const QuestionsSummary: React.FC<IProps> = ({ questions }) => {
+export const QuizResponses: React.FC<IProps> = ({ questions }) => {
 	return (
-		<SimpleBar style={{ maxHeight: QuestionSummaryMaxHeight }}>
+		<SimpleBar style={{ maxHeight: QuizResponsesMaxHeight }}>
 			{questions.map((question) => (
-				<RenderQuestion question={question} key={question.prompt} />
+				<Response question={question} key={question.prompt} />
 			))}
 		</SimpleBar>
 	);
 };
 
-const RenderQuestion: React.FC<{ question: QuestionResponse }> = ({ question }) => {
+const Response: React.FC<{ question: QuestionResponse }> = ({ question }) => {
 	switch (question.kind) {
 		case QuestionKind.MultipleChoice:
-			return <RenderMultipleChoice question={question} />;
+			return <MultipleChoiceAnswer question={question} />;
 		case QuestionKind.Boolean:
-			return <RenderBoolean question={question} />;
+			return <BooleanAnswer question={question} />;
 		case QuestionKind.FreeText:
-			return <RenderFreeText question={question} />;
+			return <FreeTextAnswer question={question} />;
 		default:
 			return null;
 	}
 };
 
-const RenderMultipleChoice: React.FC<{ question: MultipleChoiceResponse }> = ({ question }) => {
+const MultipleChoiceAnswer: React.FC<{ question: MultipleChoiceResponse }> = ({ question }) => {
 	return (
 		<div className="question">
 			<div className="question-title">
-				<span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} /> <span>{question.prompt}</span>
 			</div>
 			<div className="question-details">
 				<div className="question-details-card">
@@ -54,25 +54,18 @@ const RenderMultipleChoice: React.FC<{ question: MultipleChoiceResponse }> = ({ 
 
 					{question.choices[question.answerIndex]}
 				</div>
-				<div className="question-details-card">
-					<span>Result:</span>
 
-					{question.correct ? (
-						<Icon size={IconSize.LARGE} icon="tick" color="green" />
-					) : (
-						<Icon size={IconSize.LARGE} icon="delete" color="red" />
-					)}
-				</div>
+				<QuestionResult correct={question.correct}/>
 			</div>
 		</div>
 	);
 };
 
-export const RenderBoolean: React.FC<{ question: BooleanResponse }> = ({ question }) => {
+export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({ question }) => {
 	return (
 		<div className="question">
 			<div className="question-title">
-				<span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} /> <span>{question.prompt}</span>
 			</div>
 
 			<div className="question-details">
@@ -88,25 +81,17 @@ export const RenderBoolean: React.FC<{ question: BooleanResponse }> = ({ questio
 					{question.answer ? question.trueLabel : question.falseLabel}
 				</div>
 
-				<div className="question-details-card">
-					<span>Result:</span>
-
-					{question.correct ? (
-						<Icon size={IconSize.LARGE} icon="tick" color="green" />
-					) : (
-						<Icon size={IconSize.LARGE} icon="delete" color="red" />
-					)}
-				</div>
+				<QuestionResult correct={question.correct}/>
 			</div>
 		</div>
 	);
 };
 
-export const RenderFreeText: React.FC<{ question: FreeTextResponse }> = ({ question }) => {
+export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({ question }) => {
 	return (
 		<div className="question">
 			<div className="question-title">
-				<span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} /> <span>{question.prompt}</span>
 			</div>
 
 			<div className="question-details">
@@ -121,16 +106,23 @@ export const RenderFreeText: React.FC<{ question: FreeTextResponse }> = ({ quest
 
 					{question.answers.join(", ")}
 				</div>
-				<div className="question-details-card">
-					<span>Result:</span>
 
-					{question.correct ? (
-						<Icon size={IconSize.LARGE} icon="tick" color="green" />
-					) : (
-						<Icon size={IconSize.LARGE} icon="delete" color="red" />
-					)}
-				</div>
+				<QuestionResult correct={question.correct} />
 			</div>
+		</div>
+	);
+};
+
+const QuestionResult: React.FC<{ correct: boolean }> = ({ correct }) => {
+	return (
+		<div className="question-details-card">
+			<span>Result:</span>
+
+			{correct ? (
+				<Icon size={IconSize.LARGE} icon="tick-circle" intent={Intent.SUCCESS} />
+			) : (
+				<Icon size={IconSize.LARGE} icon="delete" intent={Intent.DANGER} />
+			)}
 		</div>
 	);
 };

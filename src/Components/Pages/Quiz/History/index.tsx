@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { UserContext } from "../../../../Session";
 import { PageHeader } from "../../../PageHeader";
 import { Button, Classes, Dialog, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
@@ -6,15 +6,14 @@ import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { User, UserModel } from "../../../../Api/Hub/Models/Users";
 import { ucwords } from "../../../Utility/string";
-import { usersMock } from "../../../../mocks/User";
 import { Permission } from "../../../../Permission";
-import { quizSubmissionsMock } from "../../../../mocks/QuizSubmissions";
-import { QuizSubmission } from "../../../../Api/Quiz/Models/QuizSubmissions";
+import { QuizSubmission, QuizSubmissionModel } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import "./QuizHistory.scss";
 import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { history } from "../../../../history";
-import { QuestionsSummary } from "./QuestionsSummary";
+import { QuizResponses } from "./QuizResponses";
+import * as toaster from "../../../../Toaster";
 
 interface IState {
 	loading: boolean;
@@ -26,12 +25,12 @@ interface IState {
 	showQuizSubmissionDialog: boolean;
 }
 
-export class QuizHistoryPage extends React.PureComponent<null, IState> {
+export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		loading: true,
+		loading: false,
 		processing: false,
 		users: [],
 		filteredSubmissions: null,
@@ -41,22 +40,55 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 	};
 
 	public async componentDidMount(): Promise<void> {
-		await this.fetchUserData();
+		await this.fetchHistoryData();
+	}
+	private async fetchUserData(): Promise<User[] | null> {
+		let users: User[] = [];
+
+		try {
+			users = await UserModel.list().then((res) => res.data);
+		} catch (err) {
+			toaster.showUnhandledErrorMessage();
+
+			return null;
+		}
+
+		return users;
 	}
 
-	private async fetchUserData(): Promise<void> {
+	private async fetchQuizSubmissions(): Promise<QuizSubmission[] | null> {
+		let quizSubmissions: QuizSubmission[] = [];
+
+		try {
+			quizSubmissions = await QuizSubmissionModel.list().then((res) => res.data);
+		} catch (e) {
+			toaster.showUnhandledErrorMessage();
+
+			return null;
+		}
+
+		return quizSubmissions;
+	}
+
+	private async fetchHistoryData(): Promise<void> {
+		this.setState({ loading: true });
+		const quizSubmissions = await this.fetchQuizSubmissions();
+
+		if (!quizSubmissions) {
+			this.setState({ loading: false });
+
+			return;
+		}
+
 		if (this.context?.permissions.includes(Permission.ADMIN)) {
-			// make sure user is admin, then fetch all users and quiz submissions and enable filters
+			const users = await this.fetchUserData();
 
-			// use all settled?
-			// const users = await UserModel.list().then(res => res.data);
-			// const quizSubmissions = await QuizHistoryModel.list(this.context.account.id).then(res => res.data);
+			if (!users) {
+				this.setState({ loading: false });
 
-			// mock data
-			const users: User[] = usersMock;
-			const quizSubmissions: QuizSubmission[] = quizSubmissionsMock;
+				return;
+			}
 
-			// filter out users that have not submitted a quiz
 			const submissionUsers = quizSubmissions.map((submission) => submission.userId.id);
 			const quizSubmissionUsers = users.filter((user) => submissionUsers.includes(user.id));
 
@@ -67,14 +99,11 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 				loading: false,
 			});
 		} else {
-			// here we don't filter, neither show other users' submissions]
-			// const quizSubmissions = await QuizHistoryModel.list(this.context.account.id).then(res => res.data);
-
-			const users: User[] = [];
-			const quizSubmissions: QuizSubmission[] = [];
+			// here, since the user isn't an admin we aren't filtering other users' submissions
+			// assuming the submissions endpoint return only the current user's submissions.
+			// or do we need to filter them here as well?
 
 			this.setState({
-				users,
 				quizSubmissions,
 				loading: false,
 			});
@@ -90,42 +119,41 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 				<NonIdealState
 					icon="wind"
 					action={
-						<Button
-							intent={Intent.PRIMARY}
-							onClick={()=> history.push("/")}
-						>
+						<Button intent={Intent.PRIMARY} onClick={() => history.push("/")}>
 							Back to the home page
 						</Button>
 					}
-					title="No quiz history data yet."
+					title="No quiz history data found."
 				/>
-			)
+			);
 		}
 
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title="Quiz - History" />
 
-				<div className="history-filter">
-					<span>Sort by</span>
+				{this.context?.permissions.includes(Permission.ADMIN) ? (
+					<div className="history-filter">
+						<span>Sort by</span>
 
-					<Select<User>
-						items={this.state.users}
-						noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
-						itemRenderer={renderUserOption}
-						onItemSelect={this.handleUserSelect}
-					>
-						<Button>
-							{this.state.filteredSubmissions
-								? `${this.state.filteredSubmissions[0].userId.name}`
-								: "All Users"}
+						<Select<User>
+							items={this.state.users}
+							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+							itemRenderer={renderUserOption}
+							onItemSelect={this.handleUserSelect}
+						>
+							<Button>
+								{this.state.filteredSubmissions ? `${this.state.filteredSubmissions[0].userId.name}` : "All Users"}
+							</Button>
+						</Select>
+
+						<Button minimal={true} small={true} onClick={this.clearFilter}>
+							Clear filter
 						</Button>
-					</Select>
-
-					<Button minimal={true} small={true} onClick={this.clearFilter}>
-						Clear filter
-					</Button>
-				</div>
+					</div>
+				) : (
+					""
+				)}
 
 				<HTMLTable striped={true} interactive={true}>
 					<thead>
@@ -144,7 +172,6 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 							this.state.filteredSubmissions :
 							this.state.quizSubmissions
 						}
-
 						handleClick={this.onViewAnswersClick}
 					/>
 				</HTMLTable>
@@ -156,11 +183,16 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 						title={`Quiz Submission #${this.state.currentSubmission.id} - ${this.state.currentSubmission.userId.name}`}
 					>
 						<div className={Classes.DIALOG_BODY}>
-							<QuestionsSummary questions={this.state.currentSubmission.questions} />
+							<QuizResponses questions={this.state.currentSubmission.questions} />
 
-							<hr style={{margin: `${Spacing.Large} 0`}} />
+							<hr style={{ margin: `${Spacing.Large} 0` }} />
 
-							<span className="question-details-label">Total correct count: {this.state.currentSubmission?.correctCount}</span>
+							<div className="question-details-total">
+								Score:{" "}
+								<span>
+									{this.state.currentSubmission?.correctCount}/{this.state.currentSubmission.questions.length}
+								</span>
+							</div>
 						</div>
 					</Dialog>
 				)}
@@ -179,7 +211,7 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 
 		if (filteredSubmissions) {
 			this.setState({
-				filteredSubmissions
+				filteredSubmissions,
 			});
 		}
 	};
@@ -192,17 +224,17 @@ export class QuizHistoryPage extends React.PureComponent<null, IState> {
 	};
 
 	private onViewAnswersClick = (index: number) => {
-		this.setState((state)=>{
-			if (state.filteredSubmissions) {
+		this.setState(({ filteredSubmissions, quizSubmissions }) => {
+			if (filteredSubmissions) {
 				return {
-					currentSubmission: state.filteredSubmissions[index],
+					currentSubmission: filteredSubmissions[index],
 					showQuizSubmissionDialog: true,
-				}
+				};
 			} else {
 				return {
-					currentSubmission: state.quizSubmissions[index],
+					currentSubmission: quizSubmissions[index],
 					showQuizSubmissionDialog: true,
-				}
+				};
 			}
 		});
 	};
@@ -215,16 +247,23 @@ interface IRenderHistoryItemsProps {
 }
 
 const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items, handleClick }) => {
-	const sortedItems = items.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+	const sortedItems = useMemo(
+		() => items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+		[items]
+	);
 
 	return (
 		<tbody>
 			{sortedItems.map((item, index) => (
 				<tr key={`${item.userId.id} ${item.timestamp}`}>
 					<td>{item.userId.name}</td>
+
 					<td>{item.correctCount}</td>
+
 					<td>{item.duration}</td>
-					<td>{item.timestamp.toLocaleDateString()}</td>
+
+					<td>{new Date(item.timestamp).toLocaleDateString()}</td>
+
 					<td>
 						<Button intent={Intent.PRIMARY} onClick={() => handleClick(index)}>
 							View Answers
