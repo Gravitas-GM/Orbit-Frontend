@@ -7,7 +7,7 @@ import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { ucwords } from "../../../Utility/string";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
-import { UserModel, User } from "../../../../Api/Hub/Models/Users";
+import { User as QuizUser, UserModel as QuizUserModel } from "../../../../Api/Quiz/Models/Users";
 import * as toaster from "../../../../Toaster";
 import { Id } from "../../../../Api";
 import { UserContext } from "../../../../Session";
@@ -18,43 +18,63 @@ interface ITagEditorDialogProps {
 	tag: QuestionTag | null;
 }
 
-export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClose, tag}) => {
+enum TagEditorDialogModeTitle {
+	ADD = "Add new Tag",
+	EDIT = "Edit Tag",
+}
+
+export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({ isOpen, onClose, tag }) => {
 	const User = useContext(UserContext);
 
 	const [newTagName, setNewTagName] = useState("");
+	const [dialogTitle, setDialogTitle] = useState<TagEditorDialogModeTitle>(TagEditorDialogModeTitle.ADD);
 	const [processing, setProcessing] = useState(false);
-	const [hubUsers, setHubUsers] = useState<User[]>([]);
-	const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+	const [hubUsers, setHubUsers] = useState<QuizUser[]>([]);
+	const [selectedUsers, setSelectedUsers] = useState<QuizUser[]>([]);
 	const [failures, setFailures] = useState<ValidationFailures | null>(null);
 
 	useEffect(() => {
+		if (tag) {
+			setDialogTitle(TagEditorDialogModeTitle.EDIT);
+
+			setNewTagName(tag.label);
+
+			const ids = tag.members.map((member) => member.id);
+
+			const selectedUsers = filterByHubId(ids);
+
+			setSelectedUsers(selectedUsers);
+		} else {
+			setDialogTitle(TagEditorDialogModeTitle.ADD);
+
+			setNewTagName("");
+
+			setSelectedUsers([]);
+		}
+
 		setProcessing(true);
 
-		UserModel.list()
-			.then((({data}) => setHubUsers(data)))
-			.catch((err) => { toaster.error('Error while fetching users'); })
-			.finally(() => {
-				if (tag) {
-					setNewTagName(tag.label);
-
-					const ids = tag.members.map((member) => member.id);
-
-					const selectedUsers = filterByHubId(ids);
-
-					setSelectedUsers(selectedUsers);
-				}
-
-				setProcessing(false);
+		QuizUserModel.list()
+			.then((response) => setHubUsers(response.data))
+			.then(() => setProcessing(false))
+			.catch((err) => {
+				toaster.error("Error while fetching users");
 			});
-	}, []);
 
-	const filterByHubId = useCallback((ids: Id[]) => {
-		return hubUsers.filter((user) => ids.includes(user.id));
-	}, [hubUsers]);
+		setProcessing(false);
+	}, [tag, isOpen]);
 
-	const onUserRemove = useCallback((user: User) => setSelectedUsers(
-		selectedUsers.filter((u) => u.id !== user.id)
-	), [selectedUsers]);
+	const filterByHubId = useCallback(
+		(ids: Id[]) => {
+			return hubUsers.filter((user) => ids.includes(user.id));
+		},
+		[hubUsers]
+	);
+
+	const onUserRemove = useCallback(
+		(user: QuizUser) => setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id)),
+		[selectedUsers]
+	);
 
 	const onSubmitTag = useCallback(async () => {
 		setProcessing(true);
@@ -62,7 +82,8 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 		const questionTag: QuestionTagCreatePayload = {
 			accountId: User!.id,
 			label: ucwords(newTagName),
-			members: selectedUsers.map((user) => user.id), // this is expecting Quiz User array, not Hub User array, neither an array of ids.
+			// members: selectedUsers.map((user) => user.id), // this is expecting Quiz User array, not Hub User array, neither an array of ids.
+			members: selectedUsers, // fix just to make it work
 		};
 
 		try {
@@ -79,8 +100,7 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 	}, [onClose, newTagName, selectedUsers]);
 
 	const onCloseClick = useCallback(() => {
-		if (processing)
-			return;
+		if (processing) return;
 
 		setNewTagName("");
 
@@ -89,16 +109,19 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 		onClose();
 	}, [onClose, processing]);
 
-	const selectUser = useCallback((user: User) => {
-		if (selectedUsers.find((u) => u.id === user.id))
-			return;
+	const selectUser = useCallback(
+		(user: QuizUser) => {
+			if (selectedUsers.find((u) => u.id === user.id))
+				return;
 
-		setSelectedUsers([...selectedUsers, user]);
-	}, [selectedUsers]);
+			setSelectedUsers([...selectedUsers, user]);
+		},
+		[selectedUsers]
+	);
 
 	if (processing) {
 		return (
-			<Dialog isOpen={isOpen} title="Add New Tag" onClose={onClose}>
+			<Dialog isOpen={isOpen} title={dialogTitle} onClose={onClose}>
 				<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 120 }}>
 					<FrameLoadingSpinner />
 				</div>
@@ -107,7 +130,7 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 	}
 
 	return (
-		<Dialog isOpen={isOpen} title="Add New Tag" onClose={onCloseClick}  isCloseButtonShown={!processing}>
+		<Dialog isOpen={isOpen} title={dialogTitle} onClose={onCloseClick} isCloseButtonShown={!processing}>
 			<form className={Classes.DIALOG_BODY}>
 				<ValidationAwareFormGroup labelFor="tag-name" failures={failures}>
 					<InputGroup
@@ -162,26 +185,19 @@ export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({isOpen, onClos
 			</form>
 		</Dialog>
 	);
-}
+};
 
-const selectItemRenderer: ItemRenderer<User> = (user, { handleClick, modifiers}) => {
+const selectItemRenderer: ItemRenderer<QuizUser> = (user, { handleClick, modifiers }) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}
-	const name = `${user.firstName} ${user.lastName}`;
+	const name = `${user.name}`;
 
-	return (
-		<MenuItem
-			active={modifiers.active}
-			key={user.id}
-			text={ucwords(name)}
-			onClick={handleClick}
-		/>
-	);
+	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(name)} onClick={handleClick} />;
 };
 
-const tagRenderer = (user: User) => {
-	const name = `${user.firstName} ${user.lastName}`;
+const tagRenderer = (user: QuizUser) => {
+	const name = `${user.name}`;
 
 	return ucwords(name);
-}
+};

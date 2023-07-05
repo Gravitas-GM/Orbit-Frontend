@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { TagListPage } from './';
-import { usersMock } from '../../../../mocks/User';
+import { questionTagsMock } from '../../../../mocks/QuestionTags';
+import { quizUsers } from '../../../../mocks/QuizUser';
 
 export default {
 	title: 'Quiz - Tag List Page',
@@ -18,11 +19,24 @@ export const Basic = Template.bind({});
 Basic.parameters = {
 	mockData:[
 		{
-			url: 'http://hub.test.api.happyorbit.com/users',
+			url: 'http://quiz.test.api.happyorbit.com/users',
 			method: 'GET',
-			response: usersMock,
+			response: quizUsers,
 			status: 200,
 			delay: 1500
+		},
+		{
+			url: 'http://quiz.test.api.happyorbit.com/tags',
+			method: 'GET',
+			response: questionTagsMock,
+			status: 200,
+			delay: 1500
+		},
+		{
+			url: 'http://quiz.test.api.happyorbit.com/tags/1',
+			method: 'DELETE',
+			response: {},
+			status: 200,
 		}
 	]
 }

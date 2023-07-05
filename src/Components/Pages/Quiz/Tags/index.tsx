@@ -15,6 +15,7 @@ interface ITagListState {
 	tagToDelete: QuestionTag | null;
 	tagToEdit: QuestionTag | null;
 	loading: boolean;
+	processing: boolean;
 	filteredTags: QuestionTag[];
 	currentPage: number;
 	totalPages: number;
@@ -27,6 +28,7 @@ const ITEMS_PER_PAGE = 10;
 export class TagListPage extends React.PureComponent<{}, ITagListState> {
 	public state: Readonly<ITagListState> = {
 		loading: false,
+		processing: false,
 		tags: [],
 		tagToEdit: null,
 		tagToDelete: null,
@@ -90,7 +92,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 			<ConfirmDeleteDialog
 				isOpen={this.state.showDeleteDialog}
 				onCancel={this.toggleDeleteTagDialog}
-				onConfirm={() => Promise.resolve(this.onConfirmDelete())}
+				onConfirm={this.onConfirmDelete}
 				subject={this.state.tagToDelete?.label}
 			/>
 			</section>
@@ -156,17 +158,16 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 	};
 
 	private onConfirmDelete = async () => {
-		this.setState({ loading: true });
 
 		try {
 			await QuestionTagModel.delete(this.state.tagToDelete!.id);
 
-			await this.fetchTags();
-
 			toaster.success("Tag deleted successfully");
+
+			// should we refetch the tags or just remove it from the list?
+			await this.fetchTags();
 		} catch (err) {
 			this.setState({
-				loading: false,
 				showDeleteDialog: false
 			});
 
