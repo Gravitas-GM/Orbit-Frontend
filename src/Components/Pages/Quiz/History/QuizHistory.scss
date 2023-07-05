@@ -7,6 +7,7 @@
 	margin-bottom: $spacing-large;
 	align-items: center;
 }
+
 .question {
 	margin-bottom: $spacing-large;
 }
@@ -16,6 +17,7 @@
 	grid-template-columns: repeat(3,1fr);
 	gap: $spacing-medium;
 }
+
 .question-details-card {
 	display: flex;
 	flex-direction: column;
@@ -23,10 +25,12 @@
 	align-items: center;
 	margin-bottom: $spacing-small;
 	min-height: 80px;
-	border: solid 1px #ffffff10;
+	border: solid 1px $light-gray1;
 	font-size: 0.8rem;
 	text-align: center;
+
 	span {
+		font-weight: bold;
 		font-size: 0.7rem;
 		margin-bottom: $spacing-medium;
 	}
@@ -44,6 +48,7 @@
 		font-weight: bold;
 	}
 }
+
 .question-details-total {
 	text-align: right;
 	width: 100%;

@@ -42,6 +42,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	public async componentDidMount(): Promise<void> {
 		await this.fetchHistoryData();
 	}
+
 	private async fetchUserData(): Promise<User[] | null> {
 		let users: User[] = [];
 
@@ -72,6 +73,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 	private async fetchHistoryData(): Promise<void> {
 		this.setState({ loading: true });
+
 		const quizSubmissions = await this.fetchQuizSubmissions();
 
 		if (!quizSubmissions) {
