@@ -258,9 +258,9 @@ const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items, handleC
 				<tr key={`${item.userId.id} ${item.timestamp}`}>
 					<td>{item.userId.name}</td>
 
-					<td>{item.correctCount}</td>
+					<td>{item.correctCount}/{item.questions.length}</td>
 
-					<td>{item.duration}</td>
+					<td>{(item.duration / 1000).toFixed(1)}s</td>
 
 					<td>{new Date(item.timestamp).toLocaleDateString()}</td>
 
