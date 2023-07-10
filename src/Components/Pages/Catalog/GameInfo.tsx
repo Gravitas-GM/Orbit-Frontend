@@ -141,16 +141,15 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 		try {
 			await GamesModel.deleteGameState(this.context!.account.id);
 		} catch (error) {
-			if (error instanceof ApiError && error.isNotFound())
-				toaster.warning('There are currently no active games for your account.');
-			else
+			if (!(error instanceof ApiError) || !error.isNotFound()) {
 				toaster.showUnhandledErrorMessage();
 
-			this.setState({
-				processing: false,
-			});
+				this.setState({
+					processing: false,
+				});
 
-			return;
+				return;
+			}
 		}
 
 		try {
@@ -160,14 +159,14 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					catalog_id: this.state.game!.id,
 				},
 			);
-		} catch (error) {
+		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				processing: false,
 			});
 
-			throw error;
+			return;
 		}
 
 		toaster.success(`${ucwords(this.state.game!.name)} started.`);
