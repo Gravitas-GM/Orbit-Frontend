@@ -54,12 +54,12 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={this.props.isOpen} title="Add Points">
+			<Dialog onClose={this.props.onClose} isOpen={this.props.isOpen} title="Claim Points">
 				<div className={Classes.DIALOG_BODY}>
 					{this.state.loading ? <FrameLoadingSpinner /> : (
 						<form>
 							<FormGroup
-								label="Select Point Sources"
+								label="Select sources to claim points for"
 								labelFor="selectedSources"
 								style={{display: 'flex'}}
 							>
@@ -141,6 +141,8 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			processing: true,
 		});
 
+		let failedCount = 0;
+
 		try {
 			await allSettled(this.state.selectedSources.map(async source => {
 				try {
@@ -150,6 +152,8 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 						source: source.name,
 					});
 				} catch (error) {
+					failedCount += 1;
+
 					toaster.error(`Failed claiming points for ${ucwords(source.name)}.`);
 
 					throw error;
@@ -165,12 +169,16 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		toaster.success(
-			'Points claimed.',
-		);
+		if (failedCount === 0)
+			toaster.success('Points claimed.');
+		else if (failedCount < this.state.selectedSources.length)
+			toaster.error('Some points could not be claimed.');
+		else if (failedCount === this.state.selectedSources.length)
+			toaster.error('No points could be claimed');
 
 		this.setState({
 			processing: false,
+			selectedSources: [],
 		});
 
 		this.props.onClose();
