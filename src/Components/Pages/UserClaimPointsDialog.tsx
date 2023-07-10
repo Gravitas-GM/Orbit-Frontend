@@ -169,8 +169,12 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		if (this.state.selectedSources.length !== failedCount)
+		if (failedCount === 0)
 			toaster.success('Points claimed.');
+		else if (failedCount < this.state.selectedSources.length)
+			toaster.error('Some points could not be claimed.');
+		else if (failedCount === this.state.selectedSources.length)
+			toaster.error('No points could be claimed');
 
 		this.setState({
 			processing: false,
