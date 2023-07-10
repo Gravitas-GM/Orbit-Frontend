@@ -160,14 +160,14 @@ export class GameInfo extends React.PureComponent<RouteComponentProps<IRouteProp
 					catalog_id: this.state.game!.id,
 				},
 			);
-		} catch (_) {
+		} catch (error) {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				processing: false,
 			});
 
-			return;
+			throw error;
 		}
 
 		toaster.success(`${ucwords(this.state.game!.name)} started.`);
