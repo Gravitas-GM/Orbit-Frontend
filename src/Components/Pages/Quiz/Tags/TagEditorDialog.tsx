@@ -1,6 +1,6 @@
+import React from "react";
 import { Dialog, Classes, InputGroup, Button, Intent, MenuItem } from "@blueprintjs/core";
 import { MultiSelect2 as MultiSelect, ItemRenderer } from "@blueprintjs/select";
-import { useState, useEffect, useCallback, useContext } from "react";
 import { QuestionTag, QuestionTagCreatePayload, QuestionTagModel } from "../../../../Api/Quiz/Models/QuestionTags";
 import { Spacing } from "../../../../Styles/variables";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
@@ -8,9 +8,8 @@ import { ucwords } from "../../../Utility/string";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 import { User as QuizUser, UserModel as QuizUserModel } from "../../../../Api/Quiz/Models/Users";
-import * as toaster from "../../../../Toaster";
-import { Id } from "../../../../Api";
 import { UserContext } from "../../../../Session";
+import * as toaster from "../../../../Toaster";
 
 interface ITagEditorDialogProps {
 	isOpen: boolean;
@@ -18,179 +17,216 @@ interface ITagEditorDialogProps {
 	tag: QuestionTag | null;
 }
 
-enum TagEditorDialogModeTitle {
+interface ITagEditorDialogState {
+	processing: boolean;
+	hubUsers: QuizUser[];
+	dialogTitle: TagEditorDialogTitle;
+	newTagName: string;
+	selectedUsers: QuizUser[];
+	failures: ValidationFailures | null;
+}
+
+enum TagEditorDialogTitle {
 	ADD = "Add new Tag",
 	EDIT = "Edit Tag",
 }
 
-export const TagEditorDialog: React.FC<ITagEditorDialogProps> = ({ isOpen, onClose, tag }) => {
-	const User = useContext(UserContext);
+export class TagEditorDialog extends React.PureComponent<ITagEditorDialogProps, ITagEditorDialogState> {
+	public state: Readonly<ITagEditorDialogState> = {
+		processing: false,
+		hubUsers: [],
+		dialogTitle: TagEditorDialogTitle.ADD,
+		newTagName: "",
+		selectedUsers: [],
+		failures: null,
+	};
 
-	const [newTagName, setNewTagName] = useState("");
-	const [dialogTitle, setDialogTitle] = useState<TagEditorDialogModeTitle>(TagEditorDialogModeTitle.ADD);
-	const [processing, setProcessing] = useState(false);
-	const [hubUsers, setHubUsers] = useState<QuizUser[]>([]);
-	const [selectedUsers, setSelectedUsers] = useState<QuizUser[]>([]);
-	const [failures, setFailures] = useState<ValidationFailures | null>(null);
+	public static contextType = UserContext;
+	declare context: React.ContextType<typeof UserContext>;
 
-	useEffect(() => {
-		if (tag) {
-			setDialogTitle(TagEditorDialogModeTitle.EDIT);
+	public async componentDidMount() {
+		this.setState({
+			processing: true
+		});
 
-			setNewTagName(tag.label);
+		if (this.props.tag) {
+			const ids = this.props.tag.members.map((member) => member.id);
 
-			const ids = tag.members.map((member) => member.id);
+			const selectedUsers = this.state.hubUsers.filter((user) => ids.includes(user.id));
 
-			const selectedUsers = filterByHubId(ids);
-
-			setSelectedUsers(selectedUsers);
+			this.setState({
+				dialogTitle: TagEditorDialogTitle.EDIT,
+				newTagName: this.props.tag.label,
+				selectedUsers
+			})
 		} else {
-			setDialogTitle(TagEditorDialogModeTitle.ADD);
-
-			setNewTagName("");
-
-			setSelectedUsers([]);
+			this.setState({
+				dialogTitle: TagEditorDialogTitle.ADD,
+				newTagName: "",
+				selectedUsers: [],
+			});
 		}
 
-		setProcessing(true);
+		let hubUsers: QuizUser[] = [];
 
-		QuizUserModel.list()
-			.then((response) => setHubUsers(response.data))
-			.then(() => setProcessing(false))
-			.catch((err) => {
-				toaster.error("Error while fetching users");
-			});
+		try {
+			hubUsers = await QuizUserModel.list().then((response) => response.data);
 
-		setProcessing(false);
-	}, [tag, isOpen]);
+		} catch (err) {
+			toaster.error("Error while fetching users");
+		};
 
-	const filterByHubId = useCallback(
-		(ids: Id[]) => {
-			return hubUsers.filter((user) => ids.includes(user.id));
-		},
-		[hubUsers]
-	);
+		this.setState({
+			hubUsers,
+			processing: false
+		});
+	}
 
-	const onUserRemove = useCallback(
-		(user: QuizUser) => setSelectedUsers(selectedUsers.filter((u) => u.id !== user.id)),
-		[selectedUsers]
-	);
+	public componentDidUpdate(prevProps: ITagEditorDialogProps) {
+		if (prevProps.tag !== this.props.tag) {
+			if (this.props.tag) {
+				this.setState({
+					dialogTitle: TagEditorDialogTitle.EDIT,
+					newTagName: this.props.tag.label,
+					selectedUsers: this.props.tag.members,
+				});
+			} else {
+				this.setState({
+					dialogTitle: TagEditorDialogTitle.ADD,
+					newTagName: "",
+					selectedUsers: [],
+				});
+			}
+		}
+	}
 
-	const onSubmitTag = useCallback(async () => {
-		setProcessing(true);
+	public render() {
+		if (this.state.processing) {
+			return (
+				<Dialog isOpen={this.props.isOpen} title={this.state.dialogTitle} onClose={this.props.onClose}>
+					<div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: Spacing.XLarge }}>
+						<FrameLoadingSpinner />
+					</div>
+				</Dialog>
+			);
+		}
 
+		return (
+			<Dialog isOpen={this.props.isOpen} title={this.state.dialogTitle} onClose={this.onCloseClick} isCloseButtonShown={!this.state.processing}>
+				<form className={Classes.DIALOG_BODY}>
+					<ValidationAwareFormGroup labelFor="tag-name" failures={this.state.failures}>
+						<InputGroup
+							type="text"
+							id="tag-name"
+							placeholder="Tag name"
+							fill={true}
+							autoFocus={true}
+							style={{ marginBottom: Spacing.Large }}
+							value={this.state.newTagName}
+							onChange={this.onChangeTagName}
+						/>
+					</ValidationAwareFormGroup>
+
+					<ValidationAwareFormGroup labelFor="tag-users" failures={this.state.failures}>
+						<MultiSelect
+							tagInputProps={{
+								inputProps: {
+									id: "tag-users",
+								},
+							}}
+							fill={true}
+							placeholder="Select users"
+							items={this.state.hubUsers}
+							selectedItems={this.state.selectedUsers}
+							onItemSelect={this.selectUser}
+							onRemove={this.onUserRemove}
+							itemRenderer={selectItemRenderer}
+							tagRenderer={tagRenderer}
+							noResults={<div>No results</div>}
+							popoverProps={{ minimal: true }}
+						/>
+					</ValidationAwareFormGroup>
+
+					<div style={{ paddingTop: Spacing.Medium }}>
+						<Button
+							small={true}
+							minimal={true}
+							text="Clear"
+							icon="minus"
+							onClick={this.onClearFilterClick}
+						/>
+					</div>
+
+					<div className={Classes.DIALOG_FOOTER}>
+						<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+							<Button text="Cancel" onClick={this.onCloseClick} disabled={this.state.processing} />
+
+							<Button
+								intent={Intent.PRIMARY}
+								text="Submit"
+								onClick={this.onSubmitTag}
+								loading={this.state.processing}
+								disabled={this.state.selectedUsers.length === 0}
+							/>
+						</div>
+					</div>
+				</form>
+			</Dialog>
+		)
+	}
+
+	private onChangeTagName = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ newTagName: event.currentTarget.value });
+
+	private onUserRemove = (user: QuizUser) => {
+		this.setState({ selectedUsers: this.state.selectedUsers.filter((u) => u.id !== user.id) });
+	}
+
+	private onClearFilterClick = () => this.setState({ selectedUsers: [] });
+
+	private onSubmitTag = async () => {
 		const questionTag: QuestionTagCreatePayload = {
-			accountId: User!.id,
-			label: ucwords(newTagName),
+			accountId: this.context!.id,
+			label: ucwords(this.state.newTagName),
 			// members: selectedUsers.map((user) => user.id), // this is expecting Quiz User array, not Hub User array, neither an array of ids.
-			members: selectedUsers, // fix just to make it work
+			members: this.state.selectedUsers, // fix just to make it work
 		};
 
 		try {
 			await QuestionTagModel.create(questionTag).then((response) => response.data);
 		} catch (err) {
 			if (isValidationFailureError(err)) {
-				setFailures(err.context.failures);
+				this.setState({failures: err.context.failures });
 			} else {
 				toaster.error("Failed to create tag");
 			}
 		}
-
-		setProcessing(false);
-	}, [onClose, newTagName, selectedUsers]);
-
-	const onCloseClick = useCallback(() => {
-		if (processing) return;
-
-		setNewTagName("");
-
-		setSelectedUsers([]);
-
-		onClose();
-	}, [onClose, processing]);
-
-	const selectUser = useCallback(
-		(user: QuizUser) => {
-			if (selectedUsers.find((u) => u.id === user.id))
-				return;
-
-			setSelectedUsers([...selectedUsers, user]);
-		},
-		[selectedUsers]
-	);
-
-	if (processing) {
-		return (
-			<Dialog isOpen={isOpen} title={dialogTitle} onClose={onClose}>
-				<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 120 }}>
-					<FrameLoadingSpinner />
-				</div>
-			</Dialog>
-		);
 	}
 
-	return (
-		<Dialog isOpen={isOpen} title={dialogTitle} onClose={onCloseClick} isCloseButtonShown={!processing}>
-			<form className={Classes.DIALOG_BODY}>
-				<ValidationAwareFormGroup labelFor="tag-name" failures={failures}>
-					<InputGroup
-						type="text"
-						id="tag-name"
-						placeholder="Tag name"
-						fill={true}
-						autoFocus={true}
-						style={{ marginBottom: Spacing.Large }}
-						value={newTagName}
-						onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewTagName(event.currentTarget.value)}
-					/>
-				</ValidationAwareFormGroup>
+	private onCloseClick = () => {
+		if (this.state.processing)
+			return;
 
-				<ValidationAwareFormGroup labelFor="tag-users" failures={failures}>
-					<MultiSelect
-						tagInputProps={{
-							inputProps: {
-								id: "tag-users",
-							},
-						}}
-						fill={true}
-						placeholder="Select users"
-						items={hubUsers}
-						selectedItems={selectedUsers}
-						onItemSelect={selectUser}
-						onRemove={onUserRemove}
-						itemRenderer={selectItemRenderer}
-						tagRenderer={tagRenderer}
-						noResults={<div>No results</div>}
-						popoverProps={{ minimal: true }}
-					/>
-				</ValidationAwareFormGroup>
+		this.setState({
+			newTagName: "",
+			selectedUsers: [],
+		});
 
-				<div style={{ paddingTop: Spacing.Medium }}>
-					<Button small={true} minimal={true} text="Clear" icon="minus" onClick={() => setSelectedUsers([])} />
-				</div>
+		this.props.onClose();
+	}
 
-				<div className={Classes.DIALOG_FOOTER}>
-					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-						<Button text="Cancel" onClick={onCloseClick} disabled={processing} />
+	private selectUser = (user: QuizUser) => {
+		if (this.state.selectedUsers.find((u) => u.id === user.id))
+			return;
 
-						<Button
-							intent={Intent.PRIMARY}
-							text="Submit"
-							onClick={onSubmitTag}
-							loading={processing}
-							disabled={selectedUsers.length === 0}
-						/>
-					</div>
-				</div>
-			</form>
-		</Dialog>
-	);
-};
+		this.setState({ selectedUsers: [...this.state.selectedUsers, user] });
+	}
+}
 
 const selectItemRenderer: ItemRenderer<QuizUser> = (user, { handleClick, modifiers }) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}
+
 	const name = `${user.name}`;
 
 	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(name)} onClick={handleClick} />;
