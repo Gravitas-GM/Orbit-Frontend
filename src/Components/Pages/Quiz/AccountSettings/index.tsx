@@ -1,22 +1,18 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Button, InputGroup, MenuItem } from "@blueprintjs/core";
+import React from "react";
+import { Button, InputGroup, Intent, MenuItem } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { PageHeader } from "../../../PageHeader";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
-import { Select2 as Select, ItemRenderer } from '@blueprintjs/select';
+import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
 import { ucwords } from "../../../Utility/string";
 import { Account, AccountModel, Frequency } from "../../../../Api/Quiz/Models/Accounts";
 import { UserContext } from "../../../../Session";
-import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
-import * as toaster from "../../../../Toaster"
-import { history } from "../../../../history";
+import { PointSourceItem, PointSourceModel } from "../../../../Api/Point-Tracking/Models/Sources";
+import * as toaster from "../../../../Toaster";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { allSettled, isRejectedResult } from "../../../Utility/promise";
-import { Spacing } from "../../../../Styles/variables";
-
-const QuizFrequencyNames = [Frequency.Daily, Frequency.Weekly, Frequency.Monthly].map((frequency) =>
-	ucwords(frequency)
-) as Frequency[];
+import { history } from "../../../../history";
+import "./QuizAccountSettings.scss";
 
 const isPointSourceArray = (data: any): data is PointSourceItem[] => {
 	return Array.isArray(data) && data.every(isPointSourceItem);
@@ -28,167 +24,210 @@ const isAccountModel = (data: any): data is Account => {
 	return typeof data === 'object' && data.accountId !== null;
 };
 
-export const AccountSettings: React.FC = () => {
-	const User = useContext(UserContext);
+const QuizFrequencyNames = [Frequency.Daily, Frequency.Weekly, Frequency.Monthly].map((frequency) =>
+	ucwords(frequency)
+) as Frequency[];
 
-	const [loading, setLoading] = useState(false);
-	const [processing, setIsProcessing] = useState(false);
-	const [failures, setFailures] = useState<ValidationFailures | null>(null);
-	const [pointSources, setPointSources] = useState<PointSourceItem[]>([]);
-	const [frequency, setFrequency] = useState<Frequency | null>(null);
-	const [questionCount, setQuestionCount] = useState<number | null>(null);
-	const [completedRewardSource, setCompletedRewardSource] = useState<PointSourceItem | null>(null);
+interface IState {
+	loading: boolean;
+	processing: boolean;
+	failures: ValidationFailures | null;
+	pointSources: PointSourceItem[];
+	frequency: Frequency | null;
+	questionCount: number | null;
+	completedRewardSource: PointSourceItem | null;
+}
 
-	useEffect(() => {
-		setLoading(true);
+export class QuizAccountSettings extends React.PureComponent<{}, IState> {
+	public static contextType = UserContext;
+	declare context: React.ContextType<typeof UserContext>;
 
-		allSettled([PointSourceModel.list(User!.account.id), AccountModel.read(User!.account.id)])
-			.then((results) => {
-				let failureCount = 0;
-				let pointSourceItems: PointSourceItem[] = [];
+	public readonly state: IState = {
+		loading: false,
+		processing: false,
+		failures: null,
+		pointSources: [],
+		frequency: null,
+		questionCount: null,
+		completedRewardSource: null,
+	};
 
-				for (const result of results) {
-					if (isRejectedResult(result)) {
-						failureCount++;
+	public async componentDidMount() {
+		this.setState({
+			loading: true,
+		});
 
-						continue;
-					}
-
-					if (isPointSourceArray(result.value.data)) {
-						pointSourceItems = result.value.data;
-
-						setPointSources(result.value.data);
-					}
-
-					if (isAccountModel(result.value.data)) {
-						console.log(result.value.data.completedRewardPointSourceId, 'source id')
-						console.log(result.value.data, 'sources')
-						setFrequency(result.value.data.quizFrequency);
-
-						setQuestionCount(result.value.data.questionCount);
-
-						const sourceId = result.value.data.completedRewardPointSourceId;
-						const source = pointSourceItems.find((source) => source.id.$oid === sourceId?.toString());
-						console.log(source, 'source')
-
-						if (source) {
-							setCompletedRewardSource(source);
-						}
-					}
-				}
-				if (failureCount > 0) {
-					toaster.error('Failed to load account settings data.');
-				}
-			}).catch(() => {
-				toaster.showUnhandledErrorMessage();
-
-				history.push('/');
-			}).finally(() => {
-				setLoading(false);
-			});
-	}, []);
-
-	const onSaveButtonClick = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		setIsProcessing(true);
-		setFailures(null);
+		let data: [
+			PointSourceItem[],
+			Account
+		];
 
 		try {
-			await AccountModel.update(User!.account.id, {
-				quizFrequency: frequency!,
-				completedRewardPointSourceId: completedRewardSource?.id.$oid,
-				questionCount: questionCount!,
-			}).then(() => {
-				toaster.success('Account settings updated.');
+			data = await allSettled([
+				PointSourceModel.list(this.context!.account.id),
+				AccountModel.read(this.context!.account.id),
+			]).then((allSettledResult) => {
+				const result = allSettledResult.map((result) => {
+					if (isRejectedResult(result)) {
+						throw new Error(result.reason);
+					} else {
+						return result.value.data;
+					}
+				});
+
+				return [result[0] as PointSourceItem[], result[1] as Account];
 			});
 		} catch (e) {
-			if (isValidationFailureError(e)) {
-				setFailures(e.context.failures);
-			} else {
-				toaster.error('Failed to update account settings.');
-			}
+			toaster.error("Failed to load account settings.");
+
+			history.push("/");
+
+			return;
 		}
 
-		setIsProcessing(false);
-	}, []);
+		const [pointSources, account] = data;
 
-	if (loading)
-		return <FrameLoadingSpinner />;
+		const frequency = account.quizFrequency;
+		const sourceId = account.completedRewardPointSourceId;
+		const completedRewardSource = pointSources.find((source) => source.id.$oid === sourceId?.toString()) ?? null;
+		const questionCount = account.questionCount;
 
+		this.setState({
+			loading: false,
+			pointSources,
+			frequency,
+			questionCount,
+			completedRewardSource,
+		});
+	}
 
-	return(
-		<section className="gm-page-wrapper">
-		<PageHeader title="Quiz - Account Settings" />
-			<form onSubmit={onSaveButtonClick}>
-				<ValidationAwareFormGroup labelFor="quiz-frequency" failures={failures}>
-					<label style={{ marginBottom: Spacing.Medium, display: 'block' }} htmlFor="quiz-frequency">Quiz Frequency</label>
+	public render() {
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
 
-					<Select<Frequency>
-						inputProps={{ id: 'quiz-frequency' }}
+		return (
+			<section className="gm-page-wrapper">
+				<PageHeader title="Quiz - Account Settings" />
+
+				<form className="account-settings-wrapper" onSubmit={this.onSaveButtonClick}>
+					<ValidationAwareFormGroup labelFor="quiz-frequency" failures={this.state.failures}>
+						<label htmlFor="quiz-frequency">
+							Quiz Frequency
+						</label>
+
+						<Select<Frequency>
+							inputProps={{ id: "quiz-frequency" }}
 							items={QuizFrequencyNames}
-							onItemSelect={setFrequency}
+							onItemSelect={this.onFrequencyChange}
 							filterable={false}
 							itemRenderer={renderFrequencyOption}
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 						>
-
 							<Button
-								style={{ width: '250px' }}
-								text={frequency ? ucwords(frequency) : 'Select quiz frequency'}
+								fill={true}
+								text={this.state.frequency ? ucwords(this.state.frequency) : "Select quiz frequency"}
 								rightIcon="double-caret-vertical"
 								placeholder="Select quiz frequency"
 							/>
-					</Select>
-				</ValidationAwareFormGroup>
+						</Select>
+					</ValidationAwareFormGroup>
 
-				<ValidationAwareFormGroup labelFor="question-count" failures={failures}>
-					<label style={{ marginBottom: Spacing.Medium, display: 'block' }} htmlFor="question-count">Question Count</label>
+					<ValidationAwareFormGroup labelFor="question-count" failures={this.state.failures}>
+						<label htmlFor="question-count">
+							Question Count
+						</label>
 
-					<InputGroup
-						style={{ maxWidth: '250px' }}
-						id="question-count"
-						type="number"
-						value={questionCount?.toString()}
-						placeholder="0"
-						onChange={(event: React.FormEvent<HTMLInputElement>) => {
-							setQuestionCount(parseInt(event.currentTarget.value));
-						}}
-					/>
-				</ValidationAwareFormGroup>
+						<InputGroup
+							fill={true}
+							id="question-count"
+							type="number"
+							value={this.state.questionCount?.toString()}
+							placeholder="0"
+							onChange={this.onQuestionCountChange}
+						/>
+					</ValidationAwareFormGroup>
 
-				<ValidationAwareFormGroup labelFor="quiz-reward-source" failures={failures}>
-					<label style={{ marginBottom: Spacing.Medium, display: 'block' }} htmlFor="quiz-reward-source">Quiz Reward Source</label>
+					<ValidationAwareFormGroup labelFor="quiz-reward-source" failures={this.state.failures}>
+						<label htmlFor="quiz-reward-source">
+							Quiz Reward Source
+						</label>
 
-					<Select<PointSourceItem>
-							inputProps={{ id: 'quiz-reward-source' }}
-							items={pointSources}
-							onItemSelect={setCompletedRewardSource}
+						<Select<PointSourceItem>
+							inputProps={{ id: "quiz-reward-source" }}
+							items={this.state.pointSources}
+							onItemSelect={this.onRewardSourceChange}
 							filterable={false}
 							itemRenderer={renderPointSourceOption}
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 						>
-
 							<Button
-								style={{ width: '250px' }}
-								text={completedRewardSource ? completedRewardSource.name : 'Select Quiz reward source'}
+								fill={true}
+								text={
+									this.state.completedRewardSource ? this.state.completedRewardSource.name : "Select Quiz reward source"
+								}
 								rightIcon="double-caret-vertical"
 							/>
-					</Select>
-				</ValidationAwareFormGroup>
+						</Select>
+					</ValidationAwareFormGroup>
 
+					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
+				</form>
+			</section>
+		);
+	}
 
-				<Button	loading={processing} type="submit" intent="primary" text="Save" />
-			</form>
-		</section>
-	)
+	private onSaveButtonClick = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
+		this.setState({
+			processing: true,
+			failures: null,
+		});
+
+		try {
+			await AccountModel.update(this.context!.account.id, {
+				quizFrequency: this.state.frequency!,
+				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid,
+				questionCount: this.state.questionCount!,
+			}).then(() => {
+				toaster.success("Account settings updated.");
+			});
+		} catch (e) {
+			if (isValidationFailureError(e)) {
+				this.setState({
+					failures: e.context.failures,
+				});
+			} else {
+				toaster.error("Failed to update account settings.");
+			}
+		}
+
+		this.setState({
+			processing: false,
+		});
+	};
+
+	private onQuestionCountChange = (event: React.FormEvent<HTMLInputElement>) => {
+		this.setState({
+			questionCount: parseInt(event.currentTarget.value),
+		});
+	};
+
+	private onRewardSourceChange = (source: PointSourceItem) => {
+		this.setState({
+			completedRewardSource: source,
+		});
+	};
+
+	private onFrequencyChange = (frequency: Frequency) => {
+		this.setState({
+			frequency,
+		});
+	};
 }
 
-
-
-const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate)
-		return null;
+const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, { handleClick, handleFocus, modifiers }) => {
+	if (!modifiers.matchesPredicate) return null;
 
 	return (
 		<MenuItem
@@ -203,18 +242,10 @@ const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick,
 	);
 };
 
-
-const renderPointSourceOption: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
+const renderPointSourceOption: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers }) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}
 
-	return (
-		<MenuItem
-			active={modifiers.active}
-			key={item.id.$oid}
-			text={ucwords(item.name)}
-			onClick={handleClick}
-		/>
-	);
+	return <MenuItem active={modifiers.active} key={item.id.$oid} text={ucwords(item.name)} onClick={handleClick} />;
 };

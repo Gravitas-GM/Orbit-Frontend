@@ -1,0 +1,10 @@
+@import './../../../../variables';
+
+.account-settings-wrapper {
+	max-width: 300px;
+
+	label {
+		margin-bottom: $spacing-medium;
+		display: block;
+	}
+}

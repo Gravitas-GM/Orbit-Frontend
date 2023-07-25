@@ -1,14 +1,14 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { AccountSettings } from '.';
+import { QuizAccountSettings } from '.';
 import { pointSourceItemsMock } from '../../../../mocks/PointSourceItem';
 import { Frequency } from '../../../../Api/Quiz/Models/Accounts';
 
 export default {
 	title: 'Quiz Account Settings',
-	component: AccountSettings,
+	component: QuizAccountSettings,
 };
 
-const Template: ComponentStory<typeof AccountSettings> = () => <AccountSettings />;
+const Template: ComponentStory<typeof QuizAccountSettings> = () => <QuizAccountSettings />;
 
 const Basic = Template.bind({});
 
@@ -25,17 +25,17 @@ Basic.parameters = {
 				questionCount: 10,
 				completedRewardPointSourceId: 2,
 			},
-			delay: 1500,
+			delay: 3200,
 		},
 		{
 			url: 'http://points.test.api.happyorbit.com/sources/account/0',
 			method: 'GET',
 			status: 200,
 			response: pointSourceItemsMock,
-			delay: 1500,
+			delay: 200,
 		},
 	],
-} as ComponentMeta<typeof AccountSettings>;
+} as ComponentMeta<typeof QuizAccountSettings>;
 
 const NoData = Template.bind({});
 
@@ -57,7 +57,7 @@ NoData.parameters = {
 			delay: 1500,
 		},
 	],
-} as ComponentMeta<typeof AccountSettings>;
+} as ComponentMeta<typeof QuizAccountSettings>;
 
 
 export { Basic, NoData };
