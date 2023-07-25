@@ -8,6 +8,10 @@
 	align-items: center;
 }
 
+.questions-container {
+	max-height: 260px;
+}
+
 .question {
 	margin-bottom: $spacing-large;
 }
@@ -34,7 +38,6 @@
 		font-size: 0.7rem;
 		margin-bottom: $spacing-medium;
 	}
-
 }
 
 .question-title {

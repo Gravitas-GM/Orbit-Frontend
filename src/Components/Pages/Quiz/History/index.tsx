@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { UserContext } from "../../../../Session";
 import { PageHeader } from "../../../PageHeader";
 import { Button, Classes, Dialog, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
@@ -14,6 +14,7 @@ import { NonIdealState } from "../../../NonIdealState";
 import { history } from "../../../../history";
 import { QuizResponses } from "./QuizResponses";
 import * as toaster from "../../../../Toaster";
+import { RenderHistoryItems } from "./RenderHistoryItems";
 
 interface IState {
 	loading: boolean;
@@ -92,14 +93,13 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			}
 
 			const submissionUsers = quizSubmissions.map((submission) => submission.userId.id);
-			const quizSubmissionUsers = users.filter((user) => submissionUsers.includes(user.id));
 
-			this.setState({
-				users: quizSubmissionUsers,
+			this.setState((state)=> ({
+				users: state.users.filter((user) => submissionUsers.includes(user.id)),
 				quizSubmissions,
 				filteredSubmissions: null,
 				loading: false,
-			});
+			}));
 		} else {
 			// here, since the user isn't an admin we aren't filtering other users' submissions
 			// assuming the submissions endpoint return only the current user's submissions.
@@ -241,41 +241,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		});
 	};
 }
-
-interface IRenderHistoryItemsProps {
-	items: QuizSubmission[];
-
-	handleClick: (index: number) => void;
-}
-
-const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items, handleClick }) => {
-	const sortedItems = useMemo(
-		() => items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
-		[items]
-	);
-
-	return (
-		<tbody>
-			{sortedItems.map((item, index) => (
-				<tr key={`${item.userId.id} ${item.timestamp}`}>
-					<td>{item.userId.name}</td>
-
-					<td>{item.correctCount}/{item.questions.length}</td>
-
-					<td>{(item.duration / 1000).toFixed(1)}s</td>
-
-					<td>{new Date(item.timestamp).toLocaleDateString()}</td>
-
-					<td>
-						<Button intent={Intent.PRIMARY} onClick={() => handleClick(index)}>
-							View Answers
-						</Button>
-					</td>
-				</tr>
-			))}
-		</tbody>
-	);
-};
 
 const renderUserOption: ItemRenderer<User> = (user, { handleClick, handleFocus, modifiers }) => {
 	if (!modifiers.matchesPredicate) return null;
