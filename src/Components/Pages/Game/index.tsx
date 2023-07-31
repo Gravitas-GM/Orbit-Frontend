@@ -210,7 +210,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let board: Board;
 
 		try {
-			board = await BoardModel.read(gameState.current_board.id).then(response => response.data);
+			board = await BoardModel.read(gameState.current_board.id).then(r => r.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 
@@ -225,7 +225,10 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		const currentPlayer = this.getCurrentPlayer(gameState.players);
 
 		this.setState({
-			board,
+			board: {
+				...board,
+				stages: board.stages.sort((a, b) => a.requiredPoints - b.requiredPoints),
+			},
 			gameState,
 			history,
 			currentPlayer,
