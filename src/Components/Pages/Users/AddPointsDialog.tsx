@@ -88,7 +88,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 					{this.state.showCustomSourceForm && (
 						<form>
-							<FormGroup label="Name">
+							<FormGroup label="Name" labelInfo="(required)">
 								<InputGroup
 									value={this.state.sourceName}
 									onChange={this.onSourceNameChange}
@@ -96,7 +96,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								/>
 							</FormGroup>
 
-							<FormGroup label="Point Value">
+							<FormGroup label="Point Value" labelInfo="(required)">
 								<NumericInput
 									min={0}
 									name="pointValue"
