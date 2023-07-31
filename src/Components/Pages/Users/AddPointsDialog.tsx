@@ -140,9 +140,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		showSourceForm: true,
 	});
 
-	private onPointValueChange = (pointValue: number) => this.setState({
-		pointValue,
-	});
+	private onPointValueChange = (pointValue: number) => {
+		if (isNaN(pointValue))
+			return;
+
+		this.setState({
+			pointValue,
+		})
+	};
 
 	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		sourceName: event.currentTarget.value,
