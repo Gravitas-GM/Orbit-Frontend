@@ -122,6 +122,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Submit"
 							onClick={this.onSubmitClick}
 							loading={this.props.processing}
+							disabled={this.state.sourceName.length === 0 || this.state.pointValue === 0}
 						/>
 					</div>
 				</div>
