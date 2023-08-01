@@ -88,7 +88,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 					{this.state.showCustomSourceForm && (
 						<form>
-							<FormGroup label="Name">
+							<FormGroup label="Name" labelInfo="(required)">
 								<InputGroup
 									value={this.state.sourceName}
 									onChange={this.onSourceNameChange}
@@ -96,7 +96,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								/>
 							</FormGroup>
 
-							<FormGroup label="Point Value">
+							<FormGroup label="Point Value" labelInfo="(required)">
 								<NumericInput
 									min={0}
 									name="pointValue"
@@ -122,6 +122,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Submit"
 							onClick={this.onSubmitClick}
 							loading={this.props.processing}
+							disabled={this.state.sourceName.length === 0 || this.state.pointValue === 0}
 						/>
 					</div>
 				</div>
@@ -139,9 +140,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		showSourceForm: true,
 	});
 
-	private onPointValueChange = (pointValue: number) => this.setState({
-		pointValue,
-	});
+	private onPointValueChange = (pointValue: number) => {
+		if (isNaN(pointValue))
+			return;
+
+		this.setState({
+			pointValue,
+		})
+	};
 
 	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		sourceName: event.currentTarget.value,
