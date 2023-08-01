@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Redirect} from 'react-router';
+import {isNotFoundError} from '../../../Api/errors';
 import {ApiError} from '../../../Api/errors/rocket';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
 import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
@@ -118,8 +119,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 						<LogHistoryCard
 							processing={this.state.loadingHistory}
 							history={this.state.history}
-							refresh={this.loadHistory}
-							loadMore={this.loadMoreHistory}
+							onLoadClick={this.loadHistory}
 						/>
 
 						<TopRankedPlayersCard players={this.state.gameState!.players} />
@@ -137,50 +137,46 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private async fetchHistory() {
+	private loadHistory = async () => {
+		if (this.state.loadingHistory)
+			return;
+
+		this.setState({
+			loadingHistory: true
+		});
+
+		const items = await this.fetchNextHistory();
+
+		if (items === null || items.length === 0) {
+			this.setState({
+				loadingHistory: false,
+			});
+
+			return;
+		}
+
+		this.setState(({history}) => ({
+			loadingHistory: false,
+			history: [...(history ?? []), ...items],
+		}));
+	};
+
+	private async fetchNextHistory() {
+		const accountId = this.context!.account.id;
+
 		try {
-			return await HistoryModel.get(this.context!.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+			if (this.state.history && this.state.history.length > 0) {
+				const lastItem = this.state.history.at(-1)!;
+				return await HistoryModel.getBefore(accountId, lastItem.id).then(r => r.data);
+			} else
+				return await HistoryModel.get(accountId).then(r => r.data);
+		} catch (error) {
+			if (!isNotFoundError(error))
+				toaster.showUnhandledErrorMessage();
 
 			return null;
 		}
 	}
-
-	private loadHistory = async () => {
-		this.setState({loadingHistory: true});
-
-		const history = await this.fetchHistory();
-
-		this.setState({history, loadingHistory: false});
-	};
-
-	private loadMoreHistory = async () => {
-		let items: HistoryItem[] = [];
-
-		this.setState({
-			loadingHistory: true,
-		});
-
-		try {
-			items = await HistoryModel.getBefore(this.context!.id, this.state.history!.at(-1)!.id).then(
-				response => response.data,
-			);
-
-			this.setState(({history}) => {
-				if (history !== null)
-					return {history: [...history, ...items], loadingHistory: false};
-				else
-					return {history: items, loadingHistory: false};
-			});
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				loadingHistory: false,
-			});
-		}
-	};
 
 	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
 		return players.find(player => player.hub_id === this.context!.id) || null;
@@ -220,7 +216,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 		}
 
-		const history = await this.fetchHistory();
+		const history = await this.fetchNextHistory();
 
 		const currentPlayer = this.getCurrentPlayer(gameState.players);
 

@@ -11,15 +11,14 @@ import './LogHistoryCard.scss';
 interface IProps {
 	history: HistoryItem[] | null;
 	processing: boolean;
-	refresh: () => void;
-	loadMore: () => void;
+	onLoadClick: () => void;
 }
 
 type DateGroup = {
 	[key: string]: HistoryItem[];
 };
 
-export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, loadMore}) => {
+export const LogHistoryCard: React.FC<IProps> = ({history, processing, onLoadClick}) => {
 	if (history === null || history.length === 0) {
 		return (
 			<GameCard title="Log" icon="history">
@@ -29,7 +28,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 						history !== null ? 'There isn\'t any history yet.' : 'There was an error getting history data.'
 					)}
 					action={(
-						<Button icon="refresh" text="Refresh history" onClick={refresh} loading={processing} />
+						<Button icon="refresh" text="Refresh history" onClick={onLoadClick} loading={processing} />
 					)}
 				/>
 			</GameCard>
@@ -71,7 +70,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 				})}
 
 				<div className="button-wrapper">
-					<Button onClick={loadMore} loading={processing}>
+					<Button onClick={onLoadClick} loading={processing}>
 						Load More...
 					</Button>
 				</div>
