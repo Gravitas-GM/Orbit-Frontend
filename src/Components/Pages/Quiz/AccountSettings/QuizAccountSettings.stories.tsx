@@ -2,6 +2,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { QuizAccountSettings } from '.';
 import { pointSourceItemsMock } from '../../../../mocks/PointSourceItem';
 import { Frequency } from '../../../../Api/Quiz/Models/Accounts';
+import { ApiError, ValidationFailures, isValidationFailureError } from '../../../../Api/errors/symfony';
 
 export default {
 	title: 'Quiz Account Settings',
@@ -11,7 +12,6 @@ export default {
 const Template: ComponentStory<typeof QuizAccountSettings> = () => <QuizAccountSettings />;
 
 const Basic = Template.bind({});
-
 
 Basic.parameters = {
 	mockData: [
@@ -34,11 +34,17 @@ Basic.parameters = {
 			response: pointSourceItemsMock,
 			delay: 200,
 		},
+		{
+			url: 'http://quiz.test.api.happyorbit.com/settings/0',
+			method: 'PATCH',
+			status: 200,
+			response: [],
+			delay: 1500,
+		},
 	],
 } as ComponentMeta<typeof QuizAccountSettings>;
 
 const NoData = Template.bind({});
-
 
 NoData.parameters = {
 	mockData: [
@@ -46,7 +52,7 @@ NoData.parameters = {
 			url: 'http://quiz.test.api.happyorbit.com/settings/0',
 			method: 'GET',
 			status: 200,
-			response: {},
+			response: [],
 			delay: 1500,
 		},
 		{
@@ -56,8 +62,35 @@ NoData.parameters = {
 			response: pointSourceItemsMock,
 			delay: 1500,
 		},
+		{
+			url: 'http://quiz.test.api.happyorbit.com/settings/0',
+			method: 'PATCH',
+			status: 200,
+			response: [],
+			delay: 1500,
+		},
 	],
 } as ComponentMeta<typeof QuizAccountSettings>;
 
+const ServerError = Template.bind({});
 
-export { Basic, NoData };
+ServerError.parameters = {
+	mockData: [
+		{
+			url: 'http://quiz.test.api.happyorbit.com/settings/0',
+			method: 'GET',
+			status: 500,
+			response: [],
+			delay: 1500,
+		},
+		{
+			url: 'http://points.test.api.happyorbit.com/sources/account/0',
+			method: 'GET',
+			status: 500,
+			response: [],
+			delay: 1500,
+		},
+	],
+} as ComponentMeta<typeof QuizAccountSettings>;
+
+export { Basic, NoData, ServerError };
