@@ -16,9 +16,11 @@ import {
 	UpdateResultType,
 } from '../../../Api/Game-State/Models/Games';
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
+import {isGranted, Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {IsGranted} from '../../Security/IsGranted';
 import {replace} from '../../Utility/array';
 import {GameAnnouncement} from './Board/GameAnnouncement';
 import {GameBoard} from './Board/GameBoard';
@@ -126,11 +128,13 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 						<PlayerStatsCard player={this.state.currentPlayer} />
 
-						<AdminControlsCard
-							board={this.state.board!}
-							goToNextBoard={this.goToNextBoard}
-							startNewGame={this.startNewGame}
-						/>
+						<IsGranted match={Permission.ADMIN}>
+							<AdminControlsCard
+								board={this.state.board!}
+								goToNextBoard={this.goToNextBoard}
+								startNewGame={this.startNewGame}
+							/>
+						</IsGranted>
 					</Sidebar>
 				</div>
 			</div>
