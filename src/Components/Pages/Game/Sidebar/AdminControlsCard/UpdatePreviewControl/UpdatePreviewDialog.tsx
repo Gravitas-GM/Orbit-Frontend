@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {Dialog, Button, Intent, HTMLTable} from '@blueprintjs/core';
 import {NonIdealState} from '../../../../../NonIdealState';
 import {useContext, useState, useEffect} from 'react';
@@ -19,7 +20,6 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board,
 	const User = useContext(UserContext);
 
 	const [updateData, setUpdateData] = useState<PlayerUpdate[] | null>(null);
-
 	const [processing, setIsProcessing] = useState(false);
 
 	useEffect(() => {
