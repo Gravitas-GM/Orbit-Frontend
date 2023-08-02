@@ -8,6 +8,7 @@ import {
 	GamesModel,
 	GameStartPayload,
 	GameState,
+	getNewPointsFromPlayerUpdate,
 	isGameStartError,
 	NextBoardResult,
 	PlayerCreated,
@@ -30,29 +31,13 @@ import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
-export function getPlayerStage(player?: PlayerAnnouncement | null): Stage | null {
-	switch (player?.type) {
+export function getPlayerStage(player: PlayerAnnouncement): Stage {
+	switch (player.type) {
 		case UpdateResultType.MOVED:
 			return player.new_stage.stage;
 
 		case UpdateResultType.CREATED:
-			return player.initial_stage?.stage;
-
-		default:
-			return null;
-	}
-}
-
-export function getPlayerPoints(player?: PlayerAnnouncement | null): number {
-	switch (player?.type) {
-		case UpdateResultType.MOVED:
-			return player.new_point_total;
-
-		case UpdateResultType.CREATED:
-			return player.player.current_points;
-
-		default:
-			return 0;
+			return player.initial_stage.stage;
 	}
 }
 
@@ -61,7 +46,7 @@ interface IState {
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
 	loadingHistory: boolean;
-	playerAnnouncements: PlayerAnnouncement[];
+	playerAnnouncements: PlayerMovementSet;
 	movingPlayer: PlayerAnnouncement | null;
 	currentPlayer: PlayerState | null;
 	loading: boolean;
@@ -76,7 +61,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		board: null,
 		gameState: null,
-		playerAnnouncements: [],
+		playerAnnouncements: PlayerMovementSet.empty(),
 		history: [],
 		loadingHistory: false,
 		movingPlayer: null,
@@ -102,16 +87,16 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
 
 					<div style={{display: 'flex', justifyContent: 'center', width: 'inherit', position: 'absolute'}}>
-						<GameAnnouncement playerAnnouncement={this.state.movingPlayer} />
+						<GameAnnouncement player={this.state.movingPlayer} />
 					</div>
 				</div>
 
 				<div>
 					<Sidebar
 						processing={this.state.processing}
-						buttonLabel={this.state.playerAnnouncements.length === 0 ? 'Start' : 'Next'}
+						buttonLabel={this.state.playerAnnouncements.isEmpty() ? 'Start' : 'Next'}
 						onButtonClick={(
-							this.state.playerAnnouncements.length === 0
+							this.state.playerAnnouncements.isEmpty()
 								? this.onStartPlayerUpdateClick
 								: this.onNextPlayerClick
 						)}
@@ -372,19 +357,16 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			toaster.success('All players are moved.');
 
 		this.setState({
-			playerAnnouncements: playerAnnouncements.sort((a, b) => getPlayerPoints(b) - getPlayerPoints(a)),
+			playerAnnouncements: new PlayerMovementSet(playerAnnouncements),
 			processing: false,
 		});
 	};
 
 	private onNextPlayerClick = () => {
-		let movingPlayer = this.state.playerAnnouncements.pop() ?? null;
+		let movingPlayer = this.state.playerAnnouncements.next();
 
-		if (!movingPlayer) {
-			toaster.success('All players are moved.');
-
+		if (!movingPlayer)
 			return;
-		}
 
 		const movingPlayerStage = getPlayerStage(movingPlayer);
 
@@ -399,7 +381,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let newPlayerState: PlayerState = {
 			hub_id: movingPlayer.player.hub_id,
 			user_name: movingPlayer.player.user_name,
-			current_points: getPlayerPoints(movingPlayer),
+			current_points: getNewPointsFromPlayerUpdate(movingPlayer),
 			current_stage_name: movingPlayerStage.name,
 			current_stage_id: movingPlayerStage.id,
 		};
@@ -411,6 +393,9 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		else
 			players = [...players, newPlayerState];
 
+		if (this.state.playerAnnouncements.isEmpty())
+			toaster.success('All players have been moved.');
+
 		this.setState(state => ({
 			movingPlayer,
 			history: state.history ? [...state.history, movingPlayer!.history_item] : [movingPlayer!.history_item],
@@ -420,4 +405,31 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			},
 		}));
 	};
+}
+
+class PlayerMovementSet {
+	protected static readonly EMPTY = new PlayerMovementSet([]);
+
+	protected readonly players: PlayerAnnouncement[];
+
+	public constructor(players: PlayerAnnouncement[]) {
+		this.players = [...players].sort((a, b) => {
+			const aPoints = getNewPointsFromPlayerUpdate(a);
+			const bPoints = getNewPointsFromPlayerUpdate(b);
+
+			return aPoints - bPoints;
+		});
+	}
+
+	public static empty(): PlayerMovementSet {
+		return PlayerMovementSet.EMPTY;
+	}
+
+	public next(): PlayerAnnouncement | null {
+		return this.players.pop() ?? null;
+	}
+
+	public isEmpty(): boolean {
+		return this.players.length === 0;
+	}
 }
