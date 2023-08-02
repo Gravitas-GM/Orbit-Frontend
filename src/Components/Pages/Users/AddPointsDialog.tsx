@@ -1,8 +1,9 @@
 import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {ItemRenderer, MultiSelect2 as MultiSelect} from '@blueprintjs/select';
+import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
+import {MultiSelect} from '../../Select/MultiSelect';
 import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
 import * as toaster from '../../../Toaster';
@@ -40,9 +41,15 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points">
+			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points" canOutsideClickClose={false}>
 				<div className={Classes.DIALOG_BODY}>
-					<div style={{display: 'flex', justifyContent: 'center', paddingBottom: 15}}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							paddingBottom: 15,
+						}}
+					>
 						<Button
 							intent={Intent.SUCCESS}
 							text="Preset Source"
@@ -76,11 +83,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 									onRemove={this.onRemoveSourceItem}
 									tagRenderer={this.tagItemRenderer}
 									itemRenderer={this.selectItemRenderer}
-									fill={true}
-									popoverProps={{
-										matchTargetWidth: true,
-										minimal: true,
-									}}
+									onClear={this.onSelectedSourcesClear}
 								/>
 							</FormGroup>
 						</form>
@@ -155,7 +158,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 		this.setState({
 			pointValue,
-		})
+		});
 	};
 
 	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
@@ -177,10 +180,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			}
 
 			const dialogPointItems = this.state.selectedSources.map((source: PointSourceItem) => (
-				{
-					sourceName: source.name,
-					pointValue: source.point_value,
-				}),
+					{
+						sourceName: source.name,
+						pointValue: source.point_value,
+					}
+				),
 			);
 
 			this.props.onSubmit(dialogPointItems);
@@ -203,7 +207,13 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		]);
 	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (
+		item,
+		{
+			handleClick,
+			modifiers,
+		},
+	) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}
@@ -235,8 +245,12 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 	private onRemoveSourceItem = (item: PointSourceItem) => {
 		this.setState(state => {
 			return {
-				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item)),
+				selectedSources: state.selectedSources.filter((filterItem) => filterItem !== item),
 			};
 		});
 	};
+
+	private onSelectedSourcesClear = () => this.setState({
+		selectedSources: [],
+	});
 }
