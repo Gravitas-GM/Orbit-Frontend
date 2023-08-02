@@ -57,7 +57,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			<Dialog onClose={this.props.onClose} isOpen={this.props.isOpen} title="Claim Points">
 				<div className={Classes.DIALOG_BODY}>
 					{this.state.loading ? <FrameLoadingSpinner /> : (
-						<form>
+						<form onSubmit={this.onSubmit}>
 							<FormGroup
 								label="Select sources to claim points for"
 								labelFor="selectedSources"
@@ -131,7 +131,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		selectedSources: [],
 	});
 
-	private onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
+	private onSubmit = async (event: React.SyntheticEvent) => {
 		event.preventDefault();
 
 		if (this.state.processing || this.state.selectedSources.length === 0)

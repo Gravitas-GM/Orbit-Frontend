@@ -60,7 +60,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					</div>
 
 					{this.state.showSourceForm && (
-						<form>
+						<form onSubmit={this.onSubmit}>
 							<FormGroup
 								label="Source"
 							>
@@ -87,7 +87,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					)}
 
 					{this.state.showCustomSourceForm && (
-						<form>
+						<form onSubmit={this.onSubmit}>
 							<FormGroup label="Name" labelInfo="(required)">
 								<InputGroup
 									value={this.state.sourceName}
@@ -120,7 +120,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 						<Button
 							intent={Intent.PRIMARY}
 							text="Submit"
-							onClick={this.onSubmitClick}
+							onClick={this.onSubmit}
 							loading={this.props.processing}
 							disabled={!this.isSubmitEnabled()}
 						/>
@@ -166,7 +166,9 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		description: event.currentTarget.value,
 	});
 
-	private onSubmitClick = () => {
+	private onSubmit = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
 		if (this.state.showSourceForm) {
 			if (this.state.selectedSources.length === 0) {
 				toaster.error('Please select a source.');
