@@ -59,6 +59,7 @@ export const NavHeader: React.FC<IProps> = props => {
 											minimal={true}
 											rightIcon="caret-down"
 										/>
+
 										<Menu>
 											<MenuItem
 												icon="plus"
@@ -82,24 +83,26 @@ export const NavHeader: React.FC<IProps> = props => {
 												/>
 											</Link>
 
-											<Link to="/catalog" className="plain-link">
-												<MenuItem
-													icon="layers"
-													text="Game Catalog"
-													tagName="span"
-												/>
-											</Link>
-
-											<MenuDivider />
-
 											{isGranted(Permission.ADMIN) && (
-												<Link to="/sources" className="plain-link">
-													<MenuItem
-														icon="bank-account"
-														text="Sources"
-														tagName="span"
-													/>
-												</Link>
+												<>
+													<MenuDivider />
+
+													<Link to="/catalog" className="plain-link">
+														<MenuItem
+															icon="layers"
+															text="Game Catalog"
+															tagName="span"
+														/>
+													</Link>
+
+													<Link to="/sources" className="plain-link">
+														<MenuItem
+															icon="bank-account"
+															text="Sources"
+															tagName="span"
+														/>
+													</Link>
+												</>
 											)}
 										</Menu>
 									</Popover>

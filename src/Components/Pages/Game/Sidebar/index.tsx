@@ -12,8 +12,8 @@ interface IProps {
 
 export const Sidebar: React.FC<IProps> = props => (
 	<aside className="gm-sidebar">
-		<SimpleBar className="gameboard-sidebar">
-			<div>{props.children}</div>
+		<SimpleBar className="sidebar-simplebar">
+			{props.children}
 		</SimpleBar>
 
 		<Button

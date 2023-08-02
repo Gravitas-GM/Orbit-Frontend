@@ -163,7 +163,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			items = await HistoryModel.getAfter(this.context!.id, this.state.history!.at(-1)!.id).then(
+			items = await HistoryModel.getBefore(this.context!.id, this.state.history!.at(-1)!.id).then(
 				response => response.data,
 			);
 
