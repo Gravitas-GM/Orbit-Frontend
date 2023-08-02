@@ -122,12 +122,21 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 							text="Submit"
 							onClick={this.onSubmitClick}
 							loading={this.props.processing}
-							disabled={this.state.sourceName.length === 0 || this.state.pointValue === 0}
+							disabled={!this.isSubmitEnabled()}
 						/>
 					</div>
 				</div>
 			</Dialog>
 		);
+	}
+
+	private isSubmitEnabled() {
+		if (this.state.showSourceForm)
+			return this.state.selectedSources.length > 0;
+		else if (this.state.showCustomSourceForm)
+			return this.state.sourceName.length > 0 && this.state.pointValue > 0;
+
+		return false;
 	}
 
 	private onShowCustomSourceFormClick = () => this.setState({
