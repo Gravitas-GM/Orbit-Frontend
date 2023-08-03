@@ -1,8 +1,13 @@
 import * as React from 'react';
-import {Dialog, Button, Intent, HTMLTable} from '@blueprintjs/core';
+import {useContext, useEffect, useState} from 'react';
+import {Button, Dialog, HTMLTable, Intent} from '@blueprintjs/core';
 import {NonIdealState} from '../../../../../NonIdealState';
-import {useContext, useState, useEffect} from 'react';
-import {PlayerUpdate, GamesModel, UpdateResultType} from '../../../../../../Api/Game-State/Models/Games';
+import {
+	GamesModel,
+	getNewPointsFromPlayerUpdate,
+	PlayerUpdate,
+	UpdateResultType
+} from '../../../../../../Api/Game-State/Models/Games';
 import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
 import {UserContext} from '../../../../../../Session';
 import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
@@ -39,7 +44,7 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board,
 		return (
 			<Dialog title="Update Preview" icon="control" isOpen={true} onClose={onClose} className="gm-dialog-large">
 				<div style={{margin: Spacing.Large}}>
-					<FrameLoadingSpinner />
+					<FrameLoadingSpinner/>
 				</div>
 			</Dialog>
 		);
@@ -66,24 +71,24 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board,
 				<div className="table-container">
 					<HTMLTable striped>
 						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Status</th>
-								<th>Current Points</th>
-								<th>Current Stage</th>
-								<th>New Points</th>
-								<th>New Stage</th>
-							</tr>
+						<tr>
+							<th>Name</th>
+							<th>Status</th>
+							<th>Current Points</th>
+							<th>Current Stage</th>
+							<th>New Points</th>
+							<th>New Stage</th>
+						</tr>
 						</thead>
 
 						<tbody>
-							{updateData.map(
-								update => <PreviewRow
-									board={board}
-									update={update}
-									key={update.player.hub_id}
-								/>,
-							)}
+						{updateData.map(
+							update => <PreviewRow
+								board={board}
+								update={update}
+								key={update.player.hub_id}
+							/>,
+						)}
 						</tbody>
 					</HTMLTable>
 				</div>
@@ -94,38 +99,14 @@ export const UpdatePreviewDialog: React.FC<IUpdatePreviewDialogProps> = ({board,
 
 function sortUpdateData(data: PlayerUpdate[]) {
 	const deletedItems = data.filter(item => item.type === UpdateResultType.DELETED);
-	const otherItems = data.filter(item => item.type !== UpdateResultType.DELETED);
+	const otherItems = data
+		.filter(item => item.type !== UpdateResultType.DELETED)
+		.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
+			const a = getNewPointsFromPlayerUpdate(playerA);
+			const b = getNewPointsFromPlayerUpdate(playerB);
 
-	otherItems.sort((playerA: PlayerUpdate, playerB: PlayerUpdate) => {
-		let playerAPoints;
-		let playerBPoints;
-
-		switch (playerA.type) {
-			case UpdateResultType.CHANGED:
-				playerAPoints = playerA.new_point_total;
-				break;
-			case UpdateResultType.MOVED:
-				playerAPoints = playerA.new_point_total;
-				break;
-			default:
-				playerAPoints = 0;
-				break;
-		}
-
-		switch (playerB.type) {
-			case UpdateResultType.CHANGED:
-				playerBPoints = playerB.new_point_total;
-				break;
-			case UpdateResultType.MOVED:
-				playerBPoints = playerB.new_point_total;
-				break;
-			default:
-				playerBPoints = 0;
-				break;
-		}
-
-		return playerAPoints - playerBPoints;
-	});
+			return b - a;
+		});
 
 	return [...otherItems, ...deletedItems];
 }
