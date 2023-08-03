@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {GameStartPayload} from '../../../../../Api/Game-State/Models/Games';
 import {GameCard} from '../GameCard/GameCard';
 import {Board} from '../../../../../Api/Game-Catalog/Models/Boards';

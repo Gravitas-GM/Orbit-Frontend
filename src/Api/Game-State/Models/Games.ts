@@ -1,6 +1,6 @@
-import {gameStateClient, Id, pointTrackingClient} from '../..';
-import { Stage } from '../../Game-Catalog/Models/Stages';
-import {denormalizeHistoryItem, HistoryItem } from './History';
+import {gameStateClient, Id} from '../..';
+import {Stage} from '../../Game-Catalog/Models/Stages';
+import {denormalizeHistoryItem, HistoryItem} from './History';
 
 export interface GamesEndpoints {
 	'/games/accounts/:account': {
@@ -170,5 +170,19 @@ export class GamesModel {
 }
 
 export function isGameStartError(value: any): value is GameNotFoundResponse {
-    return typeof value === 'object' && typeof value.error !== 'undefined';
+	return typeof value === 'object' && typeof value.error !== 'undefined';
+}
+
+export function getNewPointsFromPlayerUpdate(update: PlayerUpdate): number {
+	switch (update.type) {
+		case UpdateResultType.CHANGED:
+		case UpdateResultType.MOVED:
+			return update.new_point_total;
+
+		case UpdateResultType.CREATED:
+			return update.player.current_points;
+
+		case UpdateResultType.DELETED:
+			return 0;
+	}
 }

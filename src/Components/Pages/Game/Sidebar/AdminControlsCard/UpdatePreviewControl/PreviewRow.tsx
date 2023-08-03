@@ -1,13 +1,14 @@
 import {
-	PlayerUpdate,
-	UpdateResultType,
-	PlayerCreated,
 	PlayerChanged,
+	PlayerCreated,
 	PlayerDeleted,
 	PlayerMoved,
+	PlayerUpdate,
+	UpdateResultType,
 } from '../../../../../../Api/Game-State/Models/Games';
 import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
 import {formatNumber, ucwords} from '../../../../../Utility/string';
+import * as React from 'react';
 
 interface IProps {
 	board: Board;
@@ -39,10 +40,10 @@ const CreatedPlayerRow: React.FC<TypedRowProps<PlayerCreated>> = ({board, update
 	<tr>
 		<td>{ucwords(update.player.user_name)}</td>
 		<td>{ucwords(update.type)}</td>
+		<td>&mdash;</td>
+		<td>&mdash;</td>
 		<td>{formatNumber(update.player.current_points)}</td>
 		<td>{ucwords(board.stages[update.player.current_stage_index].name)}</td>
-		<td>&mdash;</td>
-		<td>&mdash;</td>
 	</tr>
 );
 
