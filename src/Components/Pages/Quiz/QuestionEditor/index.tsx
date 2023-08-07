@@ -9,6 +9,7 @@ import { ValidationFailures, isValidationFailureError } from "../../../../Api/er
 import * as toaster from "../../../../Toaster";
 import { history } from "../../../../history";
 import { AnchorButton, Callout, Intent } from "@blueprintjs/core";
+import "./QuestionEditor.scss";
 
 interface IState {
 	loading: boolean;
@@ -22,6 +23,7 @@ interface IState {
 interface IProps {
 	question?: string;
 }
+
 export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<IProps>, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
@@ -55,14 +57,17 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 						intent={Intent.WARNING}
 						icon="warning-sign"
 						title="No tags found"
+						className="no-tags-callout-wrapper"
 					>
-						Please add some tags before creating questions.
-
-						<AnchorButton
-							href="/quiz/tags/new"
-							text="Add Tag"
-							intent={Intent.PRIMARY}
-						/>
+						<div className="no-tags-callout">
+							Please add some tags before creating questions.
+							<AnchorButton
+								small={true}
+								href="/quiz/tags/new"
+								text="Add Tag"
+								intent={Intent.PRIMARY}
+							/>
+						</div>
 					</Callout>
 				}
 

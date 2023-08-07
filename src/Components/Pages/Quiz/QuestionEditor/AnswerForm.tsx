@@ -38,10 +38,18 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		answers: [],
 		tag: undefined,
-		kind: undefined,
-		prompt: undefined,
+		kind: this.props.question?.kind ?? undefined,
+		prompt: this.props.question?.prompt ?? undefined,
 		question: this.props.question ?? null,
 	};
+
+	public componentDidMount(): void {
+		if (this.props.question) {
+			this.setState({
+				tag: this.props.tags.find(tag => tag.id === this.props.question?.tagId),
+			});
+		}
+	}
 
 	public render() {
 		if (this.props.tags.length === 0 || this.props.processing)
@@ -61,6 +69,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								name="prompt"
 								type="text"
 								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
+								value={this.state.prompt}
 								large={true}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ prompt: e.target.value })}
 							/>
@@ -87,7 +96,6 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 										text={this.state.kind ? ucwords(this.state.kind) : "Select question kind"}
 										rightIcon="double-caret-vertical"
 										placeholder="Select question kind"
-										disabled={this.state.question !== null}
 									/>
 								</Select>
 							</ValidationAwareFormGroup>
@@ -100,7 +108,6 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 							<ValidationAwareFormGroup labelFor="question_tag" failures={this.props.validationFailures}>
 								<Select<QuestionTag>
-									disabled={this.state.question !== null}
 									inputProps={{ name: "question_tag", id: "question_tag" }}
 									items={this.props.tags}
 									onItemSelect={this.selectTag}
@@ -113,7 +120,6 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 										text={this.state.tag ? ucwords(this.state.tag.label) : "Select question tag"}
 										rightIcon="double-caret-vertical"
 										placeholder="Select question tag"
-										disabled={this.state.question !== null}
 									/>
 								</Select>
 							</ValidationAwareFormGroup>
@@ -125,6 +131,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 				{this.state.kind === QuestionKind.Boolean && this.state.tag && (
 					<BooleanQuestion
+						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}
@@ -136,6 +143,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 				{this.state.kind === QuestionKind.FreeText && this.state.tag && (
 					<FreeTextQuestion
+						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}
@@ -147,6 +155,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 				{this.state.kind === QuestionKind.MultipleChoice && this.state.tag && (
 					<MultipleChoiceQuestion
+						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}

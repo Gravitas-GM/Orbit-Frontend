@@ -5,9 +5,10 @@ import { ValidationFailures } from "../../../../../Api/errors/symfony";
 import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
 import { Spacing } from "../../../../../Styles/variables";
 import * as toaster from "../../../../../Toaster";
+import "../AnswerForm.scss";
 
 interface IProps {
-	question?: Question;
+	question: Question | null;
 	prompt?: string;
 	tagId: number;
 	accountId: number;
@@ -82,7 +83,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 
 	return (
 		<div>
-			<H3>Multipe Choice Question</H3>
+			<H3>Multiple Choice</H3>
 
 			{choices.map((option, index) => {
 				return (
@@ -122,7 +123,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 
 			<Button style={{ marginTop: Spacing.Medium }} text="Add Answer" icon="plus" onClick={onChoiceAdd} />
 
-			<hr className="option-form-separator" />
+			<hr className="answer-form-separator" />
 
 			<Button
 				loading={props.processing}

@@ -3,9 +3,10 @@ import { Button, H3, InputGroup, Intent, Radio } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";
 import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
+import "../AnswerForm.scss";
 
 interface IProps {
-	question?: Question;
+	question: Question | null;
 	prompt?: string;
 	tagId: number;
 	accountId: number;
@@ -44,6 +45,14 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 		}
 	}, []);
 
+	const onChangeBooleanLabel = React.useCallback((event: React.FormEvent<HTMLInputElement>) => {
+		const target = event.target as HTMLInputElement;
+
+		const index = target.id === "boolean-label-0" ? 0 : 1;
+
+		setBooleanLabel(index, event.currentTarget.value);
+	}, [trueLabel, falseLabel]);
+
 	const onClickSave = React.useCallback(() => {
 		const questionData = {
 			accountId: props.accountId,
@@ -60,7 +69,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 
 	return (
 		<div>
-			<H3>Boolean Labels</H3>
+			<H3>Boolean</H3>
 
 			{options.map((option, index) => (
 				<div key={option} className="boolean-container">
@@ -71,11 +80,10 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 								id={`boolean-label-${index}`}
 								type="text"
 								placeholder={option}
+								value={(index === 0 ? trueLabel : falseLabel) ?? ""}
 								large={true}
 								style={{ width: "100%" }}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-									setBooleanLabel(index, e.target.value);
-								}}
+								onChange={onChangeBooleanLabel}
 							/>
 						</ValidationAwareFormGroup>
 
