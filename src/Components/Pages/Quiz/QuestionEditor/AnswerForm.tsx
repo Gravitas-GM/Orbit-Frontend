@@ -1,302 +1,205 @@
-import { H3, InputGroup, Button, Icon, Radio, Intent } from "@blueprintjs/core";
 import React from "react";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../Api/Quiz/Models/Questions";
-import { UserContext } from "../../../../Session";
+import { InputGroup, Button, MenuItem } from "@blueprintjs/core";
+import { QuestionKind, Question, QuestionCreatePayload } from "../../../../Api/Quiz/Models/Questions";
 import { Spacing } from "../../../../Styles/variables";
 import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../Api/errors/symfony";
+import { ItemRenderer, Select } from "@blueprintjs/select";
+import { ucwords } from "../../../Utility/string";
+import { BooleanQuestion } from "./QuizQuestions/BooleanQuestion";
+import { UserContext } from "../../../../Session";
+import "./AnswerForm.scss";
+import { FreeTextQuestion } from "./QuizQuestions/FreeTextQuestion";
+import { MultipleChoiceQuestion } from "./QuizQuestions/MultipleChoiceQuestion";
 
-interface IAnswerFormProps {
-	prompt?: string;
+const QuestionKindNames = Object.values(QuestionKind);
+
+interface IProps {
+	question: Question | null;
+	tags: QuestionTag[];
+	loading: boolean;
+	validationFailures: ValidationFailures | null;
+	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+}
+
+interface IState {
+	question: Question | null;
 	kind?: QuestionKind;
 	tag?: QuestionTag;
+	prompt?: string;
 	answers: string[];
-	answerIndex?: number;
-	failures: ValidationFailures | null;
-	addAnswer: () => void;
-	removeAnswer: (index: number) => void;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<Question | undefined>;
 }
 
-interface IAnswerFormState {
-	currentKind: QuestionKind | undefined;
-	currentPrompt: string | undefined;
-	currentTag: QuestionTag | undefined;
-	currentAnswers: string[];
-	currentChoices: string[];
-	currentAnswerIndex: number | undefined;
-	currentAnswer: boolean | undefined;
-	currentTrueLabel: string | undefined;
-	currentFalseLabel: string | undefined;
-	validationFailures: ValidationFailures | null;
-	loading: boolean;
-}
-
-export class AnswerForm extends React.PureComponent<IAnswerFormProps, IAnswerFormState> {
-	public state: Readonly<IAnswerFormState> = {
-		currentKind: this.props.kind,
-		currentPrompt: this.props.prompt,
-		currentTag: this.props.tag,
-		currentAnswers: this.props.answers,
-		currentChoices: this.props.answers,
-		currentAnswerIndex: this.props.answerIndex,
-		currentAnswer: undefined,
-		currentTrueLabel: undefined,
-		currentFalseLabel: undefined,
-		validationFailures: this.props.failures,
-		loading: false,
-	};
-
-	public componentDidUpdate(prevProps: Readonly<IAnswerFormProps>): void {
-		if (prevProps.kind !== this.props.kind)
-			this.setState({ currentKind: this.props.kind });
-		if (prevProps.prompt !== this.props.prompt)
-			this.setState({ currentPrompt: this.props.prompt });
-		if (prevProps.tag !== this.props.tag)
-			this.setState({ currentTag: this.props.tag });
-		if (prevProps.answers !== this.props.answers)
-			this.setState({ currentAnswers: this.props.answers });
-		if (prevProps.answerIndex !== this.props.answerIndex)
-			this.setState({ currentAnswerIndex: this.props.answerIndex });
-		if (prevProps.failures !== this.props.failures)
-			this.setState({ validationFailures: this.props.failures });
-		if (prevProps.answers !== this.props.answers)
-			this.setState({ currentChoices: this.props.answers });
-	};
-
+export class AnswerForm extends React.PureComponent<IProps, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
+	public state: Readonly<IState> = {
+		answers: [],
+		tag: undefined,
+		kind: undefined,
+		prompt: undefined,
+		question: this.props.question ?? null,
+	};
+
+
 	public render() {
-		if (!this.props.kind || !this.props.tag)
-			return null;
-
 		return (
-			<>
-				{this.props.kind === QuestionKind.FreeText && (
+			<form style={{ marginTop: Spacing.XLarge }}>
+				<div className="answer-form-container">
 					<div>
-						<H3>Free Text Alternatives</H3>
+						<label htmlFor="prompt" className="answer-form-label">
+							Prompt
+						</label>
 
-						{this.state.currentAnswers.map((answer, index) => {
-							return (
-								<ValidationAwareFormGroup
-									labelFor={`answer-${index}`}
-									failures={this.state.validationFailures}
-									key={answer}
-									style={{ display: "grid", gridTemplateColumns: "3fr,2fr" }}
-								>
-									<div
-										style={{
-											display: "flex",
-											gap: Spacing.Medium,
-											width: "100%",
-											alignItems: "center",
-										}}
-									>
-										<InputGroup
-											id={`answer-${index}`}
-											name={`answer-${index}`}
-											type="text"
-											defaultValue={answer}
-											large={true}
-											style={{ width: "100%" }}
-											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-												this.setState(({currentAnswers}) =>
-													{
-														currentAnswers[index] = e.target.value;
-													}
-												)
-											}}
-										/>
-
-										<Button icon="remove" minimal onClick={() => this.props.removeAnswer(index)} />
-									</div>
-								</ValidationAwareFormGroup>
-							)}
-						)}
-
-						<Button style={{ marginTop: Spacing.Medium }}text="Add Answer" icon="plus" onClick={this.props.addAnswer} />
+						<ValidationAwareFormGroup labelFor="prompt" failures={this.props.validationFailures}>
+							<InputGroup
+								id="prompt"
+								name="prompt"
+								type="text"
+								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
+								large={true}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ prompt: e.target.value })}
+							/>
+						</ValidationAwareFormGroup>
 					</div>
-				)}
 
-				{this.props.kind === QuestionKind.Boolean && (
-					<div>
-						<H3>Boolean Labels</H3>
+					<div className="answer-form-container">
+						<div>
+							<label htmlFor="question_kind" className="answer-form-label">
+								Question Kind
+							</label>
 
-						{this.state.currentAnswers.map((answer, index) => (
-							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.XLarge }}>
-								<div
-									style={{
-										display: "flex",
-										gap: Spacing.Medium,
-										width: "100%",
-										alignItems: "center",
-										marginBottom: Spacing.Medium,
-									}}
+							<ValidationAwareFormGroup labelFor="question_kind" failures={this.props.validationFailures}>
+								<Select<QuestionKind>
+									inputProps={{ name: "question_kind", id: "question_kind" }}
+									items={QuestionKindNames}
+									onItemSelect={this.selectQuestionKind}
+									filterable={false}
+									itemRenderer={renderQuestionKindOption}
+									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 								>
-									<Icon icon={index === 0 ? "confirm" : "cross"} />
-
-									<ValidationAwareFormGroup labelFor={`boolean-label-${index}`} failures={this.state.validationFailures}>
-										<InputGroup
-											id={`boolean-label-${index}`}
-											type="text"
-											placeholder={answer}
-											large={true}
-											style={{ width: "100%" }}
-											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-												this.setBooleanLabel(index, e.target.value);
-											}}
-										/>
-									</ValidationAwareFormGroup>
-
-									<ValidationAwareFormGroup labelFor="correct-answer" failures={this.state.validationFailures}>
-										<Radio
-											id="correct-answer"
-											label="Correct Answer"
-											checked={index === 0 ? this.state.currentAnswer === true : this.state.currentAnswer === false}
-											onChange={() => this.setBooleanAnswer(index)}
-										/>
-									</ValidationAwareFormGroup>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-
-				{this.props.kind === QuestionKind.MultipleChoice && (
-					<div>
-						<H3>Multiple Choice Options</H3>
-
-						{this.state.currentChoices.map((answer, index) => (
-							<div key={answer} style={{ display: "grid", gridTemplateColumns: "3fr,2fr", marginBottom: Spacing.Large }}>
-								<div
-									style={{
-										display: "flex",
-										gap: Spacing.Medium,
-										width: "100%",
-										alignItems: "center",
-									}}
-								>
-									<ValidationAwareFormGroup labelFor={`answer-${index}`} failures={this.state.validationFailures}>
-										<InputGroup
-											id={`answer-${index}`}
-											type="text"
-											placeholder={"Answer"}
-											defaultValue={answer}
-											large={true}
-											style={{ width: "100%" }}
-											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-												this.setState(({currentAnswers}) =>
-													{
-														currentAnswers[index] = e.target.value;
-													}
-												)
-											}}
-										/>
-									</ValidationAwareFormGroup>
-
-									<Button icon="remove" minimal onClick={() => this.props.removeAnswer(index)} />
-								</div>
-
-								<ValidationAwareFormGroup labelFor="correct_answer" failures={this.state.validationFailures}>
-									<Radio
-										id="correct_answer"
-										label="Correct Answer"
-										checked={index === this.state.currentAnswerIndex}
-										onChange={() => this.setState({ currentAnswerIndex: index })}
+									<Button
+										style={{ minWidth: 200 }}
+										text={this.state.kind ? ucwords(this.state.kind) : "Select question kind"}
+										rightIcon="double-caret-vertical"
+										placeholder="Select question kind"
+										disabled={this.state.question !== null}
 									/>
-								</ValidationAwareFormGroup>
-							</div>
-						))}
+								</Select>
+							</ValidationAwareFormGroup>
+						</div>
 
-						<Button text="Add Answer" icon="plus" onClick={this.props.addAnswer} />
+						<div>
+							<label htmlFor="kind" className="answer-form-label">
+								Question Tag
+							</label>
+
+							<ValidationAwareFormGroup labelFor="question_tag" failures={this.props.validationFailures}>
+								<Select<QuestionTag>
+									disabled={this.state.question !== null}
+									inputProps={{ name: "question_tag", id: "question_tag" }}
+									items={this.props.tags}
+									onItemSelect={this.selectTag}
+									filterable={false}
+									itemRenderer={renderTagOption}
+									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+								>
+									<Button
+										style={{ minWidth: 200 }}
+										text={this.state.tag ? ucwords(this.state.tag.label) : "Select question tag"}
+										rightIcon="double-caret-vertical"
+										placeholder="Select question tag"
+										disabled={this.state.question !== null}
+									/>
+								</Select>
+							</ValidationAwareFormGroup>
+						</div>
 					</div>
+				</div>
+
+				<hr className="answer-form-separator" />
+
+				{this.state.kind === QuestionKind.Boolean && this.state.tag && (
+					<BooleanQuestion
+						prompt={this.state.prompt}
+						tagId={this.state.tag.id as number}
+						accountId={this.context!.id}
+						loading={this.props.loading}
+						saveQuestion={this.props.saveQuestion}
+						validationFailures={this.props.validationFailures}
+					/>
 				)}
 
-				<hr style={{ marginTop: Spacing.XLarge, marginBottom: Spacing.XLarge, opacity: "0.3" }} />
+				{this.state.kind === QuestionKind.FreeText && this.state.tag && (
+					<FreeTextQuestion
+						prompt={this.state.prompt}
+						tagId={this.state.tag.id as number}
+						accountId={this.context!.id}
+						loading={this.props.loading}
+						saveQuestion={this.props.saveQuestion}
+						validationFailures={this.props.validationFailures}
+					/>
+				)}
 
-				<Button
-					loading={this.state.loading}
-					large={true}
-					intent={Intent.PRIMARY}
-					text="Save Question"
-					icon="floppy-disk"
-					onClick={this.onSaveQuestionClick}
-				/>
-			</>
+				{this.state.kind === QuestionKind.MultipleChoice && this.state.tag && (
+					<MultipleChoiceQuestion
+						prompt={this.state.prompt}
+						tagId={this.state.tag.id as number}
+						accountId={this.context!.id}
+						loading={this.props.loading}
+						saveQuestion={this.props.saveQuestion}
+						validationFailures={this.props.validationFailures}
+					/>
+				)}
+			</form>
 		);
 	}
 
-	private setBooleanLabel = (index: number, label: string) => {
-		if (index === 0) {
-			this.setState({ currentTrueLabel: label });
-		} else {
-			this.setState({ currentFalseLabel: label });
-		}
+	private selectTag = (tag: QuestionTag) => {
+		this.setState({
+			tag
+		});
 	};
 
-	private setBooleanAnswer = (index: number) => {
-		if (index === 0) {
-			this.setState({ currentAnswer: true });
-		} else {
-			this.setState({ currentAnswer: false });
-		}
-	};
-
-	private onSaveQuestionClick = async () => {
-		const accountId = this.context!.id;
-		const tagId = this.state.currentTag!.id as number;
-		this.setState({ loading: true });
-
-		// switch by kind and create question object
-		switch (this.props.kind) {
-			case QuestionKind.FreeText:
-				const freeTextQuestion = {
-					prompt: this.state.currentPrompt!,
-					kind: this.state.currentKind!,
-					answers: this.state.currentAnswers,
-					accountId,
-					tagId,
-				};
-
-				await this.props.saveQuestion(freeTextQuestion);
-
-				break;
-
-			case QuestionKind.Boolean:
-				const booleanQuestion = {
-					prompt: this.state.currentPrompt!,
-					kind: this.state.currentKind!,
-					answer: this.state.currentAnswer!,
-					trueLabel: this.state.currentTrueLabel!,
-					falseLabel: this.state.currentFalseLabel!,
-					accountId,
-					tagId,
-				};
-
-				await this.props.saveQuestion(booleanQuestion);
-
-				break;
-
-			case QuestionKind.MultipleChoice:
-				const multipleChoiceQuestion = {
-					prompt: this.state.currentPrompt!,
-					kind: this.state.currentKind!,
-					answerIndex: this.state.currentAnswerIndex!,
-					choices: this.state.currentChoices,
-					accountId,
-					tagId,
-				};
-
-				await this.props.saveQuestion(multipleChoiceQuestion).then(() => {
-					this.setState({ loading: false });
-				});
-
-				break;
-
-			default:
-				break;
-		}
-	};
+	private selectQuestionKind = (kind: QuestionKind) => {
+		this.setState({
+			kind
+		});
+	}
 }
+
+const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFocus, modifiers }) => {
+	if (!modifiers.matchesPredicate)
+		return null;
+
+	return (
+		<MenuItem
+			active={modifiers.active}
+			disabled={modifiers.disabled}
+			key={tag.label}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			roleStructure="listoption"
+			text={tag.label}
+		/>
+	);
+};
+
+const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, { handleClick, handleFocus, modifiers }) => {
+	if (!modifiers.matchesPredicate)
+		return null;
+
+	return (
+		<MenuItem
+			active={modifiers.active}
+			disabled={modifiers.disabled}
+			key={kind}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			roleStructure="listoption"
+			text={ucwords(kind)}
+		/>
+	);
+};

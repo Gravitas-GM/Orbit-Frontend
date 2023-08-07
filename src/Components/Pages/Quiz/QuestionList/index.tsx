@@ -1,14 +1,14 @@
 import React from "react";
 import { PageHeader } from "../../../PageHeader";
-import { Button, HTMLTable, InputGroup } from "@blueprintjs/core";
+import { Button, InputGroup } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
-import { NonIdealState } from "../../../NonIdealState";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { history } from "../../../../history";
 import { Question, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
 import * as toaster from "../../../../Toaster";
+import { RenderPageItems } from "./RenderPageItems";
 
-interface IQuestionListState {
+interface IState {
 	questions: Question[],
 	loading: boolean,
 	filteredQuestions: Question[],
@@ -18,8 +18,8 @@ interface IQuestionListState {
 
 const ITEMS_PER_PAGE = 10;
 
-export class QuestionListPage extends React.PureComponent<{}, IQuestionListState> {
-	public state: Readonly<IQuestionListState> = {
+export class QuestionListPage extends React.PureComponent<{}, IState> {
+	public state: Readonly<IState> = {
 		loading: false,
 		questions: [],
 		filteredQuestions: [],
@@ -86,7 +86,9 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	private fetchQuestions = async () => {
-		this.setState({ loading: true });
+		this.setState({
+			loading: true
+		});
 
 		let questions: Question[] = [];
 
@@ -98,6 +100,7 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 			this.setState({ loading: false });
 
 			history.push("/");
+
 			return;
 		}
 
@@ -120,7 +123,9 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 	};
 
 	private onDeleteClick = async (question: Question) => {
-		this.setState({loading: true});
+		this.setState({
+			loading: true
+		});
 
 		try {
 			await QuestionModel.delete(question.id).then(() => {
@@ -129,7 +134,9 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 		} catch (error) {
 			toaster.error("Failed to delete question");
 		} finally {
-			this.setState({loading: false});
+			this.setState({
+				loading: false
+			});
 		}
 	};
 
@@ -177,45 +184,3 @@ export class QuestionListPage extends React.PureComponent<{}, IQuestionListState
 		});
 	};
 }
-
-interface IRenderPageItemsProps {
-	items: Question[],
-	editCallback: (questionId: number) => void,
-	deleteCallback: (question: Question) => void,
-}
-
-// maybe this one can become an external component for all situations that require a list of items to be rendered
-const RenderPageItems: React.FC<IRenderPageItemsProps> = ({items, editCallback, deleteCallback}) => {
-	if (items.length === 0)
-		return <NonIdealState title="No questions found" />;
-
-	return (
-		<HTMLTable striped={true}>
-			<thead>
-				<tr>
-					<th>Prompt</th>
-					<th>Tag</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{items.map(question => (
-					<tr key={question.id}>
-						<td>{question.prompt}</td>
-
-						<td style={{ width: 240}}>{question.tagId}</td>
-
-						<td style={{ width: 80}}>
-							<div style={{ display: 'flex', justifyContent: 'space-between' }}>
-								<Button icon="edit" minimal={true} onClick={() => editCallback(question.id)} />
-
-								<Button icon="trash" minimal={true} onClick={() => deleteCallback(question)} />
-							</div>
-						</td>
-					</tr>
-				))}
-			</tbody>
-		</HTMLTable>
-	);
-};

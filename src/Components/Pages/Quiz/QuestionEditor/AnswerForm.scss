@@ -1,0 +1,50 @@
+@import "../../../../variables";
+
+.anwser-form-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: $spacing-xlarge;
+}
+
+.answer-form-label {
+	margin-bottom: $spacing-medium;
+	display: block;
+}
+
+.answer-form-separator {
+	margin: $spacing-xlarge 0;
+	opacity: 0.3;
+}
+
+.boolean-container {
+	display: flex;
+	gap: $spacing-medium;
+	flex-direction: column;
+}
+
+.boolean-answer {
+	display: flex;
+	gap: $spacing-medium;
+	width: 100%;
+	align-items: center;
+}
+
+.free-text-container {
+	display: flex;
+	gap: $spacing-medium;
+	width: 100%;
+	align-items: center;
+}
+
+.multiple-choice-container {
+	 display: flex;
+	 gap: $spacing-medium;
+
+}
+
+.multiple-choice {
+	display: flex;
+	gap: $spacing-medium;
+	align-items: center;
+}
