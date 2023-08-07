@@ -8,6 +8,7 @@ import { AnswerForm } from "./AnswerForm";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 import * as toaster from "../../../../Toaster";
 import { history } from "../../../../history";
+import { AnchorButton, Callout, Intent } from "@blueprintjs/core";
 
 interface IState {
 	loading: boolean;
@@ -49,9 +50,25 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			<section className="gm-page-wrapper">
 				<PageHeader title={this.props.match.params.question ? `Edit Question` : `Add Question`} />
 
+				{this.state.tags.length === 0 &&
+					<Callout
+						intent={Intent.WARNING}
+						icon="warning-sign"
+						title="No tags found"
+					>
+						Please add some tags before creating questions.
+
+						<AnchorButton
+							href="/quiz/tags/new"
+							text="Add Tag"
+							intent={Intent.PRIMARY}
+						/>
+					</Callout>
+				}
+
 				<AnswerForm
 					tags={this.state.tags}
-					loading={this.state.processing}
+					processing={this.state.processing}
 					question={this.state.question}
 					saveQuestion={this.saveQuestion}
 					validationFailures={this.state.validationFailures}
@@ -64,10 +81,9 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		try {
 			const tags = await QuestionTagModel.list().then((res) => res.data);
 
-			// TODO: show banner if there are none
-
 			this.setState({
-				tags, loading: false
+				tags,
+				loading: false
 			});
 		} catch (err) {
 			toaster.error("Error fetching tags");
@@ -81,7 +97,9 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 	};
 
 	private fetchQuestion = async () => {
-		this.setState({ loading: true });
+		this.setState({
+			loading: true
+		});
 
 		let question: Question;
 

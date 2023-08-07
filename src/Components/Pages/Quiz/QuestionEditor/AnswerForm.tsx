@@ -18,7 +18,7 @@ const QuestionKindNames = Object.values(QuestionKind);
 interface IProps {
 	question: Question | null;
 	tags: QuestionTag[];
-	loading: boolean;
+	processing: boolean;
 	validationFailures: ValidationFailures | null;
 	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
 }
@@ -43,8 +43,10 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		question: this.props.question ?? null,
 	};
 
-
 	public render() {
+		if (this.props.tags.length === 0 || this.props.processing)
+			return;
+
 		return (
 			<form style={{ marginTop: Spacing.XLarge }}>
 				<div className="answer-form-container">
@@ -126,7 +128,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}
-						loading={this.props.loading}
+						processing={this.props.processing}
 						saveQuestion={this.props.saveQuestion}
 						validationFailures={this.props.validationFailures}
 					/>
@@ -137,7 +139,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}
-						loading={this.props.loading}
+						processing={this.props.processing}
 						saveQuestion={this.props.saveQuestion}
 						validationFailures={this.props.validationFailures}
 					/>
@@ -148,7 +150,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
 						accountId={this.context!.id}
-						loading={this.props.loading}
+						processing={this.props.processing}
 						saveQuestion={this.props.saveQuestion}
 						validationFailures={this.props.validationFailures}
 					/>
@@ -159,20 +161,20 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 	private selectTag = (tag: QuestionTag) => {
 		this.setState({
-			tag
+			tag,
 		});
 	};
 
 	private selectQuestionKind = (kind: QuestionKind) => {
 		this.setState({
-			kind
+			kind,
 		});
-	}
+	};
 }
 
 const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFocus, modifiers }) => {
 	if (!modifiers.matchesPredicate)
-		return null;
+	return null;
 
 	return (
 		<MenuItem

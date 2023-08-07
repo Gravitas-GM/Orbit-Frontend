@@ -13,7 +13,7 @@ interface IProps {
 	accountId: number;
 	validationFailures: ValidationFailures | null;
 	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
-	loading: boolean;
+	processing: boolean;
 }
 
 export const FreeTextQuestion: React.FC<IProps> = (props) => {
@@ -102,7 +102,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 			<hr className="option-form-separator" />
 
 			<Button
-				loading={props.loading}
+				loading={props.processing}
 				large={true}
 				intent={Intent.PRIMARY}
 				text="Save Question"

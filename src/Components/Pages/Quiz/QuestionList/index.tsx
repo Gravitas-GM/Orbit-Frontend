@@ -1,6 +1,6 @@
 import React from "react";
 import { PageHeader } from "../../../PageHeader";
-import { Button, InputGroup } from "@blueprintjs/core";
+import { AnchorButton, Button, InputGroup } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { history } from "../../../../history";
@@ -50,14 +50,13 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							placeholder="Search questions"
 							onChange={this.onSearchChange}
 						/>
-						<Button icon="add" onClick={this.onAddQuestionClick}>Add New</Button>
+						<AnchorButton icon="add" href="/quiz/questions/new">Add New</AnchorButton>
 					</div>
 				</PageHeader>
 
 				<RenderPageItems
 					items={currrentPageItems}
 					deleteCallback={this.onDeleteClick}
-					editCallback={this.onEditClick}
 				/>
 
 				{filteredQuestions.length > ITEMS_PER_PAGE ? <div className="pagination-container">
@@ -114,30 +113,20 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		});
 	;}
 
-	private onAddQuestionClick = () => {
-		history.push("/quiz/questions/new");
-	};
-
-	private onEditClick = (questionId: number) => {
-		history.push(`/quiz/questions/${questionId}`);
-	};
-
 	private onDeleteClick = async (question: Question) => {
 		this.setState({
 			loading: true
 		});
 
 		try {
-			await QuestionModel.delete(question.id).then(() => {
-				toaster.success("Question deleted successfully");
-			});
+			await QuestionModel.delete(question.id);
 		} catch (error) {
 			toaster.error("Failed to delete question");
-		} finally {
-			this.setState({
-				loading: false
-			});
 		}
+
+		toaster.success("Question deleted successfully");
+
+		await this.fetchQuestions();
 	};
 
 	private onClickNext = () => {
