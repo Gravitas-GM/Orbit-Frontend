@@ -137,6 +137,8 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			processing: true,
 		});
 
+		console.log(questionData, 'questionData');
+
 		let question: Question;
 
 		try {
@@ -155,6 +157,8 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 
 			return;
 		}
+
+		toaster.success("Question saved");
 
 		this.setState({
 			processing: false,

@@ -8,10 +8,10 @@ import { ValidationFailures } from "../../../../Api/errors/symfony";
 import { ItemRenderer, Select } from "@blueprintjs/select";
 import { ucwords } from "../../../Utility/string";
 import { BooleanQuestion } from "./QuizQuestions/BooleanQuestion";
-import { UserContext } from "../../../../Session";
-import "./AnswerForm.scss";
 import { FreeTextQuestion } from "./QuizQuestions/FreeTextQuestion";
 import { MultipleChoiceQuestion } from "./QuizQuestions/MultipleChoiceQuestion";
+import { UserContext } from "../../../../Session";
+import "./AnswerForm.scss";
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -52,7 +52,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 	}
 
 	public render() {
-		if (this.props.tags.length === 0 || this.props.processing)
+		if (this.props.tags.length === 0)
 			return;
 
 		return (
@@ -69,7 +69,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								name="prompt"
 								type="text"
 								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
-								value={this.state.prompt}
+								value={this.state.prompt ?? ""}
 								large={true}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ prompt: e.target.value })}
 							/>

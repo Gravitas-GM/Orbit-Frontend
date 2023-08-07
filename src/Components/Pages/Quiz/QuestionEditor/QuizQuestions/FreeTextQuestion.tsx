@@ -52,7 +52,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 			accountId: props.accountId,
 			tagId: props.tagId,
 			prompt: props.prompt!,
-			kind: QuestionKind.Boolean,
+			kind: QuestionKind.FreeText,
 			answers: answers,
 		};
 
@@ -76,15 +76,15 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 			{answers.map((option, index) => {
 				return (
 					<ValidationAwareFormGroup
-						labelFor={`option-${index}`}
+						labelFor={`answer-${index}`}
 						failures={props.validationFailures}
 						key={option}
 						className="answer-form-container"
 					>
 						<div className="free-text-container">
 							<InputGroup
-								id={`option-${index}`}
-								name={`option-${index}`}
+								id={`answer-${index}`}
+								name={`answer-${index}`}
 								type="text"
 								defaultValue={option}
 								large={true}

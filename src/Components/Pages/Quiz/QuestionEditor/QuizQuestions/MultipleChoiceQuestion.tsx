@@ -54,7 +54,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 			accountId: props.accountId,
 			tagId: props.tagId,
 			prompt: props.prompt!,
-			kind: QuestionKind.Boolean,
+			kind: QuestionKind.MultipleChoice,
 			choices: choices,
 		};
 

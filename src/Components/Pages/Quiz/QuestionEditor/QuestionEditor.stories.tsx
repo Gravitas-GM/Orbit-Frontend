@@ -43,6 +43,42 @@ NewQuestion.parameters = {
 		{
 			url: `${process.env.QUIZ_URL}/questions`,
 			method: 'PUT',
+			status: 200,
+			response: questions[0],
+			delay: 1500,
+		},
+	],
+};
+
+export const ValidationError = Template.bind({});
+
+ValidationError.args = {
+	match: {
+		isExact: false,
+		path: '/quiz/questions/:question',
+		url: '/quiz/questions',
+		params: {
+			question: '',
+		},
+	},
+};
+
+
+ValidationError.parameters = {
+	mockData: [
+		// success case for tag fetching
+		{
+			url: `${process.env.QUIZ_URL}/tags`,
+			method: 'GET',
+			status: 200,
+			response: questionTagsMock,
+			delay: 1500,
+		},
+
+		// error case for submitting question without prompt:
+		{
+			url: `${process.env.QUIZ_URL}/questions`,
+			method: 'PUT',
 			status: 400,
 			response: {
 				"error": {
@@ -50,10 +86,10 @@ NewQuestion.parameters = {
 				  "message": "One or more fields did not pass validation",
 				  "context": {
 					"failures": {
-					  "answer-2": {
+					  "prompt": {
 						"code": "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-						"path": "answer-2",
-						"message": "You must provide at least one valid answer."
+						"path": "prompt",
+						"message": "You must provide a valid prompt."
 					  },
 					}
 				  }
