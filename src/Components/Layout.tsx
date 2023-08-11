@@ -38,13 +38,12 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/game" component={GameBoardPage} />
 
-							<Route path="/catalog" component={CatalogListPage} exact={true} />
-
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
+								<Route path="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 							]}
 
