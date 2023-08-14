@@ -4,13 +4,15 @@ import { Button, InputGroup } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { TagEditorDialog } from "./TagEditorDialog";
-import { QuestionTagModel, QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
+import { QuestionTagModel, QuestionTag, QuestionTagCreatePayload } from "../../../../Api/Quiz/Models/QuestionTags";
 import * as toaster from "../../../../Toaster";
 import { history } from "../../../../history";
 import { RenderTableItems } from "./RenderTableItems";
 import { DeleteDialog } from "../../../DeleteDialog";
+import { User, UserModel } from "../../../../Api/Hub/Models/Users";
+import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 
-interface ITagListState {
+interface IState {
 	tags: QuestionTag[];
 	tagToDelete: QuestionTag | null;
 	tagToEdit: QuestionTag | null;
@@ -21,12 +23,14 @@ interface ITagListState {
 	totalPages: number;
 	showEditDialog: boolean;
 	showDeleteDialog: boolean;
+	users: User[];
+	validationFailures: ValidationFailures | null;
 }
 
 const ITEMS_PER_PAGE = 10;
 
-export class TagListPage extends React.PureComponent<{}, ITagListState> {
-	public state: Readonly<ITagListState> = {
+export class TagListPage extends React.PureComponent<{}, IState> {
+	public state: Readonly<IState> = {
 		loading: false,
 		processing: false,
 		tags: [],
@@ -37,10 +41,12 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 		totalPages: 1,
 		showDeleteDialog: false,
 		showEditDialog: false,
+		users: [],
+		validationFailures: null,
 	};
 
 	public async componentDidMount() {
-		await this.fetchTags();
+		await this.fetchData();
 	};
 
 	public render() {
@@ -58,7 +64,12 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.Large }}>
 						<InputGroup type="search" leftIcon="search" placeholder="Search tags" onChange={this.onSearchChange} />
 
-						<Button icon="add" onClick={this.toggleEditTagDialog}>Add New</Button>
+						<Button
+							icon="add"
+							onClick={this.toggleEditTagDialog}
+						>
+							Add New
+						</Button>
 					</div>
 				</PageHeader>
 
@@ -88,6 +99,9 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 				isOpen={this.state.showEditDialog}
 				onClose={this.toggleEditTagDialog}
 				tag={this.state.tagToEdit}
+				users={this.state.users}
+				onSubmit={this.onSubmit}
+				validationFailures={this.state.validationFailures}
 			/>
 
 			<DeleteDialog
@@ -100,7 +114,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 		);
 	};
 
-	private fetchTags = async () => {
+	private fetchData = async () => {
 		this.setState({
 			loading: true
 		});
@@ -115,11 +129,25 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 
 			totalPages = totalPages === 0 ? 1 : totalPages;
 		} catch (err) {
+			toaster.error("Failed to fetch question tags");
+
 			this.setState({
 				loading: false,
 			});
 
-			toaster.error("Failed to fetch question tags");
+			history.push("/");
+		}
+
+		let users: User[] = [];
+
+		try {
+			users = await UserModel.list().then((res) => res.data);
+		} catch (err) {
+			toaster.error("Failed to fetch users");
+
+			this.setState({
+				loading: false,
+			});
 
 			history.push("/");
 		}
@@ -129,6 +157,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 			filteredTags: tags,
 			totalPages,
 			loading: false,
+			users,
 		});
 	};
 
@@ -168,7 +197,7 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 			toaster.success("Tag deleted successfully");
 
 			// should we refetch the tags or just remove it from the list?
-			await this.fetchTags();
+			await this.fetchData();
 		} catch (err) {
 			this.setState({
 				showDeleteDialog: false
@@ -202,6 +231,33 @@ export class TagListPage extends React.PureComponent<{}, ITagListState> {
 			currentPage: state.currentPage - 1,
 		}));
 	};
+
+	private onSubmit = async (tag: QuestionTagCreatePayload) => {
+		this.setState({
+			processing: true
+		})
+
+		try {
+			await QuestionTagModel.create(tag).then((response) => response.data);
+		} catch (err) {
+			if (isValidationFailureError(err)) {
+				toaster.error("One or more fields did not pass validation");
+
+				this.setState({
+					validationFailures: err.context.failures,
+					processing: false,
+				});
+			} else {
+				toaster.showUnhandledErrorMessage();
+			}
+
+			return;
+		}
+
+		this.setState({
+			processing: false
+		});
+	}
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.currentTarget.value === "") {
