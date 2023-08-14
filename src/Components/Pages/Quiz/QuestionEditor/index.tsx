@@ -137,8 +137,6 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			processing: true,
 		});
 
-		console.log(questionData, 'questionData');
-
 		let question: Question;
 
 		try {
