@@ -71,7 +71,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
 								value={this.state.prompt ?? ""}
 								large={true}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.setState({ prompt: e.target.value })}
+								onChange={this.onChangePrompt}
 							/>
 						</ValidationAwareFormGroup>
 					</div>
@@ -179,6 +179,12 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 			kind,
 		});
 	};
+
+	private onChangePrompt = (event: React.ChangeEvent<HTMLInputElement>) => {
+		this.setState({
+			prompt: event.target.value,
+		});
+	}
 }
 
 const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFocus, modifiers }) => {
