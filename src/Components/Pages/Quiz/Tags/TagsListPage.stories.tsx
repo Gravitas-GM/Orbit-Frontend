@@ -99,7 +99,7 @@ NoData.parameters = {
 						failures: {
 							prompt: {
 								code: "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-								path: "users",
+								path: "tag-users",
 								message: "You must provide at least one user for the tag.",
 							},
 						},
@@ -146,7 +146,7 @@ SubmitError.parameters = {
 					message: "One or more fields did not pass validation",
 					context: {
 						failures: {
-							prompt: {
+							name: {
 								code: "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
 								path: "name",
 								message: "You must provide a valid name for the tag.",

@@ -65,10 +65,10 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 						<InputGroup
 							type="text"
 							id="name"
+							name="name"
 							placeholder="Tag name"
 							fill={true}
 							autoFocus={true}
-							style={{ marginBottom: Spacing.Large }}
 							value={this.state.tagName}
 							onChange={this.onChangeTagName}
 						/>
@@ -79,6 +79,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 							tagInputProps={{
 								inputProps: {
 									id: "users",
+									name: "users",
 								},
 							}}
 							fill={true}
@@ -94,7 +95,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 						/>
 					</ValidationAwareFormGroup>
 
-					<div style={{ paddingTop: Spacing.Medium }}>
+					<div>
 						<Button
 							small={true}
 							minimal={true}
@@ -113,7 +114,6 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 								text="Submit"
 								onClick={this.onSubmitClick}
 								loading={this.state.processing}
-								disabled={this.state.tagUsers.length === 0}
 							/>
 						</div>
 					</div>
