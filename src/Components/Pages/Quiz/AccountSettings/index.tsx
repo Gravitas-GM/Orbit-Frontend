@@ -14,15 +14,6 @@ import { allSettled, isRejectedResult } from "../../../Utility/promise";
 import { history } from "../../../../history";
 import "./QuizAccountSettings.scss";
 
-const isPointSourceArray = (data: any): data is PointSourceItem[] => {
-	return Array.isArray(data) && data.every(isPointSourceItem);
-};
-const isPointSourceItem = (data: any): data is PointSourceItem => {
-	return typeof data === 'object' && data.point_value !== null;
-};
-const isAccountModel = (data: any): data is Account => {
-	return typeof data === 'object' && data.accountId !== null;
-};
 
 const QuizFrequencyNames = [Frequency.Daily, Frequency.Weekly, Frequency.Monthly].map((frequency) =>
 	ucwords(frequency)
@@ -110,18 +101,26 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 				<PageHeader title="Quiz - Account Settings" />
 
 				<form className="account-settings-wrapper" onSubmit={this.onSaveButtonClick}>
-					<ValidationAwareFormGroup labelFor="quiz-frequency" failures={this.state.failures}>
-						<label htmlFor="quiz-frequency">
+					<ValidationAwareFormGroup labelFor="quizFrequency" failures={this.state.failures}>
+						<label htmlFor="quizFrequency">
 							Quiz Frequency
 						</label>
 
 						<Select<Frequency>
-							inputProps={{ id: "quiz-frequency" }}
+							inputProps={{
+								id: "quizFrequency",
+								name: "quizFrequency"
+							}}
 							items={QuizFrequencyNames}
 							onItemSelect={this.onFrequencyChange}
 							filterable={false}
 							itemRenderer={renderFrequencyOption}
-							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+							noResults={
+								<MenuItem
+									disabled={true} text="No results."
+									roleStructure="listoption"
+								/>
+							}
 						>
 							<Button
 								fill={true}
@@ -132,14 +131,15 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 						</Select>
 					</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="question-count" failures={this.state.failures}>
-						<label htmlFor="question-count">
+					<ValidationAwareFormGroup labelFor="questionCount" failures={this.state.failures}>
+						<label htmlFor="questionCount">
 							Question Count
 						</label>
 
 						<InputGroup
 							fill={true}
-							id="question-count"
+							id="questionCount"
+							name="questionCount"
 							type="number"
 							value={this.state.questionCount?.toString()}
 							placeholder="0"
@@ -147,13 +147,16 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 						/>
 					</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="quiz-reward-source" failures={this.state.failures}>
-						<label htmlFor="quiz-reward-source">
+					<ValidationAwareFormGroup labelFor="quizRewardSource" failures={this.state.failures}>
+						<label htmlFor="quizRewardSource">
 							Quiz Reward Source
 						</label>
 
 						<Select<PointSourceItem>
-							inputProps={{ id: "quiz-reward-source" }}
+							inputProps={{
+								id: "quizRewardSource",
+								name: "quizRewardSource"
+							}}
 							items={this.state.pointSources}
 							onItemSelect={this.onRewardSourceChange}
 							filterable={false}
@@ -194,11 +197,12 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 			});
 		} catch (e) {
 			if (isValidationFailureError(e)) {
+				toaster.error("Failed to update account settings.");
 				this.setState({
 					failures: e.context.failures,
 				});
 			} else {
-				toaster.error("Failed to update account settings.");
+				toaster.showUnhandledErrorMessage();
 			}
 		}
 

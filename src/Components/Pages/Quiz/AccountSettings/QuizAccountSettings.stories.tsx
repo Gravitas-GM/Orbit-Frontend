@@ -93,4 +93,46 @@ ServerError.parameters = {
 	],
 } as ComponentMeta<typeof QuizAccountSettings>;
 
-export { Basic, NoData, ServerError };
+const ValidationError = Template.bind({});
+
+ValidationError.parameters = {
+	mockData: [
+		{
+			url: 'http://quiz.test.api.happyorbit.com/settings/0',
+			method: 'GET',
+			status: 200,
+			response: [],
+			delay: 1500,
+		},
+		{
+			url: 'http://points.test.api.happyorbit.com/sources/account/0',
+			method: 'GET',
+			status: 200,
+			response: pointSourceItemsMock,
+			delay: 1500,
+		},
+		{
+			url: 'http://quiz.test.api.happyorbit.com/settings/0',
+			method: 'PATCH',
+			status: 400,
+			response: {
+				"error": {
+				  "code": "validation_failed",
+				  "message": "One or more fields did not pass validation",
+				  "context": {
+					"failures": {
+					  "quizFrequency": {
+						"code": "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
+						"path": "quizFrequency",
+						"message": "You must provide the quiz frequency."
+					  },
+					}
+				  }
+				}
+			  },
+			delay: 1500,
+		},
+	],
+} as ComponentMeta<typeof QuizAccountSettings>;
+
+export { Basic, NoData, ServerError, ValidationError };
