@@ -21,16 +21,6 @@ export const Home: React.FC = () => (
 						<H4 style={{marginTop: Spacing.XLarge}}>Game</H4>
 
 						<div className="cards-container">
-							<Link to="/catalog">
-								<Card interactive={true}>
-									<Icon icon="layers" size={IconSize.XLARGE} />
-									<div>
-										<H4>Game Catalog</H4>
-										<p>Browse our Game Catalog and start playing one of our games.</p>
-									</div>
-								</Card>
-							</Link>
-
 							<Link to="/game">
 								<Card interactive={true}>
 									<Icon icon="star" size={35} />
@@ -61,6 +51,16 @@ export const Home: React.FC = () => (
 								<H4 style={{marginTop: Spacing.XLarge}}>Admin</H4>
 
 								<div className="cards-container admin">
+									<Link to="/catalog">
+										<Card interactive={true}>
+											<Icon icon="layers" size={IconSize.XLARGE} />
+											<div>
+												<H4>Game Catalog</H4>
+												<p>Browse our Game Catalog and start playing one of our games.</p>
+											</div>
+										</Card>
+									</Link>
+
 									<Link to="/users">
 										<Card interactive={true}>
 											<Icon icon="people" size={35} />

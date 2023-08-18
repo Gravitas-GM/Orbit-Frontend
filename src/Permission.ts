@@ -9,7 +9,9 @@ export interface PermissionMatch {
 	type?: 'any' | 'all';
 }
 
-export function isGranted(permissions: Set<Permission>, match: PermissionMatch | Permission | Permission[]) {
+export type MatchQuery = PermissionMatch | Permission | Permission[];
+
+export function isGranted(permissions: Set<Permission>, match: MatchQuery) {
 	if (permissions.has(Permission.ADMIN))
 		return true;
 
