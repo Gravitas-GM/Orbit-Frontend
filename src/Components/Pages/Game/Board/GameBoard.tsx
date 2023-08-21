@@ -54,7 +54,13 @@ export const GameBoard: React.FC<IProps> = ({
 	}, []);
 
 	return (
-		<div id="game-board" style={{ position: 'relative', height: 'fit-content' }}>
+		<div
+			id="game-board"
+			style={{
+				position: 'relative',
+				height: 'fit-content',
+			}}
+		>
 			<img ref={backgroundImageRef} src={board.imageUrl} alt="Game Board Background" style={{width: '100%'}} />
 
 			{scale && board.stages.map(stage => (
