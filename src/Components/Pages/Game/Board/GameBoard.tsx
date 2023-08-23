@@ -61,6 +61,7 @@ export const GameBoard: React.FC<IProps> = ({
 			style={{
 				position: 'relative',
 				height: 'fit-content',
+				width: '100%',
 			}}
 		>
 			<img onLoad={onImageLoaded} src={board.imageUrl} alt="Game Board Background" style={{width: '100%'}} />
