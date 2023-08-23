@@ -1,6 +1,5 @@
-import {Spinner} from '@blueprintjs/core';
-import {CSSProperties} from 'react';
 import * as React from 'react';
+import {CSSProperties} from 'react';
 import {Board} from '../../../../Api/Game-Catalog/Models/Boards';
 import {BoardRegion, Stage} from '../../../../Api/Game-Catalog/Models/Stages';
 import {GameState, PlayerState} from '../../../../Api/Game-State/Models/Games';
@@ -44,7 +43,10 @@ export const GameBoard: React.FC<IProps> = ({
 	useTitle('Happy Orbit - Game Board');
 
 	const [scale, setScale] = React.useState<Scale | null>(null);
-	const backgroundImageRef = React.useCallback((image: HTMLImageElement) => {
+
+	const onImageLoaded = React.useCallback((event: React.SyntheticEvent<HTMLImageElement>) => {
+		const image = event.currentTarget;
+
 		setScale(new Scale(
 			image.width / image.naturalWidth,
 			image.height / image.naturalHeight,
@@ -61,7 +63,7 @@ export const GameBoard: React.FC<IProps> = ({
 				height: 'fit-content',
 			}}
 		>
-			<img ref={backgroundImageRef} src={board.imageUrl} alt="Game Board Background" style={{width: '100%'}} />
+			<img onLoad={onImageLoaded} src={board.imageUrl} alt="Game Board Background" style={{width: '100%'}} />
 
 			{scale && board.stages.map(stage => (
 					<GameStage
