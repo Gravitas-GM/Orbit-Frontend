@@ -16,6 +16,7 @@ import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
+import {QuizHistoryPage} from './Pages/Quiz/History';
 import {AccountSettings} from './Pages/Quiz/AccountSettings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
@@ -41,6 +42,10 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/game" component={GameBoardPage} />
 
+							<Route path="/catalog" component={CatalogListPage} exact={true} />
+
+							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
+        
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
