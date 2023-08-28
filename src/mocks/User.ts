@@ -15,8 +15,8 @@ export const regularUserMock: User = {
 	account: { id: 22 },
 	emailAddress: "another@example.com",
 	permissions: [],
-	firstName: "Jane",
-	lastName: "Doe",
+	firstName: 'John',
+	lastName: 'Doe',
 };
 
 export const usersMock: User[] = [

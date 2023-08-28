@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof GameAnnouncement> = args => (
 
 export const Basic = Template.bind({});
 Basic.args = {
-	playerAnnouncement: {
+	player: {
 		type: UpdateResultType.MOVED,
 		player: {
 			hub_id: 1,

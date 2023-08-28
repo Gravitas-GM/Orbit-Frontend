@@ -11,5 +11,10 @@
 }
 
 .sidebar-simplebar {
-	max-height: calc(100vh - $gm-nav-header-height - $gm-sidebar-footer-height);
+	$height: calc(100vh - $gm-nav-header-height);
+	max-height: $height;
+
+	&.with-admin-controls {
+		max-height: calc($height - $gm-sidebar-footer-height);
+	}
 }

@@ -140,15 +140,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 				<div className="settings-title-container">
 					<H2>Points</H2>
 
-					{this.state.selectedItems.length > 0 && (
-						<Button
-							text="Delete Selected"
-							icon="delete"
-							intent="danger"
-							onClick={this.onBulkDeleteButtonClick}
-							disabled={this.state.selectedItems.length === 0}
-						/>
-					)}
+					<Button
+						text="Delete Selected"
+						icon="delete"
+						intent="danger"
+						onClick={this.onBulkDeleteButtonClick}
+						disabled={this.state.selectedItems.length === 0}
+					/>
 
 					<Button
 						text="Add Points"

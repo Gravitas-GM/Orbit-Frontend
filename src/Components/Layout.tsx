@@ -1,4 +1,3 @@
-import {Intent, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {Permission, PermissionContext} from '../Permission';
@@ -13,10 +12,14 @@ import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
+import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
-import { QuizHistoryPage } from './Pages/Quiz/History';
+import {QuizHistoryPage} from './Pages/Quiz/History';
+import {AccountSettings} from './Pages/Quiz/AccountSettings';
+import {TagListPage} from './Pages/Quiz/Tags';
+import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 
 interface IProps {
 	loading: boolean;
@@ -44,11 +47,16 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
         
 							{isGranted(Permission.ADMIN) && [
+								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
+								<Route path="/quiz/settings" key="/quiz/settings" component={AccountSettings} exact={true} />,
+								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
+								<Route path="/quiz/questions/:question(\d+)"  key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
+								<Route path="/quiz/questions/new"  key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
 							]}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [
