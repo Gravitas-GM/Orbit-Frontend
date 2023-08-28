@@ -1,4 +1,3 @@
-import {Intent, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {Permission, PermissionContext} from '../Permission';
@@ -15,8 +14,7 @@ import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import './Layout.scss'
-import {DebugControls} from './Pages/Admin/DebugControls';
-import {Config} from '../config';
+import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 
 interface IProps {
@@ -41,6 +39,7 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/game" component={GameBoardPage} />
 
 							{isGranted(Permission.ADMIN) && [
+								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,

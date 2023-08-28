@@ -8,3 +8,23 @@ export const userMock: User = {
 	firstName: 'John',
 	lastName: 'Doe',
 };
+
+export const usersMock: User[] = [
+	userMock,
+	{
+		id: 1,
+		account: { id: 1 },
+		emailAddress: 'test@test.com',
+		permissions: [],
+		firstName: 'Jane',
+		lastName: 'Doe',
+	},
+	{
+		id: 2,
+		account: { id: 2 },
+		emailAddress: 'test@test.com',
+		permissions: [],
+		firstName: 'Rupert',
+		lastName: 'Holmes',
+	},
+];
