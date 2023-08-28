@@ -10,7 +10,7 @@ export interface HistoryEndpoints {
 		};
 	};
 
-	'/history/:account/:afterId': {
+	'/history/:account/:beforeId': {
 		GET: {
 			params: Id;
 			response: HistoryItem[];
@@ -34,8 +34,8 @@ export class HistoryModel {
 		});
 	}
 
-	public static getAfter(account: Id, afterId: ObjectId) {
-		return gameStateClient.get<'/history/:account/:afterId'>(`/history/${account}/${afterId.$oid}`)
+	public static getBefore(account: Id, beforeId: ObjectId) {
+		return gameStateClient.get<'/history/:account/:beforeId'>(`/history/${account}/${beforeId.$oid}`)
 			.then(response => {
 				response.data = response.data.map(denormalizeHistoryItem);
 

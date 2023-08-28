@@ -12,6 +12,7 @@ import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {NonIdealState} from '../../NonIdealState';
 import {PageHeader} from '../../PageHeader';
+import './index.scss';
 
 interface IState {
 	players: PlayerState[];
@@ -45,7 +46,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
-			<div className={Classes.PAGE_WRAPPER}>
+			<div className="leaderboard-container">
 				<PageHeader title="Leaderboard">
 					<div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
 						<Button minimal={true} icon="refresh" onClick={this.onRefreshButtonClick} />
@@ -65,13 +66,13 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 						<tr>
 							<th>Name</th>
 
-							{this.state.sources.map(item => (
-								<th key={item.id.$oid}>{ucwords(item.name)}</th>
-							))}
-
 							<th>Total Points</th>
 
 							<th>Stage</th>
+
+							{this.state.sources.map(item => (
+								<th key={item.id.$oid}>{ucwords(item.name)}</th>
+							))}
 						</tr>
 					</thead>
 
@@ -80,11 +81,11 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 							<tr key={`point-summary-${item.id}`}>
 								<td>{ucwords(item.user_name)}</td>
 
-								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
-
 								<td>{formatNumber(item.total_points)}</td>
 
 								<td>{this.renderStageCell(item)}</td>
+
+								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
 							</tr>
 						))}
 					</tbody>

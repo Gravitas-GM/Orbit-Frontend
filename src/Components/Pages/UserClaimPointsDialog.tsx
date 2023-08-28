@@ -1,14 +1,14 @@
 import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer, MultiSelect2 as MultiSelect} from '@blueprintjs/select';
+import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../Session';
+import * as toaster from '../../Toaster';
 import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
+import {MultiSelect} from '../Select/MultiSelect';
 import {allSettled} from '../Utility/promise';
 import {ucwords} from '../Utility/string';
-import * as toaster from '../../Toaster';
-import {Spacing} from '../../Styles/variables';
 
 interface IProps {
 	onClose: () => void;
@@ -54,12 +54,17 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={this.props.isOpen} title="Add Points">
+			<Dialog
+				onClose={this.props.onClose}
+				isOpen={this.props.isOpen}
+				title="Claim Points"
+				canOutsideClickClose={false}
+			>
 				<div className={Classes.DIALOG_BODY}>
 					{this.state.loading ? <FrameLoadingSpinner /> : (
-						<form>
+						<form onSubmit={this.onSubmit}>
 							<FormGroup
-								label="Select Point Sources"
+								label="Select sources to claim points for"
 								labelFor="selectedSources"
 								style={{display: 'flex'}}
 							>
@@ -73,22 +78,10 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 									items={this.state.sources}
 									onItemSelect={this.onSourceSelect}
 									onRemove={this.onSourceRemove}
+									onClear={this.onSourcesClear}
 									tagRenderer={this.tagRenderer}
 									itemRenderer={this.selectItemRenderer}
-									fill={true}
-									popoverProps={{
-										matchTargetWidth: true,
-										minimal: true,
-									}}
 								/>
-
-								<div style={{paddingTop: Spacing.Medium}}>
-									<Button
-										text="Clear"
-										icon="minus"
-										onClick={this.onClearClick}
-									/>
-								</div>
 							</FormGroup>
 						</form>
 					)}
@@ -123,15 +116,17 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		}
 	});
 
-	private onSourceRemove = (source: PointSourceItem) => this.setState(state => ({
-		selectedSources: state.selectedSources.filter(item => item !== source),
-	}));
+	private onSourceRemove = (source: PointSourceItem) => this.setState(state => (
+		{
+			selectedSources: state.selectedSources.filter(item => item !== source),
+		}
+	));
 
-	private onClearClick = () => this.setState({
+	private onSourcesClear = () => this.setState({
 		selectedSources: [],
 	});
 
-	private onSubmit = async (event: React.MouseEvent<HTMLElement>) => {
+	private onSubmit = async (event: React.SyntheticEvent) => {
 		event.preventDefault();
 
 		if (this.state.processing || this.state.selectedSources.length === 0)
@@ -140,6 +135,8 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		this.setState({
 			processing: true,
 		});
+
+		let failedCount = 0;
 
 		try {
 			await allSettled(this.state.selectedSources.map(async source => {
@@ -150,6 +147,8 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 						source: source.name,
 					});
 				} catch (error) {
+					failedCount += 1;
+
 					toaster.error(`Failed claiming points for ${ucwords(source.name)}.`);
 
 					throw error;
@@ -165,12 +164,16 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			return;
 		}
 
-		toaster.success(
-			'Points claimed.',
-		);
+		if (failedCount === 0)
+			toaster.success('Points claimed.');
+		else if (failedCount < this.state.selectedSources.length)
+			toaster.error('Some points could not be claimed.');
+		else if (failedCount === this.state.selectedSources.length)
+			toaster.error('No points could be claimed');
 
 		this.setState({
 			processing: false,
+			selectedSources: [],
 		});
 
 		this.props.onClose();
@@ -180,7 +183,13 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		return ucwords(source.name);
 	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (
+		item,
+		{
+			handleClick,
+			modifiers,
+		},
+	) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}

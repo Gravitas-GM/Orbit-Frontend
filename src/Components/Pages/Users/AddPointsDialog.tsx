@@ -1,8 +1,9 @@
 import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {ItemRenderer, MultiSelect2 as MultiSelect} from '@blueprintjs/select';
+import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
+import {MultiSelect} from '../../Select/MultiSelect';
 import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
 import * as toaster from '../../../Toaster';
@@ -40,9 +41,15 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points">
+			<Dialog onClose={this.props.onClose} isOpen={true} title="Add Points" canOutsideClickClose={false}>
 				<div className={Classes.DIALOG_BODY}>
-					<div style={{display: 'flex', justifyContent: 'center', paddingBottom: 15}}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							paddingBottom: 15,
+						}}
+					>
 						<Button
 							intent={Intent.SUCCESS}
 							text="Preset Source"
@@ -60,7 +67,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 					</div>
 
 					{this.state.showSourceForm && (
-						<form>
+						<form onSubmit={this.onSubmit}>
 							<FormGroup
 								label="Source"
 							>
@@ -76,19 +83,15 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 									onRemove={this.onRemoveSourceItem}
 									tagRenderer={this.tagItemRenderer}
 									itemRenderer={this.selectItemRenderer}
-									fill={true}
-									popoverProps={{
-										matchTargetWidth: true,
-										minimal: true,
-									}}
+									onClear={this.onSelectedSourcesClear}
 								/>
 							</FormGroup>
 						</form>
 					)}
 
 					{this.state.showCustomSourceForm && (
-						<form>
-							<FormGroup label="Name">
+						<form onSubmit={this.onSubmit}>
+							<FormGroup label="Name" labelInfo="(required)">
 								<InputGroup
 									value={this.state.sourceName}
 									onChange={this.onSourceNameChange}
@@ -96,7 +99,7 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 								/>
 							</FormGroup>
 
-							<FormGroup label="Point Value">
+							<FormGroup label="Point Value" labelInfo="(required)">
 								<NumericInput
 									min={0}
 									name="pointValue"
@@ -120,13 +123,23 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 						<Button
 							intent={Intent.PRIMARY}
 							text="Submit"
-							onClick={this.onSubmitClick}
+							onClick={this.onSubmit}
 							loading={this.props.processing}
+							disabled={!this.isSubmitEnabled()}
 						/>
 					</div>
 				</div>
 			</Dialog>
 		);
+	}
+
+	private isSubmitEnabled() {
+		if (this.state.showSourceForm)
+			return this.state.selectedSources.length > 0;
+		else if (this.state.showCustomSourceForm)
+			return this.state.sourceName.length > 0 && this.state.pointValue > 0;
+
+		return false;
 	}
 
 	private onShowCustomSourceFormClick = () => this.setState({
@@ -139,9 +152,14 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		showSourceForm: true,
 	});
 
-	private onPointValueChange = (pointValue: number) => this.setState({
-		pointValue,
-	});
+	private onPointValueChange = (pointValue: number) => {
+		if (isNaN(pointValue))
+			return;
+
+		this.setState({
+			pointValue,
+		});
+	};
 
 	private onSourceNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		sourceName: event.currentTarget.value,
@@ -151,7 +169,9 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		description: event.currentTarget.value,
 	});
 
-	private onSubmitClick = () => {
+	private onSubmit = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+
 		if (this.state.showSourceForm) {
 			if (this.state.selectedSources.length === 0) {
 				toaster.error('Please select a source.');
@@ -160,10 +180,11 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			}
 
 			const dialogPointItems = this.state.selectedSources.map((source: PointSourceItem) => (
-				{
-					sourceName: source.name,
-					pointValue: source.point_value,
-				}),
+					{
+						sourceName: source.name,
+						pointValue: source.point_value,
+					}
+				),
 			);
 
 			this.props.onSubmit(dialogPointItems);
@@ -186,7 +207,13 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 		]);
 	};
 
-	private selectItemRenderer: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
+	private selectItemRenderer: ItemRenderer<PointSourceItem> = (
+		item,
+		{
+			handleClick,
+			modifiers,
+		},
+	) => {
 		if (!modifiers.matchesPredicate) {
 			return null;
 		}
@@ -218,8 +245,12 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 	private onRemoveSourceItem = (item: PointSourceItem) => {
 		this.setState(state => {
 			return {
-				selectedSources: state.selectedSources.filter(((filterItem) => filterItem !== item)),
+				selectedSources: state.selectedSources.filter((filterItem) => filterItem !== item),
 			};
 		});
 	};
+
+	private onSelectedSourcesClear = () => this.setState({
+		selectedSources: [],
+	});
 }

@@ -1,12 +1,15 @@
 @import "../../../../../variables";
 
 .gm-log-history-card {
+	height: $gm-sidebar-history-height;
+
 	ul {
 		display: flex;
 		flex-direction: column;
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
+
 		&:not(:first-child) {
 			margin-top: $spacing-medium;
 		}
@@ -18,7 +21,7 @@
 	}
 
 	&:last-of-type {
-		margin-bottom: $spacing-large;
+		margin-bottom: $spacing-medium;
 	}
 
 	li {

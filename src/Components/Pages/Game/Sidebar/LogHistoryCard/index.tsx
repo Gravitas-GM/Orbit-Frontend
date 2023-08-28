@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {Button, Icon} from '@blueprintjs/core';
+import SimpleBar from 'simplebar-react';
 import {NonIdealState} from '../../../../NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 import {formatDate} from '../../../../Utility/date';
@@ -10,15 +11,14 @@ import './LogHistoryCard.scss';
 interface IProps {
 	history: HistoryItem[] | null;
 	processing: boolean;
-	refresh: () => void;
-	loadMore: () => void;
+	onLoadClick: () => void;
 }
 
 type DateGroup = {
 	[key: string]: HistoryItem[];
 };
 
-export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, loadMore}) => {
+export const LogHistoryCard: React.FC<IProps> = ({history, processing, onLoadClick}) => {
 	if (history === null || history.length === 0) {
 		return (
 			<GameCard title="Log" icon="history">
@@ -28,7 +28,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 						history !== null ? 'There isn\'t any history yet.' : 'There was an error getting history data.'
 					)}
 					action={(
-						<Button icon="refresh" text="Refresh history" onClick={refresh} loading={processing} />
+						<Button icon="refresh" text="Refresh history" onClick={onLoadClick} loading={processing} />
 					)}
 				/>
 			</GameCard>
@@ -56,7 +56,7 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 
 	return (
 		<GameCard title="Log" icon="history">
-			<div className="card-content-wrapper gm-log-history-card">
+			<SimpleBar className="card-content-wrapper gm-log-history-card">
 				{Object.keys(groupedDates).map(date => {
 					return (
 						<ul key={date}>
@@ -70,11 +70,11 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, refresh, 
 				})}
 
 				<div className="button-wrapper">
-					<Button onClick={loadMore} loading={processing}>
+					<Button onClick={onLoadClick} loading={processing}>
 						Load More...
 					</Button>
 				</div>
-			</div>
+			</SimpleBar>
 		</GameCard>
 	);
 };
