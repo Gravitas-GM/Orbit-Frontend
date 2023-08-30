@@ -21,6 +21,9 @@ export interface QuizSubmissionEndpoints {
 
 export interface QuizSubmission {
 	id: number,
+	account: {
+		id: Id,
+	},
 	user: User,
 	timestamp: Date,
 	questionCount: number,

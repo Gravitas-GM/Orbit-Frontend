@@ -36,7 +36,9 @@ export interface QuestionTagEndpoints {
 
 export interface QuestionTag {
 	id: Id,
-	accountId: number,
+	account: {
+		id: Id,
+	},
 	label: string,
 	members: User[],
 }
