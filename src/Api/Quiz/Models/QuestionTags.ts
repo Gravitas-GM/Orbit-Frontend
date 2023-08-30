@@ -41,7 +41,7 @@ export interface QuestionTag {
 	members: User[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id'>;
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'accountId'>;
 
 export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'accountId'>>;
 

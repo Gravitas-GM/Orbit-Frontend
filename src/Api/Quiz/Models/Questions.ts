@@ -9,7 +9,7 @@ export interface QuestionEndpoints {
 
 		PUT: {
 			query: Projectable;
-			body: QuestionCreatePayload;
+			body: QuestionUpdate;
 			response: Question;
 		};
 	};
@@ -22,7 +22,7 @@ export interface QuestionEndpoints {
 
 		PATCH: {
 			params: Id;
-			body: QuestionUpdatePayload;
+			body: QuestionUpdate;
 			response: Question;
 		};
 
@@ -67,9 +67,31 @@ export interface MultipleChoiceQuestion extends QuestionBase {
 
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
 
-export type QuestionCreatePayload = Omit<Question, 'id'>;
+interface QuestionUpdateBase {
+	tag: number,
+	prompt: string,
+	kind: QuestionKind,
+}
 
-export type QuestionUpdatePayload = Partial<Omit<Question, 'id' | 'accountId'>>;
+export interface FreeTextQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.FreeText,
+	answers: string[],
+}
+
+export interface BooleanQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.Boolean,
+	answer: boolean,
+	trueLabel: string | null,
+	falseLabel: string | null,
+}
+
+export interface MultipleChoiceQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.MultipleChoice,
+	choices: string[],
+	answerIndex: number,
+}
+
+export type QuestionUpdate = FreeTextQuestionUpdate | BooleanQuestionUpdate | MultipleChoiceQuestionUpdate;
 
 export class QuestionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -81,7 +103,7 @@ export class QuestionModel {
 		});
 	}
 
-	public static create(payload: QuestionCreatePayload, projection?: Projection) {
+	public static create(payload: QuestionUpdate, projection?: Projection) {
 		return quizClient.put('/questions', payload, {
 			params: {
 				p: projection,
@@ -93,7 +115,7 @@ export class QuestionModel {
 		return quizClient.get<'/questions/:question'>(`/questions/${question}`);
 	}
 
-	public static update(question: Id, payload: QuestionUpdatePayload) {
+	public static update(question: Id, payload: QuestionUpdate) {
 		return quizClient.patch<'/questions/:question'>(`/questions/${question}`, payload);
 	}
 

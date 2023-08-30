@@ -77,7 +77,7 @@ export class QuizModel {
 		return quizClient.post('/quiz/start');
 	}
 
-	public static finish() {
-		return quizClient.post('/quiz/finish');
+	public static finish(payload: QuizFinishPayload) {
+		return quizClient.post('/quiz/finish', payload);
 	}
 }
