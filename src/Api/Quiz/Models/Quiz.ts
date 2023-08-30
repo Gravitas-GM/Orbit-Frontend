@@ -46,7 +46,6 @@ export interface MultipleChoiceQuestionPrompt extends QuestionPromptBase {
 
 export type QuestionPrompt = FreeTextQuestionPrompt | BooleanQuestionPrompt | MultipleChoiceQuestionPrompt;
 
-
 interface AnswerBase {
 	id: number,
 	kind: QuestionKind,
