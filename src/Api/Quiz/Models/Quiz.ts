@@ -1,6 +1,7 @@
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {quizClient} from '../../index';
 import {QuestionKind} from './Questions';
-import {QuizSubmission} from './QuizSubmissions';
+import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
 export interface QuizEndpoints {
 	'/quiz/start': {
@@ -74,10 +75,24 @@ export interface QuizFinishPayload {
 
 export class QuizModel {
 	public static start() {
-		return quizClient.post('/quiz/start');
+		return quizClient.post('/quiz/start').then(response => {
+			response.data = QuizModel.denormalizeQuiz(response.data);
+
+			return response;
+		});
 	}
 
 	public static finish(payload: QuizFinishPayload) {
-		return quizClient.post('/quiz/finish', payload);
+		return quizClient.post('/quiz/finish', payload).then(response => {
+			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
+
+			return response;
+		});
+	}
+
+	private static denormalizeQuiz(quiz: Quiz) {
+		quiz.endTimestamp = parseApiTimestamp(quiz.endTimestamp);
+
+		return quiz;
 	}
 }

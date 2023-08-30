@@ -1,6 +1,7 @@
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Id, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
-import {QuizSubmission} from './QuizSubmissions';
+import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
 export interface UserEndpoints {
 	'/users/:id': {
@@ -32,14 +33,32 @@ export interface User {
 
 export class UserModel {
 	public static read(user: Id) {
-		return quizClient.get<'/users/:id'>(`/users/${user}`);
+		return quizClient.get<'/users/:id'>(`/users/${user}`).then(response => {
+			response.data = UserModel.denormalizeUser(response.data);
+
+			return response;
+		});
 	}
 
 	public static getCurrentUser() {
-		return quizClient.get('/users/me');
+		return quizClient.get('/users/me').then(response => {
+			response.data = UserModel.denormalizeUser(response.data);
+
+			return response;
+		});
 	}
 
 	public static getSubmissions() {
-		return quizClient.get('/users/me/submissions');
+		return quizClient.get('/users/me/submissions').then(response => {
+			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+
+			return response;
+		});
+	}
+
+	private static denormalizeUser(user: User) {
+		user.nextQuizTimestamp = parseApiTimestamp(user.nextQuizTimestamp);
+
+		return user;
 	}
 }

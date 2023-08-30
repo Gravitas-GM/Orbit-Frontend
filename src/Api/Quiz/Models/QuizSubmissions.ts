@@ -1,3 +1,4 @@
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {User} from './Users';
@@ -60,10 +61,24 @@ export class QuizSubmissionModel {
 				p: projection,
 				q: query,
 			},
+		}).then(response => {
+			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+
+			return response;
 		});
 	}
 
 	public static read(submission: Id) {
-		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`);
+		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`).then(response => {
+			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
+
+			return response;
+		});
+	}
+
+	public static denormalizeQuizSubmission(submission: QuizSubmission) {
+		submission.timestamp = parseApiTimestamp(submission.timestamp);
+
+		return submission;
 	}
 }
