@@ -33,10 +33,10 @@ export interface QuestionEndpoints {
 	};
 }
 
-interface BaseQuestion {
+interface QuestionBase {
 	id: number,
 	accountId: number,
-	tagId: number|null,
+	tagId: number | null,
 	prompt: string,
 	kind: QuestionKind,
 }
@@ -47,19 +47,19 @@ export enum QuestionKind {
 	MultipleChoice = 'multiple choice',
 }
 
-export interface FreeTextQuestion extends BaseQuestion {
+export interface FreeTextQuestion extends QuestionBase {
 	kind: QuestionKind.FreeText,
 	answers: string[],
 }
 
-export interface BooleanQuestion extends BaseQuestion {
+export interface BooleanQuestion extends QuestionBase {
 	kind: QuestionKind.Boolean,
 	answer: boolean,
-	trueLabel: string|null,
-	falseLabel: string|null,
+	trueLabel: string | null,
+	falseLabel: string | null,
 }
 
-export interface MultipleChoiceQuestion extends BaseQuestion {
+export interface MultipleChoiceQuestion extends QuestionBase {
 	kind: QuestionKind.MultipleChoice,
 	choices: string[],
 	answerIndex: number,
