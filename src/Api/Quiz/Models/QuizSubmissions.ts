@@ -1,5 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
-import {BooleanQuestion, FreeTextQuestion, MultipleChoiceQuestion} from './Questions';
+import {QuestionKind} from './Questions';
 import {User} from './Users';
 
 export interface QuizSubmissionEndpoints {
@@ -20,34 +20,38 @@ export interface QuizSubmissionEndpoints {
 
 export interface QuizSubmission {
 	id: number,
-	userId: User,
+	user: User,
 	timestamp: Date,
+	questionCount: number,
 	correctCount: number,
 	questions: QuestionResponse[],
 }
 
-class BaseQuestion {
-}
-
-interface BaseQuestionResponse extends Omit<BaseQuestion, 'tagId' | 'kind'> {
+interface QuestionResponseBase {
 	correct: boolean,
+	prompt: string,
+	kind: QuestionKind,
 }
 
-export interface FreeTextResponse extends BaseQuestionResponse, Omit<FreeTextQuestion, 'tagId'> {
+export interface FreeTextResponse extends QuestionResponseBase {
+	answers: string[],
 	response: string,
 }
 
-export interface BooleanResponse extends BaseQuestionResponse, Omit<BooleanQuestion, 'tagId'> {
+export interface BooleanResponse extends QuestionResponseBase {
+	answer: boolean,
 	response: boolean,
+	trueLabel: string,
+	falseLabel: string,
 }
 
-export interface MultipleChoiceResponse extends BaseQuestionResponse, Omit<MultipleChoiceQuestion, 'tagId'> {
+export interface MultipleChoiceResponse extends QuestionResponseBase {
+	choices: string[],
+	answerIndex: number,
 	response: number,
 }
 
 export type QuestionResponse = FreeTextResponse | BooleanResponse | MultipleChoiceResponse;
-
-export type QuizSubmissionCreatePayload = Omit<QuizSubmission, 'id'>;
 
 export class QuizSubmissionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
