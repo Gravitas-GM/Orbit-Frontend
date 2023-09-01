@@ -1,4 +1,4 @@
-import {Id, quizClient} from '../../index';
+import {Id, Projection, quizClient} from '../../index';
 
 export interface AccountEndpoints {
 	'/settings/:account': {
@@ -31,11 +31,19 @@ export enum Frequency {
 export type AccountUpdatePayload = Partial<Omit<Account, 'id'>>;
 
 export class AccountModel {
-	public static read(account: Id) {
-		return quizClient.get<'/settings/:account'>(`/settings/${account}`);
+	public static read(account: Id, projection?: Projection) {
+		return quizClient.get<'/settings/:account'>(`/settings/${account}`, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
-	public static update(account: Id, payload: AccountUpdatePayload) {
-		return quizClient.patch<'/settings/:account'>(`/settings/${account}`, payload);
+	public static update(account: Id, payload: AccountUpdatePayload, projection?: Projection) {
+		return quizClient.patch<'/settings/:account'>(`/settings/${account}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 }

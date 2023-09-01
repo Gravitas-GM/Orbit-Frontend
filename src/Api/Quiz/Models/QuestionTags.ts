@@ -65,12 +65,20 @@ export class QuestionTagModel {
 		});
 	}
 
-	public static read(questionTag: Id) {
-		return quizClient.get<'/tags/:tag'>(`/tags/${questionTag}`);
+	public static read(questionTag: Id, projection?: Projection) {
+		return quizClient.get<'/tags/:tag'>(`/tags/${questionTag}`, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
-	public static update(questionTag: Id, payload: QuestionTagUpdatePayload) {
-		return quizClient.patch<'/tags/:tag'>(`/tags/${questionTag}`, payload);
+	public static update(questionTag: Id, payload: QuestionTagUpdatePayload, projection?: Projection) {
+		return quizClient.patch<'/tags/:tag'>(`/tags/${questionTag}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static delete(questionTag: Id) {

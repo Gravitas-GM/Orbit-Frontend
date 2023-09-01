@@ -113,12 +113,20 @@ export class QuestionModel {
 		});
 	}
 
-	public static read(question: Id) {
-		return quizClient.get<'/questions/:question'>(`/questions/${question}`);
+	public static read(question: Id, projection?: Projection) {
+		return quizClient.get<'/questions/:question'>(`/questions/${question}`, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
-	public static update(question: Id, payload: QuestionUpdate) {
-		return quizClient.patch<'/questions/:question'>(`/questions/${question}`, payload);
+	public static update(question: Id, payload: QuestionUpdate, projection?: Projection) {
+		return quizClient.patch<'/questions/:question'>(`/questions/${question}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static delete(question: Id) {

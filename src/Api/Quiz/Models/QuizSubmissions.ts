@@ -71,8 +71,12 @@ export class QuizSubmissionModel {
 		});
 	}
 
-	public static read(submission: Id) {
-		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`).then(response => {
+	public static read(submission: Id, projection?: Projection) {
+		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`, {
+			params: {
+				p: projection,
+			},
+		}).then(response => {
 			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
 
 			return response;
