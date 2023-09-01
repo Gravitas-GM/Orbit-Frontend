@@ -1,4 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Question} from './Questions';
 import {User} from './Users';
 
 export interface QuestionTagEndpoints {
@@ -41,6 +42,7 @@ export interface QuestionTag {
 	},
 	label: string,
 	members: User[],
+	questions: Question[],
 }
 
 export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'accountId'>;
