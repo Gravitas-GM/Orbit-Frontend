@@ -3,7 +3,7 @@ import { PageHeader } from "../../../PageHeader";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { RouteComponentProps } from "react-router";
 import { QuestionTag, QuestionTagModel } from "../../../../Api/Quiz/Models/QuestionTags";
-import { Question, QuestionCreatePayload, QuestionModel } from "../../../../Api/Quiz/Models/Questions";
+import {Question, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
 import { AnswerForm } from "./AnswerForm";
 import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
 import * as toaster from "../../../../Toaster";
@@ -132,7 +132,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		});
 	};
 
-	private saveQuestion = async (questionData: QuestionCreatePayload) => {
+	private saveQuestion = async (questionData: QuestionUpdate) => {
 		this.setState({
 			processing: true,
 		});

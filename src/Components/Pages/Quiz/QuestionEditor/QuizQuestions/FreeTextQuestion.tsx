@@ -2,7 +2,7 @@ import React from "react";
 import { Button, H3, InputGroup, Intent } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
+import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
 import { Spacing } from "../../../../../Styles/variables";
 import * as toaster from "../../../../../Toaster";
 import "../AnswerForm.scss";
@@ -13,7 +13,7 @@ interface IProps {
 	tagId: number;
 	accountId: number;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	saveQuestion: (question: QuestionUpdate) => Promise<void>;
 	processing: boolean;
 }
 
@@ -48,9 +48,8 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 	}, [answers]);
 
 	const onClickSave = React.useCallback(() => {
-		const questionData = {
-			accountId: props.accountId,
-			tagId: props.tagId,
+		const questionData: QuestionUpdate = {
+			tag: props.tagId,
 			prompt: props.prompt!,
 			kind: QuestionKind.FreeText,
 			answers: answers,

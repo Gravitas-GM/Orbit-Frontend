@@ -2,12 +2,11 @@ import React from "react";
 import { Dialog, Classes, InputGroup, Button, Intent, MenuItem } from "@blueprintjs/core";
 import { MultiSelect2 as MultiSelect, ItemRenderer } from "@blueprintjs/select";
 import { QuestionTag, QuestionTagCreatePayload } from "../../../../Api/Quiz/Models/QuestionTags";
-import { Spacing } from "../../../../Styles/variables";
+import {User} from '../../../../Api/Quiz/Models/Users';
 import { ucwords } from "../../../Utility/string";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../Api/errors/symfony";
 import { UserContext } from "../../../../Session";
-import { User } from "../../../../Api/Hub/Models/Users";
 
 interface IProps {
 	isOpen: boolean;
@@ -49,7 +48,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		if (this.props !== prevProps) {
 			this.setState({
 				tag: this.props.tag,
-				tagUsers: this.props.users.filter(user => this.props.tag?.members.includes(user.id)),
+				tagUsers: this.props.users.filter(user => this.props.tag?.members.includes(user)),
 				hubUsers: this.props.users,
 				tagName: this.props.tag?.label ?? "",
 				dialogTitle: this.props.tag ? TagEditorDialogTitle.EDIT : TagEditorDialogTitle.ADD,
@@ -139,8 +138,12 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 
 		const tag: QuestionTagCreatePayload = {
 			label: this.state.tagName,
-			members: this.state.tagUsers.map(user => user.id),
-			accountId: this.context!.account.id,
+			members: this.state.tagUsers,
+			account: {
+				id: this.context!.account.id
+			},
+			questions: [],
+			// TODO: This editor needs the ability to add questions to the tag /Larry
 		};
 
 		await this.props.onSubmit(tag);
@@ -181,13 +184,9 @@ const selectItemRenderer: ItemRenderer<User> = (user, { handleClick, modifiers }
 		return null;
 	}
 
-	const name = `${user.firstName} ${user.lastName}`;
-
-	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(name)} onClick={handleClick} />;
+	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(user.name)} onClick={handleClick} />;
 };
 
 const tagRenderer = (user: User) => {
-	const name = `${user.firstName} ${user.lastName}`;
-
-	return ucwords(name);
+	return ucwords(user.name);
 };

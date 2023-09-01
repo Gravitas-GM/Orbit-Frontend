@@ -27,7 +27,7 @@ export const RenderPageItems: React.FC<IProps> = ({items, deleteCallback}) => {
 					<tr key={question.id}>
 						<td>{question.prompt}</td>
 
-						<td style={{ width: 240}}>{question.tagId}</td>
+						<td style={{ width: 240}}>{question.tag}</td>
 
 						<td style={{ width: 80}}>
 							<div style={{ display: 'flex', justifyContent: 'space-between' }}>
