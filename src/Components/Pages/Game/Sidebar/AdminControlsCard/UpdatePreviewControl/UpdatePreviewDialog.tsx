@@ -105,7 +105,7 @@ function sortUpdateData(data: PlayerUpdate[]) {
 			const a = getNewPointsFromPlayerUpdate(playerA);
 			const b = getNewPointsFromPlayerUpdate(playerB);
 
-			return b - a;
+			return a - b;
 		});
 
 	return [...otherItems, ...deletedItems];
