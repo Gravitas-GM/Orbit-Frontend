@@ -1,4 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Account} from './Accounts';
 import {Question} from './Questions';
 import {User} from './Users';
 
@@ -37,17 +38,15 @@ export interface QuestionTagEndpoints {
 
 export interface QuestionTag {
 	id: Id,
-	account: {
-		id: Id,
-	},
+	account: Pick<Account, 'id'>,
 	label: string,
 	members: User[],
 	questions: Question[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'accountId'>;
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account'>;
 
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'accountId'>>;
+export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account'>>;
 
 export class QuestionTagModel {
 	public static list(projection?: Projection, query?: QueryDocument) {

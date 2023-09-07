@@ -1,5 +1,6 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Account} from './Accounts';
 import {QuestionKind} from './Questions';
 import {User} from './Users';
 
@@ -21,9 +22,7 @@ export interface QuizSubmissionEndpoints {
 
 export interface QuizSubmission {
 	id: number,
-	account: {
-		id: Id,
-	},
+	account: Pick<Account, 'id'>,
 	user: User,
 	timestamp: Date,
 	questionCount: number,
@@ -38,11 +37,13 @@ interface QuestionResponseBase {
 }
 
 export interface FreeTextResponse extends QuestionResponseBase {
+	kind: QuestionKind.FreeText,
 	answers: string[],
 	response: string,
 }
 
 export interface BooleanResponse extends QuestionResponseBase {
+	kind: QuestionKind.Boolean,
 	answer: boolean,
 	response: boolean,
 	trueLabel: string,
@@ -50,6 +51,7 @@ export interface BooleanResponse extends QuestionResponseBase {
 }
 
 export interface MultipleChoiceResponse extends QuestionResponseBase {
+	kind: QuestionKind.MultipleChoice,
 	choices: string[],
 	answerIndex: number,
 	response: number,

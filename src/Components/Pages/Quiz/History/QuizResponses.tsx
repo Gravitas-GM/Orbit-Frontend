@@ -15,6 +15,18 @@ interface IProps {
 	questions: QuestionResponse[];
 }
 
+function isMultipleChoiceResponse(value: any): value is MultipleChoiceResponse {
+	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.MultipleChoice;
+}
+
+function isBooleanResponse(value: any): value is BooleanResponse {
+	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.Boolean;
+}
+
+function isFreeTextResponse(value: any): value is FreeTextResponse {
+	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.FreeText;
+}
+
 export const QuizResponses: React.FC<IProps> = ({ questions }) => {
 	return (
 		<SimpleBar className="questions-container">
@@ -26,14 +38,14 @@ export const QuizResponses: React.FC<IProps> = ({ questions }) => {
 };
 
 const Response: React.FC<{ question: QuestionResponse }> = ({ question }) => {
-	switch (question.kind) {
-		case QuestionKind.MultipleChoice:
-			return <MultipleChoiceAnswer question={question as MultipleChoiceResponse} />;
-		case QuestionKind.Boolean:
-			return <BooleanAnswer question={question as BooleanResponse} />;
-		case QuestionKind.FreeText:
-			return <FreeTextAnswer question={question as FreeTextResponse} />;
-		default:
-			return null;
-	}
+	if (isMultipleChoiceResponse(question))
+		return <MultipleChoiceAnswer question={question} />;
+
+	if (isBooleanResponse(question))
+		return <BooleanAnswer question={question} />;
+
+	if (isFreeTextResponse(question))
+		return <FreeTextAnswer question={question} />;
+
+	return null;
 };

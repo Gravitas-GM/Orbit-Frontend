@@ -75,7 +75,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 					tags={this.state.tags}
 					processing={this.state.processing}
 					question={this.state.question}
-					saveQuestion={this.saveQuestion}
+					onQuestionSave={this.onQuestionSave}
 					validationFailures={this.state.validationFailures}
 				/>
 			</section>
@@ -132,7 +132,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		});
 	};
 
-	private saveQuestion = async (questionData: QuestionUpdate) => {
+	private onQuestionSave = async (questionData: QuestionUpdate) => {
 		this.setState({
 			processing: true,
 		});

@@ -139,9 +139,6 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		const tag: QuestionTagCreatePayload = {
 			label: this.state.tagName,
 			members: this.state.tagUsers,
-			account: {
-				id: this.context!.account.id
-			},
 			questions: [],
 			// TODO: This editor needs the ability to add questions to the tag /Larry
 		};
@@ -188,5 +185,5 @@ const selectItemRenderer: ItemRenderer<User> = (user, { handleClick, modifiers }
 };
 
 const tagRenderer = (user: User) => {
-	return ucwords(user.name);
+	return user.name;
 };
