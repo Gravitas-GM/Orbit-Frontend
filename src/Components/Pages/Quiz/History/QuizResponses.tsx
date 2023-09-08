@@ -47,5 +47,5 @@ const Response: React.FC<{ question: QuestionResponse }> = ({ question }) => {
 	if (isFreeTextResponse(question))
 		return <FreeTextAnswer question={question} />;
 
-	return null;
+	throw new Error(`Unsupported question kind.`);
 };
