@@ -16,15 +16,15 @@ interface IProps {
 }
 
 function isMultipleChoiceResponse(value: any): value is MultipleChoiceResponse {
-	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.MultipleChoice;
+	return typeof value === 'object' && value.kind === QuestionKind.MultipleChoice;
 }
 
 function isBooleanResponse(value: any): value is BooleanResponse {
-	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.Boolean;
+	return typeof value === 'object' && value.kind === QuestionKind.Boolean;
 }
 
 function isFreeTextResponse(value: any): value is FreeTextResponse {
-	return typeof value === 'object' && (value.kind ?? null) === QuestionKind.FreeText;
+	return typeof value === 'object' && value.kind === QuestionKind.FreeText;
 }
 
 export const QuizResponses: React.FC<IProps> = ({ questions }) => {
