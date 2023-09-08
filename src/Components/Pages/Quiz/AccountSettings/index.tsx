@@ -228,7 +228,8 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 }
 
 const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate) return null;
+	if (!modifiers.matchesPredicate)
+		return null;
 
 	return (
 		<MenuItem
@@ -244,9 +245,8 @@ const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick,
 };
 
 const renderPointSourceOption: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
-	if (!modifiers.matchesPredicate) {
+	if (!modifiers.matchesPredicate)
 		return null;
-	}
 
 	return <MenuItem active={modifiers.active} key={item.id.$oid} text={ucwords(item.name)} onClick={handleClick} />;
 };
