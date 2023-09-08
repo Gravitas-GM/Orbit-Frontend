@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { QuestionKind } from "../../../../Api/Quiz/Models/Questions";
 import {
 	BooleanResponse,

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Icon, Intent } from "@blueprintjs/core";
 import { IconSize } from "../../../IconSize";
 

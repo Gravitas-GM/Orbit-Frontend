@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { HTMLTable, Button, AnchorButton } from "@blueprintjs/core";
 import { Question } from "../../../../Api/Quiz/Models/Questions";
 import { NonIdealState } from "../../../NonIdealState";

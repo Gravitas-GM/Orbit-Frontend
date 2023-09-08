@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { Dialog, Classes, InputGroup, Button, Intent, MenuItem } from "@blueprintjs/core";
 import { MultiSelect2 as MultiSelect, ItemRenderer } from "@blueprintjs/select";
 import { QuestionTag, QuestionTagCreatePayload } from "../../../../Api/Quiz/Models/QuestionTags";

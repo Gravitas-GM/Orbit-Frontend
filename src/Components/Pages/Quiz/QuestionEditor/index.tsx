@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { PageHeader } from "../../../PageHeader";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { RouteComponentProps } from "react-router";

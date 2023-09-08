@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { InputGroup, Button, MenuItem } from "@blueprintjs/core";
 import {QuestionKind, Question, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
 import { Spacing } from "../../../../Styles/variables";

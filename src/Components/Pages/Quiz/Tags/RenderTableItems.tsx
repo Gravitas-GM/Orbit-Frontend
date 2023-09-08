@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { NonIdealState, HTMLTable, Button } from "@blueprintjs/core";
 import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
 

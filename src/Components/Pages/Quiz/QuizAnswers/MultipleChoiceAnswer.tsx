@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Icon } from "@blueprintjs/core";
 import { MultipleChoiceResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import { IconSize } from "../../../../IconSize";

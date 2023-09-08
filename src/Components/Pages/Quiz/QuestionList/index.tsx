@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { PageHeader } from "../../../PageHeader";
 import { AnchorButton, Button, InputGroup } from "@blueprintjs/core";
 import { Spacing } from "../../../../Styles/variables";

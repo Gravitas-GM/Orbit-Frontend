@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { UserContext } from "../../../../Session";
 import { PageHeader } from "../../../PageHeader";
 import { Button, Classes, Dialog, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { Button, InputGroup, Intent, MenuItem } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
 import { PageHeader } from "../../../PageHeader";

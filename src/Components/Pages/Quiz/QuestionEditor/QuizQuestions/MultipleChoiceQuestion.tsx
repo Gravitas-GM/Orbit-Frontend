@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react';
 import { Button, H3, InputGroup, Radio, Intent } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";

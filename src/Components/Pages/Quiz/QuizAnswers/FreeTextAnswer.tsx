@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Icon } from "@blueprintjs/core";
 import { FreeTextResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import { IconSize } from "../../../../IconSize";

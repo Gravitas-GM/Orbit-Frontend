@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Button, Intent } from "@blueprintjs/core";
 import { useMemo } from "react";
 import { QuizSubmission } from "../../../../Api/Quiz/Models/QuizSubmissions";
