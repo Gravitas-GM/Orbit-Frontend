@@ -76,17 +76,14 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 		}
 
 		const [pointSources, account] = data;
-
-		const frequency = account.quizFrequency;
-		const sourceId = account.completedRewardPointSourceId;
-		const completedRewardSource = pointSources.find((source) => source.id.$oid === sourceId?.toString()) ?? null;
-		const questionCount = account.questionCount;
+		const completedRewardSource = pointSources.find((source) => source.id.$oid ===
+			account.completedRewardPointSourceId?.toString()) ?? null;
 
 		this.setState({
 			loading: false,
 			pointSources,
-			frequency,
-			questionCount,
+			frequency: account.quizFrequency,
+			questionCount: account.questionCount,
 			completedRewardSource,
 		});
 	}
@@ -230,7 +227,13 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 	};
 }
 
-const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick, handleFocus, modifiers}) => {
+const renderFrequencyOption: ItemRenderer<Frequency> = (frequency,
+	{
+		handleClick,
+		handleFocus,
+		modifiers,
+	},
+) => {
 	if (!modifiers.matchesPredicate) return null;
 
 	return (
