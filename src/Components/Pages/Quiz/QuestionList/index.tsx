@@ -43,13 +43,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title="Quiz - Questions List">
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: Spacing.Large,
-						}}
-					>
+					<div style={{display: 'flex', flexDirection: 'column', gap: Spacing.Large}}>
 						<InputGroup
 							type="search"
 							leftIcon="search"

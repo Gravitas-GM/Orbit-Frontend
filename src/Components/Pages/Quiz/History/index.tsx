@@ -94,14 +94,12 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 			const submissionUsers = quizSubmissions.map((submission) => submission.user.id);
 
-			this.setState((state) => (
-				{
-					users: state.users.filter((user) => submissionUsers.includes(user.id)),
-					quizSubmissions,
-					filteredSubmissions: null,
-					loading: false,
-				}
-			));
+			this.setState((state) => ({
+				users: state.users.filter((user) => submissionUsers.includes(user.id)),
+				quizSubmissions,
+				filteredSubmissions: null,
+				loading: false,
+			}));
 		} else {
 			// here, since the user isn't an admin we aren't filtering other users' submissions
 			// assuming the submissions endpoint return only the current user's submissions.
