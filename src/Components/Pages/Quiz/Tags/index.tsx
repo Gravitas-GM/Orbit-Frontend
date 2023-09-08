@@ -126,15 +126,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			loading: true,
 		});
 
-		let totalPages = 0;
 		let tags: QuestionTag[] = [];
 
 		try {
 			tags = await QuestionTagModel.list().then((res) => res.data);
-
-			totalPages = Math.ceil(tags.length / ITEMS_PER_PAGE);
-
-			totalPages = totalPages === 0 ? 1 : totalPages;
 		} catch (err) {
 			toaster.error('Failed to fetch question tags');
 
@@ -143,6 +138,8 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			});
 
 			history.push('/');
+
+			return;
 		}
 
 		let users: User[] = [];
@@ -157,7 +154,13 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			});
 
 			history.push('/');
+
+			return;
 		}
+
+		let totalPages = 0;
+		totalPages = Math.ceil(tags.length / ITEMS_PER_PAGE);
+		totalPages = totalPages === 0 ? 1 : totalPages;
 
 		this.setState({
 			tags,
@@ -200,11 +203,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 		try {
 			await QuestionTagModel.delete(this.state.tagToDelete!.id);
-
-			toaster.success('Tag deleted successfully');
-
-			// should we refetch the tags or just remove it from the list?
-			await this.fetchData();
 		} catch (err) {
 			this.setState({
 				showDeleteDialog: false,
@@ -214,6 +212,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 			return;
 		}
+
+		toaster.success('Tag deleted successfully');
+
+		// should we refetch the tags or just remove it from the list?
+		await this.fetchData();
 
 		this.setState({
 			tagToDelete: null,
@@ -225,22 +228,18 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
 
-		this.setState((state) => (
-			{
-				currentPage: state.currentPage + 1,
-			}
-		));
+		this.setState((state) => ({
+			currentPage: state.currentPage + 1,
+		}));
 	};
 
 	private onClickBack = () => {
 		if (this.state.currentPage === 1)
 			return;
 
-		this.setState((state) => (
-			{
-				currentPage: state.currentPage - 1,
-			}
-		));
+		this.setState((state) => ({
+			currentPage: state.currentPage - 1,
+		}));
 	};
 
 	private onSubmit = async (tag: QuestionTagCreatePayload) => {

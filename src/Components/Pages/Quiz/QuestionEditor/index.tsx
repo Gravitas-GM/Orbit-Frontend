@@ -83,13 +83,10 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 	}
 
 	private fetchTags = async () => {
-		try {
-			const tags = await QuestionTagModel.list().then((res) => res.data);
+		let tags: QuestionTag[] = [];
 
-			this.setState({
-				tags,
-				loading: false,
-			});
+		try {
+			tags = await QuestionTagModel.list().then((res) => res.data);
 		} catch (err) {
 			toaster.error('Error fetching tags');
 
@@ -98,7 +95,14 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			});
 
 			history.push('/');
+
+			return;
 		}
+
+		this.setState({
+			tags,
+			loading: false,
+		});
 	};
 
 	private fetchQuestion = async () => {
@@ -110,10 +114,6 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 
 		try {
 			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
-
-			this.setState({
-				question: question,
-			});
 		} catch (err) {
 			toaster.error('Error fetching question');
 
@@ -160,7 +160,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 
 		this.setState({
 			processing: false,
-			question: question,
+			question,
 		});
 	};
 }

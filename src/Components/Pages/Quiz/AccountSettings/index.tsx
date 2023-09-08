@@ -189,12 +189,11 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 				quizFrequency: this.state.frequency!,
 				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid,
 				questionCount: this.state.questionCount!,
-			}).then(() => {
-				toaster.success('Account settings updated.');
 			});
 		} catch (e) {
 			if (isValidationFailureError(e)) {
 				toaster.error('Failed to update account settings.');
+
 				this.setState({
 					failures: e.context.failures,
 				});
@@ -202,6 +201,8 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 				toaster.showUnhandledErrorMessage();
 			}
 		}
+
+		toaster.success('Account settings updated.');
 
 		this.setState({
 			processing: false,

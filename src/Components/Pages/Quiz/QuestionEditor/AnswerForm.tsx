@@ -92,11 +92,13 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 									onItemSelect={this.selectQuestionKind}
 									filterable={false}
 									itemRenderer={renderQuestionKindOption}
-									noResults={<MenuItem
-										disabled={true}
-										text="No results."
-										roleStructure="listoption"
-									/>}
+									noResults={(
+										<MenuItem
+											disabled={true}
+											text="No results."
+											roleStructure="listoption"
+										/>
+									)}
 								>
 									<Button
 										style={{minWidth: 200}}

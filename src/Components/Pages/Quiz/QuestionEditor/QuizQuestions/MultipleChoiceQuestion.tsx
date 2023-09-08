@@ -23,6 +23,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 	React.useEffect(() => {
 		if (props.question && props.question.kind === QuestionKind.MultipleChoice) {
 			setChoices(props.question.choices);
+
 			setAnswerIndex(props.question.answerIndex);
 		}
 	}, [props.question]);

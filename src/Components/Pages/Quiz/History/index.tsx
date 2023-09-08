@@ -144,7 +144,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 							items={this.state.users}
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 							itemRenderer={renderUserOption}
-							onItemSelect={this.handleUserSelect}
+							onItemSelect={this.onUserSelect}
 						>
 							<Button>
 								{
@@ -214,14 +214,10 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private handleUserSelect = (user: User) => {
-		const filteredSubmissions = this.state.quizSubmissions.filter((submission) => submission.user.id === user.id);
-
-		if (filteredSubmissions) {
-			this.setState({
-				filteredSubmissions,
-			});
-		}
+	private onUserSelect = (user: User) => {
+		this.setState(state => ({
+			filteredSubmissions: state.quizSubmissions.filter((submission) => submission.user.id === user.id),
+		}));
 	};
 
 	private onClose = () => {
@@ -251,15 +247,9 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	};
 }
 
-const renderUserOption: ItemRenderer<User> = (
-	user,
-	{
-		handleClick,
-		handleFocus,
-		modifiers,
-	},
-) => {
-	if (!modifiers.matchesPredicate) return null;
+const renderUserOption: ItemRenderer<User> = (user, {handleClick, handleFocus, modifiers}) => {
+	if (!modifiers.matchesPredicate)
+		return null;
 
 	return (
 		<MenuItem

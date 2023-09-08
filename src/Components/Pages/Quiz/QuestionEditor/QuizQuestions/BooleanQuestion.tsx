@@ -81,9 +81,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 								id={`boolean-label-${index}`}
 								type="text"
 								placeholder={option}
-								value={(
-									index === 0 ? trueLabel : falseLabel
-								) ?? ''}
+								value={(index === 0 ? trueLabel : falseLabel) ?? ''}
 								large={true}
 								style={{width: '100%'}}
 								onChange={onBooleanToggle}
