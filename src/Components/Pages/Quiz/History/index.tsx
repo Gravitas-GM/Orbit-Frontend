@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { UserContext } from "../../../../Session";
-import { PageHeader } from "../../../PageHeader";
-import { Button, Classes, Dialog, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
-import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { User, UserModel } from "../../../../Api/Hub/Models/Users";
-import { ucwords } from "../../../Utility/string";
-import { Permission } from "../../../../Permission";
-import { QuizSubmission, QuizSubmissionModel } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import "./QuizHistory.scss";
-import { Spacing } from "../../../../Styles/variables";
-import { NonIdealState } from "../../../NonIdealState";
-import { history } from "../../../../history";
-import { QuizResponses } from "./QuizResponses";
-import * as toaster from "../../../../Toaster";
-import { RenderHistoryItems } from "./RenderHistoryItems";
+import {UserContext} from '../../../../Session';
+import {PageHeader} from '../../../PageHeader';
+import {Button, Classes, Dialog, HTMLTable, Intent, MenuItem} from '@blueprintjs/core';
+import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {User, UserModel} from '../../../../Api/Hub/Models/Users';
+import {ucwords} from '../../../Utility/string';
+import {Permission} from '../../../../Permission';
+import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import './QuizHistory.scss';
+import {Spacing} from '../../../../Styles/variables';
+import {NonIdealState} from '../../../NonIdealState';
+import {history} from '../../../../history';
+import {QuizResponses} from './QuizResponses';
+import * as toaster from '../../../../Toaster';
+import {RenderHistoryItems} from './RenderHistoryItems';
 
 interface IState {
 	loading: boolean;
@@ -73,12 +73,12 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	}
 
 	private async fetchHistoryData(): Promise<void> {
-		this.setState({ loading: true });
+		this.setState({loading: true});
 
 		const quizSubmissions = await this.fetchQuizSubmissions();
 
 		if (!quizSubmissions) {
-			this.setState({ loading: false });
+			this.setState({loading: false});
 
 			return;
 		}
@@ -87,19 +87,21 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			const users = await this.fetchUserData();
 
 			if (!users) {
-				this.setState({ loading: false });
+				this.setState({loading: false});
 
 				return;
 			}
 
 			const submissionUsers = quizSubmissions.map((submission) => submission.user.id);
 
-			this.setState((state)=> ({
-				users: state.users.filter((user) => submissionUsers.includes(user.id)),
-				quizSubmissions,
-				filteredSubmissions: null,
-				loading: false,
-			}));
+			this.setState((state) => (
+				{
+					users: state.users.filter((user) => submissionUsers.includes(user.id)),
+					quizSubmissions,
+					filteredSubmissions: null,
+					loading: false,
+				}
+			));
 		} else {
 			// here, since the user isn't an admin we aren't filtering other users' submissions
 			// assuming the submissions endpoint return only the current user's submissions.
@@ -121,7 +123,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				<NonIdealState
 					icon="wind"
 					action={
-						<Button intent={Intent.PRIMARY} onClick={() => history.push("/")}>
+						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
 					}
@@ -148,7 +150,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 								{
 									this.state.filteredSubmissions && this.state.filteredSubmissions.length === 1
 										? `${this.state.filteredSubmissions[0].user.name}`
-										: "All Users"
+										: 'All Users'
 								}
 							</Button>
 						</Select>
@@ -158,24 +160,24 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 						</Button>
 					</div>
 				) : (
-					""
+					''
 				)}
 
 				<HTMLTable striped={true} interactive={true}>
 					<thead>
-						<tr>
-							<th>User</th>
-							<th>Score</th>
-							<th>Submission Date</th>
-							<th>&nbsp;</th>
-						</tr>
+					<tr>
+						<th>User</th>
+						<th>Score</th>
+						<th>Submission Date</th>
+						<th>&nbsp;</th>
+					</tr>
 					</thead>
 
 					<RenderHistoryItems
 						items={
 							this.state.filteredSubmissions ?
-							this.state.filteredSubmissions :
-							this.state.quizSubmissions
+								this.state.filteredSubmissions :
+								this.state.quizSubmissions
 						}
 						handleClick={this.onViewAnswersClick}
 					/>
@@ -190,12 +192,13 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 						<div className={Classes.DIALOG_BODY}>
 							<QuizResponses questions={this.state.currentSubmission.questions} />
 
-							<hr style={{ margin: `${Spacing.Large} 0` }} />
+							<hr style={{margin: `${Spacing.Large} 0`}} />
 
 							<div className="question-details-total">
-								Score:{" "}
+								Score:{' '}
 								<span>
-									{this.state.currentSubmission?.correctCount}/{this.state.currentSubmission.questions.length}
+									{this.state.currentSubmission?.correctCount} /
+									{this.state.currentSubmission.questions.length}
 								</span>
 							</div>
 						</div>
@@ -229,7 +232,10 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	};
 
 	private onViewAnswersClick = (index: number) => {
-		this.setState(({ filteredSubmissions, quizSubmissions }) => {
+		this.setState(({
+			filteredSubmissions,
+			quizSubmissions,
+		}) => {
 			if (filteredSubmissions) {
 				return {
 					currentSubmission: filteredSubmissions[index],
@@ -245,7 +251,14 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	};
 }
 
-const renderUserOption: ItemRenderer<User> = (user, { handleClick, handleFocus, modifiers }) => {
+const renderUserOption: ItemRenderer<User> = (
+	user,
+	{
+		handleClick,
+		handleFocus,
+		modifiers,
+	},
+) => {
 	if (!modifiers.matchesPredicate) return null;
 
 	return (

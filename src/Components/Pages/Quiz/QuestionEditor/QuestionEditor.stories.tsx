@@ -1,7 +1,7 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { QuestionEditorPage } from './';
-import { questionTagsMock } from '../../../../mocks/QuestionTags';
-import { questions } from '../../../../mocks/Questions';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {QuestionEditorPage} from './';
+import {questionTagsMock} from '../../../../mocks/QuestionTags';
+import {questions} from '../../../../mocks/Questions';
 
 export default {
 	title: 'Quiz - Question Editor Page',
@@ -26,7 +26,6 @@ NewQuestion.args = {
 		},
 	},
 };
-
 
 NewQuestion.parameters = {
 	mockData: [
@@ -63,7 +62,6 @@ ValidationError.args = {
 	},
 };
 
-
 ValidationError.parameters = {
 	mockData: [
 		// success case for tag fetching
@@ -81,20 +79,20 @@ ValidationError.parameters = {
 			method: 'PUT',
 			status: 400,
 			response: {
-				"error": {
-				  "code": "validation_failed",
-				  "message": "One or more fields did not pass validation",
-				  "context": {
-					"failures": {
-					  "prompt": {
-						"code": "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-						"path": "prompt",
-						"message": "You must provide a valid prompt."
-					  },
-					}
-				  }
-				}
-			  },
+				'error': {
+					'code': 'validation_failed',
+					'message': 'One or more fields did not pass validation',
+					'context': {
+						'failures': {
+							'prompt': {
+								'code': 'bd79c0ab-ddba-46cc-a703-a7a4b08de310',
+								'path': 'prompt',
+								'message': 'You must provide a valid prompt.',
+							},
+						},
+					},
+				},
+			},
 			delay: 1500,
 		},
 	],
@@ -112,7 +110,6 @@ EditMultipleChoice.args = {
 		},
 	},
 };
-
 
 EditMultipleChoice.parameters = {
 	mockData: [
@@ -149,7 +146,6 @@ EditFreeText.args = {
 	},
 };
 
-
 EditFreeText.parameters = {
 	mockData: [
 		// success case for tag fetching
@@ -185,7 +181,6 @@ EditBoolean.args = {
 	},
 };
 
-
 EditBoolean.parameters = {
 	mockData: [
 		// success case for tag fetching
@@ -207,7 +202,6 @@ EditBoolean.parameters = {
 		},
 	],
 };
-
 
 export const NoTags = Template.bind({});
 

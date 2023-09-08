@@ -1,22 +1,21 @@
 import * as React from 'react';
-import { Button, InputGroup, Intent, MenuItem } from "@blueprintjs/core";
-import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
-import { PageHeader } from "../../../PageHeader";
-import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
-import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
-import { ucwords } from "../../../Utility/string";
-import { Account, AccountModel, Frequency } from "../../../../Api/Quiz/Models/Accounts";
-import { UserContext } from "../../../../Session";
-import { PointSourceItem, PointSourceModel } from "../../../../Api/Point-Tracking/Models/Sources";
-import * as toaster from "../../../../Toaster";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { allSettled, isRejectedResult } from "../../../Utility/promise";
-import { history } from "../../../../history";
-import "./QuizAccountSettings.scss";
-
+import {Button, InputGroup, Intent, MenuItem} from '@blueprintjs/core';
+import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {PageHeader} from '../../../PageHeader';
+import {ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
+import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {ucwords} from '../../../Utility/string';
+import {Account, AccountModel, Frequency} from '../../../../Api/Quiz/Models/Accounts';
+import {UserContext} from '../../../../Session';
+import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
+import * as toaster from '../../../../Toaster';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {history} from '../../../../history';
+import './QuizAccountSettings.scss';
 
 const QuizFrequencyNames = [Frequency.Daily, Frequency.Weekly, Frequency.Monthly].map((frequency) =>
-	ucwords(frequency)
+	ucwords(frequency),
 ) as Frequency[];
 
 interface IState {
@@ -69,9 +68,9 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 				return [result[0] as PointSourceItem[], result[1] as Account];
 			});
 		} catch (e) {
-			toaster.error("Failed to load account settings.");
+			toaster.error('Failed to load account settings.');
 
-			history.push("/");
+			history.push('/');
 
 			return;
 		}
@@ -108,23 +107,23 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 
 						<Select<Frequency>
 							inputProps={{
-								id: "quizFrequency",
-								name: "quizFrequency"
+								id: 'quizFrequency',
+								name: 'quizFrequency',
 							}}
 							items={QuizFrequencyNames}
 							onItemSelect={this.onFrequencyChange}
 							filterable={false}
 							itemRenderer={renderFrequencyOption}
-							noResults={
+							noResults={(
 								<MenuItem
 									disabled={true} text="No results."
 									roleStructure="listoption"
 								/>
-							}
+							)}
 						>
 							<Button
 								fill={true}
-								text={this.state.frequency ? ucwords(this.state.frequency) : "Select quiz frequency"}
+								text={this.state.frequency ? ucwords(this.state.frequency) : 'Select quiz frequency'}
 								rightIcon="double-caret-vertical"
 								placeholder="Select quiz frequency"
 							/>
@@ -154,8 +153,8 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 
 						<Select<PointSourceItem>
 							inputProps={{
-								id: "quizRewardSource",
-								name: "quizRewardSource"
+								id: 'quizRewardSource',
+								name: 'quizRewardSource',
 							}}
 							items={this.state.pointSources}
 							onItemSelect={this.onRewardSourceChange}
@@ -166,7 +165,8 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 							<Button
 								fill={true}
 								text={
-									this.state.completedRewardSource ? this.state.completedRewardSource.name : "Select Quiz reward source"
+									this.state.completedRewardSource ? this.state.completedRewardSource.name
+										: 'Select Quiz reward source'
 								}
 								rightIcon="double-caret-vertical"
 							/>
@@ -193,11 +193,11 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid,
 				questionCount: this.state.questionCount!,
 			}).then(() => {
-				toaster.success("Account settings updated.");
+				toaster.success('Account settings updated.');
 			});
 		} catch (e) {
 			if (isValidationFailureError(e)) {
-				toaster.error("Failed to update account settings.");
+				toaster.error('Failed to update account settings.');
 				this.setState({
 					failures: e.context.failures,
 				});
@@ -230,7 +230,7 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 	};
 }
 
-const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, { handleClick, handleFocus, modifiers }) => {
+const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate) return null;
 
 	return (
@@ -246,7 +246,13 @@ const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, { handleClick
 	);
 };
 
-const renderPointSourceOption: ItemRenderer<PointSourceItem> = (item, { handleClick, modifiers }) => {
+const renderPointSourceOption: ItemRenderer<PointSourceItem> = (
+	item,
+	{
+		handleClick,
+		modifiers,
+	},
+) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}

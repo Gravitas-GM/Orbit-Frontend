@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { PageHeader } from "../../../PageHeader";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { RouteComponentProps } from "react-router";
-import { QuestionTag, QuestionTagModel } from "../../../../Api/Quiz/Models/QuestionTags";
+import {PageHeader} from '../../../PageHeader';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {RouteComponentProps} from 'react-router';
+import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import {Question, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
-import { AnswerForm } from "./AnswerForm";
-import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
-import * as toaster from "../../../../Toaster";
-import { history } from "../../../../history";
-import { AnchorButton, Callout, Intent } from "@blueprintjs/core";
-import "./QuestionEditor.scss";
+import {AnswerForm} from './AnswerForm';
+import {ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
+import * as toaster from '../../../../Toaster';
+import {history} from '../../../../history';
+import {AnchorButton, Callout, Intent} from '@blueprintjs/core';
+import './QuestionEditor.scss';
 
 interface IState {
 	loading: boolean;
@@ -32,7 +32,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		tags: [],
 		selectedTag: undefined,
 		validationFailures: null,
-	}
+	};
 
 	public async componentDidMount() {
 		if (this.props.match.params.question) {
@@ -88,22 +88,22 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 
 			this.setState({
 				tags,
-				loading: false
+				loading: false,
 			});
 		} catch (err) {
-			toaster.error("Error fetching tags");
+			toaster.error('Error fetching tags');
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
-			history.push("/");
+			history.push('/');
 		}
 	};
 
 	private fetchQuestion = async () => {
 		this.setState({
-			loading: true
+			loading: true,
 		});
 
 		let question: Question;
@@ -115,13 +115,13 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 				question: question,
 			});
 		} catch (err) {
-			toaster.error("Error fetching question");
+			toaster.error('Error fetching question');
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
-			history.push("/");
+			history.push('/');
 
 			return;
 		}
@@ -143,7 +143,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			question = await QuestionModel.create(questionData).then((res) => res.data);
 		} catch (err) {
 			if (isValidationFailureError(err)) {
-				toaster.error("Validation failed");
+				toaster.error('Validation failed');
 
 				this.setState({
 					validationFailures: err.context.failures,
@@ -156,7 +156,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			return;
 		}
 
-		toaster.success("Question saved");
+		toaster.success('Question saved');
 
 		this.setState({
 			processing: false,

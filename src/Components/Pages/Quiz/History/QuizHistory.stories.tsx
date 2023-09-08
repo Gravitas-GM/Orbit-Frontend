@@ -1,8 +1,8 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import { QuizHistoryPage } from './';
-import { RegularUserContextMockDecorator } from '../../../../mocks/Context';
-import { usersMock } from '../../../../mocks/User';
-import { quizSubmissionsMock } from '../../../../mocks/QuizSubmissions';
+import {QuizHistoryPage} from './';
+import {RegularUserContextMockDecorator} from '../../../../mocks/Context';
+import {usersMock} from '../../../../mocks/User';
+import {quizSubmissionsMock} from '../../../../mocks/QuizSubmissions';
 
 export default {
 	title: 'Quiz History Page',
@@ -17,8 +17,8 @@ const NoData = Template.bind({});
 const Basic = Template.bind({});
 
 Basic.decorators = [
-	RegularUserContextMockDecorator
-]
+	RegularUserContextMockDecorator,
+];
 
 AdminUser.parameters = {
 	mockData: [
@@ -39,7 +39,6 @@ AdminUser.parameters = {
 	],
 } as ComponentMeta<typeof QuizHistoryPage>;
 
-
 Basic.parameters = {
 	mockData: [
 		{
@@ -51,7 +50,6 @@ Basic.parameters = {
 		},
 	],
 } as ComponentMeta<typeof QuizHistoryPage>;
-
 
 NoData.parameters = {
 	mockData: [

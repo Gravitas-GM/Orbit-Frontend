@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Icon } from "@blueprintjs/core";
-import { BooleanResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { IconSize } from "../../../../IconSize";
-import { QuestionResult } from "../QuestionResult";
+import {Icon} from '@blueprintjs/core';
+import {BooleanResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {IconSize} from '../../../../IconSize';
+import {QuestionResult} from '../QuestionResult';
 
-export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({ question }) => {
+export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({question}) => {
 	return (
 		<div className="question">
 			<div className="question-title">
@@ -24,7 +24,7 @@ export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({ questio
 					{question.answer ? question.trueLabel : question.falseLabel}
 				</div>
 
-				<QuestionResult correct={question.correct}/>
+				<QuestionResult correct={question.correct} />
 			</div>
 		</div>
 	);

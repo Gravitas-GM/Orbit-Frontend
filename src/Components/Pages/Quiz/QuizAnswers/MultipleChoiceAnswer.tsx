@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Icon } from "@blueprintjs/core";
-import { MultipleChoiceResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { IconSize } from "../../../../IconSize";
-import { QuestionResult } from "../QuestionResult";
+import {Icon} from '@blueprintjs/core';
+import {MultipleChoiceResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {IconSize} from '../../../../IconSize';
+import {QuestionResult} from '../QuestionResult';
 
-export const MultipleChoiceAnswer: React.FC<{ question: MultipleChoiceResponse }> = ({ question }) => {
+export const MultipleChoiceAnswer: React.FC<{ question: MultipleChoiceResponse }> = ({question}) => {
 	return (
 		<div className="question">
 			<div className="question-title">
@@ -22,7 +22,7 @@ export const MultipleChoiceAnswer: React.FC<{ question: MultipleChoiceResponse }
 					{question.choices[question.answerIndex]}
 				</div>
 
-				<QuestionResult correct={question.correct}/>
+				<QuestionResult correct={question.correct} />
 			</div>
 		</div>
 	);

@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { PageHeader } from "../../../PageHeader";
-import { Button, InputGroup } from "@blueprintjs/core";
-import { Spacing } from "../../../../Styles/variables";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { TagEditorDialog } from "./TagEditorDialog";
-import { QuestionTagModel, QuestionTag, QuestionTagCreatePayload } from "../../../../Api/Quiz/Models/QuestionTags";
-import * as toaster from "../../../../Toaster";
-import { history } from "../../../../history";
-import { RenderTableItems } from "./RenderTableItems";
-import { DeleteDialog } from "../../../DeleteDialog";
-import { User, UserModel } from "../../../../Api/Hub/Models/Users";
-import { ValidationFailures, isValidationFailureError } from "../../../../Api/errors/symfony";
+import {PageHeader} from '../../../PageHeader';
+import {Button, InputGroup} from '@blueprintjs/core';
+import {Spacing} from '../../../../Styles/variables';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {TagEditorDialog} from './TagEditorDialog';
+import {QuestionTagModel, QuestionTag, QuestionTagCreatePayload} from '../../../../Api/Quiz/Models/QuestionTags';
+import * as toaster from '../../../../Toaster';
+import {history} from '../../../../history';
+import {RenderTableItems} from './RenderTableItems';
+import {DeleteDialog} from '../../../DeleteDialog';
+import {User, UserModel} from '../../../../Api/Hub/Models/Users';
+import {ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 
 interface IState {
 	tags: QuestionTag[];
@@ -53,7 +53,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		const { currentPage, totalPages } = this.state;
+		const {currentPage, totalPages} = this.state;
 		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
 		const currrentPageItems = this.state.filteredTags.slice(startIndex, endIndex);
@@ -61,13 +61,15 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title="Tags">
-					<div style={{ display: "flex", flexDirection: "column", gap: Spacing.Large }}>
-						<InputGroup type="search" leftIcon="search" placeholder="Search tags" onChange={this.onSearchChange} />
+					<div style={{display: 'flex', flexDirection: 'column', gap: Spacing.Large,}}>
+						<InputGroup
+							type="search"
+							leftIcon="search"
+							placeholder="Search tags"
+							onChange={this.onSearchChange}
+						/>
 
-						<Button
-							icon="add"
-							onClick={this.toggleEditTagDialog}
-						>
+						<Button icon="add" onClick={this.toggleEditTagDialog}>
 							Add New
 						</Button>
 					</div>
@@ -89,34 +91,38 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 							{currentPage}/{totalPages}
 						</span>
 
-						<Button disabled={this.state.currentPage >= totalPages} onClick={this.onClickNext} rightIcon="caret-right">
+						<Button
+							disabled={this.state.currentPage >= totalPages}
+							onClick={this.onClickNext}
+							rightIcon="caret-right"
+						>
 							Next
 						</Button>
 					</div>
 				)}
 
-			<TagEditorDialog
-				isOpen={this.state.showEditDialog}
-				onClose={this.toggleEditTagDialog}
-				tag={this.state.tagToEdit}
-				users={this.state.users}
-				onSubmit={this.onSubmit}
-				validationFailures={this.state.validationFailures}
-			/>
+				<TagEditorDialog
+					isOpen={this.state.showEditDialog}
+					onClose={this.toggleEditTagDialog}
+					tag={this.state.tagToEdit}
+					users={this.state.users}
+					onSubmit={this.onSubmit}
+					validationFailures={this.state.validationFailures}
+				/>
 
-			<DeleteDialog
-				isOpen={this.state.showDeleteDialog}
-				onCancel={this.toggleDeleteTagDialog}
-				onConfirm={this.onConfirmDelete}
-				subject={this.state.tagToDelete?.label}
-			/>
+				<DeleteDialog
+					isOpen={this.state.showDeleteDialog}
+					onCancel={this.toggleDeleteTagDialog}
+					onConfirm={this.onConfirmDelete}
+					subject={this.state.tagToDelete?.label}
+				/>
 			</section>
 		);
 	};
 
 	private fetchData = async () => {
 		this.setState({
-			loading: true
+			loading: true,
 		});
 
 		let totalPages = 0;
@@ -129,13 +135,13 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 			totalPages = totalPages === 0 ? 1 : totalPages;
 		} catch (err) {
-			toaster.error("Failed to fetch question tags");
+			toaster.error('Failed to fetch question tags');
 
 			this.setState({
 				loading: false,
 			});
 
-			history.push("/");
+			history.push('/');
 		}
 
 		let users: User[] = [];
@@ -143,13 +149,13 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		try {
 			users = await UserModel.list().then((res) => res.data);
 		} catch (err) {
-			toaster.error("Failed to fetch users");
+			toaster.error('Failed to fetch users');
 
 			this.setState({
 				loading: false,
 			});
 
-			history.push("/");
+			history.push('/');
 		}
 
 		this.setState({
@@ -162,30 +168,32 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	};
 
 	private toggleDeleteTagDialog = () => {
-		this.setState((state) => ({
-			tagToDelete: null,
-			showDeleteDialog: !state.showDeleteDialog
-		}));
+		this.setState((state) => (
+			{
+				tagToDelete: null,
+				showDeleteDialog: !state.showDeleteDialog,
+			}
+		));
 	};
 
 	private toggleEditTagDialog = () => {
 		this.setState((state) => ({
 			tagToEdit: null,
-			showEditDialog: !state.showEditDialog
+			showEditDialog: !state.showEditDialog,
 		}));
 	};
 
 	private onEditClick = (tag: QuestionTag) => {
 		this.setState({
 			tagToEdit: tag,
-			showEditDialog: true
+			showEditDialog: true,
 		});
 	};
 
 	private onDeleteClick = (tag: QuestionTag) => {
 		this.setState({
 			tagToDelete: tag,
-			showDeleteDialog: true
+			showDeleteDialog: true,
 		});
 	};
 
@@ -194,54 +202,58 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		try {
 			await QuestionTagModel.delete(this.state.tagToDelete!.id);
 
-			toaster.success("Tag deleted successfully");
+			toaster.success('Tag deleted successfully');
 
 			// should we refetch the tags or just remove it from the list?
 			await this.fetchData();
 		} catch (err) {
 			this.setState({
-				showDeleteDialog: false
+				showDeleteDialog: false,
 			});
 
-			toaster.error("Failed to delete tag");
+			toaster.error('Failed to delete tag');
 
 			return;
 		}
 
 		this.setState({
 			tagToDelete: null,
-			showDeleteDialog: false
+			showDeleteDialog: false,
 		});
-	}
+	};
 
 	private onClickNext = () => {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
 
-		this.setState((state) => ({
-			currentPage: state.currentPage + 1,
-		}));
+		this.setState((state) => (
+			{
+				currentPage: state.currentPage + 1,
+			}
+		));
 	};
 
 	private onClickBack = () => {
 		if (this.state.currentPage === 1)
 			return;
 
-		this.setState((state) => ({
-			currentPage: state.currentPage - 1,
-		}));
+		this.setState((state) => (
+			{
+				currentPage: state.currentPage - 1,
+			}
+		));
 	};
 
 	private onSubmit = async (tag: QuestionTagCreatePayload) => {
 		this.setState({
-			processing: true
-		})
+			processing: true,
+		});
 
 		try {
 			await QuestionTagModel.create(tag).then((response) => response.data);
 		} catch (err) {
 			if (isValidationFailureError(err)) {
-				toaster.error("One or more fields did not pass validation");
+				toaster.error('One or more fields did not pass validation');
 
 				this.setState({
 					validationFailures: err.context.failures,
@@ -255,12 +267,12 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		}
 
 		this.setState({
-			processing: false
+			processing: false,
 		});
-	}
+	};
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.currentTarget.value === "") {
+		if (event.currentTarget.value === '') {
 			const totalPages = Math.ceil(this.state.tags.length / ITEMS_PER_PAGE);
 
 			this.setState({
@@ -273,7 +285,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		}
 
 		const filteredTags = this.state.tags.filter((tag) =>
-			tag.label.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase())
+			tag.label.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase()),
 		);
 
 		const totalPages = Math.ceil(filteredTags.length / ITEMS_PER_PAGE);
@@ -285,4 +297,3 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		});
 	};
 }
-

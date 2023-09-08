@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { NonIdealState, HTMLTable, Button } from "@blueprintjs/core";
-import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
+import {NonIdealState, HTMLTable, Button} from '@blueprintjs/core';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
 
 interface IRenderTableItemsProps {
 	items: QuestionTag[];
@@ -8,10 +8,10 @@ interface IRenderTableItemsProps {
 	deleteCallback: (tag: QuestionTag) => void;
 }
 
-export const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, editCallback, deleteCallback }) => {
+export const RenderTableItems: React.FC<IRenderTableItemsProps> = ({items, editCallback, deleteCallback}) => {
 	if (items.length === 0) {
 		return (
-			<div style={{ textAlign: 'center'}}>
+			<div style={{textAlign: 'center'}}>
 				<NonIdealState title="No tags found." />
 			</div>
 		);
@@ -29,23 +29,23 @@ export const RenderTableItems: React.FC<IRenderTableItemsProps> = ({ items, edit
 				</thead>
 
 				<tbody>
-					{items.map((tag) => (
-						<tr key={tag.id}>
-							<td>{tag.label}</td>
+				{items.map((tag) => (
+					<tr key={tag.id}>
+						<td>{tag.label}</td>
 
-							<td style={{ width: 120 }}>
-								{tag.members.length}
-							</td>
+						<td style={{width: 120}}>
+							{tag.members.length}
+						</td>
 
-							<td style={{ width: 80 }}>
-								<div style={{ display: "flex", justifyContent: "space-between" }}>
-									<Button icon="edit" minimal={true} onClick={() => editCallback(tag)}/>
+						<td style={{width: 80}}>
+							<div style={{display: 'flex', justifyContent: 'space-between'}}>
+								<Button icon="edit" minimal={true} onClick={() => editCallback(tag)} />
 
-									<Button icon="trash" minimal={true} onClick={() => deleteCallback(tag)}/>
-								</div>
-							</td>
-						</tr>
-					))}
+								<Button icon="trash" minimal={true} onClick={() => deleteCallback(tag)} />
+							</div>
+						</td>
+					</tr>
+				))}
 				</tbody>
 			</HTMLTable>
 		</div>

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Icon } from "@blueprintjs/core";
-import { FreeTextResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { IconSize } from "../../../../IconSize";
-import { QuestionResult } from "../QuestionResult";
+import {Icon} from '@blueprintjs/core';
+import {FreeTextResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {IconSize} from '../../../../IconSize';
+import {QuestionResult} from '../QuestionResult';
 
-
-export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({ question }) => {
+export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({question}) => {
 	return (
 		<div className="question">
 			<div className="question-title">
@@ -22,7 +21,7 @@ export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({ quest
 				<div className="question-details-card">
 					<span>Correct Answers:</span>
 
-					{question.answers.join(", ")}
+					{question.answers.join(', ')}
 				</div>
 
 				<QuestionResult correct={question.correct} />

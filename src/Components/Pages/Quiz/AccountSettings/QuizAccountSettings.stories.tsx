@@ -1,8 +1,8 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { QuizAccountSettings } from '.';
-import { pointSourceItemsMock } from '../../../../mocks/PointSourceItem';
-import { Frequency } from '../../../../Api/Quiz/Models/Accounts';
-import { ApiError, ValidationFailures, isValidationFailureError } from '../../../../Api/errors/symfony';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {QuizAccountSettings} from '.';
+import {pointSourceItemsMock} from '../../../../mocks/PointSourceItem';
+import {Frequency} from '../../../../Api/Quiz/Models/Accounts';
+import {ApiError, ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 
 export default {
 	title: 'Quiz Account Settings',
@@ -116,23 +116,23 @@ ValidationError.parameters = {
 			method: 'PATCH',
 			status: 400,
 			response: {
-				"error": {
-				  "code": "validation_failed",
-				  "message": "One or more fields did not pass validation",
-				  "context": {
-					"failures": {
-					  "quizFrequency": {
-						"code": "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-						"path": "quizFrequency",
-						"message": "You must provide the quiz frequency."
-					  },
-					}
-				  }
-				}
-			  },
+				'error': {
+					'code': 'validation_failed',
+					'message': 'One or more fields did not pass validation',
+					'context': {
+						'failures': {
+							'quizFrequency': {
+								'code': 'bd79c0ab-ddba-46cc-a703-a7a4b08de310',
+								'path': 'quizFrequency',
+								'message': 'You must provide the quiz frequency.',
+							},
+						},
+					},
+				},
+			},
 			delay: 1500,
 		},
 	],
 } as ComponentMeta<typeof QuizAccountSettings>;
 
-export { Basic, NoData, ServerError, ValidationError };
+export {Basic, NoData, ServerError, ValidationError};
