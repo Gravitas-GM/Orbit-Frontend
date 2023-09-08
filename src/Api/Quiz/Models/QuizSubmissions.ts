@@ -1,5 +1,7 @@
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
-import {BooleanQuestion, FreeTextQuestion, MultipleChoiceQuestion} from './Questions';
+import {Account} from './Accounts';
+import {QuestionKind} from './Questions';
 import {User} from './Users';
 
 export interface QuizSubmissionEndpoints {
@@ -20,34 +22,42 @@ export interface QuizSubmissionEndpoints {
 
 export interface QuizSubmission {
 	id: number,
-	userId: User,
+	account: Pick<Account, 'id'>,
+	user: User,
 	timestamp: Date,
+	questionCount: number,
 	correctCount: number,
 	questions: QuestionResponse[],
 }
 
-class BaseQuestion {
-}
-
-interface BaseQuestionResponse extends Omit<BaseQuestion, 'tagId' | 'kind'> {
+interface QuestionResponseBase {
 	correct: boolean,
+	prompt: string,
+	kind: QuestionKind,
 }
 
-export interface FreeTextResponse extends BaseQuestionResponse, Omit<FreeTextQuestion, 'tagId'> {
+export interface FreeTextResponse extends QuestionResponseBase {
+	kind: QuestionKind.FreeText,
+	answers: string[],
 	response: string,
 }
 
-export interface BooleanResponse extends BaseQuestionResponse, Omit<BooleanQuestion, 'tagId'> {
+export interface BooleanResponse extends QuestionResponseBase {
+	kind: QuestionKind.Boolean,
+	answer: boolean,
 	response: boolean,
+	trueLabel: string,
+	falseLabel: string,
 }
 
-export interface MultipleChoiceResponse extends BaseQuestionResponse, Omit<MultipleChoiceQuestion, 'tagId'> {
+export interface MultipleChoiceResponse extends QuestionResponseBase {
+	kind: QuestionKind.MultipleChoice,
+	choices: string[],
+	answerIndex: number,
 	response: number,
 }
 
 export type QuestionResponse = FreeTextResponse | BooleanResponse | MultipleChoiceResponse;
-
-export type QuizSubmissionCreatePayload = Omit<QuizSubmission, 'id'>;
 
 export class QuizSubmissionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -56,10 +66,28 @@ export class QuizSubmissionModel {
 				p: projection,
 				q: query,
 			},
+		}).then(response => {
+			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+
+			return response;
 		});
 	}
 
-	public static read(submission: Id) {
-		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`);
+	public static read(submission: Id, projection?: Projection) {
+		return quizClient.get<'/submissions/:submission'>(`/submissions/${submission}`, {
+			params: {
+				p: projection,
+			},
+		}).then(response => {
+			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
+
+			return response;
+		});
+	}
+
+	public static denormalizeQuizSubmission(submission: QuizSubmission) {
+		submission.timestamp = parseApiTimestamp(submission.timestamp);
+
+		return submission;
 	}
 }

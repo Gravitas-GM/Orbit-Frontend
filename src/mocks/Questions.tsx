@@ -3,16 +3,16 @@ import { Question, QuestionKind } from "../Api/Quiz/Models/Questions";
 export const questions: Question[] = [
 	{
 		id: 1,
-		tagId:1,
-		accountId: 1,
+		tag: 1,
+		account: {id: 1},
 		prompt: 'What is the capital of the United States?',
 		kind: QuestionKind.FreeText,
 		answers: ['Washington, D.C.'],
 	},
 	{
 		id: 2,
-		tagId:1,
-		accountId: 1,
+		tag: 1,
+		account: {id: 1},
 		prompt: 'Is it okay to use a semicolon after a question mark?',
 		kind: QuestionKind.Boolean,
 		answer: true,
@@ -21,8 +21,8 @@ export const questions: Question[] = [
 	},
 	{
 		id: 3,
-		tagId:1,
-		accountId: 1,
+		tag: 1,
+		account: {id: 1},
 		prompt: 'What is the capital of Mexico?',
 		kind: QuestionKind.MultipleChoice,
 		choices: [ 'Mexico City', 'Guadalajara', 'Monterrey', 'Tijuana' ],
@@ -30,8 +30,8 @@ export const questions: Question[] = [
 	},
 	{
 		id: 4,
-		tagId:1,
-		accountId: 1,
+		tag: 1,
+		account: {id: 1},
 		prompt: 'What is the capital of Canada?',
 		kind: QuestionKind.MultipleChoice,
 		choices: [ 'Toronto', 'Ottawa', 'Vancouver', 'Montreal' ],
@@ -39,8 +39,8 @@ export const questions: Question[] = [
 	},
 	{
 		id: 5,
-		tagId:1,
-		accountId: 1,
+		tag: 1,
+		account: {id: 1},
 		kind: QuestionKind.Boolean,
 		prompt: 'Is it okay to use a semicolon after a question mark?',
 		answer: true,

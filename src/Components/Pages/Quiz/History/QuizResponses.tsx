@@ -1,5 +1,10 @@
 import { QuestionKind } from "../../../../Api/Quiz/Models/Questions";
-import { QuestionResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
+import {
+	BooleanResponse,
+	FreeTextResponse,
+	MultipleChoiceResponse,
+	QuestionResponse,
+} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import { BooleanAnswer } from "../QuizAnswers/BooleanAnswer";
 import { FreeTextAnswer } from "../QuizAnswers/FreeTextAnswer";
 import { MultipleChoiceAnswer } from "../QuizAnswers/MultipleChoiceAnswer";
@@ -8,6 +13,18 @@ import SimpleBar from "simplebar-react";
 
 interface IProps {
 	questions: QuestionResponse[];
+}
+
+function isMultipleChoiceResponse(value: any): value is MultipleChoiceResponse {
+	return typeof value === 'object' && value.kind === QuestionKind.MultipleChoice;
+}
+
+function isBooleanResponse(value: any): value is BooleanResponse {
+	return typeof value === 'object' && value.kind === QuestionKind.Boolean;
+}
+
+function isFreeTextResponse(value: any): value is FreeTextResponse {
+	return typeof value === 'object' && value.kind === QuestionKind.FreeText;
 }
 
 export const QuizResponses: React.FC<IProps> = ({ questions }) => {
@@ -21,14 +38,14 @@ export const QuizResponses: React.FC<IProps> = ({ questions }) => {
 };
 
 const Response: React.FC<{ question: QuestionResponse }> = ({ question }) => {
-	switch (question.kind) {
-		case QuestionKind.MultipleChoice:
-			return <MultipleChoiceAnswer question={question} />;
-		case QuestionKind.Boolean:
-			return <BooleanAnswer question={question} />;
-		case QuestionKind.FreeText:
-			return <FreeTextAnswer question={question} />;
-		default:
-			return null;
-	}
+	if (isMultipleChoiceResponse(question))
+		return <MultipleChoiceAnswer question={question} />;
+
+	if (isBooleanResponse(question))
+		return <BooleanAnswer question={question} />;
+
+	if (isFreeTextResponse(question))
+		return <FreeTextAnswer question={question} />;
+
+	throw new Error(`Unsupported question kind.`);
 };

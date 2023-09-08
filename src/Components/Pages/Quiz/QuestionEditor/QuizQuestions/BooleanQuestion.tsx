@@ -2,16 +2,15 @@ import React from "react";
 import { Button, H3, InputGroup, Intent, Radio } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
+import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
 import "../AnswerForm.scss";
 
 interface IProps {
 	question: Question | null;
 	prompt?: string;
 	tagId: number;
-	accountId: number;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 	processing: boolean;
 }
 
@@ -45,7 +44,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 		}
 	}, []);
 
-	const onChangeBooleanLabel = React.useCallback((event: React.FormEvent<HTMLInputElement>) => {
+	const onBooleanToggle = React.useCallback((event: React.FormEvent<HTMLInputElement>) => {
 		const target = event.target as HTMLInputElement;
 
 		const index = target.id === "boolean-label-0" ? 0 : 1;
@@ -53,10 +52,9 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 		setBooleanLabel(index, event.currentTarget.value);
 	}, [trueLabel, falseLabel]);
 
-	const onClickSave = React.useCallback(() => {
-		const questionData = {
-			accountId: props.accountId,
-			tagId: props.tagId,
+	const onSaveClick = React.useCallback(() => {
+		const questionData: QuestionUpdate = {
+			tag: props.tagId,
 			prompt: props.prompt!,
 			kind: QuestionKind.Boolean,
 			answer,
@@ -64,7 +62,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 			falseLabel,
 		};
 
-		return props.saveQuestion(questionData);
+		return props.onQuestionSave(questionData);
 	}, [props, answer, trueLabel, falseLabel]);
 
 	return (
@@ -83,7 +81,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 								value={(index === 0 ? trueLabel : falseLabel) ?? ""}
 								large={true}
 								style={{ width: "100%" }}
-								onChange={onChangeBooleanLabel}
+								onChange={onBooleanToggle}
 							/>
 						</ValidationAwareFormGroup>
 
@@ -107,7 +105,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 				intent={Intent.PRIMARY}
 				text="Save Question"
 				icon="floppy-disk"
-				onClick={onClickSave}
+				onClick={onSaveClick}
 			/>
 		</div>
 	);

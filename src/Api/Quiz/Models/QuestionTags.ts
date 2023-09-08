@@ -1,4 +1,6 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Account} from './Accounts';
+import {Question} from './Questions';
 import {User} from './Users';
 
 export interface QuestionTagEndpoints {
@@ -36,14 +38,15 @@ export interface QuestionTagEndpoints {
 
 export interface QuestionTag {
 	id: Id,
-	accountId: number,
+	account: Pick<Account, 'id'>,
 	label: string,
 	members: User[],
+	questions: Question[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id'>;
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account'>;
 
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'accountId'>>;
+export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account'>>;
 
 export class QuestionTagModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -63,12 +66,20 @@ export class QuestionTagModel {
 		});
 	}
 
-	public static read(questionTag: Id) {
-		return quizClient.get<'/tags/:tag'>(`/tags/${questionTag}`);
+	public static read(questionTag: Id, projection?: Projection) {
+		return quizClient.get<'/tags/:tag'>(`/tags/${questionTag}`, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
-	public static update(questionTag: Id, payload: QuestionTagUpdatePayload) {
-		return quizClient.patch<'/tags/:tag'>(`/tags/${questionTag}`, payload);
+	public static update(questionTag: Id, payload: QuestionTagUpdatePayload, projection?: Projection) {
+		return quizClient.patch<'/tags/:tag'>(`/tags/${questionTag}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static delete(questionTag: Id) {

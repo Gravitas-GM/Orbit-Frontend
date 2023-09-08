@@ -1,6 +1,6 @@
 import React from "react";
 import { InputGroup, Button, MenuItem } from "@blueprintjs/core";
-import { QuestionKind, Question, QuestionCreatePayload } from "../../../../Api/Quiz/Models/Questions";
+import {QuestionKind, Question, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
 import { Spacing } from "../../../../Styles/variables";
 import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
 import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
@@ -20,7 +20,7 @@ interface IProps {
 	tags: QuestionTag[];
 	processing: boolean;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 }
 
 interface IState {
@@ -46,7 +46,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 	public componentDidMount(): void {
 		if (this.props.question) {
 			this.setState({
-				tag: this.props.tags.find(tag => tag.id === this.props.question?.tagId),
+				tag: this.props.tags.find(tag => tag.id === this.props.question?.tag?.id),
 			});
 		}
 	}
@@ -134,9 +134,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}
@@ -146,9 +145,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}
@@ -158,9 +156,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}

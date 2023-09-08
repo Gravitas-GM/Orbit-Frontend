@@ -2,7 +2,7 @@ import React from "react";
 import { Button, H3, InputGroup, Intent } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
+import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
 import { Spacing } from "../../../../../Styles/variables";
 import * as toaster from "../../../../../Toaster";
 import "../AnswerForm.scss";
@@ -11,9 +11,8 @@ interface IProps {
 	question: Question | null;
 	prompt?: string;
 	tagId: number;
-	accountId: number;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 	processing: boolean;
 }
 
@@ -47,19 +46,18 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 		});
 	}, [answers]);
 
-	const onClickSave = React.useCallback(() => {
-		const questionData = {
-			accountId: props.accountId,
-			tagId: props.tagId,
+	const onSaveClick = React.useCallback(() => {
+		const questionData: QuestionUpdate = {
+			tag: props.tagId,
 			prompt: props.prompt!,
 			kind: QuestionKind.FreeText,
 			answers: answers,
 		};
 
-		return props.saveQuestion(questionData);
+		return props.onQuestionSave(questionData);
 	}, [props, answers]);
 
-	const onChangeAnswerText = React.useCallback((event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+	const onAnswerTextChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>, index: number) => {
 		setAnswers((currentOptions) => {
 			const answers = [...currentOptions];
 
@@ -89,7 +87,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 								defaultValue={option}
 								large={true}
 								style={{ width: "100%" }}
-								onChange={(event) => onChangeAnswerText(event, index)}
+								onChange={(event) => onAnswerTextChange(event, index)}
 							/>
 
 							<Button icon="remove" minimal onClick={() => onAnswerRemove(index)} />
@@ -108,7 +106,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 				intent={Intent.PRIMARY}
 				text="Save Question"
 				icon="floppy-disk"
-				onClick={onClickSave}
+				onClick={onSaveClick}
 			/>
 		</div>
 	);

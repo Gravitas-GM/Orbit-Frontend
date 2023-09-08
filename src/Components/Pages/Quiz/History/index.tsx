@@ -92,7 +92,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				return;
 			}
 
-			const submissionUsers = quizSubmissions.map((submission) => submission.userId.id);
+			const submissionUsers = quizSubmissions.map((submission) => submission.user.id);
 
 			this.setState((state)=> ({
 				users: state.users.filter((user) => submissionUsers.includes(user.id)),
@@ -145,7 +145,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 							onItemSelect={this.handleUserSelect}
 						>
 							<Button>
-								{this.state.filteredSubmissions ? `${this.state.filteredSubmissions[0].userId.name}` : "All Users"}
+								{
+									this.state.filteredSubmissions && this.state.filteredSubmissions.length === 1
+										? `${this.state.filteredSubmissions[0].user.name}`
+										: "All Users"
+								}
 							</Button>
 						</Select>
 
@@ -162,7 +166,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 						<tr>
 							<th>User</th>
 							<th>Score</th>
-							<th>Time</th>
 							<th>Submission Date</th>
 							<th>&nbsp;</th>
 						</tr>
@@ -182,7 +185,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 					<Dialog
 						onClose={this.onClose}
 						isOpen={this.state.showQuizSubmissionDialog}
-						title={`Quiz Submission #${this.state.currentSubmission.id} - ${this.state.currentSubmission.userId.name}`}
+						title={`Quiz Submission - ${this.state.currentSubmission.user.name}`}
 					>
 						<div className={Classes.DIALOG_BODY}>
 							<QuizResponses questions={this.state.currentSubmission.questions} />
@@ -209,7 +212,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	};
 
 	private handleUserSelect = (user: User) => {
-		const filteredSubmissions = this.state.quizSubmissions.filter((submission) => submission.userId.id === user.id);
+		const filteredSubmissions = this.state.quizSubmissions.filter((submission) => submission.user.id === user.id);
 
 		if (filteredSubmissions) {
 			this.setState({

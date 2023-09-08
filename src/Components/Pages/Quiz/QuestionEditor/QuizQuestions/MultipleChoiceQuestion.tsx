@@ -2,7 +2,7 @@ import React from "react";
 import { Button, H3, InputGroup, Radio, Intent } from "@blueprintjs/core";
 import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
 import { ValidationFailures } from "../../../../../Api/errors/symfony";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
+import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
 import { Spacing } from "../../../../../Styles/variables";
 import * as toaster from "../../../../../Toaster";
 import "../AnswerForm.scss";
@@ -11,9 +11,8 @@ interface IProps {
 	question: Question | null;
 	prompt?: string;
 	tagId: number;
-	accountId: number;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 	processing: boolean;
 }
 
@@ -49,19 +48,19 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 		});
 	}, [choices]);
 
-	const onClickSave = React.useCallback(() => {
-		const questionData = {
-			accountId: props.accountId,
-			tagId: props.tagId,
+	const onSaveClick = React.useCallback(() => {
+		const questionData: QuestionUpdate = {
+			tag: props.tagId,
 			prompt: props.prompt!,
 			kind: QuestionKind.MultipleChoice,
 			choices: choices,
+			answerIndex,
 		};
 
-		return props.saveQuestion(questionData);
+		return props.onQuestionSave(questionData);
 	}, [props, choices]);
 
-	const onChangeAnswerText = React.useCallback(
+	const onAnswerTextChange = React.useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>, index: number) => {
 			setChoices((currentOptions) => {
 				const choices = [...currentOptions];
@@ -74,7 +73,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 		[choices]
 	);
 
-	const onChangeAnswerIndex = React.useCallback(
+	const onAnswerIndexChange = React.useCallback(
 		(event: React.FormEvent<HTMLInputElement>) => {
 			setAnswerIndex(parseInt(event.currentTarget.value));
 		},
@@ -101,7 +100,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 									defaultValue={option}
 									large={true}
 									style={{ width: "100%" }}
-									onChange={(event) => onChangeAnswerText(event, index)}
+									onChange={(event) => onAnswerTextChange(event, index)}
 								/>
 
 								<Button icon="remove" minimal onClick={() => onChoiceRemove(index)} />
@@ -113,7 +112,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 								id="correct_answer"
 								label="Correct Answer"
 								checked={index === answerIndex}
-								onChange={onChangeAnswerIndex}
+								onChange={onAnswerIndexChange}
 								value={index}
 							/>
 						</ValidationAwareFormGroup>
@@ -131,7 +130,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 				intent={Intent.PRIMARY}
 				text="Save Question"
 				icon="floppy-disk"
-				onClick={onClickSave}
+				onClick={onSaveClick}
 			/>
 		</div>
 	);

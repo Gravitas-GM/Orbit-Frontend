@@ -3,6 +3,7 @@ import * as React from 'react';
 import {PointItem} from '../../../Api/Point-Tracking/Models/Points';
 import {Spacing} from '../../../Styles/variables';
 import {NonIdealState} from '../../NonIdealState';
+import {formatDate} from '../../Utility/date';
 import {formatNumber, ucwords} from '../../Utility/string';
 
 interface ITableProps {
@@ -71,7 +72,7 @@ export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, o
 			<td><Checkbox checked={isChecked} onClick={onCheckboxClick} /></td>
 			<td>{ucwords(item.source)}</td>
 			<td>{formatNumber(item.point_value)}</td>
-			<td>{new Date(item.timestamp).toLocaleString()}</td>
+			<td>{formatDate(item.timestamp)}</td>
 			<td>{item.description ?? <>—</>}</td>
 			<td style={{textAlign: 'center'}}>
 				<Button
