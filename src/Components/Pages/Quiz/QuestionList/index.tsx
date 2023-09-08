@@ -35,14 +35,8 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		const {
-			currentPage,
-			totalPages,
-			filteredQuestions,
-		} = this.state;
-		const startIndex = (
-			currentPage - 1
-		) * ITEMS_PER_PAGE;
+		const {currentPage, totalPages, filteredQuestions,} = this.state;
+		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 		const endIndex = startIndex + ITEMS_PER_PAGE;
 		const currrentPageItems = this.state.filteredQuestions.slice(startIndex, endIndex);
 
