@@ -101,6 +101,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					</div>
 				)}
 
+				{/*TODO: This is broken because it's treating hub Users and quiz Users as the same. Refactor -Larry*/}
 				<TagEditorDialog
 					isOpen={this.state.showEditDialog}
 					onClose={this.toggleEditTagDialog}

@@ -145,22 +145,18 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		if (this.state.currentPage === this.state.totalPages)
 			return;
 
-		this.setState(state => (
-			{
-				currentPage: state.currentPage + 1,
-			}
-		));
+		this.setState(state => ({
+			currentPage: state.currentPage + 1,
+		}));
 	};
 
 	private onClickBack = () => {
 		if (this.state.currentPage === 1)
 			return;
 
-		this.setState(state => (
-			{
-				currentPage: state.currentPage - 1,
-			}
-		));
+		this.setState(state => ({
+			currentPage: state.currentPage - 1,
+		}));
 	};
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
