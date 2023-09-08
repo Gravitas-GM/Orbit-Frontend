@@ -227,13 +227,7 @@ export class QuizAccountSettings extends React.PureComponent<{}, IState> {
 	};
 }
 
-const renderFrequencyOption: ItemRenderer<Frequency> = (frequency,
-	{
-		handleClick,
-		handleFocus,
-		modifiers,
-	},
-) => {
+const renderFrequencyOption: ItemRenderer<Frequency> = (frequency, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate) return null;
 
 	return (
@@ -249,13 +243,7 @@ const renderFrequencyOption: ItemRenderer<Frequency> = (frequency,
 	);
 };
 
-const renderPointSourceOption: ItemRenderer<PointSourceItem> = (
-	item,
-	{
-		handleClick,
-		modifiers,
-	},
-) => {
+const renderPointSourceOption: ItemRenderer<PointSourceItem> = (item, {handleClick, modifiers}) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}
