@@ -146,9 +146,9 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 						>
 							<Button>
 								{
-									this.state.filteredSubmissions && this.state.filteredSubmissions.length > 0
+									this.state.filteredSubmissions && this.state.filteredSubmissions.length === 1
 										? `${this.state.filteredSubmissions[0].user.name}`
-										: "All" + " Users"
+										: "All Users"
 								}
 							</Button>
 						</Select>
