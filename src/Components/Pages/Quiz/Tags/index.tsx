@@ -169,12 +169,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	};
 
 	private toggleDeleteTagDialog = () => {
-		this.setState((state) => (
-			{
-				tagToDelete: null,
-				showDeleteDialog: !state.showDeleteDialog,
-			}
-		));
+		this.setState((state) => ({
+			tagToDelete: null,
+			showDeleteDialog: !state.showDeleteDialog,
+		}));
 	};
 
 	private toggleEditTagDialog = () => {
