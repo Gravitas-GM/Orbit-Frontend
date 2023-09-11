@@ -1,0 +1,25 @@
+@import "../../../../variables";
+
+.results-header {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: $spacing-large;
+
+	border: solid 1px $light-gray1;
+	padding: $spacing-large;
+
+	margin-bottom: $spacing-large;
+
+	h2 {
+		display: flex;
+		align-items: center;
+		gap: $spacing-small;
+	}
+}
+
+.results-items {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-gap: $spacing-large;
+}
+
