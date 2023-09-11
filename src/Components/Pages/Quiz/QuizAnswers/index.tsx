@@ -1,22 +1,24 @@
+import { H2 } from "@blueprintjs/core";
 import { QuestionKind } from "../../../../Api/Quiz/Models/Questions";
 import { QuestionResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import { BooleanAnswer } from "../QuizAnswers/BooleanAnswer";
 import { FreeTextAnswer } from "../QuizAnswers/FreeTextAnswer";
 import { MultipleChoiceAnswer } from "../QuizAnswers/MultipleChoiceAnswer";
-import "./QuizHistory.scss";
-import SimpleBar from "simplebar-react";
+import "./QuizAnswers.scss";
 
 interface IProps {
 	questions: QuestionResponse[];
 }
 
-export const QuizResponses: React.FC<IProps> = ({ questions }) => {
+export const QuizAnswers: React.FC<IProps> = ({ questions }) => {
 	return (
-		<SimpleBar className="questions-container">
+		<>
+			<H2>Quiz Answers</H2>
+
 			{questions.map((question) => (
 				<Response question={question} key={question.prompt} />
 			))}
-		</SimpleBar>
+		</>
 	);
 };
 
