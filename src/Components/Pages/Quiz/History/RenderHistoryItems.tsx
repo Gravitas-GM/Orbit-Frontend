@@ -1,14 +1,17 @@
-import { Button, Intent } from "@blueprintjs/core";
-import { useMemo } from "react";
+import { AnchorButton, Intent } from "@blueprintjs/core";
+import { useContext, useMemo } from "react";
 import { QuizSubmission } from "../../../../Api/Quiz/Models/QuizSubmissions";
+import { Permission } from "../../../../Permission";
+import { UserContext } from "../../../../Session";
 
 interface IRenderHistoryItemsProps {
 	items: QuizSubmission[];
-
-	handleClick: (index: number) => void;
 }
 
-export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items, handleClick }) => {
+export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items }) => {
+	const User = useContext(UserContext);
+
+
 	const sortedItems = useMemo(
 		() => items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
 		[items]
@@ -18,21 +21,27 @@ export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items, 
 		<tbody>
 			{sortedItems.map((item, index) => (
 				<tr key={`${item.userId.id} ${item.timestamp}`}>
-					<td>{item.userId.name}</td>
+					{
+						User?.permissions.includes(Permission.ADMIN) &&
 
-					<td>{item.correctCount}/{item.questions.length}</td>
-
-					<td>{(item.duration / 1000).toFixed(1)}s</td>
+						<td>{item.userId.name}</td>
+					}
 
 					<td>{new Date(item.timestamp).toLocaleDateString()}</td>
 
-					<td>
-						<Button intent={Intent.PRIMARY} onClick={() => handleClick(index)}>
-							View Answers
-						</Button>
+					<td>{showQuizScore(item)}</td>
+
+					<td style={{ textAlign: "right"}} width={180}>
+						<AnchorButton href={`/quiz/results/${item.id}`} intent={Intent.PRIMARY}>
+							Show Results
+						</AnchorButton>
 					</td>
 				</tr>
 			))}
 		</tbody>
 	);
+};
+
+const showQuizScore = (item: QuizSubmission) => {
+	return <span>{Math.floor((item.correctCount / item.questions.length)*100)}% ({item.correctCount} / {item.questions.length})</span>;
 };

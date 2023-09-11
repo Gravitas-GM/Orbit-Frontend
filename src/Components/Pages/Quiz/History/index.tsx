@@ -1,20 +1,18 @@
 import React from "react";
 import { UserContext } from "../../../../Session";
 import { PageHeader } from "../../../PageHeader";
-import { Button, Classes, Dialog, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
+import { Button, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
 import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
 import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
 import { User, UserModel } from "../../../../Api/Hub/Models/Users";
 import { ucwords } from "../../../Utility/string";
 import { Permission } from "../../../../Permission";
 import { QuizSubmission, QuizSubmissionModel } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import "./QuizHistory.scss";
-import { Spacing } from "../../../../Styles/variables";
 import { NonIdealState } from "../../../NonIdealState";
 import { history } from "../../../../history";
-import { QuizResponses } from "./QuizResponses";
 import * as toaster from "../../../../Toaster";
 import { RenderHistoryItems } from "./RenderHistoryItems";
+import "./QuizHistory.scss";
 
 interface IState {
 	loading: boolean;
@@ -87,7 +85,9 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			const users = await this.fetchUserData();
 
 			if (!users) {
-				this.setState({ loading: false });
+				this.setState({
+					loading: false
+				});
 
 				return;
 			}
@@ -95,7 +95,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			const submissionUsers = quizSubmissions.map((submission) => submission.userId.id);
 
 			this.setState((state)=> ({
-				users: state.users.filter((user) => submissionUsers.includes(user.id)),
+				users: users.filter((user) => submissionUsers.includes(user.id)),
 				quizSubmissions,
 				filteredSubmissions: null,
 				loading: false,
@@ -160,10 +160,14 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				<HTMLTable striped={true} interactive={true}>
 					<thead>
 						<tr>
-							<th>User</th>
+							{
+								this.context?.permissions.includes(Permission.ADMIN) &&
+
+								<th>Name</th>
+							}
+
+							<th>Quiz Date</th>
 							<th>Score</th>
-							<th>Time</th>
-							<th>Submission Date</th>
 							<th>&nbsp;</th>
 						</tr>
 					</thead>
@@ -174,30 +178,8 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 							this.state.filteredSubmissions :
 							this.state.quizSubmissions
 						}
-						handleClick={this.onViewAnswersClick}
 					/>
 				</HTMLTable>
-
-				{this.state.currentSubmission && (
-					<Dialog
-						onClose={this.onClose}
-						isOpen={this.state.showQuizSubmissionDialog}
-						title={`Quiz Submission #${this.state.currentSubmission.id} - ${this.state.currentSubmission.userId.name}`}
-					>
-						<div className={Classes.DIALOG_BODY}>
-							<QuizResponses questions={this.state.currentSubmission.questions} />
-
-							<hr style={{ margin: `${Spacing.Large} 0` }} />
-
-							<div className="question-details-total">
-								Score:{" "}
-								<span>
-									{this.state.currentSubmission?.correctCount}/{this.state.currentSubmission.questions.length}
-								</span>
-							</div>
-						</div>
-					</Dialog>
-				)}
 			</section>
 		);
 	}
@@ -217,33 +199,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			});
 		}
 	};
-
-	private onClose = () => {
-		this.setState({
-			currentSubmission: null,
-			showQuizSubmissionDialog: false,
-		});
-	};
-
-	private onViewAnswersClick = (index: number) => {
-		this.setState(({ filteredSubmissions, quizSubmissions }) => {
-			if (filteredSubmissions) {
-				return {
-					currentSubmission: filteredSubmissions[index],
-					showQuizSubmissionDialog: true,
-				};
-			} else {
-				return {
-					currentSubmission: quizSubmissions[index],
-					showQuizSubmissionDialog: true,
-				};
-			}
-		});
-	};
 }
 
 const renderUserOption: ItemRenderer<User> = (user, { handleClick, handleFocus, modifiers }) => {
-	if (!modifiers.matchesPredicate) return null;
+	if (!modifiers.matchesPredicate)
+		return null;
 
 	return (
 		<MenuItem

@@ -7,11 +7,10 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		userId: { id: 0, name: "John Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 2,
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
-		duration: 2346,
 		id: 91,
 		questions: [
 			{
-				accountId: 41,
+				accountId: 0,
 				answers: ["Paris"],
 				id: 21,
 				prompt: "What is the capital of France?",
@@ -20,7 +19,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				response: "Paris",
 			},
 			{
-				accountId: 41,
+				accountId: 0,
 				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
@@ -30,7 +29,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: true,
 			},
 			{
-				accountId: 41,
+				accountId: 0,
 				id: 61,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
@@ -47,20 +46,19 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		userId: { id: 0, name: "John Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 3,
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
-		duration: 4323,
 		id: 92,
 		questions: [
 			{
-				accountId: 31,
+				accountId: 0,
 				answers: ["Paris", "France"],
-				id: 21,
+				id: 121,
 				prompt: "Where is the Eiffel Tower?",
 				kind: QuestionKind.FreeText,
 				correct: true,
 				response: "Paris",
 			},
 			{
-				accountId: 31,
+				accountId: 0,
 				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
@@ -70,8 +68,8 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: true,
 			},
 			{
-				accountId: 31,
-				id: 61,
+				accountId: 0,
+				id: 161,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
 				response: true,
@@ -86,11 +84,10 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		userId: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 0,
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
-		duration: 6745,
 		id: 93,
 		questions: [
 			{
-				accountId: 21,
+				accountId: 22,
 				answers: ["Paris", "France"],
 				id: 21,
 				prompt: "Where is the Eiffel Tower?",
@@ -99,7 +96,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				response: "Bagdad Or maybe Somewhere I don't know I'm just typing random stuff to make this text longer",
 			},
 			{
-				accountId: 21,
+				accountId: 22,
 				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
@@ -109,7 +106,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: false,
 			},
 			{
-				accountId: 21,
+				accountId: 22,
 				id: 61,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
@@ -125,11 +122,10 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		userId: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 1,
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
-		duration: 35645,
 		id: 94,
 		questions: [
 			{
-				accountId: 11,
+				accountId: 22,
 				answers: ["Paris", "France"],
 				id: 21,
 				prompt: "Where is the Eiffel Tower?",
@@ -138,7 +134,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				response: "Paris",
 			},
 			{
-				accountId: 11,
+				accountId: 22,
 				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
@@ -148,7 +144,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: false,
 			},
 			{
-				accountId: 11,
+				accountId: 22,
 				id: 61,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
