@@ -1,5 +1,6 @@
 import '@blueprintjs/core/lib/css/blueprint.css';
 import { ContextMockDecorator } from '../src/mocks/Context';
+import '../src/index.scss';
 
 export const parameters = {
 	actions: { argTypesRegex: '^on[A-Z].*' },
