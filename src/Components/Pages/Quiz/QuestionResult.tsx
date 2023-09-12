@@ -1,16 +1,34 @@
+import React from "react";
 import { Icon, Intent } from "@blueprintjs/core";
 import { IconSize } from "../../../IconSize";
+import { classNames } from "../../Utility/dom";
 
-export const QuestionResult: React.FC<{ correct: boolean }> = ({ correct }) => {
+interface IProps {
+	correct: boolean;
+	selected: boolean;
+	children?: React.ReactNode;
+}
+
+export const QuestionResult: React.FC<IProps> = ({ correct, selected, children }) => {
+
+	const markAsCorrect = React.useMemo(() => {
+		return correct ? 'question-correct' : 'question-wrong'
+	}, [correct]);
+
 	return (
-		<div className="question-details-card">
-			<span>Result:</span>
+		<div className={selected ? classNames('question-results-card', 'question-selected', markAsCorrect) : 'question-details-card'}>
 
-			{correct ? (
-				<Icon size={IconSize.LARGE} icon="tick-circle" intent={Intent.SUCCESS} />
-			) : (
-				<Icon size={IconSize.LARGE} icon="delete" intent={Intent.DANGER} />
+			{selected && (
+				<Icon
+					icon={correct ? "tick" : "cross"}
+					intent={correct ? Intent.SUCCESS : Intent.DANGER}
+					size={IconSize.SMALL}
+				/>
 			)}
+
+			<>
+				{children}
+			</>
 		</div>
 	);
 };

@@ -1,4 +1,4 @@
-import { Icon } from "@blueprintjs/core";
+import { Icon, InputGroup, Radio } from "@blueprintjs/core";
 import { BooleanResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import { IconSize } from "../../../../IconSize";
 import { QuestionResult } from "../QuestionResult";
@@ -11,19 +11,23 @@ export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({ questio
 			</div>
 
 			<div className="question-details">
-				<div className="question-details-card">
-					<span>Given Answer:</span>
+				<QuestionResult
+					correct={question.response === question.correct}
+					selected={question.response === true}
+				>
+					<p>{question.trueLabel}</p>
 
-					{question.response ? question.trueLabel : question.falseLabel}
-				</div>
+					<Radio defaultChecked={question.response === true} />
+				</QuestionResult>
 
-				<div className="question-details-card">
-					<span>Correct Answer:</span>
+				<QuestionResult
+					correct={question.response !== question.correct}
+					selected={question.response === false}
+				>
+					<p>{question.falseLabel}</p>
 
-					{question.answer ? question.trueLabel : question.falseLabel}
-				</div>
-
-				<QuestionResult correct={question.correct}/>
+					<Radio defaultChecked={question.response === false} />
+				</QuestionResult>
 			</div>
 		</div>
 	);

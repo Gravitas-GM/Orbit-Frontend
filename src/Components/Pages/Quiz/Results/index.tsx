@@ -9,6 +9,7 @@ import { history } from "../../../../history";
 import "./QuizResultsPage.scss";
 import { quizSubmissionsMock } from "../../../../mocks/QuizSubmissions";
 import { QuizAnswers } from "../QuizAnswers";
+import { showQuizScore } from "../History/RenderHistoryItems";
 
 interface IProps {
 	submission?: string;
@@ -27,9 +28,9 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 	};
 
 	public componentDidMount(): void {
-		// if (this.props.match.params.submission) {
-		// 	this.getQuizResult(this.props.match.params.submission);
-		// }
+		if (this.props.match.params.submission) {
+			this.getQuizResult(this.props.match.params.submission);
+		}
 	}
 
 	public render() {
@@ -45,10 +46,10 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 				<div className="results-header">
 					<h2>
-						Time taken <Icon icon="time" /> {`${new Date(this.state.submission!.timestamp).getSeconds()}s`}
+						<Icon icon="time" /> {`${new Date(this.state.submission!.timestamp).getSeconds()}s`}
 					</h2>
 					<h2>
-						<Icon icon="tick" /> {this.state.submission?.correctCount} / {this.state.submission?.questions.length}
+						<Icon icon="tick" /> {showQuizScore(this.state.submission!)}
 					</h2>
 				</div>
 
@@ -61,7 +62,11 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 						marginTop: "2rem",
 					}}
 				>
-					<AnchorButton href="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" large={true} />
+					<AnchorButton
+						href="/quiz/history"
+						intent={Intent.PRIMARY}
+						text="View Submission History"
+					/>
 				</div>
 			</section>
 		);

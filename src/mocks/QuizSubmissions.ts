@@ -11,7 +11,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		questions: [
 			{
 				accountId: 0,
-				answers: ["Paris"],
+				answers: ["Paris", "France", "Parris", "Frans"],
 				id: 21,
 				prompt: "What is the capital of France?",
 				kind: QuestionKind.FreeText,
@@ -31,7 +31,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 			{
 				accountId: 0,
 				id: 61,
-				prompt: "Is this a mocked-up question?",
+				prompt: "Is this a million dollar question?",
 				kind: QuestionKind.Boolean,
 				response: true,
 				answer: false,
@@ -146,7 +146,7 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 			{
 				accountId: 22,
 				id: 61,
-				prompt: "Is this a mocked-up question?",
+				prompt: "Is this a million dollar question?",
 				kind: QuestionKind.Boolean,
 				response: false,
 				answer: true,

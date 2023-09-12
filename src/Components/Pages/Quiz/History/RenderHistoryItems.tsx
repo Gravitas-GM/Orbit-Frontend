@@ -42,6 +42,6 @@ export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({ items }
 	);
 };
 
-const showQuizScore = (item: QuizSubmission) => {
+export const showQuizScore = (item: QuizSubmission) => {
 	return <span>{Math.floor((item.correctCount / item.questions.length)*100)}% ({item.correctCount} / {item.questions.length})</span>;
 };

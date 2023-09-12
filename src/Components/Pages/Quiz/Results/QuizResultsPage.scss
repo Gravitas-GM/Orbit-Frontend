@@ -1,14 +1,12 @@
 @import "../../../../variables";
 
 .results-header {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-gap: $spacing-large;
-
+	display: flex;
+	justify-content: space-between;
 	border: solid 1px $light-gray1;
 	padding: $spacing-large;
 
-	margin-bottom: $spacing-large;
+	margin: $spacing-large 0;
 
 	h2 {
 		display: flex;
