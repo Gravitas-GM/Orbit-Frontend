@@ -1,13 +1,12 @@
-import React from "react";
-import { Dialog, Classes, InputGroup, Button, Intent, MenuItem } from "@blueprintjs/core";
-import { MultiSelect2 as MultiSelect, ItemRenderer } from "@blueprintjs/select";
-import { QuestionTag, QuestionTagCreatePayload } from "../../../../Api/Quiz/Models/QuestionTags";
-import { Spacing } from "../../../../Styles/variables";
-import { ucwords } from "../../../Utility/string";
-import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
-import { ValidationFailures } from "../../../../Api/errors/symfony";
-import { UserContext } from "../../../../Session";
-import { User } from "../../../../Api/Hub/Models/Users";
+import * as React from 'react';
+import {Dialog, Classes, InputGroup, Button, Intent, MenuItem} from '@blueprintjs/core';
+import {MultiSelect2 as MultiSelect, ItemRenderer} from '@blueprintjs/select';
+import {QuestionTag, QuestionTagCreatePayload} from '../../../../Api/Quiz/Models/QuestionTags';
+import {User} from '../../../../Api/Quiz/Models/Users';
+import {ucwords} from '../../../Utility/string';
+import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../Api/errors/symfony';
+import {UserContext} from '../../../../Session';
 
 interface IProps {
 	isOpen: boolean;
@@ -28,8 +27,8 @@ interface IState {
 }
 
 enum TagEditorDialogTitle {
-	ADD = "Add new Tag",
-	EDIT = "Edit Tag",
+	ADD = 'Add new Tag',
+	EDIT = 'Edit Tag',
 }
 
 export class TagEditorDialog extends React.PureComponent<IProps, IState> {
@@ -38,7 +37,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		hubUsers: this.props.users,
 		tag: this.props.tag,
 		dialogTitle: TagEditorDialogTitle.ADD,
-		tagName: "",
+		tagName: '',
 		tagUsers: [],
 	};
 
@@ -49,9 +48,9 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		if (this.props !== prevProps) {
 			this.setState({
 				tag: this.props.tag,
-				tagUsers: this.props.users.filter(user => this.props.tag?.members.includes(user.id)),
+				tagUsers: this.props.users.filter(user => this.props.tag?.members.includes(user)),
 				hubUsers: this.props.users,
-				tagName: this.props.tag?.label ?? "",
+				tagName: this.props.tag?.label ?? '',
 				dialogTitle: this.props.tag ? TagEditorDialogTitle.EDIT : TagEditorDialogTitle.ADD,
 			});
 		}
@@ -59,7 +58,12 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 
 	public render() {
 		return (
-			<Dialog isOpen={this.props.isOpen} title={this.state.dialogTitle} onClose={this.onCloseClick} isCloseButtonShown={!this.state.processing}>
+			<Dialog
+				isOpen={this.props.isOpen}
+				title={this.state.dialogTitle}
+				onClose={this.onCloseClick}
+				isCloseButtonShown={!this.state.processing}
+			>
 				<form className={Classes.DIALOG_BODY}>
 					<ValidationAwareFormGroup labelFor="name" failures={this.props.validationFailures}>
 						<InputGroup
@@ -78,8 +82,8 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 						<MultiSelect
 							tagInputProps={{
 								inputProps: {
-									id: "users",
-									name: "users",
+									id: 'users',
+									name: 'users',
 								},
 							}}
 							fill={true}
@@ -91,7 +95,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 							itemRenderer={selectItemRenderer}
 							tagRenderer={tagRenderer}
 							noResults={<div>No results</div>}
-							popoverProps={{ minimal: true }}
+							popoverProps={{minimal: true}}
 						/>
 					</ValidationAwareFormGroup>
 
@@ -119,18 +123,18 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 					</div>
 				</form>
 			</Dialog>
-		)
+		);
 	}
 
 	private onChangeTagName = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
-		tagName: event.currentTarget.value
+		tagName: event.currentTarget.value,
 	});
 
 	private onUserRemove = (user: User) => {
 		this.setState({
-			tagUsers: this.state.tagUsers.filter((u) => u.id !== user.id)
+			tagUsers: this.state.tagUsers.filter((u) => u.id !== user.id),
 		});
-	}
+	};
 
 	private onSubmitClick = async () => {
 		this.setState({
@@ -139,8 +143,9 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 
 		const tag: QuestionTagCreatePayload = {
 			label: this.state.tagName,
-			members: this.state.tagUsers.map(user => user.id),
-			accountId: this.context!.account.id,
+			members: this.state.tagUsers,
+			questions: [],
+			// TODO: This editor needs the ability to add questions to the tag /Larry
 		};
 
 		await this.props.onSubmit(tag);
@@ -148,10 +153,10 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		this.setState({
 			processing: false,
 		});
-	}
+	};
 
 	private onClearFilterClick = () => this.setState({
-		 tagUsers: []
+		tagUsers: [],
 	});
 
 	private onCloseClick = () => {
@@ -159,35 +164,31 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 			return;
 
 		this.setState({
-			tagName: "",
+			tagName: '',
 			tagUsers: [],
 		});
 
 		this.props.onClose();
-	}
+	};
 
 	private selectUser = (user: User) => {
 		if (this.state.tagUsers.find((u) => u.id === user.id))
 			return;
 
 		this.setState({
-			tagUsers: [...this.state.tagUsers, user]
+			tagUsers: [...this.state.tagUsers, user],
 		});
-	}
+	};
 }
 
-const selectItemRenderer: ItemRenderer<User> = (user, { handleClick, modifiers }) => {
+const selectItemRenderer: ItemRenderer<User> = (user, {handleClick, modifiers}) => {
 	if (!modifiers.matchesPredicate) {
 		return null;
 	}
 
-	const name = `${user.firstName} ${user.lastName}`;
-
-	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(name)} onClick={handleClick} />;
+	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(user.name)} onClick={handleClick} />;
 };
 
 const tagRenderer = (user: User) => {
-	const name = `${user.firstName} ${user.lastName}`;
-
-	return ucwords(name);
+	return user.name;
 };

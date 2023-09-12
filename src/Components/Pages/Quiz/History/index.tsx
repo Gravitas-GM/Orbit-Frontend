@@ -1,18 +1,18 @@
-import React from "react";
-import { UserContext } from "../../../../Session";
-import { PageHeader } from "../../../PageHeader";
-import { Button, HTMLTable, Intent, MenuItem } from "@blueprintjs/core";
-import { Select2 as Select, ItemRenderer } from "@blueprintjs/select";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { User, UserModel } from "../../../../Api/Hub/Models/Users";
-import { ucwords } from "../../../Utility/string";
-import { Permission } from "../../../../Permission";
-import { QuizSubmission, QuizSubmissionModel } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { NonIdealState } from "../../../NonIdealState";
-import { history } from "../../../../history";
-import * as toaster from "../../../../Toaster";
-import { RenderHistoryItems } from "./RenderHistoryItems";
-import "./QuizHistory.scss";
+import * as React from 'react';
+import {UserContext} from '../../../../Session';
+import {PageHeader} from '../../../PageHeader';
+import {Button, HTMLTable, Intent, MenuItem} from '@blueprintjs/core';
+import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {User, UserModel} from '../../../../Api/Hub/Models/Users';
+import {ucwords} from '../../../Utility/string';
+import {Permission} from '../../../../Permission';
+import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import './QuizHistory.scss';
+import {NonIdealState} from '../../../NonIdealState';
+import {history} from '../../../../history';
+import * as toaster from '../../../../Toaster';
+import {RenderHistoryItems} from './RenderHistoryItems';
 
 interface IState {
 	loading: boolean;
@@ -71,12 +71,12 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	}
 
 	private async fetchHistoryData(): Promise<void> {
-		this.setState({ loading: true });
+		this.setState({loading: true});
 
 		const quizSubmissions = await this.fetchQuizSubmissions();
 
 		if (!quizSubmissions) {
-			this.setState({ loading: false });
+			this.setState({loading: false});
 
 			return;
 		}
@@ -92,7 +92,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				return;
 			}
 
-			const submissionUsers = quizSubmissions.map((submission) => submission.userId.id);
+			const submissionUsers = quizSubmissions.map((submission) => submission.user.id);
 
 			this.setState((state)=> ({
 				users: users.filter((user) => submissionUsers.includes(user.id)),
@@ -121,7 +121,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				<NonIdealState
 					icon="wind"
 					action={
-						<Button intent={Intent.PRIMARY} onClick={() => history.push("/")}>
+						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
 					}
@@ -142,10 +142,14 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 							items={this.state.users}
 							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 							itemRenderer={renderUserOption}
-							onItemSelect={this.handleUserSelect}
+							onItemSelect={this.onUserSelect}
 						>
 							<Button>
-								{this.state.filteredSubmissions ? `${this.state.filteredSubmissions[0].userId.name}` : "All Users"}
+								{
+									this.state.filteredSubmissions && this.state.filteredSubmissions.length === 1
+										? `${this.state.filteredSubmissions[0].user.name}`
+										: 'All Users'
+								}
 							</Button>
 						</Select>
 
@@ -154,7 +158,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 						</Button>
 					</div>
 				) : (
-					""
+					''
 				)}
 
 				<HTMLTable striped={true} interactive={true}>
@@ -175,8 +179,8 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 					<RenderHistoryItems
 						items={
 							this.state.filteredSubmissions ?
-							this.state.filteredSubmissions :
-							this.state.quizSubmissions
+								this.state.filteredSubmissions :
+								this.state.quizSubmissions
 						}
 					/>
 				</HTMLTable>
@@ -190,14 +194,10 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private handleUserSelect = (user: User) => {
-		const filteredSubmissions = this.state.quizSubmissions.filter((submission) => submission.userId.id === user.id);
-
-		if (filteredSubmissions) {
-			this.setState({
-				filteredSubmissions,
-			});
-		}
+	private onUserSelect = (user: User) => {
+		this.setState(state => ({
+			filteredSubmissions: state.quizSubmissions.filter((submission) => submission.user.id === user.id),
+		}));
 	};
 }
 

@@ -1,23 +1,22 @@
-import React from "react";
-import { Button, H3, InputGroup, Intent, Radio } from "@blueprintjs/core";
-import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
-import { ValidationFailures } from "../../../../../Api/errors/symfony";
-import { QuestionKind, QuestionCreatePayload, Question } from "../../../../../Api/Quiz/Models/Questions";
-import "../AnswerForm.scss";
+import * as React from 'react';
+import {Button, H3, InputGroup, Intent, Radio} from '@blueprintjs/core';
+import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
+import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
+import '../AnswerForm.scss';
 
 interface IProps {
 	question: Question | null;
 	prompt?: string;
 	tagId: number;
-	accountId: number;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 	processing: boolean;
 }
 
 export const BooleanQuestion: React.FC<IProps> = (props) => {
 	const [answer, setAnswer] = React.useState(true);
-	const [options] = React.useState<string[]>(["True", "False"]);
+	const [options] = React.useState<string[]>(['True', 'False']);
 	const [trueLabel, setTrueLabel] = React.useState<string | null>(null);
 	const [falseLabel, setFalseLabel] = React.useState<string | null>(null);
 
@@ -45,18 +44,17 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 		}
 	}, []);
 
-	const onChangeBooleanLabel = React.useCallback((event: React.FormEvent<HTMLInputElement>) => {
+	const onBooleanToggle = React.useCallback((event: React.FormEvent<HTMLInputElement>) => {
 		const target = event.target as HTMLInputElement;
 
-		const index = target.id === "boolean-label-0" ? 0 : 1;
+		const index = target.id === 'boolean-label-0' ? 0 : 1;
 
 		setBooleanLabel(index, event.currentTarget.value);
 	}, [trueLabel, falseLabel]);
 
-	const onClickSave = React.useCallback(() => {
-		const questionData = {
-			accountId: props.accountId,
-			tagId: props.tagId,
+	const onSaveClick = React.useCallback(() => {
+		const questionData: QuestionUpdate = {
+			tag: props.tagId,
 			prompt: props.prompt!,
 			kind: QuestionKind.Boolean,
 			answer,
@@ -64,7 +62,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 			falseLabel,
 		};
 
-		return props.saveQuestion(questionData);
+		return props.onQuestionSave(questionData);
 	}, [props, answer, trueLabel, falseLabel]);
 
 	return (
@@ -74,16 +72,19 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 			{options.map((option, index) => (
 				<div key={option} className="boolean-container">
 					<div className="boolean-answer">
-						<ValidationAwareFormGroup labelFor={`boolean-label-${index}`} failures={props.validationFailures}>
+						<ValidationAwareFormGroup
+							labelFor={`boolean-label-${index}`}
+							failures={props.validationFailures}
+						>
 							<InputGroup
-								leftIcon={index === 0 ? "confirm" : "cross"}
+								leftIcon={index === 0 ? 'confirm' : 'cross'}
 								id={`boolean-label-${index}`}
 								type="text"
 								placeholder={option}
-								value={(index === 0 ? trueLabel : falseLabel) ?? ""}
+								value={(index === 0 ? trueLabel : falseLabel) ?? ''}
 								large={true}
-								style={{ width: "100%" }}
-								onChange={onChangeBooleanLabel}
+								style={{width: '100%'}}
+								onChange={onBooleanToggle}
 							/>
 						</ValidationAwareFormGroup>
 
@@ -91,7 +92,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 							<Radio
 								id="correct-answer"
 								label="Correct Answer"
-								checked={index === 0 ? answer === true : answer === false}
+								checked={index === 0 ? answer : !answer}
 								onChange={() => setBooleanAnswer(index)}
 							/>
 						</ValidationAwareFormGroup>
@@ -107,7 +108,7 @@ export const BooleanQuestion: React.FC<IProps> = (props) => {
 				intent={Intent.PRIMARY}
 				text="Save Question"
 				icon="floppy-disk"
-				onClick={onClickSave}
+				onClick={onSaveClick}
 			/>
 		</div>
 	);

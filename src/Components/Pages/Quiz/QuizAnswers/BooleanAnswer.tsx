@@ -1,9 +1,10 @@
-import { Icon, InputGroup, Radio } from "@blueprintjs/core";
+import * as React from 'react';
+import { Icon, Radio } from "@blueprintjs/core";
 import { BooleanResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
 import { IconSize } from "../../../../IconSize";
 import { QuestionResult } from "../QuestionResult";
 
-export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({ question }) => {
+export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({question}) => {
 	return (
 		<div className="question">
 			<div className="question-title">

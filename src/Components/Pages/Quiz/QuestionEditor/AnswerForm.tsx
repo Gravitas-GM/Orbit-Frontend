@@ -1,17 +1,17 @@
-import React from "react";
-import { InputGroup, Button, MenuItem } from "@blueprintjs/core";
-import { QuestionKind, Question, QuestionCreatePayload } from "../../../../Api/Quiz/Models/Questions";
-import { Spacing } from "../../../../Styles/variables";
-import { QuestionTag } from "../../../../Api/Quiz/Models/QuestionTags";
-import { ValidationAwareFormGroup } from "../../../ValidationAwareFormGroup";
-import { ValidationFailures } from "../../../../Api/errors/symfony";
-import { ItemRenderer, Select } from "@blueprintjs/select";
-import { ucwords } from "../../../Utility/string";
-import { BooleanQuestion } from "./QuizQuestions/BooleanQuestion";
-import { FreeTextQuestion } from "./QuizQuestions/FreeTextQuestion";
-import { MultipleChoiceQuestion } from "./QuizQuestions/MultipleChoiceQuestion";
-import { UserContext } from "../../../../Session";
-import "./AnswerForm.scss";
+import * as React from 'react';
+import {InputGroup, Button, MenuItem} from '@blueprintjs/core';
+import {QuestionKind, Question, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
+import {Spacing} from '../../../../Styles/variables';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
+import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../Api/errors/symfony';
+import {ItemRenderer, Select} from '@blueprintjs/select';
+import {ucwords} from '../../../Utility/string';
+import {BooleanQuestion} from './QuizQuestions/BooleanQuestion';
+import {FreeTextQuestion} from './QuizQuestions/FreeTextQuestion';
+import {MultipleChoiceQuestion} from './QuizQuestions/MultipleChoiceQuestion';
+import {UserContext} from '../../../../Session';
+import './AnswerForm.scss';
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -20,7 +20,7 @@ interface IProps {
 	tags: QuestionTag[];
 	processing: boolean;
 	validationFailures: ValidationFailures | null;
-	saveQuestion: (question: QuestionCreatePayload) => Promise<void>;
+	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
 }
 
 interface IState {
@@ -46,7 +46,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 	public componentDidMount(): void {
 		if (this.props.question) {
 			this.setState({
-				tag: this.props.tags.find(tag => tag.id === this.props.question?.tagId),
+				tag: this.props.tags.find(tag => tag.id === this.props.question?.tag?.id),
 			});
 		}
 	}
@@ -56,7 +56,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 			return;
 
 		return (
-			<form style={{ marginTop: Spacing.XLarge }}>
+			<form style={{marginTop: Spacing.XLarge}}>
 				<div className="answer-form-container">
 					<div>
 						<label htmlFor="prompt" className="answer-form-label">
@@ -68,8 +68,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								id="prompt"
 								name="prompt"
 								type="text"
-								placeholder={this.state.question ? this.state.question.prompt : "Question Prompt"}
-								value={this.state.prompt ?? ""}
+								placeholder={this.state.question ? this.state.question.prompt : 'Question Prompt'}
+								value={this.state.prompt ?? ''}
 								large={true}
 								onChange={this.onChangePrompt}
 							/>
@@ -84,16 +84,25 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 							<ValidationAwareFormGroup labelFor="question_kind" failures={this.props.validationFailures}>
 								<Select<QuestionKind>
-									inputProps={{ name: "question_kind", id: "question_kind" }}
+									inputProps={{
+										name: 'question_kind',
+										id: 'question_kind',
+									}}
 									items={QuestionKindNames}
 									onItemSelect={this.selectQuestionKind}
 									filterable={false}
 									itemRenderer={renderQuestionKindOption}
-									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+									noResults={(
+										<MenuItem
+											disabled={true}
+											text="No results."
+											roleStructure="listoption"
+										/>
+									)}
 								>
 									<Button
-										style={{ minWidth: 200 }}
-										text={this.state.kind ? ucwords(this.state.kind) : "Select question kind"}
+										style={{minWidth: 200}}
+										text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
 										rightIcon="double-caret-vertical"
 										placeholder="Select question kind"
 									/>
@@ -108,16 +117,23 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 							<ValidationAwareFormGroup labelFor="question_tag" failures={this.props.validationFailures}>
 								<Select<QuestionTag>
-									inputProps={{ name: "question_tag", id: "question_tag" }}
+									inputProps={{
+										name: 'question_tag',
+										id: 'question_tag',
+									}}
 									items={this.props.tags}
 									onItemSelect={this.selectTag}
 									filterable={false}
 									itemRenderer={renderTagOption}
-									noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
+									noResults={<MenuItem
+										disabled={true}
+										text="No results."
+										roleStructure="listoption"
+									/>}
 								>
 									<Button
-										style={{ minWidth: 200 }}
-										text={this.state.tag ? ucwords(this.state.tag.label) : "Select question tag"}
+										style={{minWidth: 200}}
+										text={this.state.tag ? ucwords(this.state.tag.label) : 'Select question tag'}
 										rightIcon="double-caret-vertical"
 										placeholder="Select question tag"
 									/>
@@ -134,9 +150,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}
@@ -146,9 +161,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}
@@ -158,9 +172,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						question={this.state.question}
 						prompt={this.state.prompt}
 						tagId={this.state.tag.id as number}
-						accountId={this.context!.id}
 						processing={this.props.processing}
-						saveQuestion={this.props.saveQuestion}
+						onQuestionSave={this.props.onQuestionSave}
 						validationFailures={this.props.validationFailures}
 					/>
 				)}
@@ -184,12 +197,12 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		this.setState({
 			prompt: event.target.value,
 		});
-	}
+	};
 }
 
-const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFocus, modifiers }) => {
+const renderTagOption: ItemRenderer<QuestionTag> = (tag, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate)
-	return null;
+		return null;
 
 	return (
 		<MenuItem
@@ -204,7 +217,7 @@ const renderTagOption: ItemRenderer<QuestionTag> = (tag, { handleClick, handleFo
 	);
 };
 
-const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, { handleClick, handleFocus, modifiers }) => {
+const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate)
 		return null;
 

@@ -1,4 +1,6 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {Account} from './Accounts';
+import {QuestionTag} from './QuestionTags';
 
 export interface QuestionEndpoints {
 	'/questions': {
@@ -9,7 +11,7 @@ export interface QuestionEndpoints {
 
 		PUT: {
 			query: Projectable;
-			body: QuestionCreatePayload;
+			body: QuestionUpdate;
 			response: Question;
 		};
 	};
@@ -22,7 +24,7 @@ export interface QuestionEndpoints {
 
 		PATCH: {
 			params: Id;
-			body: QuestionUpdatePayload;
+			body: QuestionUpdate;
 			response: Question;
 		};
 
@@ -33,10 +35,10 @@ export interface QuestionEndpoints {
 	};
 }
 
-interface BaseQuestion {
+interface QuestionBase {
 	id: number,
-	accountId: number,
-	tagId: number|null,
+	account: Pick<Account, 'id'>,
+	tag: Pick<QuestionTag, 'id'> | null,
 	prompt: string,
 	kind: QuestionKind,
 }
@@ -47,19 +49,19 @@ export enum QuestionKind {
 	MultipleChoice = 'multiple choice',
 }
 
-export interface FreeTextQuestion extends BaseQuestion {
+export interface FreeTextQuestion extends QuestionBase {
 	kind: QuestionKind.FreeText,
 	answers: string[],
 }
 
-export interface BooleanQuestion extends BaseQuestion {
+export interface BooleanQuestion extends QuestionBase {
 	kind: QuestionKind.Boolean,
 	answer: boolean,
-	trueLabel: string|null,
-	falseLabel: string|null,
+	trueLabel: string | null,
+	falseLabel: string | null,
 }
 
-export interface MultipleChoiceQuestion extends BaseQuestion {
+export interface MultipleChoiceQuestion extends QuestionBase {
 	kind: QuestionKind.MultipleChoice,
 	choices: string[],
 	answerIndex: number,
@@ -67,9 +69,31 @@ export interface MultipleChoiceQuestion extends BaseQuestion {
 
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
 
-export type QuestionCreatePayload = Omit<Question, 'id'>;
+interface QuestionUpdateBase {
+	tag: number,
+	prompt: string,
+	kind: QuestionKind,
+}
 
-export type QuestionUpdatePayload = Partial<Omit<Question, 'id' | 'accountId'>>;
+export interface FreeTextQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.FreeText,
+	answers: string[],
+}
+
+export interface BooleanQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.Boolean,
+	answer: boolean,
+	trueLabel: string | null,
+	falseLabel: string | null,
+}
+
+export interface MultipleChoiceQuestionUpdate extends QuestionUpdateBase {
+	kind: QuestionKind.MultipleChoice,
+	choices: string[],
+	answerIndex: number,
+}
+
+export type QuestionUpdate = FreeTextQuestionUpdate | BooleanQuestionUpdate | MultipleChoiceQuestionUpdate;
 
 export class QuestionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -81,7 +105,7 @@ export class QuestionModel {
 		});
 	}
 
-	public static create(payload: QuestionCreatePayload, projection?: Projection) {
+	public static create(payload: QuestionUpdate, projection?: Projection) {
 		return quizClient.put('/questions', payload, {
 			params: {
 				p: projection,
@@ -89,12 +113,20 @@ export class QuestionModel {
 		});
 	}
 
-	public static read(question: Id) {
-		return quizClient.get<'/questions/:question'>(`/questions/${question}`);
+	public static read(question: Id, projection?: Projection) {
+		return quizClient.get<'/questions/:question'>(`/questions/${question}`, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
-	public static update(question: Id, payload: QuestionUpdatePayload) {
-		return quizClient.patch<'/questions/:question'>(`/questions/${question}`, payload);
+	public static update(question: Id, payload: QuestionUpdate, projection?: Projection) {
+		return quizClient.patch<'/questions/:question'>(`/questions/${question}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
 	}
 
 	public static delete(question: Id) {

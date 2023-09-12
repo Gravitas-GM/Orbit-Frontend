@@ -1,8 +1,9 @@
-import { Icon, InputGroup } from "@blueprintjs/core";
-import { FreeTextResponse } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import { IconSize } from "../../../../IconSize";
-import { QuestionResult } from "../QuestionResult";
-import { Spacing } from "../../../../Styles/variables";
+import * as React from 'react';
+import { Icon, InputGroup } from '@blueprintjs/core';
+import { FreeTextResponse } from '../../../../Api/Quiz/Models/QuizSubmissions';
+import { IconSize } from '../../../../IconSize';
+import { QuestionResult } from '../QuestionResult';
+import { Spacing } from '../../../../Styles/variables';
 
 export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({ question }) => {
 console.log(question, "question"	)

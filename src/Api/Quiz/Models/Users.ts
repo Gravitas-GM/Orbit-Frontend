@@ -1,39 +1,27 @@
-import {Id, Projectable, Projection, quizClient} from '../../index';
+import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {Id, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
-import {QuizSubmission} from './QuizSubmissions';
+import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
 export interface UserEndpoints {
-	'/users': {
-		PUT: {
-			query: Projectable;
-			body: UserCreatePayload;
-			response: User;
-		};
-	};
-
 	'/users/:id': {
 		GET: {
 			params: Id;
 			response: User;
 		};
+	};
 
-		PATCH: {
-			params: Id;
-			body: UserUpdatePayload;
+	'/users/me': {
+		GET: {
 			response: User;
-		};
-
-		DELETE: {
-			params: Id;
-			response: void;
-		};
+		}
 	};
 
 	'/users/me/submissions': {
 		GET: {
 			response: QuizSubmission[];
 		}
-	}
+	};
 }
 
 export interface User {
@@ -43,32 +31,34 @@ export interface User {
 	assignedTags: QuestionTag[],
 }
 
-export type UserCreatePayload = Omit<User, 'id'>;
-
-export type UserUpdatePayload = Partial<Omit<User, 'id'>>;
-
 export class UserModel {
-	public static create(payload: UserCreatePayload, projection?: Projection) {
-		return quizClient.put('/users', payload, {
-			params: {
-				p: projection,
-			},
+	public static read(user: Id) {
+		return quizClient.get<'/users/:id'>(`/users/${user}`).then(response => {
+			response.data = UserModel.denormalizeUser(response.data);
+
+			return response;
 		});
 	}
 
-	public static read(user: Id) {
-		return quizClient.get<'/users/:id'>(`/users/${user}`);
+	public static getCurrentUser() {
+		return quizClient.get('/users/me').then(response => {
+			response.data = UserModel.denormalizeUser(response.data);
+
+			return response;
+		});
 	}
 
-	public static update(user: Id, payload: UserUpdatePayload) {
-		return quizClient.patch<'/users/:id'>(`/users/${user}`, payload);
+	public static getCurrentUsersSubmissions() {
+		return quizClient.get('/users/me/submissions').then(response => {
+			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+
+			return response;
+		});
 	}
 
-	public static delete(user: Id) {
-		return quizClient.delete<'/users/:id'>(`/users/${user}`);
-	}
+	private static denormalizeUser(user: User) {
+		user.nextQuizTimestamp = parseApiTimestamp(user.nextQuizTimestamp);
 
-	public static getSubmissions() {
-		return quizClient.get('/users/me/submissions');
+		return user;
 	}
 }
