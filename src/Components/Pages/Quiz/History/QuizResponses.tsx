@@ -1,15 +1,16 @@
-import { QuestionKind } from "../../../../Api/Quiz/Models/Questions";
+import * as React from 'react';
+import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {
 	BooleanResponse,
 	FreeTextResponse,
 	MultipleChoiceResponse,
 	QuestionResponse,
 } from '../../../../Api/Quiz/Models/QuizSubmissions';
-import { BooleanAnswer } from "../QuizAnswers/BooleanAnswer";
-import { FreeTextAnswer } from "../QuizAnswers/FreeTextAnswer";
-import { MultipleChoiceAnswer } from "../QuizAnswers/MultipleChoiceAnswer";
-import "./QuizHistory.scss";
-import SimpleBar from "simplebar-react";
+import {BooleanAnswer} from '../QuizAnswers/BooleanAnswer';
+import {FreeTextAnswer} from '../QuizAnswers/FreeTextAnswer';
+import {MultipleChoiceAnswer} from '../QuizAnswers/MultipleChoiceAnswer';
+import './QuizHistory.scss';
+import SimpleBar from 'simplebar-react';
 
 interface IProps {
 	questions: QuestionResponse[];
@@ -27,7 +28,7 @@ function isFreeTextResponse(value: any): value is FreeTextResponse {
 	return typeof value === 'object' && value.kind === QuestionKind.FreeText;
 }
 
-export const QuizResponses: React.FC<IProps> = ({ questions }) => {
+export const QuizResponses: React.FC<IProps> = ({questions}) => {
 	return (
 		<SimpleBar className="questions-container">
 			{questions.map((question) => (
@@ -37,7 +38,7 @@ export const QuizResponses: React.FC<IProps> = ({ questions }) => {
 	);
 };
 
-const Response: React.FC<{ question: QuestionResponse }> = ({ question }) => {
+const Response: React.FC<{ question: QuestionResponse }> = ({question}) => {
 	if (isMultipleChoiceResponse(question))
 		return <MultipleChoiceAnswer question={question} />;
 

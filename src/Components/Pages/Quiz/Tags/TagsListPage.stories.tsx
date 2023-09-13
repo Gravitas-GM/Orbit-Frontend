@@ -1,11 +1,10 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { TagListPage } from "./";
-import { questionTagsMock } from "../../../../mocks/QuestionTags";
-import { quizUsers } from "../../../../mocks/QuizUser";
-import { usersMock } from "../../../../mocks/User";
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {TagListPage} from './';
+import {questionTagsMock} from '../../../../mocks/QuestionTags';
+import {usersMock} from '../../../../mocks/User';
 
 export default {
-	title: "Quiz - Tag List Page",
+	title: 'Quiz - Tag List Page',
 	component: TagListPage,
 } as ComponentMeta<typeof TagListPage>;
 
@@ -21,34 +20,34 @@ Basic.parameters = {
 	mockData: [
 		{
 			url: `${process.env.HUB_URL}/users`,
-			method: "GET",
+			method: 'GET',
 			response: usersMock,
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "GET",
+			method: 'GET',
 			response: questionTagsMock,
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags/1`,
-			method: "DELETE",
+			method: 'DELETE',
 			response: {},
 			status: 200,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags/1`,
-			method: "POST",
+			method: 'POST',
 			response: {},
 			status: 200,
 		},
 		// error case for submitting tag without label:
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "PUT",
+			method: 'PUT',
 			status: 200,
 			response: {},
 			delay: 1500,
@@ -62,45 +61,45 @@ NoData.parameters = {
 	mockData: [
 		{
 			url: `${process.env.HUB_URL}/users`,
-			method: "GET",
+			method: 'GET',
 			response: [],
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "GET",
+			method: 'GET',
 			response: [],
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags/1`,
-			method: "DELETE",
+			method: 'DELETE',
 			response: {},
 			status: 200,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags/1`,
-			method: "POST",
+			method: 'POST',
 			response: {},
 			status: 200,
 		},
 		// error case for submitting tag without user:
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "PUT",
+			method: 'PUT',
 			status: 400,
 			response: {
 				error: {
-					code: "validation_failed",
-					message: "One or more fields did not pass validation",
+					code: 'validation_failed',
+					message: 'One or more fields did not pass validation',
 					context: {
 						failures: {
 							prompt: {
-								code: "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-								path: "tag-users",
-								message: "You must provide at least one user for the tag.",
+								code: 'bd79c0ab-ddba-46cc-a703-a7a4b08de310',
+								path: 'tag-users',
+								message: 'You must provide at least one user for the tag.',
 							},
 						},
 					},
@@ -117,39 +116,39 @@ SubmitError.parameters = {
 	mockData: [
 		{
 			url: `${process.env.HUB_URL}/users`,
-			method: "GET",
+			method: 'GET',
 			response: usersMock,
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "GET",
+			method: 'GET',
 			response: questionTagsMock,
 			status: 200,
 			delay: 1500,
 		},
 		{
 			url: `${process.env.QUIZ_URL}/tags/1`,
-			method: "DELETE",
+			method: 'DELETE',
 			response: {},
 			status: 200,
 		},
 		// error case for submitting tag without label:
 		{
 			url: `${process.env.QUIZ_URL}/tags`,
-			method: "PUT",
+			method: 'PUT',
 			status: 400,
 			response: {
 				error: {
-					code: "validation_failed",
-					message: "One or more fields did not pass validation",
+					code: 'validation_failed',
+					message: 'One or more fields did not pass validation',
 					context: {
 						failures: {
 							name: {
-								code: "bd79c0ab-ddba-46cc-a703-a7a4b08de310",
-								path: "name",
-								message: "You must provide a valid name for the tag.",
+								code: 'bd79c0ab-ddba-46cc-a703-a7a4b08de310',
+								path: 'name',
+								message: 'You must provide a valid name for the tag.',
 							},
 						},
 					},

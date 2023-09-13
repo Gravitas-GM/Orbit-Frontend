@@ -1,11 +1,11 @@
-import React from "react";
-import { Button, H3, InputGroup, Intent } from "@blueprintjs/core";
-import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
-import { ValidationFailures } from "../../../../../Api/errors/symfony";
+import * as React from 'react';
+import {Button, H3, InputGroup, Intent} from '@blueprintjs/core';
+import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
-import { Spacing } from "../../../../../Styles/variables";
-import * as toaster from "../../../../../Toaster";
-import "../AnswerForm.scss";
+import {Spacing} from '../../../../../Styles/variables';
+import * as toaster from '../../../../../Toaster';
+import '../AnswerForm.scss';
 
 interface IProps {
 	question: Question | null;
@@ -17,7 +17,7 @@ interface IProps {
 }
 
 export const FreeTextQuestion: React.FC<IProps> = (props) => {
-	const [answers, setAnswers] = React.useState<string[]>(["Correct Answer"]);
+	const [answers, setAnswers] = React.useState<string[]>(['Correct Answer']);
 
 	React.useEffect(() => {
 		if (props.question && props.question.kind === QuestionKind.FreeText) {
@@ -28,7 +28,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 	const onAnswerRemove = React.useCallback(
 		(index: number) => {
 			if (answers.length <= 1) {
-				toaster.info("You must have at least one answer");
+				toaster.info('You must have at least one answer');
 
 				return;
 			}
@@ -37,7 +37,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 				return answers.filter((_, i) => i !== index);
 			});
 		},
-		[answers]
+		[answers],
 	);
 
 	const onAnswerAdd = React.useCallback(() => {
@@ -86,7 +86,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 								type="text"
 								defaultValue={option}
 								large={true}
-								style={{ width: "100%" }}
+								style={{width: '100%'}}
 								onChange={(event) => onAnswerTextChange(event, index)}
 							/>
 
@@ -96,7 +96,7 @@ export const FreeTextQuestion: React.FC<IProps> = (props) => {
 				);
 			})}
 
-			<Button style={{ marginTop: Spacing.Medium }} text="Add Answer" icon="plus" onClick={onAnswerAdd} />
+			<Button style={{marginTop: Spacing.Medium}} text="Add Answer" icon="plus" onClick={onAnswerAdd} />
 
 			<hr className="answer-form-separator" />
 

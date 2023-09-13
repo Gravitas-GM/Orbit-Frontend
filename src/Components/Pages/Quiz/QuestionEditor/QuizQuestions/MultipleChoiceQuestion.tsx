@@ -1,11 +1,11 @@
-import React from "react";
-import { Button, H3, InputGroup, Radio, Intent } from "@blueprintjs/core";
-import { ValidationAwareFormGroup } from "../../../../ValidationAwareFormGroup";
-import { ValidationFailures } from "../../../../../Api/errors/symfony";
+import * as React from 'react';
+import {Button, H3, InputGroup, Radio, Intent} from '@blueprintjs/core';
+import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {QuestionKind, Question, QuestionUpdate} from '../../../../../Api/Quiz/Models/Questions';
-import { Spacing } from "../../../../../Styles/variables";
-import * as toaster from "../../../../../Toaster";
-import "../AnswerForm.scss";
+import {Spacing} from '../../../../../Styles/variables';
+import * as toaster from '../../../../../Toaster';
+import '../AnswerForm.scss';
 
 interface IProps {
 	question: Question | null;
@@ -17,12 +17,13 @@ interface IProps {
 }
 
 export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
-	const [choices, setChoices] = React.useState<string[]>(["Correct Choice"]);
+	const [choices, setChoices] = React.useState<string[]>(['Correct Choice']);
 	const [answerIndex, setAnswerIndex] = React.useState<number>(0);
 
 	React.useEffect(() => {
 		if (props.question && props.question.kind === QuestionKind.MultipleChoice) {
 			setChoices(props.question.choices);
+
 			setAnswerIndex(props.question.answerIndex);
 		}
 	}, [props.question]);
@@ -30,7 +31,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 	const onChoiceRemove = React.useCallback(
 		(index: number) => {
 			if (choices.length <= 1) {
-				toaster.info("You must have at least one choice");
+				toaster.info('You must have at least one choice');
 
 				return;
 			}
@@ -39,7 +40,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 				return choices.filter((_, i) => i !== index);
 			});
 		},
-		[choices]
+		[choices],
 	);
 
 	const onChoiceAdd = React.useCallback(() => {
@@ -70,14 +71,14 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 				return choices;
 			});
 		},
-		[choices]
+		[choices],
 	);
 
 	const onAnswerIndexChange = React.useCallback(
 		(event: React.FormEvent<HTMLInputElement>) => {
 			setAnswerIndex(parseInt(event.currentTarget.value));
 		},
-		[answerIndex]
+		[answerIndex],
 	);
 
 	return (
@@ -99,7 +100,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 									type="text"
 									defaultValue={option}
 									large={true}
-									style={{ width: "100%" }}
+									style={{width: '100%'}}
 									onChange={(event) => onAnswerTextChange(event, index)}
 								/>
 
@@ -120,7 +121,7 @@ export const MultipleChoiceQuestion: React.FC<IProps> = (props) => {
 				);
 			})}
 
-			<Button style={{ marginTop: Spacing.Medium }} text="Add Answer" icon="plus" onClick={onChoiceAdd} />
+			<Button style={{marginTop: Spacing.Medium}} text="Add Answer" icon="plus" onClick={onChoiceAdd} />
 
 			<hr className="answer-form-separator" />
 

@@ -1,7 +1,8 @@
-import { Icon, Intent } from "@blueprintjs/core";
-import { IconSize } from "../../../IconSize";
+import * as React from 'react';
+import {Icon, Intent} from '@blueprintjs/core';
+import {IconSize} from '../../../IconSize';
 
-export const QuestionResult: React.FC<{ correct: boolean }> = ({ correct }) => {
+export const QuestionResult: React.FC<{ correct: boolean }> = ({correct}) => {
 	return (
 		<div className="question-details-card">
 			<span>Result:</span>

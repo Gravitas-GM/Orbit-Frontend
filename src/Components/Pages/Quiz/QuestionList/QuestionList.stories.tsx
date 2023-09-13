@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { QuestionListPage } from './';
-import { questions } from '../../../../mocks/Questions';
+import {ComponentMeta, ComponentStory} from '@storybook/react';
+import {QuestionListPage} from './';
+import {questions} from '../../../../mocks/Questions';
 
 export default {
 	title: 'Quiz - Question List Page',
@@ -22,9 +22,9 @@ Basic.parameters = {
 			method: 'GET',
 			status: 200,
 			response: questions,
-			delay: 1500
-		}
-	]
+			delay: 1500,
+		},
+	],
 };
 
 export const NoQuestions = Template.bind({});
@@ -36,7 +36,7 @@ NoQuestions.parameters = {
 			method: 'GET',
 			status: 200,
 			response: [],
-			delay: 1500
-		}
-	]
+			delay: 1500,
+		},
+	],
 };
