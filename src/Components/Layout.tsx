@@ -17,7 +17,7 @@ import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
 import {QuizHistoryPage} from './Pages/Quiz/History';
-import {AccountSettings} from './Pages/Quiz/AccountSettings';
+import {QuizAccountSettings} from './Pages/Quiz/AccountSettings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 
@@ -53,7 +53,7 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
-								<Route path="/quiz/settings" key="/quiz/settings" component={AccountSettings} exact={true} />,
+								<Route path="/quiz/settings" key="/quiz/settings" component={QuizAccountSettings} exact={true} />,
 								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
 								<Route path="/quiz/questions/:question(\d+)"  key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/questions/new"  key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
