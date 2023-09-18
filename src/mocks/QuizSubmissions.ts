@@ -5,22 +5,25 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 	{
 		// should it reference only the ID of the user?
 		userId: { id: 0, name: "John Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
-		correctCount: 2,
+		correctCount: 4,
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
 		id: 91,
 		questions: [
 			{
-				accountId: 0,
-				answers: ["Paris", "France", "Parris", "Frans"],
-				id: 21,
+				answers: ["Paris"],
 				prompt: "What is the capital of France?",
 				kind: QuestionKind.FreeText,
 				correct: true,
 				response: "Paris",
 			},
 			{
-				accountId: 0,
-				id: 31,
+				answers: ["Sheriff", "Popo"],
+				prompt: "What is Eduardo`s dog called??",
+				kind: QuestionKind.FreeText,
+				correct: false,
+				response: "Rex",
+			},
+			{
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
 				response: 0,
@@ -29,8 +32,14 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: true,
 			},
 			{
-				accountId: 0,
-				id: 61,
+				kind: QuestionKind.MultipleChoice,
+				answerIndex: 1, // no
+				choices: ["Yes", "No", "Maybe"],
+				correct: false,
+				prompt: "Are dinossaurs friendly?",
+				response: 2, // maybe
+			},
+			{
 				prompt: "Is this a million dollar question?",
 				kind: QuestionKind.Boolean,
 				response: true,
@@ -38,6 +47,24 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: false,
 				trueLabel: "Sure",
 				falseLabel: "Nope",
+			},
+			{
+				prompt: "Do you want to believe in aliens?",
+				kind: QuestionKind.Boolean,
+				response: true,
+				answer: true,
+				correct: true,
+				trueLabel: "Sure",
+				falseLabel: "Nope",
+			},
+			{
+				prompt: "Do you mind if I sleep on the floor?",
+				kind: QuestionKind.Boolean,
+				response: false,
+				answer: false,
+				correct: true,
+				trueLabel: "Yes, I rather you sleep on the bed",
+				falseLabel: "No, go on",
 			},
 		],
 	},
