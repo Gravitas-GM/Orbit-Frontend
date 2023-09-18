@@ -1,30 +1,44 @@
 import * as React from 'react';
-import {Icon} from '@blueprintjs/core';
+import {Icon, Intent, Radio} from '@blueprintjs/core';
 import {MultipleChoiceResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {IconSize} from '../../../../IconSize';
-import {QuestionResult} from '../QuestionResult';
 
-export const MultipleChoiceAnswer: React.FC<{ question: MultipleChoiceResponse }> = ({question}) => {
+interface IProps {
+	question: MultipleChoiceResponse;
+	index: number;
+}
+
+export const MultipleChoiceAnswer: React.FC<IProps> = ({question, index}) => {
+	console.log(question, 'multiple choice');
 	return (
 		<div className="question">
 			<div className="question-title">
-				<Icon icon="help" size={IconSize.SMALL} /> <span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} />{index+1}. <span>{question.prompt}</span>
 			</div>
 
-			<div className="question-details">
-				<div className="question-details-card">
-					<span>Given Answer: </span>
+			<div className="question-results">
+				{
+					question.choices.map((choice, index) => (
+						<div className="question-results-card" key={choice}>
+							{(question.answerIndex === index) || (question.response === index && !question.correct) ?
+								<Icon
+									icon={question.answerIndex === index ? 'tick' : 'cross'}
+									intent={question.answerIndex === index ? Intent.SUCCESS : Intent.DANGER}
+								/>
+								:
+								<Icon icon="blank" />
+							}
 
-					{question.choices[question.response]}
-				</div>
+							<Radio
+								style={{ marginBottom: 'unset' }}
+								disabled={true}
+								defaultChecked={question.response === index}
+							/>
 
-				<div className="question-details-card">
-					<span>Correct Answer: </span>
-
-					{question.choices[question.answerIndex]}
-				</div>
-
-				<QuestionResult correct={question.correct} />
+							{choice}
+						</div>
+					))
+				}
 			</div>
 		</div>
 	);

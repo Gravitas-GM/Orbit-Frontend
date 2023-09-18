@@ -33,25 +33,35 @@ export const QuizAnswers: React.FC<IProps> = ({ questions }) => {
 
 
 	return (
-		<>
+		<div>
 			<H2>Quiz Answers</H2>
 
-			{questions.map((question) => (
-				<Response question={question} key={question.prompt} />
+			{questions.map((question, index) => (
+				<>
+				<Response question={question} key={question.prompt} index={index} />
+				<hr className="question-separator"/>
+				</>
 			))}
-		</>
+
+		</div>
 	);
 };
 
-const Response: React.FC<{ question: QuestionResponse }> = ({question}) => {
+interface IResponseProps {
+	question: QuestionResponse;
+	index: number;
+}
+
+
+const Response: React.FC<IResponseProps> = ({question, index}) => {
 	if (isMultipleChoiceResponse(question))
-		return <MultipleChoiceAnswer question={question} />;
+		return <MultipleChoiceAnswer question={question} index={index} />;
 
 	if (isBooleanResponse(question))
-		return <BooleanAnswer question={question} />;
+		return <BooleanAnswer question={question} index={index} />;
 
 	if (isFreeTextResponse(question))
-		return <FreeTextAnswer question={question} />;
+		return <FreeTextAnswer question={question} index={index} />;
 
 	throw new Error(`Unsupported question kind.`);
 };

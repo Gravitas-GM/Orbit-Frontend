@@ -1,56 +1,24 @@
 @import '../../../../variables';
 
 
-.questions-container {
-	max-height: 760px;
-}
-
-.question {
-	margin-bottom: $spacing-large;
-}
-
-.question-details {
-	display: grid;
-	grid-template-columns: repeat(3,1fr);
+.question-results-card {
+	display: flex;
+	align-items: center;
 	gap: $spacing-medium;
+	padding: $spacing-small;
 }
 
-.question-details-card {
-	display: flex;
-	flex-direction: column;
-	padding: $spacing-medium;
-	align-items: center;
-	margin-bottom: $spacing-small;
-	min-height: 80px;
-	border: solid 1px $light-gray1;
-	font-size: 0.8rem;
-	text-align: center;
 
-	span {
-		font-weight: bold;
-		font-size: 0.7rem;
-		margin-bottom: $spacing-medium;
-	}
+.question-correct {
+	border: solid $spacing-pixel $pt-intent-success;
+
 }
 
-.question-title {
-	display: flex;
-	gap: $spacing-small;
-	align-items: center;
-
-	margin-bottom: $spacing-medium;
-
-	span {
-		font-weight: bold;
-	}
+.question-wrong {
+	border: solid $spacing-pixel $pt-intent-warning;
 }
 
-.question-details-total {
-	text-align: right;
-	width: 100%;
-	display: block;
-
-	span {
-		font-weight: bold;
-	}
+.question-separator {
+	opacity: 0.1;
+	margin-bottom: $spacing-large;
 }

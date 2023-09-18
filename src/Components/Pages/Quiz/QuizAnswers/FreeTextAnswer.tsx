@@ -1,26 +1,90 @@
 import * as React from 'react';
-import { Icon, InputGroup } from '@blueprintjs/core';
+import { H3, Icon, InputGroup, Intent } from '@blueprintjs/core';
 import { FreeTextResponse } from '../../../../Api/Quiz/Models/QuizSubmissions';
 import { IconSize } from '../../../../IconSize';
-import { QuestionResult } from '../QuestionResult';
 import { Spacing } from '../../../../Styles/variables';
 
-export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({ question }) => {
-console.log(question, "question"	)
+interface IProps {
+	question: FreeTextResponse;
+	index: number;
+}
 
+export const FreeTextAnswer: React.FC<IProps> = ({ question, index }) => {
 	return (
 		<div className="question">
 			<div className="question-title">
-				<Icon icon="help" size={IconSize.SMALL} /> <span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} />{index+1}. <span>{question.prompt}</span>
 			</div>
 
-			<div className="question-details">
-				{question.answers.map((answer) => (
-					<QuestionResult key={answer} correct={question.correct} selected={question.response === answer}>
-						<InputGroup disabled defaultValue={answer} style={{margin: Spacing.Small}} />
-					</QuestionResult>
-				))}
+			<div className="question-results">
+				{
+					question.correct ?
+						<RenderCorrectAnswer question={question} index={index} />
+						:
+						<RenderWrongAnswer question={question} index={index} />
+
+				}
 			</div>
 		</div>
 	);
 };
+
+
+const RenderWrongAnswer: React.FC<IProps> = ({ question, index }) => {
+	return(
+		<>
+			<H3>Your Answer:</H3>
+
+			<div className="question-results-card">
+				<Icon
+					icon="cross"
+					intent={Intent.DANGER}
+				/>
+
+				<InputGroup
+					disabled={true}
+					defaultValue={question.response}
+					style={{margin: Spacing.Small}}
+				/>
+			</div>
+
+			<H3>Valid Answers:</H3>
+
+			{question.answers.map((answer) => (
+				<div key={answer} className="question-results-card">
+					<Icon
+						icon="tick"
+						intent={Intent.SUCCESS}
+					/>
+
+					<InputGroup
+						disabled={true}
+						defaultValue={answer}
+						style={{margin: Spacing.Small}}
+					/>
+				</div>
+			))}
+		</>
+	)
+}
+
+const RenderCorrectAnswer: React.FC<IProps> = ({ question, index }) => {
+	return(
+		<>
+			<H3>Your Answer:</H3>
+
+			<div className="question-results-card">
+				<Icon
+					icon="tick"
+					intent={Intent.SUCCESS}
+				/>
+
+				<InputGroup
+					disabled={true}
+					defaultValue={question.response}
+					style={{margin: Spacing.Small}}
+				/>
+			</div>
+		</>
+	)
+}
