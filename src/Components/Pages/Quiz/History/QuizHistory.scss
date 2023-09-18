@@ -61,29 +61,3 @@
 		font-weight: bold;
 	}
 }
-
-.question-selected {
-	&.question-correct {
-		background-color: $forest3;
-	}
-	&.question-wrong {
-		background-color: $vermilion3;
-	}
-
-}
-
-.question-correct {
-	border: solid $spacing-small $forest1;
-
-}
-
-.question-wrong {
-	border: solid $spacing-small $vermilion1;
-}
-
-.question-results-card {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: $spacing-medium;
-}
