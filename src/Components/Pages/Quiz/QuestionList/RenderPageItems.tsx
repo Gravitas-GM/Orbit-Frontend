@@ -27,8 +27,7 @@ export const RenderPageItems: React.FC<IProps> = ({items, deleteCallback}) => {
 				<tr key={question.id}>
 					<td>{question.prompt}</td>
 
-					{/*TODO: This should be the tag name, but will require a model update to do so -Larry*/}
-					<td style={{width: 240}}>{question.tag ? question.tag.id : '—'}</td>
+					<td style={{width: 240}}>{question.tag ? question.tag.label : '—'}</td>
 
 					<td style={{width: 80}}>
 						<div style={{display: 'flex', justifyContent: 'space-between'}}>

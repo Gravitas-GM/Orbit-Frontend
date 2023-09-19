@@ -38,7 +38,7 @@ export interface QuestionEndpoints {
 interface QuestionBase {
 	id: number,
 	account: Pick<Account, 'id'>,
-	tag: Pick<QuestionTag, 'id'> | null,
+	tag: QuestionTag | null,
 	prompt: string,
 	kind: QuestionKind,
 }
