@@ -60,7 +60,8 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 						className="no-tags-callout-wrapper"
 					>
 						<div className="no-tags-callout">
-							Please add some tags before creating questions.
+							Please add a tag before creating questions.
+
 							<AnchorButton
 								small={true}
 								href="/quiz/tags/new"
@@ -88,7 +89,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		try {
 			tags = await QuestionTagModel.list().then((res) => res.data);
 		} catch (err) {
-			toaster.error('Error fetching tags');
+			toaster.error('There was a problem loading tags.');
 
 			this.setState({
 				loading: false,
@@ -115,7 +116,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		try {
 			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
 		} catch (err) {
-			toaster.error('Error fetching question');
+			toaster.error('Could not find specified question.');
 
 			this.setState({
 				loading: false,
