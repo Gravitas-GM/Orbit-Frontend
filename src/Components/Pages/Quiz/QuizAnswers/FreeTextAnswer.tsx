@@ -13,13 +13,13 @@ export const FreeTextAnswer: React.FC<{ question: FreeTextResponse }> = ({questi
 
 			<div className="question-details">
 				<div className="question-details-card">
-					<span>Given Answer:</span>
+					<span>Given Answer: </span>
 
 					{question.response}
 				</div>
 
 				<div className="question-details-card">
-					<span>Correct Answers:</span>
+					<span>Correct Answers: </span>
 
 					{question.answers.join(', ')}
 				</div>

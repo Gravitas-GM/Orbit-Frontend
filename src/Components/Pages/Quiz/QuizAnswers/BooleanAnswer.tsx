@@ -13,13 +13,13 @@ export const BooleanAnswer: React.FC<{ question: BooleanResponse }> = ({question
 
 			<div className="question-details">
 				<div className="question-details-card">
-					<span>Given Answer:</span>
+					<span>Given Answer: </span>
 
 					{question.response ? question.trueLabel : question.falseLabel}
 				</div>
 
 				<div className="question-details-card">
-					<span>Correct Answer:</span>
+					<span>Correct Answer: </span>
 
 					{question.answer ? question.trueLabel : question.falseLabel}
 				</div>
