@@ -44,9 +44,13 @@ export interface QuestionTag {
 	questions: Question[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account'>;
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+	members: Id[],
+};
 
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account'>>;
+export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+	members: Id[],
+}>;
 
 export class QuestionTagModel {
 	public static list(projection?: Projection, query?: QueryDocument) {

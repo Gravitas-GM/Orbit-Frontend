@@ -3,7 +3,7 @@ import * as React from 'react';
 
 interface IProps {
 	isOpen: boolean,
-	subject: string | undefined,
+	subject: string | undefined | null,
 	multiple?: boolean,
 	onConfirm: () => Promise<void>,
 	onCancel: () => void,

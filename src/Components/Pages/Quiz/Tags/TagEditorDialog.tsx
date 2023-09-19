@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {Dialog, Classes, InputGroup, Button, Intent, MenuItem} from '@blueprintjs/core';
-import {MultiSelect2 as MultiSelect, ItemRenderer} from '@blueprintjs/select';
+import {Dialog, Classes, InputGroup, Button, Intent} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {ItemRenderer} from '@blueprintjs/select';
+import {User} from '../../../../Api/Hub/Models/Users';
 import {QuestionTag, QuestionTagCreatePayload} from '../../../../Api/Quiz/Models/QuestionTags';
-import {User} from '../../../../Api/Quiz/Models/Users';
-import {ucwords} from '../../../Utility/string';
+import {MultiSelect} from '../../../Select/MultiSelect';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {UserContext} from '../../../../Session';
+import * as toaster from '../../../../Toaster';
 
 interface IProps {
 	isOpen: boolean;
@@ -14,44 +16,48 @@ interface IProps {
 	tag: QuestionTag | null;
 	users: User[];
 	onSubmit: (tag: QuestionTagCreatePayload) => Promise<void>;
-	validationFailures: ValidationFailures | null,
 }
 
 interface IState {
 	processing: boolean;
-	hubUsers: User[];
-	dialogTitle: TagEditorDialogTitle;
-	tagName: string;
-	tagUsers: User[];
-	tag: QuestionTag | null;
+	label: string;
+	members: User[];
+	validationFailures: ValidationFailures | null,
 }
 
 enum TagEditorDialogTitle {
-	ADD = 'Add new Tag',
+	ADD = 'Add New Tag',
 	EDIT = 'Edit Tag',
 }
 
+// TODO This editor needs the ability to add questions to the tag /Larry
 export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		processing: false,
-		hubUsers: this.props.users,
-		tag: this.props.tag,
-		dialogTitle: TagEditorDialogTitle.ADD,
-		tagName: '',
-		tagUsers: [],
+		label: '',
+		members: [],
+		validationFailures: null,
 	};
 
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
 	public async componentDidUpdate(prevProps: IProps) {
-		if (this.props !== prevProps) {
+		if (this.props.tag !== prevProps.tag) {
+			const selectedUsers: User[] = [];
+
+			if (this.props.tag) {
+				for (const member of this.props.tag.members) {
+					const found = this.props.users.find(user => user.id === member.id);
+
+					if (found)
+						selectedUsers.push(found);
+				}
+			}
+
 			this.setState({
-				tag: this.props.tag,
-				tagUsers: this.props.users.filter(user => this.props.tag?.members.includes(user)),
-				hubUsers: this.props.users,
-				tagName: this.props.tag?.label ?? '',
-				dialogTitle: this.props.tag ? TagEditorDialogTitle.EDIT : TagEditorDialogTitle.ADD,
+				label: this.props.tag?.label ?? '',
+				members: selectedUsers,
 			});
 		}
 	}
@@ -59,136 +65,159 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public render() {
 		return (
 			<Dialog
+				canOutsideClickClose={false}
 				isOpen={this.props.isOpen}
-				title={this.state.dialogTitle}
+				title={this.props.tag ? TagEditorDialogTitle.EDIT : TagEditorDialogTitle.ADD}
 				onClose={this.onCloseClick}
 				isCloseButtonShown={!this.state.processing}
 			>
 				<form className={Classes.DIALOG_BODY}>
-					<ValidationAwareFormGroup labelFor="name" failures={this.props.validationFailures}>
+					<ValidationAwareFormGroup labelFor="label" failures={this.state.validationFailures}>
 						<InputGroup
-							type="text"
-							id="name"
-							name="name"
+							name="label"
 							placeholder="Tag name"
 							fill={true}
 							autoFocus={true}
-							value={this.state.tagName}
-							onChange={this.onChangeTagName}
+							value={this.state.label}
+							onChange={this.onLabelChange}
 						/>
 					</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="users" failures={this.props.validationFailures}>
+					<ValidationAwareFormGroup labelFor="members" failures={this.state.validationFailures}>
 						<MultiSelect
 							tagInputProps={{
 								inputProps: {
-									id: 'users',
-									name: 'users',
+									name: 'members',
 								},
 							}}
 							fill={true}
 							placeholder="Select users"
-							items={this.state.hubUsers}
-							selectedItems={this.state.tagUsers}
-							onItemSelect={this.selectUser}
-							onRemove={this.onUserRemove}
-							itemRenderer={selectItemRenderer}
+							items={this.props.users}
+							selectedItems={this.state.members}
+							onItemSelect={this.onMemberSelectionChange}
+							onRemove={this.onMemberRemove}
+							onClear={this.onClearMembersClick}
+							itemRenderer={this.userRenderer}
 							tagRenderer={tagRenderer}
 							noResults={<div>No results</div>}
-							popoverProps={{minimal: true}}
 						/>
 					</ValidationAwareFormGroup>
+				</form>
 
-					<div>
+				<div className={Classes.DIALOG_FOOTER}>
+					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
+						<Button text="Cancel" onClick={this.onCloseClick} disabled={this.state.processing} />
+
 						<Button
-							small={true}
-							minimal={true}
-							text="Clear"
-							icon="minus"
-							onClick={this.onClearFilterClick}
+							intent={Intent.PRIMARY}
+							text="Submit"
+							onClick={this.onSubmitClick}
+							loading={this.state.processing}
 						/>
 					</div>
-
-					<div className={Classes.DIALOG_FOOTER}>
-						<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-							<Button text="Cancel" onClick={this.onCloseClick} disabled={this.state.processing} />
-
-							<Button
-								intent={Intent.PRIMARY}
-								text="Submit"
-								onClick={this.onSubmitClick}
-								loading={this.state.processing}
-							/>
-						</div>
-					</div>
-				</form>
+				</div>
 			</Dialog>
 		);
 	}
 
-	private onChangeTagName = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
-		tagName: event.currentTarget.value,
+	private onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		label: event.currentTarget.value,
 	});
 
-	private onUserRemove = (user: User) => {
-		this.setState({
-			tagUsers: this.state.tagUsers.filter((u) => u.id !== user.id),
-		});
+	private onMemberSelectionChange = (user: User) => {
+		if (this.state.members.includes(user)) {
+			this.setState(state => (
+				{
+					members: state.members.filter(item => item !== user),
+				}
+			));
+		} else {
+			this.setState(state => (
+				{
+					members: [...state.members, user],
+				}
+			));
+		}
 	};
 
+	private onMemberRemove = (target: User) => this.setState(state => (
+		{
+			members: state.members.filter(item => item.id !== target.id),
+		}
+	));
+
+	private onClearMembersClick = () => this.setState({
+		members: [],
+	});
+
 	private onSubmitClick = async () => {
+		if (this.state.processing)
+			return;
+
 		this.setState({
 			processing: true,
 		});
 
-		const tag: QuestionTagCreatePayload = {
-			label: this.state.tagName,
-			members: this.state.tagUsers,
-			questions: [],
-			// TODO: This editor needs the ability to add questions to the tag /Larry
-		};
+		try {
+			await this.props.onSubmit({
+				label: this.state.label,
+				members: this.state.members.map(item => item.id),
+				questions: [],
+			});
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
 
-		await this.props.onSubmit(tag);
+				this.setState({
+					validationFailures: error.context.failures,
+				});
+			} else
+				toaster.showUnhandledErrorMessage();
+
+			return;
+		} finally {
+			this.setState({
+				processing: false,
+			});
+		}
 
 		this.setState({
-			processing: false,
+			validationFailures: null,
 		});
 	};
-
-	private onClearFilterClick = () => this.setState({
-		tagUsers: [],
-	});
 
 	private onCloseClick = () => {
 		if (this.state.processing)
 			return;
 
 		this.setState({
-			tagName: '',
-			tagUsers: [],
+			label: '',
+			members: [],
+			validationFailures: null,
 		});
 
 		this.props.onClose();
 	};
 
-	private selectUser = (user: User) => {
-		if (this.state.tagUsers.find((u) => u.id === user.id))
-			return;
+	private userRenderer: ItemRenderer<User> = (user, props) => {
+		if (!props.modifiers.matchesPredicate)
+			return null;
 
-		this.setState({
-			tagUsers: [...this.state.tagUsers, user],
-		});
+		return (
+			<MenuItem
+				roleStructure="listoption"
+				selected={this.state.members.includes(user)}
+				key={user.id}
+				active={props.modifiers.active}
+				disabled={props.modifiers.disabled}
+				text={`${user.firstName} ${user.lastName}`}
+				onClick={props.handleClick}
+				onFocus={props.handleFocus}
+			/>
+		);
 	};
 }
 
-const selectItemRenderer: ItemRenderer<User> = (user, {handleClick, modifiers}) => {
-	if (!modifiers.matchesPredicate) {
-		return null;
-	}
-
-	return <MenuItem active={modifiers.active} key={user.id} text={ucwords(user.name)} onClick={handleClick} />;
-};
-
 const tagRenderer = (user: User) => {
-	return user.name;
+	return `${user.firstName} ${user.lastName}`;
 };
