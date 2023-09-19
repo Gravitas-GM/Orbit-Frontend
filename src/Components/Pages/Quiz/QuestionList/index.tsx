@@ -97,7 +97,9 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		} catch (error) {
 			toaster.error('Failed to fetch questions');
 
-			this.setState({loading: false});
+			this.setState({
+				loading: false,
+			});
 
 			history.push('/');
 
@@ -123,6 +125,12 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 			await QuestionModel.delete(question.id);
 		} catch (error) {
 			toaster.error('Failed to delete question');
+
+			this.setState({
+				loading: false,
+			});
+
+			return;
 		}
 
 		toaster.success('Question deleted successfully');
