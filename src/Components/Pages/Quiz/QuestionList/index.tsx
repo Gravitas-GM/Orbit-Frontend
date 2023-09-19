@@ -50,6 +50,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							placeholder="Search questions"
 							onChange={this.onSearchChange}
 						/>
+
 						<AnchorButton icon="add" href="/quiz/questions/new">Add New</AnchorButton>
 					</div>
 				</PageHeader>
