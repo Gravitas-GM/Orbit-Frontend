@@ -72,10 +72,13 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 				isCloseButtonShown={!this.state.processing}
 			>
 				<form className={Classes.DIALOG_BODY}>
-					<ValidationAwareFormGroup labelFor="label" failures={this.state.validationFailures}>
+					<ValidationAwareFormGroup
+						labelFor="label"
+						label="Tag Name"
+						failures={this.state.validationFailures}
+					>
 						<InputGroup
 							name="label"
-							placeholder="Tag name"
 							fill={true}
 							autoFocus={true}
 							value={this.state.label}
@@ -83,7 +86,11 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 						/>
 					</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="members" failures={this.state.validationFailures}>
+					<ValidationAwareFormGroup
+						labelFor="members"
+						label="Select Users"
+						failures={this.state.validationFailures}
+					>
 						<MultiSelect
 							tagInputProps={{
 								inputProps: {
@@ -91,7 +98,6 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 								},
 							}}
 							fill={true}
-							placeholder="Select users"
 							items={this.props.users}
 							selectedItems={this.state.members}
 							onItemSelect={this.onMemberSelectionChange}
