@@ -30,7 +30,7 @@ export const Layout: React.FC<IProps> = props => (
 		<FrameLoadingSpinner />
 	) : (
 		<div style={{flex: 12, height: '100%'}}>
-			<NavHeader loading={props.loading} />
+			<NavHeader />
 
 			<div className="main-frame">
 				<PermissionContext.Consumer>
