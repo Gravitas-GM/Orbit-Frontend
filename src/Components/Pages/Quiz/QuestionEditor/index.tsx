@@ -1,167 +1,114 @@
 import * as React from 'react';
 import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {RouteComponentProps} from 'react-router';
+import {Redirect, RouteComponentProps} from 'react-router';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Question, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
+import {Question, QuestionCreate, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
 import {AnswerForm} from './AnswerForm';
-import {ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 import * as toaster from '../../../../Toaster';
-import {history} from '../../../../history';
-import {AnchorButton, Callout, Intent} from '@blueprintjs/core';
 import './QuestionEditor.scss';
 
 interface IState {
 	loading: boolean;
 	processing: boolean;
+	redirect: boolean;
 	question: Question | null;
 	tags: QuestionTag[];
 	selectedTag?: QuestionTag;
-	validationFailures: ValidationFailures | null;
 }
 
-interface IProps {
+interface RouteProps {
 	question?: string;
 }
 
-export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<IProps>, IState> {
+export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<RouteProps>, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		processing: false,
+		redirect: false,
 		question: null,
 		tags: [],
 		selectedTag: undefined,
-		validationFailures: null,
 	};
 
 	public async componentDidMount() {
-		if (this.props.match.params.question) {
-			await Promise.all([this.fetchTags(), this.fetchQuestion()]);
+		const promises: Array<Promise<unknown>> = [
+			QuestionTagModel.list().then(r => this.setState({
+				tags: r.data,
+			})),
+		];
+
+		const idParam = this.props.match.params.question;
+
+		if (idParam) {
+			promises.push(QuestionModel.read(idParam).then(r => this.setState({
+				question: r.data,
+			})));
+		}
+
+		try {
+			await Promise.all(promises);
+		} catch (error) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				redirect: true,
+			});
 
 			return;
 		}
 
-		await this.fetchTags();
+		this.setState({
+			loading: false,
+		});
 	}
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
+		else if (this.state.redirect)
+			return <Redirect to="../" />;
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={this.props.match.params.question ? `Edit Question` : `Add Question`} />
-
-				{this.state.tags.length === 0 &&
-					<Callout
-						intent={Intent.WARNING}
-						icon="warning-sign"
-						title="No tags found"
-						className="no-tags-callout-wrapper"
-					>
-						<div className="no-tags-callout">
-							Please add a tag before creating questions.
-
-							<AnchorButton
-								small={true}
-								href="/quiz/tags/new"
-								text="Add Tag"
-								intent={Intent.PRIMARY}
-							/>
-						</div>
-					</Callout>
-				}
+				<PageHeader title={this.props.match.params.question ? `Edit Question` : `New Question`} />
 
 				<AnswerForm
 					tags={this.state.tags}
 					processing={this.state.processing}
 					question={this.state.question}
-					onQuestionSave={this.onQuestionSave}
-					validationFailures={this.state.validationFailures}
+					onSave={this.onSave}
 				/>
 			</section>
 		);
 	}
 
-	private fetchTags = async () => {
-		let tags: QuestionTag[] = [];
-
-		try {
-			tags = await QuestionTagModel.list().then((res) => res.data);
-		} catch (err) {
-			toaster.error('There was a problem loading tags.');
-
-			this.setState({
-				loading: false,
-			});
-
-			history.push('/');
-
+	private onSave = async (payload: QuestionCreate) => {
+		if (this.state.processing)
 			return;
-		}
 
-		this.setState({
-			tags,
-			loading: false,
-		});
-	};
-
-	private fetchQuestion = async () => {
-		this.setState({
-			loading: true,
-		});
-
-		let question: Question;
-
-		try {
-			question = await QuestionModel.read(this.props.match.params.question!).then((res) => res.data);
-		} catch (err) {
-			toaster.error('Could not find specified question.');
-
-			this.setState({
-				loading: false,
-			});
-
-			history.push('/');
-
-			return;
-		}
-
-		this.setState({
-			question,
-			loading: false,
-		});
-	};
-
-	private onQuestionSave = async (questionData: QuestionUpdate) => {
 		this.setState({
 			processing: true,
 		});
 
-		let question: Question;
-
 		try {
-			question = await QuestionModel.create(questionData).then((res) => res.data);
-		} catch (err) {
-			if (isValidationFailureError(err)) {
-				toaster.error('Validation failed');
-
-				this.setState({
-					validationFailures: err.context.failures,
-					processing: false,
-				});
-			} else {
-				toaster.showUnhandledErrorMessage();
-			}
-
-			return;
+			if (this.state.question)
+				await QuestionModel.update(this.state.question.id, payload);
+			else
+				await QuestionModel.create(payload);
+		} catch (error) {
+			throw error;
+		} finally {
+			this.setState({
+				processing: false,
+			});
 		}
 
-		toaster.success('Question saved');
+		const action = this.state.question ? 'updated' : 'created';
+		toaster.success(`Question ${action} successfullly.`);
 
 		this.setState({
-			processing: false,
-			question,
+			redirect: true,
 		});
-	};
+	}
 }

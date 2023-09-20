@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
-import {Link} from 'react-router-dom';
 import {Permission, PermissionContext} from '../../Permission';
 import {Menu, MenuDivider} from '@blueprintjs/core';
 import {UserClaimPointsDialog} from '../Pages/UserClaimPointsDialog';

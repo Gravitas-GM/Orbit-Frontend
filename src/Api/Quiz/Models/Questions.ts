@@ -70,9 +70,9 @@ export interface MultipleChoiceQuestion extends QuestionBase {
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
 
 interface QuestionUpdateBase {
-	tag: number,
-	prompt: string,
 	kind: QuestionKind,
+	prompt: string,
+	tag?: Id,
 }
 
 export interface FreeTextQuestionUpdate extends QuestionUpdateBase {
@@ -93,7 +93,8 @@ export interface MultipleChoiceQuestionUpdate extends QuestionUpdateBase {
 	answerIndex: number,
 }
 
-export type QuestionUpdate = FreeTextQuestionUpdate | BooleanQuestionUpdate | MultipleChoiceQuestionUpdate;
+export type QuestionCreate = FreeTextQuestionUpdate | BooleanQuestionUpdate | MultipleChoiceQuestionUpdate;
+export type QuestionUpdate = Partial<Omit<QuestionCreate, 'kind'>> & Pick<QuestionCreate, 'kind'>;
 
 export class QuestionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -105,7 +106,7 @@ export class QuestionModel {
 		});
 	}
 
-	public static create(payload: QuestionUpdate, projection?: Projection) {
+	public static create(payload: QuestionCreate, projection?: Projection) {
 		return quizClient.put('/questions', payload, {
 			params: {
 				p: projection,
