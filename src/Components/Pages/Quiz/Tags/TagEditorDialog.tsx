@@ -107,6 +107,16 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 							tagRenderer={tagRenderer}
 							noResults={<div>No results</div>}
 						/>
+
+						<Button
+							text="Select All"
+							icon="plus"
+							onClick={this.onSelectAllClick}
+							style={{
+								marginTop: 10,
+								marginRight: 10,
+							}}
+						/>
 					</ValidationAwareFormGroup>
 				</form>
 
@@ -154,6 +164,10 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 
 	private onClearMembersClick = () => this.setState({
 		members: [],
+	});
+
+	private onSelectAllClick = () => this.setState({
+		members: this.props.users,
 	});
 
 	private onSubmitClick = async () => {
