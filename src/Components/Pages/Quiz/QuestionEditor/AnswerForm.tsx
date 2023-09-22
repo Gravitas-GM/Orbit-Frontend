@@ -5,13 +5,14 @@ import {Spacing} from '../../../../Styles/variables';
 import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
+import {ItemRenderer} from '@blueprintjs/select';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ucwords} from '../../../Utility/string';
 import './AnswerForm.scss';
 import * as toaster from '../../../../Toaster';
 import {Link} from 'react-router-dom';
 import {QuestionForm} from './QuestionForm';
+import {Select} from '../../../Select/Select';
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -111,6 +112,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								onItemSelect={this.onTagChange}
 								filterable={false}
 								itemRenderer={this.renderQuestionTag}
+								onClear={this.onTagClear}
 							>
 								<Button
 									disabled={this.props.tags.length === 0}
@@ -160,6 +162,11 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 	private onTagChange = (tag: QuestionTag) => this.setState({
 		tag,
+		dirty: true,
+	});
+
+	private onTagClear = () => this.setState({
+		tag: null,
 		dirty: true,
 	});
 
