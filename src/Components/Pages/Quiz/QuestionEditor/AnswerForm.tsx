@@ -184,7 +184,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 				...data,
 				kind: this.state.kind,
 				prompt: this.state.prompt,
-				tag: this.state.tag?.id,
+				tag: this.state.tag?.id ?? null,
 			} as QuestionCreate);
 		} catch (error) {
 			if (isValidationFailureError(error)) {
