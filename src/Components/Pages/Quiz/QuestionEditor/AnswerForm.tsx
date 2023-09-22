@@ -56,7 +56,12 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		return (
 			<form id="question-editor-fields" style={{marginTop: Spacing.XLarge}}>
 				<ControlGroup fill={true}>
-					<ValidationAwareFormGroup label="Prompt" labelFor="prompt" failures={this.state.validationFailures}>
+					<ValidationAwareFormGroup
+						label="Prompt"
+						labelFor="prompt"
+						failures={this.state.validationFailures}
+						style={{flex: 1}}
+					>
 						<TextArea
 							fill={true}
 							growVertically={true}
@@ -67,7 +72,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 						/>
 					</ValidationAwareFormGroup>
 
-					<div>
+					<div style={{flex: 1}}>
 						<ValidationAwareFormGroup
 							label="Question Kind"
 							labelFor="kind"
