@@ -27,6 +27,7 @@ interface IState {
 	tag: QuestionTag | null;
 	prompt: string;
 	validationFailures: ValidationFailures | null;
+	dirty: boolean;
 }
 
 export class AnswerForm extends React.PureComponent<IProps, IState> {
@@ -41,9 +42,10 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		this.state = {
 			tag,
 			// TODO Change this back to QuestionKind.MultipleChoice /tyler
-			kind: props.question?.kind ?? QuestionKind.MultipleChoice,
+			kind: props.question?.kind ?? QuestionKind.FreeText,
 			prompt: props.question?.prompt ?? '',
 			validationFailures: null,
+			dirty: false,
 		};
 	}
 
@@ -124,6 +126,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 				</ControlGroup>
 
 				<QuestionForm
+					dirty={this.state.dirty}
 					kind={this.state.kind}
 					onSave={this.onSave}
 					validationFailures={this.state.validationFailures}
@@ -147,14 +150,17 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 	private onPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => this.setState({
 		prompt: event.currentTarget.value,
+		dirty: true,
 	});
 
 	private onKindChange = (kind: QuestionKind) => this.setState({
 		kind,
+		dirty: true,
 	});
 
 	private onTagChange = (tag: QuestionTag) => this.setState({
 		tag,
+		dirty: true,
 	});
 
 	private onSave = async (data: Partial<QuestionCreate>) => {

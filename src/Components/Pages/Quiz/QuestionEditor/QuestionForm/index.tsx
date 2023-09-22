@@ -10,12 +10,14 @@ import {BooleanForm} from './BooleanForm';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import './index.scss';
 import {MultipleChoiceForm} from './MultipleChoiceForm';
+import {FreeTextForm} from './FreeTextForm';
 
 export interface FormProps<TQuestion extends Question, THandler> {
 	onSave: THandler;
 	validationFailures: ValidationFailures | null;
 	question: TQuestion | null;
 	processing: boolean;
+	dirty: boolean;
 }
 
 interface BaseProps {
@@ -23,6 +25,7 @@ interface BaseProps {
 	validationFailures: ValidationFailures | null;
 	question: Question | null;
 	processing: boolean;
+	dirty: boolean;
 }
 
 type SaveHandler<T, K extends keyof T> = (data: Pick<T, K>) => Promise<void>;
@@ -50,10 +53,6 @@ interface MultipleChoiceProps extends BaseProps {
 
 type Props = BooleanProps | FreeTextProps | MultipleChoiceProps;
 
-function isBooleanQuestion(question: Question | null, kind: QuestionKind): question is BooleanQuestion | null {
-	return question?.kind === QuestionKind.Boolean || kind === QuestionKind.Boolean;
-}
-
 export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
 	switch (kind) {
 		case QuestionKind.Boolean:
@@ -61,6 +60,9 @@ export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formPr
 
 		case QuestionKind.MultipleChoice:
 			return <MultipleChoiceForm onSave={onSave} question={question as MultipleChoiceQuestion} {...formProps} />;
+
+		case QuestionKind.FreeText:
+			return <FreeTextForm onSave={onSave} question={question as FreeTextQuestion} {...formProps} />;
 
 		default:
 			throw new Error(`Unsupported question kind "${kind}"`);

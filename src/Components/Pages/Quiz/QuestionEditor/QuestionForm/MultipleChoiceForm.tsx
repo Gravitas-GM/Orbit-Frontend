@@ -12,6 +12,7 @@ type Props = FormProps<MultipleChoiceQuestion, MultipleChoiceSaveHandler>;
 interface State {
 	choices: string[];
 	answerIndex: number;
+	dirty: boolean;
 }
 
 export class MultipleChoiceForm extends React.PureComponent<Props, State> {
@@ -45,12 +46,14 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 					/>
 				))}
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing}>
+				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()}>
 					<Button icon="plus" text="Add Choice" onClick={this.onAddChoiceClick} />
 				</Controls>
 			</div>
 		);
 	}
+
+	private isDirty = () => this.state.dirty || this.props.dirty;
 
 	private onChoiceTextChange = (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -62,10 +65,12 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 		// Also for some stupid fucked up reason React isn't setting currentTarget for this event (at least in Firefox
 		// at time of writing) so I GUESS WE NEED TO USE event.target.
 		choices: replaceByIndex(state.choices, index, event.target.value),
+		dirty: true,
 	}));
 
 	private onAnswerIndexChange = (index: number) => this.setState({
 		answerIndex: index,
+		dirty: true,
 	});
 
 	private onChoiceDelete = (index: number) => this.setState(state => {
@@ -74,11 +79,13 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 		return {
 			choices,
 			answerIndex: Math.min(state.answerIndex, choices.length - 1),
+			dirty: true,
 		};
 	});
 
 	private onAddChoiceClick = () => this.setState(state => ({
 		choices: [...state.choices, ''],
+		dirty: true,
 	}));
 
 	private onSaveClick = () => this.props.onSave({
@@ -89,6 +96,7 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 	private copyFromProps = (): State => ({
 		choices: this.props.question?.choices ?? [''],
 		answerIndex: this.props.question?.answerIndex ?? 0,
+		dirty: false,
 	});
 }
 

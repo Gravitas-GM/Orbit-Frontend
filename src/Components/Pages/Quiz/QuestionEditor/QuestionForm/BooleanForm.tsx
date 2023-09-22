@@ -11,24 +11,21 @@ interface State {
 	answer: boolean;
 	trueLabel: string;
 	falseLabel: string;
+	dirty: boolean;
 }
 
 export class BooleanForm extends React.PureComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 
-		this.state = {
-			...this.copyFromProps(),
-		};
+		this.state = this.copyFromProps();
 	}
 
 	public componentDidUpdate(prevProps: Readonly<Props>) {
 		if (prevProps.question === this.props.question)
 			return;
 
-		this.setState({
-			...this.copyFromProps(),
-		});
+		this.setState(this.copyFromProps());
 	}
 
 	public render() {
@@ -71,21 +68,26 @@ export class BooleanForm extends React.PureComponent<Props, State> {
 					</ValidationAwareFormGroup>
 				</ControlGroup>
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} />
+				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()} />
 			</div>
 		);
 	}
 
+	private isDirty = () => this.state.dirty || this.props.dirty;
+
 	private onAnswerChange = (event: React.FormEvent<HTMLInputElement>) => this.setState({
 		answer: !!parseInt(event.currentTarget.value),
+		dirty: true,
 	});
 
 	private onTrueLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		trueLabel: event.currentTarget.value,
+		dirty: true,
 	});
 
 	private onFalseLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		falseLabel: event.currentTarget.value,
+		dirty: true,
 	});
 
 	private onSaveClick = () => this.props.onSave({
@@ -98,5 +100,6 @@ export class BooleanForm extends React.PureComponent<Props, State> {
 		answer: this.props.question?.answer ?? true,
 		trueLabel: this.props.question?.trueLabel ?? 'True',
 		falseLabel: this.props.question?.falseLabel ?? 'False',
+		dirty: false,
 	});
 }
