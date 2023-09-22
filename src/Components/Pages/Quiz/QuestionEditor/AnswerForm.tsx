@@ -11,6 +11,7 @@ import {ucwords} from '../../../Utility/string';
 import './AnswerForm.scss';
 import * as toaster from '../../../../Toaster';
 import {Link} from 'react-router-dom';
+import {QuestionForm} from './QuestionForm';
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -39,6 +40,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 		this.state = {
 			tag,
+			// TODO Change this back to QuestionKind.MultipleChoice /tyler
 			kind: props.question?.kind ?? QuestionKind.MultipleChoice,
 			prompt: props.question?.prompt ?? '',
 			validationFailures: null,
@@ -46,6 +48,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 	}
 
 	public render() {
+		const isKindSelectDisabled = this.props.question !== null;
+
 		return (
 			<form id="question-editor-fields" style={{marginTop: Spacing.XLarge}}>
 				<ControlGroup fill={true}>
@@ -67,6 +71,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 							failures={this.state.validationFailures}
 						>
 							<Select
+								disabled={isKindSelectDisabled}
 								inputProps={{
 									name: 'kind',
 								}}
@@ -77,6 +82,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 								fill={true}
 							>
 								<Button
+									disabled={isKindSelectDisabled}
 									fill={true}
 									alignText="left"
 									text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
@@ -117,7 +123,13 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 					</div>
 				</ControlGroup>
 
-				<hr className="answer-form-separator" />
+				<QuestionForm
+					kind={this.state.kind}
+					onSave={this.onSave}
+					validationFailures={this.state.validationFailures}
+					question={this.props.question}
+					processing={this.props.processing}
+				/>
 			</form>
 		);
 	}
@@ -145,7 +157,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		tag,
 	});
 
-	private onSaveClick = async (data: Partial<QuestionCreate>) => {
+	private onSave = async (data: Partial<QuestionCreate>) => {
 		if (!this.state.kind)
 			return;
 

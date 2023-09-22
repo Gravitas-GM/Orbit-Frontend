@@ -67,7 +67,7 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 		else if (this.state.redirect)
-			return <Redirect to="../" />;
+			return <Redirect to="/quiz/questions" />;
 
 		return (
 			<section className="gm-page-wrapper">
