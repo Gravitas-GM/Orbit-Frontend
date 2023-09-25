@@ -59,7 +59,6 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 					style={{
 						display: "flex",
 						justifyContent: "center",
-						marginTop: "2rem",
 					}}
 				>
 					<AnchorButton
