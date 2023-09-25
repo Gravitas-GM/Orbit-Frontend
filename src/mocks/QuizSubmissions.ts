@@ -4,10 +4,12 @@ import { QuizSubmission } from "../Api/Quiz/Models/QuizSubmissions";
 export const quizSubmissionsMock: QuizSubmission[] = [
 	{
 		// should it reference only the ID of the user?
-		userId: { id: 0, name: "John Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
+		user: { assignedTags: [], id: 0, name: "John Doe", nextQuizTimestamp: new Date() },
 		correctCount: 4,
-		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		questionCount: 7,
+		account: { id: 0 },
 		id: 91,
+		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
 		questions: [
 			{
 				answers: ["Paris"],
@@ -70,23 +72,22 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 	},
 	{
 		// should it reference only the ID of the user?
-		userId: { id: 0, name: "John Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
+		user: { assignedTags: [], id: 0, name: "John Doe", nextQuizTimestamp: new Date() },
 		correctCount: 3,
-		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		questionCount: 7,
+		account: { id: 0 },
 		id: 92,
+		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
 		questions: [
 			{
-				accountId: 0,
 				answers: ["Paris", "France"],
-				id: 121,
+
 				prompt: "Where is the Eiffel Tower?",
 				kind: QuestionKind.FreeText,
 				correct: true,
 				response: "Paris",
 			},
 			{
-				accountId: 0,
-				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
 				response: 0,
@@ -95,8 +96,6 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: true,
 			},
 			{
-				accountId: 0,
-				id: 161,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
 				response: true,
@@ -108,23 +107,21 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		],
 	},
 	{
-		userId: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
+		user: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 0,
+		questionCount: 3,
+		account: { id: 22 },
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
 		id: 93,
 		questions: [
 			{
-				accountId: 22,
 				answers: ["Paris", "France"],
-				id: 21,
 				prompt: "Where is the Eiffel Tower?",
 				kind: QuestionKind.FreeText,
 				correct: false,
 				response: "Bagdad Or maybe Somewhere I don't know I'm just typing random stuff to make this text longer",
 			},
 			{
-				accountId: 22,
-				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
 				response: 1,
@@ -133,8 +130,6 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: false,
 			},
 			{
-				accountId: 22,
-				id: 61,
 				prompt: "Is this a mocked-up question?",
 				kind: QuestionKind.Boolean,
 				response: false,
@@ -146,23 +141,21 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 		],
 	},
 	{
-		userId: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
+		user: { id: 22, name: "Jane Doe", nextQuizTimestamp: new Date(), assignedTags: [] },
 		correctCount: 1,
+		questionCount: 3,
+		account: { id: 22 },
 		timestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
 		id: 94,
 		questions: [
 			{
-				accountId: 22,
 				answers: ["Paris", "France"],
-				id: 21,
 				prompt: "Where is the Eiffel Tower?",
 				kind: QuestionKind.FreeText,
 				correct: true,
 				response: "Paris",
 			},
 			{
-				accountId: 22,
-				id: 31,
 				prompt: "Is this question a valid question?",
 				kind: QuestionKind.MultipleChoice,
 				response: 1,
@@ -171,8 +164,6 @@ export const quizSubmissionsMock: QuizSubmission[] = [
 				correct: false,
 			},
 			{
-				accountId: 22,
-				id: 61,
 				prompt: "Is this a million dollar question?",
 				kind: QuestionKind.Boolean,
 				response: false,
