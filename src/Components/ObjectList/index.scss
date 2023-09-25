@@ -1,0 +1,9 @@
+@import '../../variables';
+
+#object-list {
+	.header-controls {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-large;
+	}
+}

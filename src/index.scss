@@ -16,11 +16,6 @@ body {
 		background-color: $pt-dark-app-background-color;
 	}
 }
-// Reset default margin and padding for text elements
-h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
-	margin: 0;
-	padding: 0;
-}
 
 #app-root {
 	font-family: 'Roboto', sans-serif;

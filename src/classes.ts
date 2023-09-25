@@ -3,4 +3,5 @@ export const Classes = {
 	CARD_HEADER: 'card-header',
 	CARD_BODY: 'card-content',
 	PAGE_WRAPPER: 'gm-page-wrapper',
+	PLAIN_LINK: 'plain-link',
 };
