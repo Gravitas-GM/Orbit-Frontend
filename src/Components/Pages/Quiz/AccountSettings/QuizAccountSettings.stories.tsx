@@ -1,7 +1,7 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {QuizAccountSettings} from '.';
 import {pointSourceItemsMock} from '../../../../mocks/PointSourceItem';
-import {Frequency} from '../../../../Api/Quiz/Models/Accounts';
+import {Frequency} from '../../../../Api/Quiz/Models/Settings';
 import {ApiError, ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 
 export default {

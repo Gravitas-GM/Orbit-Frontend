@@ -1,5 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
-import {Account} from './Accounts';
+import {Settings} from './Settings';
 import {Question} from './Questions';
 import {User} from './Users';
 
@@ -38,7 +38,7 @@ export interface QuestionTagEndpoints {
 
 export interface QuestionTag {
 	id: Id,
-	account: Pick<Account, 'id'>,
+	account: Pick<Settings, 'id'>,
 	label: string,
 	members: User[],
 	questions: Question[],

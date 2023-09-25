@@ -1,6 +1,6 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
-import {Account} from './Accounts';
+import {Settings} from './Settings';
 import {QuestionKind} from './Questions';
 import {User} from './Users';
 
@@ -22,7 +22,7 @@ export interface QuizSubmissionEndpoints {
 
 export interface QuizSubmission {
 	id: number,
-	account: Pick<Account, 'id'>,
+	account: Pick<Settings, 'id'>,
 	user: User,
 	timestamp: Date,
 	questionCount: number,
