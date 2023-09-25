@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { H3, Icon, InputGroup, Intent } from '@blueprintjs/core';
+import { Icon, InputGroup, Intent } from '@blueprintjs/core';
 import { FreeTextResponse } from '../../../../Api/Quiz/Models/QuizSubmissions';
 import { IconSize } from '../../../../IconSize';
 import { Spacing } from '../../../../Styles/variables';
@@ -33,7 +33,7 @@ export const FreeTextAnswer: React.FC<IProps> = ({ question, index }) => {
 const RenderWrongAnswer: React.FC<IProps> = ({ question, index }) => {
 	return(
 		<>
-			<H3>Your Answer:</H3>
+			<span>Your Answer:</span>
 
 			<div className="question-results-card">
 				<Icon
@@ -48,12 +48,12 @@ const RenderWrongAnswer: React.FC<IProps> = ({ question, index }) => {
 				/>
 			</div>
 
-			<H3>Valid Answers:</H3>
+			<span>Valid Answers:</span>
 
 			{question.answers.map((answer) => (
 				<div key={answer} className="question-results-card">
 					<Icon
-						icon="tick"
+						icon="blank"
 						intent={Intent.SUCCESS}
 					/>
 
@@ -71,7 +71,7 @@ const RenderWrongAnswer: React.FC<IProps> = ({ question, index }) => {
 const RenderCorrectAnswer: React.FC<IProps> = ({ question, index }) => {
 	return(
 		<>
-			<H3>Your Answer:</H3>
+			<span>Your Answer:</span>
 
 			<div className="question-results-card">
 				<Icon

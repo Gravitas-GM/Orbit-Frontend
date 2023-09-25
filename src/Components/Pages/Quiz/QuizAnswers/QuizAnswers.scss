@@ -1,5 +1,14 @@
 @import '../../../../variables';
 
+.quiz-answers-container {
+	h3 {
+		margin-bottom: $spacing-xlarge;
+	}
+}
+
+.question-title {
+	margin-bottom: $spacing-large;
+}
 
 .question-results-card {
 	display: flex;

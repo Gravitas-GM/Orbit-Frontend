@@ -12,6 +12,7 @@ interface IRenderHistoryItemsProps {
 
 export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({items}) => {
 	const User = useContext(UserContext);
+
 	const sortedItems = useMemo(
 		() => items.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
 		[items],
@@ -27,13 +28,12 @@ export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({items}) 
 						<td>{item.user.name}</td>
 					}
 
-				<td>{item.correctCount}/{item.questions.length}</td>
-
-				<td>{formatDate(item.timestamp)}</td>
+					<td>{formatDate(item.timestamp)}</td>
 
 					<td>{showQuizScore(item)}</td>
 
 					<td style={{ textAlign: "right"}} width={180}>
+						{/* will change to link button */}
 						<AnchorButton href={`/quiz/results/${item.id}`} intent={Intent.PRIMARY}>
 							Show Results
 						</AnchorButton>

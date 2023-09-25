@@ -167,11 +167,13 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 							{
 								this.context?.permissions.includes(Permission.ADMIN) &&
 
-								<th>Name</th>
+								<th style={{ width: 220 }}>Name</th>
 							}
 
-							<th>Quiz Date</th>
+							<th style={{ width: 420 }}>Quiz Date</th>
+
 							<th>Score</th>
+
 							<th>&nbsp;</th>
 						</tr>
 					</thead>

@@ -1,5 +1,4 @@
-import { H2 } from "@blueprintjs/core";
-import "./QuizAnswers.scss";
+import { H3 } from "@blueprintjs/core";
 import * as React from 'react';
 import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {
@@ -33,8 +32,8 @@ export const QuizAnswers: React.FC<IProps> = ({ questions }) => {
 
 
 	return (
-		<div>
-			<H2>Quiz Answers</H2>
+		<div className="quiz-answers-container">
+			<H3>Quiz Answers</H3>
 
 			{questions.map((question, index) => (
 				<>
