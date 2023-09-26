@@ -11,3 +11,15 @@ export function replace<T>(items: T[], old: T, replacement: T, inline: boolean =
 
 	return items;
 }
+
+export function replaceByIndex<T>(items: T[], oldIndex: number, newValue: T, inline: boolean = false) {
+	if (typeof items[oldIndex] === 'undefined')
+		throw new Error('Old index could not be found in array');
+
+	if (!inline)
+		items = [...items];
+
+	items[oldIndex] = newValue;
+
+	return items;
+}

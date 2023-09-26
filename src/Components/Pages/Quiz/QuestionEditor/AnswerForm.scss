@@ -1,6 +1,29 @@
 @import "../../../../variables";
 
-.anwser-form-container {
+#question-editor-fields {
+	> .#{$ns}-control-group > .#{$ns}-form-group {
+		margin-right: 10px;
+
+		&:last-of-type {
+			margin-right: 0;
+		}
+	}
+
+	textarea {
+		resize: vertical;
+
+		// Magic numbers suck.
+		//
+		// 33px is the amount of space taken up by:
+		//   - The bottom padding of ONE FormGroup element (15px each), since we want to line up with the bottom of the
+		//     second input, NOT the bottom of the entire FormGroup element
+		//   - The line height (18px) plus the bottom padding (5px) of ONE FormGroup label (since the textarea's label
+		//     in line with the first label)
+		min-height: $pt-input-height * 2 + 38px;
+	}
+}
+
+.answer-form-container {
 	display: flex;
 	flex-direction: column;
 	width: 100%;

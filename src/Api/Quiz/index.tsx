@@ -5,14 +5,14 @@ import {QuestionEndpoints} from './Models/Questions';
 import {QuestionTagEndpoints} from './Models/QuestionTags';
 import {QuizEndpoints} from './Models/Quiz';
 import {QuizSubmissionEndpoints} from './Models/QuizSubmissions';
-import {AccountEndpoints} from './Models/Accounts';
+import {SettingsEndpoints} from './Models/Settings';
 import {UserEndpoints} from './Models/Users';
 
 type Endpoints =
 	QuestionEndpoints
 	& QuizSubmissionEndpoints
 	& UserEndpoints
-	& AccountEndpoints
+	& SettingsEndpoints
 	& QuestionTagEndpoints
 	& QuizEndpoints;
 

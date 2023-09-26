@@ -1,26 +1,29 @@
-import {Button, ButtonGroup, Classes, Intent, Spinner, SpinnerSize} from '@blueprintjs/core';
+import {Button, Intent, Spinner, SpinnerSize} from '@blueprintjs/core';
 import {MultiSelect2, MultiSelect2Props} from '@blueprintjs/select';
 import * as React from 'react';
+import './MultiSelect.scss';
 
 interface Props<T> extends MultiSelect2Props<T> {
 	loading?: boolean;
 	loadingSpinner?: React.ReactElement;
-	onClear?: () => void;
+	onSelectAll?: () => void;
+	onSelectNone?: () => void;
 }
 
 export function MultiSelect<T>({
-	onClear,
 	loading,
 	loadingSpinner,
 	popoverTargetProps,
 	popoverProps,
+	onSelectAll,
+	onSelectNone,
 	...selectProps
 }: Props<T>): React.ReactElement {
 	if (loading)
 		return loadingSpinner ?? <Spinner intent={Intent.PRIMARY} size={SpinnerSize.SMALL} />;
 
 	return (
-		<ButtonGroup fill={true}>
+		<div className="gm-multi-select">
 			<MultiSelect2
 				popoverProps={popoverProps ?? {
 					matchTargetWidth: true,
@@ -32,14 +35,10 @@ export function MultiSelect<T>({
 				{...selectProps}
 			/>
 
-			{!loading && (
-				<Button
-					className={Classes.FIXED}
-					icon="cross"
-					onClick={onClear}
-					disabled={selectProps.selectedItems.length === 0}
-				/>
-			)}
-		</ButtonGroup>
+			<div className="select-buttons">
+				{onSelectAll && <Button icon="plus" text="Select All" onClick={onSelectAll} minimal={true} />}
+				{onSelectNone && <Button icon="minus" text="Select None" onClick={onSelectNone} minimal={true} />}
+			</div>
+		</div>
 	);
 }

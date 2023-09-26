@@ -9,6 +9,9 @@ max_line_length = 120
 [*.php]
 insert_final_newline = true
 
+[{*.ts,*.tsx}]
+insert_final_newline = true
+
 [{*.rs,Cargo.toml}]
 indent_style = unset
 max_line_length = unset
