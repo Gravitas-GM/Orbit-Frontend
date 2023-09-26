@@ -3,7 +3,7 @@ import {useCallback, useContext, useState} from 'react';
 import {GamesModel} from '../../../Api/Game-State/Models/Games';
 import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {PageHeader} from '../../PageHeader';
 
 export const DebugControls = () => {

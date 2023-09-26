@@ -3,7 +3,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {PageHeader} from '../../PageHeader';

@@ -13,7 +13,7 @@ import {Spacing} from '../../../../Styles/variables';
 import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import {QuizResponses} from './QuizResponses';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {RenderHistoryItems} from './RenderHistoryItems';
 
 interface IState {

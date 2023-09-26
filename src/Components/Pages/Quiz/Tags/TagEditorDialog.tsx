@@ -8,7 +8,7 @@ import {MultiSelect} from '../../../Select/MultiSelect';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {UserContext} from '../../../../Session';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 
 interface IProps {
 	isOpen: boolean;

@@ -10,7 +10,7 @@ import {ucwords} from '../../../Utility/string';
 import {Frequency, Settings, SettingsModel} from '../../../../Api/Quiz/Models/Settings';
 import {UserContext} from '../../../../Session';
 import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Classes} from '../../../../classes';

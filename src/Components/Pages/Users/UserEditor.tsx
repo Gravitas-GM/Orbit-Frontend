@@ -7,7 +7,7 @@ import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Mod
 import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../Utility/promise';

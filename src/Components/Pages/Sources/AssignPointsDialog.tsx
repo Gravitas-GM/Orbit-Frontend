@@ -5,7 +5,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {allSettled} from '../../Utility/promise';
 import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
 
