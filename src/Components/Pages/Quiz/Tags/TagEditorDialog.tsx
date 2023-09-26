@@ -194,6 +194,8 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 
 		this.setState({
 			validationFailures: null,
+			label: '',
+			members: [],
 		});
 	};
 

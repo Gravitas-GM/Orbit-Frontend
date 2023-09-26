@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Button} from '@blueprintjs/core';
+import './Pagination.scss';
 
 interface Props {
 	page: number;
@@ -28,7 +29,7 @@ export const Pagination: React.FC<Props> = ({page, totalPages, onNext, onBack}) 
 			<Button
 				disabled={page === totalPages}
 				onClick={onNext}
-				icon="caret-right"
+				rightIcon="caret-right"
 				text="Next"
 			/>
 		</div>

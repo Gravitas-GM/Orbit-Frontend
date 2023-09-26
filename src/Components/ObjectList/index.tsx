@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Classes} from '../../classes';
 import {PageHeader} from '../PageHeader';
-import {InputGroup} from '@blueprintjs/core';
+import {Button, InputGroup} from '@blueprintjs/core';
 import './index.scss';
 import {LinkButton} from '../LinkButton';
 import {Pagination} from '../Pagination';
@@ -9,17 +9,20 @@ import {NonIdealState} from '../NonIdealState';
 
 interface Props<T> {
 	title: string;
-	editorUrlPrefix: string;
 	items: T[];
 	onItemFilter: (a: T, searchText: string) => boolean;
-	onItemDelete: (target: T) => void;
 	children: (items: T[]) => React.ReactNode;
+	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
+	onAddNewClick?: () => void;
 	itemsPerPage?: number;
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
 
+// Bugs:
+//    - Total pages does not update if props.items changes
+//    - currentPage needs to check if the page is still valid after props.items updates
 export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const [filteredItems, setFilteredItems] = React.useState<T[] | null>(null);
 	const [currentPage, setCurrentPage] = React.useState(1);
@@ -34,11 +37,12 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		setCurrentPage(1);
 	}, [itemsPerPage]);
 
+	const [searchText, setSearchText] = React.useState('');
+
 	const onPageBack = React.useCallback(() => setCurrentPage(page => Math.max(1, page - 1)), []);
 	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), []);
 
-	const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		const searchText = event.currentTarget.value.toLocaleLowerCase();
+	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
 
 		if (searchText.length > 0) {
@@ -47,11 +51,40 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		} else
 			setFilteredItems(null);
 
-		setTotalPages(Math.ceil(items.length / itemsPerPage));
-		setCurrentPage(1);
+		const totalPages = Math.ceil(items.length / itemsPerPage);
+		setTotalPages(totalPages);
+
+		// Handles the case where the user is on the final page of the list, and deletes the final item on that page.
+		setCurrentPage(Math.min(currentPage, totalPages));
 	}, [props.items, props.onItemFilter, itemsPerPage]);
 
-	const items = filteredItems ?? props.items;
+	const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchText = event.currentTarget.value.toLocaleLowerCase();
+		setSearchText(searchText);
+
+		applySearch(searchText);
+	}, [applySearch]);
+
+	const onSearchClearClick = React.useCallback(() => {
+		setSearchText('');
+		applySearch('');
+	}, []);
+
+	// Re-apply our search function any time `props.items` changes. As a side effect, `applySearch()` should also
+	// recalculate total pages and current page.
+	React.useEffect(() => {
+		applySearch(searchText);
+	}, [props.items]);
+
+	const startIndex = (currentPage - 1) * itemsPerPage;
+	const items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
+
+	let newButton: React.ReactNode = null;
+
+	if (props.editorUrlPrefix)
+		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="add" text="Add New" fill={true} />;
+	else if (props.onAddNewClick)
+		newButton = <Button icon="add" text="Add New" fill={true} onClick={props.onAddNewClick} />;
 
 	return (
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
@@ -60,11 +93,21 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 					<InputGroup
 						type="search"
 						leftIcon="search"
+						rightElement={(
+							<Button
+								icon="cross"
+								minimal={true}
+								small={true}
+								style={{borderRadius: 30}}
+								onClick={onSearchClearClick}
+							/>
+						)}
 						placeholder={props.searchPlaceholder ?? 'Search'}
 						onChange={onSearchChange}
+						value={searchText}
 					/>
 
-					<LinkButton to={`${props.editorUrlPrefix}/new`} icon="add" text="Add New" fill={true} />
+					{newButton}
 				</div>
 			</PageHeader>
 

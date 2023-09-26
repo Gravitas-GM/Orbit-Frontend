@@ -49,7 +49,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
-					onItemDelete={this.onItemDelete}
+					itemsPerPage={2}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -132,7 +132,7 @@ interface TableItemProps {
 const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
-	}, [item]);
+	}, [item, onDelete]);
 
 	return (
 		<tr>
