@@ -1,15 +1,15 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {QuizAccountSettings} from '.';
+import {QuizSettings} from '.';
 import {pointSourceItemsMock} from '../../../../mocks/PointSourceItem';
 import {Frequency} from '../../../../Api/Quiz/Models/Settings';
 import {ApiError, ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 
 export default {
 	title: 'Quiz Account Settings',
-	component: QuizAccountSettings,
+	component: QuizSettings,
 };
 
-const Template: ComponentStory<typeof QuizAccountSettings> = () => <QuizAccountSettings />;
+const Template: ComponentStory<typeof QuizSettings> = () => <QuizSettings />;
 
 const Basic = Template.bind({});
 
@@ -42,7 +42,7 @@ Basic.parameters = {
 			delay: 1500,
 		},
 	],
-} as ComponentMeta<typeof QuizAccountSettings>;
+} as ComponentMeta<typeof QuizSettings>;
 
 const NoData = Template.bind({});
 
@@ -70,7 +70,7 @@ NoData.parameters = {
 			delay: 1500,
 		},
 	],
-} as ComponentMeta<typeof QuizAccountSettings>;
+} as ComponentMeta<typeof QuizSettings>;
 
 const ServerError = Template.bind({});
 
@@ -91,7 +91,7 @@ ServerError.parameters = {
 			delay: 1500,
 		},
 	],
-} as ComponentMeta<typeof QuizAccountSettings>;
+} as ComponentMeta<typeof QuizSettings>;
 
 const ValidationError = Template.bind({});
 
@@ -133,6 +133,6 @@ ValidationError.parameters = {
 			delay: 1500,
 		},
 	],
-} as ComponentMeta<typeof QuizAccountSettings>;
+} as ComponentMeta<typeof QuizSettings>;
 
 export {Basic, NoData, ServerError, ValidationError};

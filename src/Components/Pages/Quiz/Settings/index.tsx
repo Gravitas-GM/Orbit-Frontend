@@ -25,7 +25,7 @@ interface IState {
 	completedRewardSource: PointSourceItem | null;
 }
 
-export class QuizAccountSettings extends React.PureComponent<{}, IState> {
+export class QuizSettings extends React.PureComponent<{}, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
 
