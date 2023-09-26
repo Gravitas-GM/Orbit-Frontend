@@ -120,11 +120,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return (
 				<NonIdealState
 					icon="wind"
-					action={
+					action={(
 						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
-					}
+					)}
 					title="No quiz history data found."
 				/>
 			);
@@ -180,9 +180,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 					<RenderHistoryItems
 						items={
-							this.state.filteredSubmissions ?
-								this.state.filteredSubmissions :
-								this.state.quizSubmissions
+							this.state.filteredSubmissions ? this.state.filteredSubmissions : this.state.quizSubmissions
 						}
 					/>
 				</HTMLTable>

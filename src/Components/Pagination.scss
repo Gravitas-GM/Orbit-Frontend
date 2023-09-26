@@ -1,0 +1,9 @@
+@import '../variables';
+
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: end;
+	padding-top: $spacing-medium;
+	gap: $spacing-medium;
+}

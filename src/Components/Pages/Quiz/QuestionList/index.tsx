@@ -1,175 +1,147 @@
 import * as React from 'react';
-import {PageHeader} from '../../../PageHeader';
-import {AnchorButton, Button, InputGroup} from '@blueprintjs/core';
-import {Spacing} from '../../../../Styles/variables';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
 import * as toaster from '../../../../Toaster';
-import {RenderPageItems} from './RenderPageItems';
+import {ObjectList} from '../../../ObjectList';
+import {Blockquote, Button, HTMLTable} from '@blueprintjs/core';
+import {LinkButton} from '../../../LinkButton';
+import {DeleteDialog} from '../../../DeleteDialog';
 
 interface IState {
-	questions: Question[],
-	loading: boolean,
-	filteredQuestions: Question[],
-	currentPage: number,
-	totalPages: number,
+	questions: Question[];
+	loading: boolean;
+	deleteTarget: Question | null;
 }
-
-const ITEMS_PER_PAGE = 10;
 
 export class QuestionListPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
-		loading: false,
+		loading: true,
 		questions: [],
-		filteredQuestions: [],
-		currentPage: 1,
-		totalPages: 1,
+		deleteTarget: null,
 	};
 
 	public async componentDidMount() {
-		await this.fetchQuestions();
+		try {
+			this.setState({
+				questions: await QuestionModel.list({
+					_default: true,
+					'tag.label': true,
+				}).then(response => response.data),
+				loading: false,
+			});
+		} catch (error) {
+			toaster.error('Failed to fetch questions');
+			history.push('/');
+
+			return;
+		}
 	};
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		const {currentPage, totalPages, filteredQuestions,} = this.state;
-		const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-		const endIndex = startIndex + ITEMS_PER_PAGE;
-		const currrentPageItems = this.state.filteredQuestions.slice(startIndex, endIndex);
-
 		return (
-			<section className="gm-page-wrapper">
-				<PageHeader title="Quiz - Questions List">
-					<div style={{display: 'flex', flexDirection: 'column', gap: Spacing.Large}}>
-						<InputGroup
-							type="search"
-							leftIcon="search"
-							placeholder="Search questions"
-							onChange={this.onSearchChange}
-						/>
-						<AnchorButton icon="add" href="/quiz/questions/new">Add New</AnchorButton>
-					</div>
-				</PageHeader>
+			<>
+				<ObjectList
+					title="Questions"
+					editorUrlPrefix="/quiz/questions"
+					items={this.state.questions}
+					onItemFilter={this.onItemFilter}
+					itemsPerPage={2}
+				>
+					{items => (
+						<HTMLTable striped={true}>
+							<thead>
+								<tr>
+									<th>Prompt</th>
+									<th>Tag</th>
+									<th style={{width: 100}}>Actions</th>
+								</tr>
+							</thead>
 
-				<RenderPageItems
-					items={currrentPageItems}
-					deleteCallback={this.onDeleteClick}
-				/>
+							<tbody>
+								{items.map(item => <TableItem item={item} onDelete={this.onItemDelete} />)}
+							</tbody>
+						</HTMLTable>
+					)}
+				</ObjectList>
 
-				{filteredQuestions.length > ITEMS_PER_PAGE ? <div className="pagination-container">
-					<Button
-						disabled={this.state.currentPage === 1}
-						onClick={this.onClickBack}
-						icon="caret-left"
-					>
-						Prev
-					</Button>
+				<DeleteDialog
+					isOpen={this.state.deleteTarget !== null}
+					subject="DELETE"
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+				>
+					<>
+						<p>
+							You are about to delete a question with the following prompt.
+						</p>
 
-					<span>
-						{currentPage}/{totalPages}
-					</span>
+						<Blockquote>
+							{this.state.deleteTarget?.prompt}
+						</Blockquote>
 
-					<Button
-						disabled={this.state.currentPage >= totalPages}
-						onClick={this.onClickNext}
-						rightIcon="caret-right"
-					>
-						Next
-					</Button>
-				</div> : ''}
-			</section>
+						<p>
+							This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
+							"Confirm".
+						</p>
+					</>
+				</DeleteDialog>
+			</>
 		);
 	};
 
-	private fetchQuestions = async () => {
-		this.setState({
-			loading: true,
-		});
+	private onItemFilter = (item: Question, searchText: string) => item.prompt.toLocaleLowerCase().includes(searchText);
 
-		let questions: Question[] = [];
+	private onItemDelete = (target: Question) => this.setState({
+		deleteTarget: target,
+	});
 
-		try {
-			questions = await QuestionModel.list().then(response => response.data);
-		} catch (error) {
-			toaster.error('Failed to fetch questions');
-
-			this.setState({loading: false});
-
-			history.push('/');
-
+	private onDeleteConfirm = async () => {
+		if (!this.state.deleteTarget)
 			return;
-		}
-
-		const totalPages = Math.ceil(questions.length / ITEMS_PER_PAGE);
-
-		this.setState({
-			questions: questions,
-			filteredQuestions: questions,
-			totalPages,
-			loading: false,
-		});
-	};
-
-	private onDeleteClick = async (question: Question) => {
-		this.setState({
-			loading: true,
-		});
 
 		try {
-			await QuestionModel.delete(question.id);
+			await QuestionModel.delete(this.state.deleteTarget.id);
 		} catch (error) {
 			toaster.error('Failed to delete question');
+
+			return;
 		}
 
 		toaster.success('Question deleted successfully');
 
-		await this.fetchQuestions();
-	};
-
-	private onClickNext = () => {
-		if (this.state.currentPage === this.state.totalPages)
-			return;
-
 		this.setState(state => ({
-			currentPage: state.currentPage + 1,
+			questions: state.questions.filter(item => item.id !== this.state.deleteTarget?.id),
+			deleteTarget: null,
 		}));
 	};
 
-	private onClickBack = () => {
-		if (this.state.currentPage === 1)
-			return;
-
-		this.setState(state => ({
-			currentPage: state.currentPage - 1,
-		}));
-	};
-
-	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (event.currentTarget.value === '') {
-			const totalPages = Math.ceil(this.state.questions.length / ITEMS_PER_PAGE);
-
-			this.setState({
-				filteredQuestions: this.state.questions,
-				currentPage: 1,
-				totalPages,
-			});
-
-			return;
-		}
-
-		const filteredQuestions = this.state.questions.filter(question =>
-			question.prompt.toLocaleLowerCase().includes(event.currentTarget.value.toLocaleLowerCase()),
-		);
-
-		const totalPages = Math.ceil(filteredQuestions.length / ITEMS_PER_PAGE);
-
-		this.setState({
-			filteredQuestions,
-			currentPage: 1,
-			totalPages,
-		});
-	};
+	private onDeleteCancel = () => this.setState({
+		deleteTarget: null,
+	});
 }
+
+interface TableItemProps {
+	item: Question;
+	onDelete: (item: Question) => void;
+}
+
+const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
+	const onDeleteButtonClick = React.useCallback(() => {
+		onDelete(item);
+	}, [item, onDelete]);
+
+	return (
+		<tr>
+			<td>{item.prompt}</td>
+			<td>{item.tag?.label ?? '—'}</td>
+			<td>
+				<LinkButton to={`/quiz/questions/${item.id}`} icon="edit" minimal={true} />
+				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
+			</td>
+		</tr>
+	);
+};

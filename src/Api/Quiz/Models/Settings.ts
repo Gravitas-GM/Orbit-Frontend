@@ -1,21 +1,21 @@
 import {Id, Projection, quizClient} from '../../index';
 
-export interface AccountEndpoints {
+export interface SettingsEndpoints {
 	'/settings/:account': {
 		GET: {
 			params: Id;
-			response: Account;
+			response: Settings;
 		};
 
 		PATCH: {
 			params: Id;
-			body: AccountUpdatePayload;
-			response: Account;
+			body: SettingsUpdatePayload;
+			response: Settings;
 		};
 	};
 }
 
-export interface Account {
+export interface Settings {
 	id: number,
 	quizFrequency: Frequency,
 	questionCount: number,
@@ -28,9 +28,9 @@ export enum Frequency {
 	Monthly = 'monthly',
 }
 
-export type AccountUpdatePayload = Partial<Omit<Account, 'id'>>;
+export type SettingsUpdatePayload = Partial<Omit<Settings, 'id'>>;
 
-export class AccountModel {
+export class SettingsModel {
 	public static read(account: Id, projection?: Projection) {
 		return quizClient.get<'/settings/:account'>(`/settings/${account}`, {
 			params: {
@@ -39,7 +39,7 @@ export class AccountModel {
 		});
 	}
 
-	public static update(account: Id, payload: AccountUpdatePayload, projection?: Projection) {
+	public static update(account: Id, payload: SettingsUpdatePayload, projection?: Projection) {
 		return quizClient.patch<'/settings/:account'>(`/settings/${account}`, payload, {
 			params: {
 				p: projection,

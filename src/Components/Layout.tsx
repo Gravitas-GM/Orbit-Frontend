@@ -17,7 +17,7 @@ import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
 import {QuizHistoryPage} from './Pages/Quiz/History';
-import {QuizAccountSettings} from './Pages/Quiz/AccountSettings';
+import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import { QuizResultsPage } from './Pages/Quiz/Results';
@@ -31,7 +31,7 @@ export const Layout: React.FC<IProps> = props => (
 		<FrameLoadingSpinner />
 	) : (
 		<div style={{flex: 12, height: '100%'}}>
-			<NavHeader loading={props.loading} />
+			<NavHeader />
 
 			<div className="main-frame">
 				<PermissionContext.Consumer>
@@ -47,19 +47,19 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
-							<Route path="/quiz/results/:submission(\d+)" key="/quiz/results/:submission" component={QuizResultsPage} exact={true} />,
+							<Route path="/quiz/results/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
-								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
-								<Route path="/quiz/settings" key="/quiz/settings" component={QuizAccountSettings} exact={true} />,
+								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
+								<Route path="/quiz/settings" key="/quiz/settings" component={QuizSettings} exact={true} />,
 								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
-								<Route path="/quiz/questions/:question(\d+)"  key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
-								<Route path="/quiz/questions/new"  key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
+								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
+								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
 							]}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [

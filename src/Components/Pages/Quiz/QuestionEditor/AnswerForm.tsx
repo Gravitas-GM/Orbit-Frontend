@@ -1,17 +1,18 @@
 import * as React from 'react';
-import {InputGroup, Button, MenuItem} from '@blueprintjs/core';
-import {QuestionKind, Question, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
+import {Button, ControlGroup, Intent, TextArea} from '@blueprintjs/core';
+import {Question, QuestionCreate, QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {Spacing} from '../../../../Styles/variables';
 import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {ItemRenderer, Select} from '@blueprintjs/select';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
+import {ItemRenderer} from '@blueprintjs/select';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ucwords} from '../../../Utility/string';
-import {BooleanQuestion} from './QuizQuestions/BooleanQuestion';
-import {FreeTextQuestion} from './QuizQuestions/FreeTextQuestion';
-import {MultipleChoiceQuestion} from './QuizQuestions/MultipleChoiceQuestion';
-import {UserContext} from '../../../../Session';
 import './AnswerForm.scss';
+import * as toaster from '../../../../Toaster';
+import {Link} from 'react-router-dom';
+import {QuestionForm} from './QuestionForm';
+import {Select} from '../../../Select/Select';
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -19,217 +20,217 @@ interface IProps {
 	question: Question | null;
 	tags: QuestionTag[];
 	processing: boolean;
-	validationFailures: ValidationFailures | null;
-	onQuestionSave: (question: QuestionUpdate) => Promise<void>;
+	onSave: (question: QuestionCreate) => Promise<void>;
 }
 
 interface IState {
-	question: Question | null;
-	kind?: QuestionKind;
-	tag?: QuestionTag;
-	prompt?: string;
-	answers: string[];
+	kind: QuestionKind;
+	tag: QuestionTag | null;
+	prompt: string;
+	validationFailures: ValidationFailures | null;
+	dirty: boolean;
 }
 
 export class AnswerForm extends React.PureComponent<IProps, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
+	public constructor(props: IProps) {
+		super(props);
 
-	public state: Readonly<IState> = {
-		answers: [],
-		tag: undefined,
-		kind: this.props.question?.kind ?? undefined,
-		prompt: this.props.question?.prompt ?? undefined,
-		question: this.props.question ?? null,
-	};
+		const tag = props.question?.tag ? props.tags.find(item => item.id === props.question!.tag!.id) : null;
 
-	public componentDidMount(): void {
-		if (this.props.question) {
-			this.setState({
-				tag: this.props.tags.find(tag => tag.id === this.props.question?.tag?.id),
-			});
-		}
+		if (tag === undefined)
+			throw new Error('Could not find question tag in tags list');
+
+		this.state = {
+			tag,
+			// TODO Change this back to QuestionKind.MultipleChoice /tyler
+			kind: props.question?.kind ?? QuestionKind.FreeText,
+			prompt: props.question?.prompt ?? '',
+			validationFailures: null,
+			dirty: false,
+		};
 	}
 
 	public render() {
-		if (this.props.tags.length === 0)
-			return;
+		const isKindSelectDisabled = this.props.question !== null;
 
 		return (
-			<form style={{marginTop: Spacing.XLarge}}>
-				<div className="answer-form-container">
-					<div>
-						<label htmlFor="prompt" className="answer-form-label">
-							Prompt
-						</label>
+			<form id="question-editor-fields" style={{marginTop: Spacing.XLarge}}>
+				<ControlGroup fill={true}>
+					<ValidationAwareFormGroup
+						label="Prompt"
+						labelFor="prompt"
+						failures={this.state.validationFailures}
+						style={{flex: 1}}
+					>
+						<TextArea
+							fill={true}
+							growVertically={true}
+							name="prompt"
+							placeholder="Is this sentence true?"
+							value={this.state.prompt}
+							onChange={this.onPromptChange}
+						/>
+					</ValidationAwareFormGroup>
 
-						<ValidationAwareFormGroup labelFor="prompt" failures={this.props.validationFailures}>
-							<InputGroup
-								id="prompt"
-								name="prompt"
-								type="text"
-								placeholder={this.state.question ? this.state.question.prompt : 'Question Prompt'}
-								value={this.state.prompt ?? ''}
-								large={true}
-								onChange={this.onChangePrompt}
-							/>
+					<div style={{flex: 1}}>
+						<ValidationAwareFormGroup
+							label="Question Kind"
+							labelFor="kind"
+							failures={this.state.validationFailures}
+						>
+							<Select
+								disabled={isKindSelectDisabled}
+								inputProps={{
+									name: 'kind',
+								}}
+								items={QuestionKindNames}
+								onItemSelect={this.onKindChange}
+								filterable={false}
+								itemRenderer={this.renderQuestionKind}
+								fill={true}
+							>
+								<Button
+									disabled={isKindSelectDisabled}
+									fill={true}
+									alignText="left"
+									text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
+									rightIcon="double-caret-vertical"
+									placeholder="Select question kind"
+								/>
+							</Select>
+						</ValidationAwareFormGroup>
+
+						<ValidationAwareFormGroup
+							label="Question Tag"
+							labelFor="tag"
+							failures={this.state.validationFailures}
+							helperText={this.renderEmptyQuestionTagsWarning()}
+							intent={Intent.WARNING}
+						>
+							<Select
+								disabled={this.props.tags.length === 0}
+								inputProps={{
+									name: 'tag',
+								}}
+								fill={true}
+								items={this.props.tags}
+								onItemSelect={this.onTagChange}
+								filterable={false}
+								itemRenderer={this.renderQuestionTag}
+								onClear={this.onTagClear}
+							>
+								<Button
+									disabled={this.props.tags.length === 0}
+									fill={true}
+									alignText="left"
+									text={this.state.tag ? ucwords(this.state.tag.label) : 'No Tag'}
+									rightIcon="double-caret-vertical"
+									placeholder="Select question tag"
+								/>
+							</Select>
 						</ValidationAwareFormGroup>
 					</div>
+				</ControlGroup>
 
-					<div className="answer-form-container">
-						<div>
-							<label htmlFor="question_kind" className="answer-form-label">
-								Question Kind
-							</label>
-
-							<ValidationAwareFormGroup labelFor="question_kind" failures={this.props.validationFailures}>
-								<Select<QuestionKind>
-									inputProps={{
-										name: 'question_kind',
-										id: 'question_kind',
-									}}
-									items={QuestionKindNames}
-									onItemSelect={this.selectQuestionKind}
-									filterable={false}
-									itemRenderer={renderQuestionKindOption}
-									noResults={(
-										<MenuItem
-											disabled={true}
-											text="No results."
-											roleStructure="listoption"
-										/>
-									)}
-								>
-									<Button
-										style={{minWidth: 200}}
-										text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
-										rightIcon="double-caret-vertical"
-										placeholder="Select question kind"
-									/>
-								</Select>
-							</ValidationAwareFormGroup>
-						</div>
-
-						<div>
-							<label htmlFor="kind" className="answer-form-label">
-								Question Tag
-							</label>
-
-							<ValidationAwareFormGroup labelFor="question_tag" failures={this.props.validationFailures}>
-								<Select<QuestionTag>
-									inputProps={{
-										name: 'question_tag',
-										id: 'question_tag',
-									}}
-									items={this.props.tags}
-									onItemSelect={this.selectTag}
-									filterable={false}
-									itemRenderer={renderTagOption}
-									noResults={<MenuItem
-										disabled={true}
-										text="No results."
-										roleStructure="listoption"
-									/>}
-								>
-									<Button
-										style={{minWidth: 200}}
-										text={this.state.tag ? ucwords(this.state.tag.label) : 'Select question tag'}
-										rightIcon="double-caret-vertical"
-										placeholder="Select question tag"
-									/>
-								</Select>
-							</ValidationAwareFormGroup>
-						</div>
-					</div>
-				</div>
-
-				<hr className="answer-form-separator" />
-
-				{this.state.kind === QuestionKind.Boolean && this.state.tag && (
-					<BooleanQuestion
-						question={this.state.question}
-						prompt={this.state.prompt}
-						tagId={this.state.tag.id as number}
-						processing={this.props.processing}
-						onQuestionSave={this.props.onQuestionSave}
-						validationFailures={this.props.validationFailures}
-					/>
-				)}
-
-				{this.state.kind === QuestionKind.FreeText && this.state.tag && (
-					<FreeTextQuestion
-						question={this.state.question}
-						prompt={this.state.prompt}
-						tagId={this.state.tag.id as number}
-						processing={this.props.processing}
-						onQuestionSave={this.props.onQuestionSave}
-						validationFailures={this.props.validationFailures}
-					/>
-				)}
-
-				{this.state.kind === QuestionKind.MultipleChoice && this.state.tag && (
-					<MultipleChoiceQuestion
-						question={this.state.question}
-						prompt={this.state.prompt}
-						tagId={this.state.tag.id as number}
-						processing={this.props.processing}
-						onQuestionSave={this.props.onQuestionSave}
-						validationFailures={this.props.validationFailures}
-					/>
-				)}
+				<QuestionForm
+					dirty={this.state.dirty}
+					kind={this.state.kind}
+					onSave={this.onSave}
+					validationFailures={this.state.validationFailures}
+					question={this.props.question}
+					processing={this.props.processing}
+				/>
 			</form>
 		);
 	}
 
-	private selectTag = (tag: QuestionTag) => {
-		this.setState({
-			tag,
-		});
+	private renderEmptyQuestionTagsWarning(): React.ReactNode {
+		if (this.props.tags.length > 0)
+			return null;
+
+		return (
+			<span>
+				Your account has no question tags. <Link to="/quiz/tags">Click here</Link> to create one.
+			</span>
+		);
+	}
+
+	private onPromptChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => this.setState({
+		prompt: event.currentTarget.value,
+		dirty: true,
+	});
+
+	private onKindChange = (kind: QuestionKind) => this.setState({
+		kind,
+		dirty: true,
+	});
+
+	private onTagChange = (tag: QuestionTag) => this.setState({
+		tag,
+		dirty: true,
+	});
+
+	private onTagClear = () => this.setState({
+		tag: null,
+		dirty: true,
+	});
+
+	private onSave = async (data: Partial<QuestionCreate>) => {
+		if (!this.state.kind)
+			return;
+
+		try {
+			await this.props.onSave({
+				...data,
+				kind: this.state.kind,
+				prompt: this.state.prompt,
+				tag: this.state.tag?.id ?? null,
+			} as QuestionCreate);
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
+
+				this.setState({
+					validationFailures: error.context.failures,
+				});
+			} else
+				toaster.showUnhandledErrorMessage();
+		}
 	};
 
-	private selectQuestionKind = (kind: QuestionKind) => {
-		this.setState({
-			kind,
-		});
+	private renderQuestionKind: ItemRenderer<QuestionKind> = (kind, props) => {
+		if (!props.modifiers.matchesPredicate)
+			return null;
+
+		return (
+			<MenuItem
+				selected={kind === this.state.kind}
+				active={props.modifiers.active}
+				disabled={props.modifiers.disabled}
+				key={kind}
+				onClick={props.handleClick}
+				onFocus={props.handleFocus}
+				roleStructure="listoption"
+				text={ucwords(kind)}
+			/>
+		);
 	};
 
-	private onChangePrompt = (event: React.ChangeEvent<HTMLInputElement>) => {
-		this.setState({
-			prompt: event.target.value,
-		});
+	private renderQuestionTag: ItemRenderer<QuestionTag> = (tag, props) => {
+		if (!props.modifiers.matchesPredicate)
+			return null;
+
+		return (
+			<MenuItem
+				selected={tag === this.state.tag}
+				active={props.modifiers.active}
+				disabled={props.modifiers.disabled}
+				key={tag.label}
+				onClick={props.handleClick}
+				onFocus={props.handleFocus}
+				roleStructure="listoption"
+				text={tag.label}
+			/>
+		);
 	};
 }
-
-const renderTagOption: ItemRenderer<QuestionTag> = (tag, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate)
-		return null;
-
-	return (
-		<MenuItem
-			active={modifiers.active}
-			disabled={modifiers.disabled}
-			key={tag.label}
-			onClick={handleClick}
-			onFocus={handleFocus}
-			roleStructure="listoption"
-			text={tag.label}
-		/>
-	);
-};
-
-const renderQuestionKindOption: ItemRenderer<QuestionKind> = (kind, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate)
-		return null;
-
-	return (
-		<MenuItem
-			active={modifiers.active}
-			disabled={modifiers.disabled}
-			key={kind}
-			onClick={handleClick}
-			onFocus={handleFocus}
-			roleStructure="listoption"
-			text={ucwords(kind)}
-		/>
-	);
-};
