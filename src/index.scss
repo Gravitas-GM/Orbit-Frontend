@@ -42,7 +42,8 @@ body {
 	.gm-page-wrapper {
 		padding: $spacing-medium $spacing-large;
 		width: 75vw;
-		margin: 0 auto;
+		margin-left: auto;
+		margin-right: auto;
 
 		header {
 			margin: $spacing-large 0;

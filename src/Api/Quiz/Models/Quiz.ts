@@ -20,7 +20,8 @@ export interface QuizEndpoints {
 
 export interface Quiz {
 	questions: QuestionPrompt[],
-	endTimestamp: Date,
+	startTimestamp: Date,
+	endTimestamp: Date | null,
 }
 
 interface QuestionPromptBase {
@@ -90,7 +91,10 @@ export class QuizModel {
 	}
 
 	private static denormalizeQuiz(quiz: Quiz) {
-		quiz.endTimestamp = parseApiTimestamp(quiz.endTimestamp);
+		quiz.startTimestamp = parseApiTimestamp(quiz.startTimestamp);
+
+		if (quiz.endTimestamp !== null)
+			quiz.endTimestamp = parseApiTimestamp(quiz.endTimestamp);
 
 		return quiz;
 	}

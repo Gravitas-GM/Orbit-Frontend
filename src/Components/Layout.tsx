@@ -20,6 +20,7 @@ import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
+import {QuizPage} from './Pages/Quiz/Quiz';
 
 interface IProps {
 	loading: boolean;
@@ -35,7 +36,7 @@ export const Layout: React.FC<IProps> = props => (
 			<div className="main-frame">
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
-						<Switch>
+						<Switch key={0}>
 							<Route path="/" component={Home} exact={true} />
 
 							<Route path="/leaderboard" component={Leaderboard} exact={true} />
@@ -44,6 +45,7 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
+							<Route path="/quiz" component={QuizPage} exact={true} />
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
