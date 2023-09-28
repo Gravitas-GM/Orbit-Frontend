@@ -10,7 +10,9 @@ import {
 	QuestionPrompt,
 } from '../../../../../Api/Quiz/Models/Quiz';
 import {Question} from './Question';
-import {replace} from '../../../../Utility/array';
+import './index.scss';
+import {isValidationFailureError, ValidationFailures} from '../../../../../Api/errors/symfony';
+import {Button, Intent} from '@blueprintjs/core';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,
@@ -32,9 +34,11 @@ export type QuizItem = BooleanItem | FreeTextItem | MultipleChoiceItem;
 
 interface Props {
 	questions: QuestionPrompt[],
+	validationFailures: ValidationFailures | null,
+	onSubmit: (items: QuizItem[]) => Promise<void>,
 }
 
-export const Questions: React.FC<Props> = ({questions}) => {
+export const Questions: React.FC<Props> = ({questions, validationFailures, onSubmit}) => {
 	const [items, setItems] = React.useState<QuizItem[]>([]);
 
 	React.useEffect(() => {
@@ -45,15 +49,22 @@ export const Questions: React.FC<Props> = ({questions}) => {
 		} as QuizItem)));
 	}, [questions]);
 
-	const onResponseChange = React.useCallback((item: QuizItem) => {
-		setItems(replace(items, item, {...item}));
+	const [submitting, setSubmitting] = React.useState(false);
+	const onSubmitClick = React.useCallback(async () => {
+		setSubmitting(true);
+		await onSubmit(items);
+		setSubmitting(false);
 	}, [items]);
 
 	return (
 		<div>
 			{items.map(item => (
-				<Question key={item.prompt.id} item={item} onChange={onResponseChange} />
+				<Question key={item.prompt.id} item={item} validationFailures={validationFailures} />
 			))}
+
+			<div>
+				<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY} />
+			</div>
 		</div>
 	);
 };

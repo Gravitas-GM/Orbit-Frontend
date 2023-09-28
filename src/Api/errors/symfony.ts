@@ -26,7 +26,7 @@ interface ErrorResponse<Context extends object = {}> {
 	};
 }
 
-interface ValidationFailure {
+export interface ValidationFailure {
 	code: string;
 	path: string;
 	message: string;

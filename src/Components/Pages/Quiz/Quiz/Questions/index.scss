@@ -1,0 +1,28 @@
+@import '../../../../../variables';
+
+#quiz-form {
+	.quiz-item {
+		margin-bottom: $pt-grid-size * 4;
+	}
+
+	.boolean-item > .#{$bp-ns}-radio {
+		gap: $pt-grid-size;
+	}
+
+	.multiple-choice-item {
+		.choices {
+			display: flex;
+			flex-wrap: wrap;
+
+			> .#{$bp-ns}-radio {
+				flex: 1 0 calc(50% - $pt-grid-size);
+				margin-top: $pt-grid-size;
+				margin-right: $pt-grid-size;
+
+				&:nth-child(even) {
+					margin-right: 0;
+				}
+			}
+		}
+	}
+}
