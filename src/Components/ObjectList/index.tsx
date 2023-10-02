@@ -14,7 +14,7 @@ interface Props<T> {
 	children: (items: T[]) => React.ReactNode;
 	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
-	onAddNewClick?: () => void;
+	onAddNewClick?: () => void | null;
 	itemsPerPage?: number;
 }
 
@@ -81,7 +81,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	let newButton: React.ReactNode = null;
 
-	if (props.editorUrlPrefix)
+	if (props.editorUrlPrefix && props.onAddNewClick)
 		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="add" text="Add New" fill={true} />;
 	else if (props.onAddNewClick)
 		newButton = <Button icon="add" text="Add New" fill={true} onClick={props.onAddNewClick} />;
