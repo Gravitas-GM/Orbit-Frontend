@@ -14,7 +14,7 @@ interface Props<T> {
 	children: (items: T[]) => React.ReactNode;
 	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
-	onAddNewClick?: () => void | null;
+	onAddNewClick?: () => void;
 	itemsPerPage?: number;
 }
 
