@@ -9,8 +9,6 @@ import { history } from "../../../../history";
 import "./QuizResultsPage.scss";
 import { quizSubmissionsMock } from "../../../../mocks/QuizSubmissions";
 import { QuizAnswers } from "../QuizAnswers";
-import { showQuizScore } from "../History/RenderHistoryItems";
-
 interface IProps {
 	submission?: string;
 }
@@ -96,3 +94,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		})
 	};
 }
+
+export const showQuizScore = (item: QuizSubmission) => {
+	return <span>{Math.floor((item.correctCount / item.questions.length)*100)}% ({item.correctCount} / {item.questions.length})</span>;
+};
