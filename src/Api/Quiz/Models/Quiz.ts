@@ -55,17 +55,17 @@ interface AnswerBase {
 
 export interface FreeTextAnswer extends AnswerBase {
 	kind: QuestionKind.FreeText,
-	answer: string,
+	answer: string | null,
 }
 
 export interface BooleanAnswer extends AnswerBase {
 	kind: QuestionKind.Boolean,
-	answer: boolean,
+	answer: boolean | null,
 }
 
 export interface MultipleChoiceAnswer extends AnswerBase {
 	kind: QuestionKind.MultipleChoice,
-	answerIndex: number,
+	answerIndex: number | null,
 }
 
 export type Answer = FreeTextAnswer | BooleanAnswer | MultipleChoiceAnswer;

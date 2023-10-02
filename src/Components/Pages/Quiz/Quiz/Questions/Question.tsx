@@ -7,20 +7,21 @@ import {MultipleChoiceQuestion} from './MultipleChoiceQuestion';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 
 interface Props {
+	name: string,
 	item: QuizItem,
 	validationFailures: ValidationFailures | null,
 }
 
-export const Question: React.FC<Props> = ({item, validationFailures}) => {
+export const Question: React.FC<Props> = ({name, item, validationFailures}) => {
 	switch (item.kind) {
 		case QuestionKind.Boolean:
-			return <BooleanQuestion item={item} />;
+			return <BooleanQuestion name={name} item={item} validationFailures={validationFailures} />;
 
 		case QuestionKind.FreeText:
-			return <FreeTextQuestion item={item} validationFailures={validationFailures} />;
+			return <FreeTextQuestion name={name} item={item} validationFailures={validationFailures} />;
 
 		case QuestionKind.MultipleChoice:
-			return <MultipleChoiceQuestion item={item} />;
+			return <MultipleChoiceQuestion name={name} item={item} validationFailures={validationFailures} />;
 
 		default:
 			throw new Error('Unrecognized question kind');

@@ -5,22 +5,22 @@ import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 
 interface Props {
+	name: string,
 	item: MultipleChoiceItem,
 	validationFailures: ValidationFailures | null,
 }
 
-export const MultipleChoiceQuestion: React.FC<Props> = ({item, validationFailures}) => {
+export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
 	const onAnswerChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		item.answer = parseInt(event.currentTarget.value, 10);
 	}, [item]);
 
-	const name = `item-${item.prompt.id}`;
-
 	return (
 		<ValidationAwareFormGroup
 			label={<H3>{item.prompt.prompt}</H3>}
-			labelFor={name}
+			labelFor={`${name}.answerIndex`}
 			failures={validationFailures}
+			failureMessage="This question has not been answered."
 			className="quiz-item multiple-choice-item"
 		>
 			<div className="choices">

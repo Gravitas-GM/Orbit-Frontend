@@ -5,24 +5,24 @@ import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 
 interface Props {
+	name: string,
 	item: FreeTextItem,
 	validationFailures: ValidationFailures | null,
 }
 
-export const FreeTextQuestion: React.FC<Props> = ({item, validationFailures}) => {
+export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
 	const [answer, setAnswer] = React.useState(item.answer);
 
 	const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		setAnswer(event.currentTarget.value);
 	}, []);
 
-	const name = `item-${item.prompt.id}`;
-
 	return (
 		<ValidationAwareFormGroup
 			label={<H3>{item.prompt.prompt}</H3>}
-			labelFor={name}
+			labelFor={`${name}.answer`}
 			failures={validationFailures}
+			failureMessage="This question has not been answered."
 			className="quiz-item free-text-item"
 		>
 			<InputGroup

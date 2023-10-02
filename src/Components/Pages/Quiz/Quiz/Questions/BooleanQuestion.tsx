@@ -5,22 +5,22 @@ import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 
 interface Props {
+	name: string,
 	item: BooleanItem,
 	validationFailures: ValidationFailures | null,
 }
 
-export const BooleanQuestion: React.FC<Props> = ({item, validationFailures}) => {
+export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
 	const onResponseChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		item.answer = !!parseInt(event.currentTarget.value, 10);
 	}, [item]);
 
-	const name = `item-${item.prompt}`;
-
 	return (
 		<ValidationAwareFormGroup
 			label={<H3>{item.prompt.prompt}</H3>}
-			labelFor={name}
+			labelFor={`${name}.answer`}
 			failures={validationFailures}
+			failureMessage="This question has not been answered."
 			className="quiz-item boolean-item"
 		>
 			<Radio name={name} label={item.prompt.trueLabel ?? 'True'} value={1} onChange={onResponseChange} />

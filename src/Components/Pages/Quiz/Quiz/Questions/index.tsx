@@ -11,7 +11,7 @@ import {
 } from '../../../../../Api/Quiz/Models/Quiz';
 import {Question} from './Question';
 import './index.scss';
-import {isValidationFailureError, ValidationFailures} from '../../../../../Api/errors/symfony';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {Button, Intent} from '@blueprintjs/core';
 
 interface Item<Kind extends QuestionKind> {
@@ -20,9 +20,9 @@ interface Item<Kind extends QuestionKind> {
 		Kind extends QuestionKind.FreeText ? FreeTextQuestionPrompt :
 			Kind extends QuestionKind.MultipleChoice ? MultipleChoiceQuestionPrompt :
 				never,
-	answer: (Kind extends QuestionKind.Boolean ? BooleanAnswer['response'] :
-		Kind extends QuestionKind.FreeText ? FreeTextAnswer['response'] :
-			Kind extends QuestionKind.MultipleChoice ? MultipleChoiceAnswer['response'] :
+	answer: (Kind extends QuestionKind.Boolean ? BooleanAnswer['answer'] :
+		Kind extends QuestionKind.FreeText ? FreeTextAnswer['answer'] :
+			Kind extends QuestionKind.MultipleChoice ? MultipleChoiceAnswer['answerIndex'] :
 				never) | null,
 }
 
@@ -58,8 +58,13 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 
 	return (
 		<div>
-			{items.map(item => (
-				<Question key={item.prompt.id} item={item} validationFailures={validationFailures} />
+			{items.map((item, index) => (
+				<Question
+					key={item.prompt.id}
+					name={`responses[${index}]`}
+					item={item}
+					validationFailures={validationFailures}
+				/>
 			))}
 
 			<div>
