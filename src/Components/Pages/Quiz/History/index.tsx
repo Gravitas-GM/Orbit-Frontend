@@ -5,12 +5,12 @@ import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {Permission} from '../../../../Permission';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
-import './QuizHistory.scss';
 import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import * as toaster from '../../../../Toaster';
 import { LinkButton } from '../../../LinkButton';
 import { ObjectList } from '../../../ObjectList';
+import './QuizHistory.scss';
 
 interface IState {
 	loading: boolean;
@@ -174,5 +174,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			</section>
 		);
 	}
+
 	private onItemFilter = (item: QuizSubmission, searchText: string) => item.user.name.toLocaleLowerCase().includes(searchText);
 }
