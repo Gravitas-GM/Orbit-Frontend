@@ -1,14 +1,14 @@
-import React from "react";
-import { PageHeader } from "../../../PageHeader";
-import { FrameLoadingSpinner } from "../../../FrameLoadingSpinner";
-import { AnchorButton, Icon, Intent } from "@blueprintjs/core";
-import { RouteComponentProps } from "react-router";
-import { QuizSubmission, QuizSubmissionModel } from "../../../../Api/Quiz/Models/QuizSubmissions";
-import * as toaster from "../../../../Toaster"
-import { history } from "../../../../history";
-import "./QuizResultsPage.scss";
-import { quizSubmissionsMock } from "../../../../mocks/QuizSubmissions";
-import { QuizAnswers } from "../QuizAnswers";
+import React from 'react';
+import {PageHeader} from '../../../PageHeader';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {AnchorButton, Icon, Intent} from '@blueprintjs/core';
+import {RouteComponentProps} from 'react-router';
+import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {QuizAnswers} from '../QuizAnswers';
+import * as toaster from '../../../../Toaster';
+import {history} from '../../../../history';
+import './QuizResultsPage.scss';
+
 interface IProps {
 	submission?: string;
 }
@@ -20,34 +20,27 @@ interface IState {
 
 export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IProps>, IState> {
 	public state: Readonly<IState> = {
-		loading: false,
+		loading: true,
 		justFinishedQuiz: true,
-		submission: quizSubmissionsMock[0],
+		submission: null,
 	};
 
 	public componentDidMount(): void {
 		if (this.props.match.params.submission) {
-			this.getQuizResult(this.props.match.params.submission);
+			this.fetchQuizResult(this.props.match.params.submission);
 		}
 	}
 
 	public render() {
-		if (this.state.loading)
-			return <FrameLoadingSpinner />;
+		if (this.state.loading) return <FrameLoadingSpinner />;
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader
-					title={`Quiz #${this.state.submission?.id} Results`}
-				/>
-
+				<PageHeader title={`Quiz #${this.state.submission?.timestamp} Results`} />
 
 				<div className="results-header">
 					<h2>
-						<Icon icon="time" /> {`${new Date(this.state.submission!.timestamp).getSeconds()}s`}
-					</h2>
-					<h2>
-						<Icon icon="tick" /> {showQuizScore(this.state.submission!)}
+						<Icon icon="tick" /> {renderQuizScore(this.state.submission!)}
 					</h2>
 				</div>
 
@@ -55,46 +48,43 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 				<div
 					style={{
-						display: "flex",
-						justifyContent: "center",
+						display: 'flex',
+						justifyContent: 'center',
 					}}
 				>
-					<AnchorButton
-						href="/quiz/history"
-						intent={Intent.PRIMARY}
-						text="View Submission History"
-					/>
+					<AnchorButton href="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
 				</div>
 			</section>
 		);
 	}
 
-	private getQuizResult = async (submissionId: string) => {
-		this.setState({
-			loading: true
-		});
-
+	private fetchQuizResult = async (submissionId: string) => {
 		let submission: QuizSubmission | null = null;
 
 		try {
 			submission = await QuizSubmissionModel.read(submissionId).then((res) => res.data);
 		} catch (error) {
-			toaster.showUnhandledErrorMessage();
+			toaster.error('Could not find specified quiz');
 
 			this.setState({
-				loading: false
+				loading: false,
 			});
 
-			history.push("/");
+			history.push('/');
 		}
 
 		this.setState({
 			loading: false,
-			submission
-		})
+			submission,
+		});
 	};
 }
 
-export const showQuizScore = (item: QuizSubmission) => {
-	return <span>{Math.floor((item.correctCount / item.questions.length)*100)}% ({item.correctCount} / {item.questions.length})</span>;
+export const renderQuizScore = (item: QuizSubmission) => {
+	return (
+		<span>
+			{Math.floor((item.correctCount / item.questions.length) * 100)}% ({item.correctCount} /{' '}
+			{item.questions.length})
+		</span>
+	);
 };

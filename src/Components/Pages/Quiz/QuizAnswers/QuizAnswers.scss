@@ -17,10 +17,8 @@
 	padding: $spacing-small;
 }
 
-
 .question-correct {
 	border: solid $spacing-pixel $pt-intent-success;
-
 }
 
 .question-wrong {
@@ -30,4 +28,14 @@
 .question-separator {
 	opacity: 0.1;
 	margin-bottom: $spacing-large;
+}
+
+.quiz-response-container {
+	hr {
+		margin-bottom: $spacing-large;
+
+		&:last-child {
+			display: none;
+		}
+	}
 }

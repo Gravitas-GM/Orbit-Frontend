@@ -8,8 +8,8 @@ import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/Q
 import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import * as toaster from '../../../../Toaster';
-import { LinkButton } from '../../../LinkButton';
-import { ObjectList } from '../../../ObjectList';
+import {LinkButton} from '../../../LinkButton';
+import {ObjectList} from '../../../ObjectList';
 import './QuizHistory.scss';
 
 interface IState {
@@ -63,7 +63,9 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	}
 
 	private async fetchHistoryData(): Promise<void> {
-		this.setState({loading: true});
+		this.setState({
+			loading: true,
+		});
 
 		const submissions = await this.fetchQuizSubmissions();
 
@@ -78,7 +80,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 			if (!users) {
 				this.setState({
-					loading: false
+					loading: false,
 				});
 
 				return;
@@ -86,7 +88,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 			const submissionUsers = submissions.map((submission) => submission.user.id);
 
-			this.setState((state)=> ({
+			this.setState((state) => ({
 				users: users.filter((user) => submissionUsers.includes(user.id)),
 				submissions,
 				loading: false,
@@ -111,11 +113,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return (
 				<NonIdealState
 					icon="wind"
-					action={(
+					action={
 						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
-					)}
+					}
 					title="No quiz history data found."
 				/>
 			);
@@ -129,34 +131,32 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 					items={this.state.submissions}
 					onItemFilter={this.onItemFilter}
 				>
-					{items => (
+					{(items) => (
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
-									{
-										this.context?.permissions.includes(Permission.ADMIN) &&
-
-										<th style={{ width: 220 }}>Name</th>
-									}
+									{this.context?.permissions.includes(Permission.ADMIN) && (
+										<th style={{width: 220}}>Name</th>
+									)}
 
 									<th>Quiz Date</th>
-									<th style={{ width: 120 }}>Score</th>
-									<th style={{ width: 120 }}>&nbsp;</th>
+
+									<th style={{width: 120}}>Score</th>
+
+									<th style={{width: 120}}>&nbsp;</th>
 								</tr>
 							</thead>
 
 							{items.map((submission) => (
 								<tr key={submission.id}>
-									{
-										this.context?.permissions.includes(Permission.ADMIN) &&
-
+									{this.context?.permissions.includes(Permission.ADMIN) && (
 										<td>{submission.user.name}</td>
-									}
+									)}
 
 									<td>{new Date(submission.timestamp).toLocaleDateString()}</td>
-									<td>
-										{submission.correctCount}
-									</td>
+
+									<td>{submission.correctCount}</td>
+
 									<td>
 										<LinkButton
 											to={`/quiz/history/${submission.id}`}
@@ -175,5 +175,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (item: QuizSubmission, searchText: string) => item.user.name.toLocaleLowerCase().includes(searchText);
+	private onItemFilter = (item: QuizSubmission, searchText: string) =>
+		item.user.name.toLocaleLowerCase().includes(searchText);
 }

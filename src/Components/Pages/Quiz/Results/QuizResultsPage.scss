@@ -1,11 +1,10 @@
-@import "../../../../variables";
+@import '../../../../variables';
 
 .results-header {
 	display: flex;
 	justify-content: space-between;
 	padding-bottom: $spacing-large;
 	border-bottom: solid $spacing-pixel $gray1;
-
 	margin: $spacing-xxlarge 0;
 
 	h2 {

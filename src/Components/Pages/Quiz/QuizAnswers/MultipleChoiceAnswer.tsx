@@ -9,36 +9,34 @@ interface IProps {
 }
 
 export const MultipleChoiceAnswer: React.FC<IProps> = ({question, index}) => {
-	console.log(question, 'multiple choice');
 	return (
 		<div className="question">
 			<div className="question-title">
-				<Icon icon="help" size={IconSize.SMALL} />{index+1}. <span>{question.prompt}</span>
+				<Icon icon="help" size={IconSize.SMALL} />
+				{index + 1}. <span>{question.prompt}</span>
 			</div>
 
 			<div className="question-results">
-				{
-					question.choices.map((choice, index) => (
-						<div className="question-results-card" key={choice}>
-							{(question.answerIndex === index) || (question.response === index && !question.correct) ?
-								<Icon
-									icon={question.answerIndex === index ? 'tick' : 'cross'}
-									intent={question.answerIndex === index ? Intent.SUCCESS : Intent.DANGER}
-								/>
-								:
-								<Icon icon="blank" />
-							}
-
-							<Radio
-								style={{ marginBottom: 'unset' }}
-								disabled={true}
-								defaultChecked={question.response === index}
+				{question.choices.map((choice, index) => (
+					<div className="question-results-card" key={choice}>
+						{question.answerIndex === index || (question.response === index && !question.correct) ? (
+							<Icon
+								icon={question.answerIndex === index ? 'tick' : 'cross'}
+								intent={question.answerIndex === index ? Intent.SUCCESS : Intent.DANGER}
 							/>
+						) : (
+							<Icon icon="blank" />
+						)}
 
-							{choice}
-						</div>
-					))
-				}
+						<Radio
+							style={{marginBottom: 'unset'}}
+							disabled={true}
+							defaultChecked={question.response === index}
+						/>
+
+						{choice}
+					</div>
+				))}
 			</div>
 		</div>
 	);

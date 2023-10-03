@@ -1,23 +1,20 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import { QuizResultsPage } from './';
-import { RegularUserContextMockDecorator } from '../../../../mocks/Context';
-import { usersMock } from '../../../../mocks/User';
-import { quizSubmissionsMock } from '../../../../mocks/QuizSubmissions';
+import {QuizResultsPage} from './';
+import {RegularUserContextMockDecorator} from '../../../../mocks/Context';
+import {quizSubmissionsMock} from '../../../../mocks/QuizSubmissions';
 
 export default {
 	title: 'Quiz Results Page',
 	component: QuizResultsPage,
 };
 
-const Template: ComponentStory<typeof QuizResultsPage> = args => <QuizResultsPage {...args}/>;
+const Template: ComponentStory<typeof QuizResultsPage> = (args) => <QuizResultsPage {...args} />;
 
 const Basic = Template.bind({});
 
 const WrongId = Template.bind({});
 
-Basic.decorators = [
-	RegularUserContextMockDecorator
-]
+Basic.decorators = [RegularUserContextMockDecorator];
 
 Basic.args = {
 	match: {
@@ -29,7 +26,6 @@ Basic.args = {
 		},
 	},
 };
-
 
 WrongId.args = {
 	match: {

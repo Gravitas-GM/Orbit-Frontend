@@ -1,4 +1,4 @@
-import { H3 } from "@blueprintjs/core";
+import {H3} from '@blueprintjs/core';
 import * as React from 'react';
 import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {
@@ -28,20 +28,18 @@ function isFreeTextResponse(value: any): value is FreeTextResponse {
 	return typeof value === 'object' && value.kind === QuestionKind.FreeText;
 }
 
-export const QuizAnswers: React.FC<IProps> = ({ questions }) => {
-
-
+export const QuizAnswers: React.FC<IProps> = ({questions}) => {
 	return (
 		<div className="quiz-answers-container">
 			<H3>Quiz Answers</H3>
 
 			{questions.map((question, index) => (
-				<>
-				<Response question={question} key={question.prompt} index={index} />
-				<hr className="question-separator"/>
-				</>
-			))}
+				<div className="quiz-response-container" key={question.prompt}>
+					<Response question={question} index={index} />
 
+					<hr />
+				</div>
+			))}
 		</div>
 	);
 };
@@ -50,7 +48,6 @@ interface IResponseProps {
 	question: QuestionResponse;
 	index: number;
 }
-
 
 const Response: React.FC<IResponseProps> = ({question, index}) => {
 	if (isMultipleChoiceResponse(question))
