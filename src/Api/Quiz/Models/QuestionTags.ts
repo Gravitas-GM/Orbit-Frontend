@@ -44,12 +44,14 @@ export interface QuestionTag {
 	questions: Question[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
 	members: Id[],
+	questions: Id[],
 };
 
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
 	members: Id[],
+	questions: Id[],
 }>;
 
 export class QuestionTagModel {
