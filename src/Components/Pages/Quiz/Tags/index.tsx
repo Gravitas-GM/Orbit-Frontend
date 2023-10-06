@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
+import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {replace} from '../../../Utility/array';
 import {TagEditorDialog} from './TagEditorDialog';
@@ -23,6 +24,7 @@ interface IState {
 	showEditDialog: boolean;
 	showDeleteDialog: boolean;
 	users: User[];
+	questions: Question[];
 }
 
 export class TagListPage extends React.PureComponent<{}, IState> {
@@ -33,10 +35,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		showDeleteDialog: false,
 		showEditDialog: false,
 		users: [],
+		questions: [],
 	};
 
 	public async componentDidMount() {
-		let data: [QuestionTag[], User[]];
+		let data: [QuestionTag[], User[], Question[]];
 
 		try {
 			data = await Promise.all([
@@ -45,19 +48,25 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					'members.id': true,
 				}).then(r => r.data),
 				UserModel.list().then(r => r.data),
+				QuestionModel.list({
+					_default: true,
+					'tag.label': true,
+				}).then(response => response.data),
 			]);
 		} catch (error) {
 			toaster.showUnhandledErrorMessage();
+
 			history.push('/');
 
 			return;
 		}
 
-		const [tags, users] = data;
+		const [tags, users, questions] = data;
 
 		this.setState({
 			tags,
 			users,
+			questions,
 			loading: false,
 		});
 	};
@@ -98,6 +107,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					onClose={this.onEditDialogClose}
 					tag={this.state.showEditDialog ? this.state.activeTag : null}
 					users={this.state.users}
+					questions={this.state.questions}
 					onSubmit={this.onSubmit}
 				/>
 
