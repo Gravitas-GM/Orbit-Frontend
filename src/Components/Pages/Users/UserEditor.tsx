@@ -1,6 +1,9 @@
-import {Button, H2, H6, Icon} from '@blueprintjs/core';
 import * as React from 'react';
+import {Button, Divider, H2, H6, Icon} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
+import {ItemRenderer} from '@blueprintjs/select';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {ValidationFailures} from '../../../Api/errors/symfony';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
@@ -11,7 +14,9 @@ import {UserContext} from '../../../Session';
 import * as toaster from '../../../Toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {MultiSelect} from '../../Select/MultiSelect';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {ValidationAwareFormGroup} from '../../ValidationAwareFormGroup';
 import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './UserPointsTable';
 import {renderUserName} from '../../Utility/string';
@@ -44,6 +49,7 @@ interface IState {
 	showDeleteDialog: boolean;
 	tags: QuestionTag[];
 	selectedTags: QuestionTag[];
+	validationFailures: ValidationFailures | null,
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -65,6 +71,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		showDeleteDialog: false,
 		tags: [],
 		selectedTags: [],
+		validationFailures: null,
 	};
 
 	public async componentDidMount() {
@@ -158,6 +165,33 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					)}
 				</div>
 
+				<Divider style={{margin: '10px 0 20px 0'}} />
+
+				<ValidationAwareFormGroup
+					labelFor="tags"
+					label="Assigned Tags"
+					failures={this.state.validationFailures}
+					style={{maxWidth: 600}}
+				>
+					<MultiSelect
+						tagInputProps={{
+							inputProps: {
+								name: 'tags',
+							},
+						}}
+						fill={true}
+						items={this.state.tags}
+						selectedItems={this.state.selectedTags}
+						onItemSelect={this.onTagSelectionChange}
+						onRemove={this.onTagRemove}
+						onSelectAll={this.onSelectAllTagClick}
+						onSelectNone={this.onSelectNoneTagClick}
+						itemRenderer={this.tagItemRenderer}
+						tagRenderer={tagRenderer}
+						noResults={<div>No results</div>}
+					/>
+				</ValidationAwareFormGroup>
+
 				<div className="settings-title-container">
 					<H2>Points</H2>
 
@@ -220,6 +254,36 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			</div>
 		);
 	}
+
+	private onTagSelectionChange = (tag: QuestionTag) => {
+		if (this.state.selectedTags.includes(tag)) {
+			this.setState(state => (
+				{
+					selectedTags: state.selectedTags.filter(item => item !== tag),
+				}
+			));
+		} else {
+			this.setState(state => (
+				{
+					selectedTags: [...state.selectedTags, tag],
+				}
+			));
+		}
+	};
+
+	private onTagRemove = (target: QuestionTag) => this.setState(state => (
+		{
+			selectedTags: state.selectedTags.filter(item => item.id !== target.id),
+		}
+	));
+
+	private onSelectAllTagClick = () => this.setState({
+		selectedTags: this.state.tags,
+	});
+
+	private onSelectNoneTagClick = () => this.setState({
+		selectedTags: [],
+	});
 
 	private onEditClick = () => this.setState({
 		showEditDialog: true,
@@ -401,4 +465,26 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			});
 		}
 	};
+
+	private tagItemRenderer: ItemRenderer<QuestionTag> = (tag, props) => {
+		if (!props.modifiers.matchesPredicate)
+			return null;
+
+		return (
+			<MenuItem
+				roleStructure="listoption"
+				selected={this.state.selectedTags.includes(tag)}
+				key={tag.id}
+				active={props.modifiers.active}
+				disabled={props.modifiers.disabled}
+				text={tag.label}
+				onClick={props.handleClick}
+				onFocus={props.handleFocus}
+			/>
+		);
+	};
 }
+
+const tagRenderer = (tag: QuestionTag) => {
+	return tag.label;
+};
