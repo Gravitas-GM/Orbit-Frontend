@@ -4,6 +4,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {QuestionTag, QuestionTagModel} from '../../../Api/Quiz/Models/QuestionTags';
 import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
@@ -15,7 +16,6 @@ import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './UserPointsTable';
 import {renderUserName} from '../../Utility/string';
 import {UpdatableUserData, UserEditDialog} from './UserEditDialog';
-import {isAxiosErrorResponse} from '../../../Api/errors';
 import {Spacing} from '../../../Styles/variables';
 import {ApiError} from '../../../Api/errors/rocket';
 
@@ -42,6 +42,8 @@ interface IState {
 	deleteSubject: string | undefined;
 	deleteTargets: PointItem[];
 	showDeleteDialog: boolean;
+	tags: QuestionTag[];
+	selectedTags: QuestionTag[];
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -61,6 +63,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		deleteSubject: undefined,
 		deleteTargets: [],
 		showDeleteDialog: false,
+		tags: [],
+		selectedTags: [],
 	};
 
 	public async componentDidMount() {
@@ -99,11 +103,28 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			toaster.showUnhandledErrorMessage();
 		}
 
+		let tags: QuestionTag[] = [];
+
+		try {
+			tags = await QuestionTagModel.list({_default: true, 'members.id': true}).then(r => r.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+		}
+
+		let selectedTags: QuestionTag[] = [];
+
+		for (const tag of tags) {
+			if (tag.members.find(member => member.id === user.id))
+				selectedTags.push(tag);
+		}
+
 		this.setState({
 			user,
 			pointItems: userPoints?.points ?? [],
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
+			tags,
+			selectedTags,
 		});
 	}
 
@@ -225,7 +246,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 
 		// Name is a bit of a misnomer; it isn't a "new" user, but the replacement object
-		// after the chnages have been applied by the API.
+		// after the changes have been applied by the API.
 		let newUser: User;
 
 		try {
