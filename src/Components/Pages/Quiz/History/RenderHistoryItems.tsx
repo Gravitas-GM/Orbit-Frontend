@@ -11,19 +11,19 @@ interface IRenderHistoryItemsProps {
 
 export const RenderHistoryItems: React.FC<IRenderHistoryItemsProps> = ({items, handleClick}) => {
 	const sortedItems = useMemo(
-		() => items.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
+		() => items.sort((a, b) => b.endTimestamp.getTime() - a.endTimestamp.getTime()),
 		[items],
 	);
 
 	return (
 		<tbody>
 		{sortedItems.map((item, index) => (
-			<tr key={`${item.user.id} ${item.timestamp}`}>
+			<tr key={`${item.user.id} ${item.endTimestamp}`}>
 				<td>{item.user.name}</td>
 
 				<td>{item.correctCount}/{item.questions.length}</td>
 
-				<td>{formatDate(item.timestamp)}</td>
+				<td>{formatDate(item.endTimestamp)}</td>
 
 				<td>
 					<Button intent={Intent.PRIMARY} onClick={() => handleClick(index)}>
