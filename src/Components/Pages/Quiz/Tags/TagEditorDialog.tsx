@@ -3,6 +3,7 @@ import {Dialog, Classes, InputGroup, Button, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {User} from '../../../../Api/Hub/Models/Users';
+import {Question} from '../../../../Api/Quiz/Models/Questions';
 import {QuestionTag, QuestionTagCreatePayload} from '../../../../Api/Quiz/Models/QuestionTags';
 import {MultiSelect} from '../../../Select/MultiSelect';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
@@ -15,6 +16,7 @@ interface IProps {
 	onClose: () => void;
 	tag: QuestionTag | null;
 	users: User[];
+	questions: Question[];
 	onSubmit: (tag: QuestionTagCreatePayload) => Promise<void>;
 }
 
@@ -22,6 +24,7 @@ interface IState {
 	processing: boolean;
 	label: string;
 	members: User[];
+	selectedQuestions: Question[];
 	validationFailures: ValidationFailures | null,
 }
 
@@ -30,12 +33,12 @@ enum TagEditorDialogTitle {
 	EDIT = 'Edit Tag',
 }
 
-// TODO This editor needs the ability to add questions to the tag /Larry
 export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		processing: false,
 		label: '',
 		members: [],
+		selectedQuestions: [],
 		validationFailures: null,
 	};
 
@@ -45,6 +48,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public async componentDidUpdate(prevProps: IProps) {
 		if (this.props.tag !== prevProps.tag) {
 			const selectedUsers: User[] = [];
+			const selectedQuestions: Question[] = [];
 
 			if (this.props.tag) {
 				for (const member of this.props.tag.members) {
@@ -53,11 +57,19 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 					if (found)
 						selectedUsers.push(found);
 				}
+
+				for (const question of this.props.tag.questions) {
+					const found = this.props.questions.find(q => q.id === question.id);
+
+					if (found)
+						selectedQuestions.push(found);
+				}
 			}
 
 			this.setState({
 				label: this.props.tag?.label ?? '',
 				members: selectedUsers,
+				selectedQuestions,
 			});
 		}
 	}
@@ -102,10 +114,34 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 							selectedItems={this.state.members}
 							onItemSelect={this.onMemberSelectionChange}
 							onRemove={this.onMemberRemove}
-							onSelectAll={this.onSelectAllClick}
-							onSelectNone={this.onSelectNoneClick}
+							onSelectAll={this.onSelectAllMembersClick}
+							onSelectNone={this.onSelectNoneMembersClick}
 							itemRenderer={this.userRenderer}
-							tagRenderer={tagRenderer}
+							tagRenderer={userTagRenderer}
+							noResults={<div>No results</div>}
+						/>
+					</ValidationAwareFormGroup>
+
+					<ValidationAwareFormGroup
+						labelFor="questions"
+						label="Assign Tag to Questions"
+						failures={this.state.validationFailures}
+					>
+						<MultiSelect
+							tagInputProps={{
+								inputProps: {
+									name: 'questions',
+								},
+							}}
+							fill={true}
+							items={this.props.questions}
+							selectedItems={this.state.selectedQuestions}
+							onItemSelect={this.onQuestionSelectionChange}
+							onRemove={this.onQuestionRemove}
+							onSelectAll={this.onSelectAllQuestionsClick}
+							onSelectNone={this.onSelectNoneQuestionsClick}
+							itemRenderer={this.questionRenderer}
+							tagRenderer={questionTagRenderer}
 							noResults={<div>No results</div>}
 						/>
 					</ValidationAwareFormGroup>
@@ -153,12 +189,42 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		}
 	));
 
-	private onSelectAllClick = () => this.setState({
+	private onSelectAllMembersClick = () => this.setState({
 		members: this.props.users,
 	});
 
-	private onSelectNoneClick = () => this.setState({
+	private onSelectNoneMembersClick = () => this.setState({
 		members: [],
+	});
+
+	private onQuestionSelectionChange = (question: Question) => {
+		if (this.state.selectedQuestions.includes(question)) {
+			this.setState(state => (
+				{
+					selectedQuestions: state.selectedQuestions.filter(item => item !== question),
+				}
+			));
+		} else {
+			this.setState(state => (
+				{
+					selectedQuestions: [...state.selectedQuestions, question],
+				}
+			));
+		}
+	};
+
+	private onQuestionRemove = (target: Question) => this.setState(state => (
+		{
+			selectedQuestions: state.selectedQuestions.filter(item => item.id !== target.id),
+		}
+	));
+
+	private onSelectAllQuestionsClick = () => this.setState({
+		selectedQuestions: this.props.questions,
+	});
+
+	private onSelectNoneQuestionsClick = () => this.setState({
+		selectedQuestions: [],
 	});
 
 	private onSubmitClick = async () => {
@@ -173,7 +239,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 			await this.props.onSubmit({
 				label: this.state.label,
 				members: this.state.members.map(item => item.id),
-				questions: [],
+				questions: this.state.selectedQuestions.map(item => item.id),
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
@@ -229,8 +295,30 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 			/>
 		);
 	};
+
+	private questionRenderer: ItemRenderer<Question> = (question, props) => {
+		if (!props.modifiers.matchesPredicate)
+			return null;
+
+		return (
+			<MenuItem
+				roleStructure="listoption"
+				selected={this.state.selectedQuestions.includes(question)}
+				key={question.id}
+				active={props.modifiers.active}
+				disabled={props.modifiers.disabled}
+				text={question.prompt}
+				onClick={props.handleClick}
+				onFocus={props.handleFocus}
+			/>
+		);
+	};
 }
 
-const tagRenderer = (user: User) => {
+const userTagRenderer = (user: User) => {
 	return `${user.firstName} ${user.lastName}`;
+};
+
+const questionTagRenderer = (question: Question) => {
+	return question.prompt;
 };
