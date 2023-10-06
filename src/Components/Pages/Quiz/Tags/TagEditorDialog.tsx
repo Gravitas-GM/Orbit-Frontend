@@ -30,7 +30,6 @@ enum TagEditorDialogTitle {
 	EDIT = 'Edit Tag',
 }
 
-// TODO This editor needs the ability to add questions to the tag /Larry
 export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		processing: false,
