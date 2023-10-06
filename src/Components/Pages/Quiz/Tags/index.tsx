@@ -95,7 +95,12 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 							<tbody>
 								{items.map(item => (
-									<TableItem key={item.id} item={item} onDelete={this.onTagDelete} />
+									<TableItem
+										key={item.id}
+										item={item}
+										onEditClick={() => this.onEditClick(item)}
+										onDelete={this.onTagDelete}
+									/>
 								))}
 							</tbody>
 						</HTMLTable>
@@ -103,9 +108,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				</ObjectList>
 
 				<TagEditorDialog
-					isOpen={this.state.showEditDialog}
+					isOpen={
+						this.state.showEditDialog || (this.state.activeTag !== null && !this.state.showDeleteDialog)
+					}
 					onClose={this.onEditDialogClose}
-					tag={this.state.showEditDialog ? this.state.activeTag : null}
+					tag={this.state.activeTag}
 					users={this.state.users}
 					questions={this.state.questions}
 					onSubmit={this.onSubmit}
@@ -123,6 +130,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 	private onAddNewClick = () => this.setState({
 		showEditDialog: true,
+	});
+
+	private onEditClick = (tag: QuestionTag) => this.setState({
+		activeTag: tag,
 	});
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
@@ -202,10 +213,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 interface TableItemProps {
 	item: QuestionTag;
+	onEditClick: () => void;
 	onDelete: (item: QuestionTag) => void;
 }
 
-const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
+const TableItem: React.FC<TableItemProps> = ({item, onEditClick, onDelete}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -215,7 +227,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 			<td>{item.label}</td>
 			<td>{item.members.length} Member{item.members.length !== 1 ? 's' : ''}</td>
 			<td>
-				<LinkButton to={`/quiz/tags/${item.id}`} icon="edit" minimal={true} />
+				<Button icon="edit" onClick={onEditClick} minimal={true} />
 				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
 			</td>
 		</tr>
