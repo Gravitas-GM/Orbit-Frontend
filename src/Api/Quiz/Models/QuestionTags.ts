@@ -1,6 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
 import {Settings} from './Settings';
-import {Question} from './Questions';
 import {User} from './Users';
 
 export interface QuestionTagEndpoints {
@@ -40,15 +39,15 @@ export interface QuestionTag {
 	id: Id,
 	account: Pick<Settings, 'id'>,
 	label: string,
+	autoAssign: boolean;
 	members: User[],
-	questions: Question[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
 	members: Id[],
 };
 
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members'> & {
+export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
 	members: Id[],
 }>;
 

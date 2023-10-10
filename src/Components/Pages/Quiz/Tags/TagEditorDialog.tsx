@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dialog, Classes, InputGroup, Button, Intent} from '@blueprintjs/core';
+import {Dialog, Classes, InputGroup, Button, Intent, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {User} from '../../../../Api/Hub/Models/Users';
@@ -21,6 +21,7 @@ interface IProps {
 interface IState {
 	processing: boolean;
 	label: string;
+	autoAssign: boolean;
 	members: User[];
 	validationFailures: ValidationFailures | null,
 }
@@ -34,6 +35,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		processing: false,
 		label: '',
+		autoAssign: false,
 		members: [],
 		validationFailures: null,
 	};
@@ -57,6 +59,7 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 			this.setState({
 				label: this.props.tag?.label ?? '',
 				members: selectedUsers,
+				autoAssign: this.props.tag?.autoAssign ?? false,
 			});
 		}
 	}
@@ -86,28 +89,47 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
-						labelFor="members"
-						label="Select Users"
+						labelFor="autoAssign"
 						failures={this.state.validationFailures}
 					>
-						<MultiSelect
-							tagInputProps={{
-								inputProps: {
-									name: 'members',
-								},
-							}}
-							fill={true}
-							items={this.props.users}
-							selectedItems={this.state.members}
-							onItemSelect={this.onMemberSelectionChange}
-							onRemove={this.onMemberRemove}
-							onSelectAll={this.onSelectAllClick}
-							onSelectNone={this.onSelectNoneClick}
-							itemRenderer={this.userRenderer}
-							tagRenderer={tagRenderer}
-							noResults={<div>No results</div>}
-						/>
+						<div className="settings-switch-container">
+								<span>
+									Automatically assign to all users?
+								</span>
+
+							<Switch
+								checked={this.state.autoAssign}
+								onChange={this.onAutoAssignChange}
+								large={true}
+							/>
+						</div>
 					</ValidationAwareFormGroup>
+
+					{!this.state.autoAssign && (
+						<ValidationAwareFormGroup
+							labelFor="members"
+							label="Select Users"
+							failures={this.state.validationFailures}
+						>
+							<MultiSelect
+								tagInputProps={{
+									inputProps: {
+										name: 'members',
+									},
+								}}
+								fill={true}
+								items={this.props.users}
+								selectedItems={this.state.members}
+								onItemSelect={this.onMemberSelectionChange}
+								onRemove={this.onMemberRemove}
+								onSelectAll={this.onSelectAllClick}
+								onSelectNone={this.onSelectNoneClick}
+								itemRenderer={this.userRenderer}
+								tagRenderer={tagRenderer}
+								noResults={<div>No results</div>}
+							/>
+						</ValidationAwareFormGroup>
+					)}
 				</form>
 
 				<div className={Classes.DIALOG_FOOTER}>
@@ -129,6 +151,18 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 	private onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		label: event.currentTarget.value,
 	});
+
+	private onAutoAssignChange = () => {
+		if (this.state.autoAssign) {
+			this.setState({
+				autoAssign: false,
+			});
+		} else {
+			this.setState({
+				autoAssign: true,
+			});
+		}
+	};
 
 	private onMemberSelectionChange = (user: User) => {
 		if (this.state.members.includes(user)) {
@@ -171,8 +205,9 @@ export class TagEditorDialog extends React.PureComponent<IProps, IState> {
 		try {
 			await this.props.onSubmit({
 				label: this.state.label,
-				members: this.state.members.map(item => item.id),
-				questions: [],
+				autoAssign: this.state.autoAssign,
+				members: this.state.autoAssign ? this.props.users.map(item => item.id)
+					: this.state.members.map(item => item.id),
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {

@@ -14,7 +14,6 @@ import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
 import {Button, HTMLTable} from '@blueprintjs/core';
-import {LinkButton} from '../../../LinkButton';
 
 interface IState {
 	tags: QuestionTag[];
