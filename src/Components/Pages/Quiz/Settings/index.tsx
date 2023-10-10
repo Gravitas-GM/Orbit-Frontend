@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, InputGroup, Intent} from '@blueprintjs/core';
+import {Button, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {PageHeader} from '../../../PageHeader';
@@ -15,6 +15,8 @@ import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Classes} from '../../../../classes';
 
+const defaultQuizDurationMinutes = 10;
+
 interface IState {
 	loading: boolean;
 	processing: boolean;
@@ -23,6 +25,7 @@ interface IState {
 	frequency: Frequency;
 	questionCount: string;
 	completedRewardSource: PointSourceItem | null;
+	quizDurationMinutes: number;
 }
 
 export class QuizSettings extends React.PureComponent<{}, IState> {
@@ -37,6 +40,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		frequency: Frequency.Weekly,
 		questionCount: '',
 		completedRewardSource: null,
+		quizDurationMinutes: defaultQuizDurationMinutes,
 	};
 
 	public async componentDidMount() {
@@ -62,6 +66,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 			frequency: settings.quizFrequency,
 			questionCount: settings.questionCount.toString(10),
 			completedRewardSource: sources.find(item => item.id.$oid === settings.completedRewardPointSourceId) ?? null,
+			quizDurationMinutes: settings.quizDurationSeconds / 60,
 		});
 	}
 
@@ -98,6 +103,24 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 								alignText="left"
 							/>
 						</Select>
+					</ValidationAwareFormGroup>
+
+					<ValidationAwareFormGroup
+						label="Quiz Duration"
+						labelFor="quizDurationSeconds"
+						failures={this.state.failures}
+					>
+						<div className={Classes.FORM_GROUP_SUB_LABEL}>
+							The duration of the quiz (in minutes).
+						</div>
+
+						<NumericInput
+							min={1}
+							fill={true}
+							name="quizDurationSeconds"
+							onValueChange={this.onQuizDurationMinutesChange}
+							value={this.state.quizDurationMinutes}
+						/>
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
@@ -161,6 +184,15 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		completedRewardSource: null,
 	});
 
+	private onQuizDurationMinutesChange = (quizDurationMinutes: number) => {
+		if (isNaN(quizDurationMinutes))
+			return;
+
+		this.setState({
+			quizDurationMinutes,
+		});
+	};
+
 	private onQuestionCountChange = (event: React.FormEvent<HTMLInputElement>) => {
 		const value = event.currentTarget.value;
 
@@ -208,6 +240,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 				quizFrequency: this.state.frequency,
 				questionCount: this.state.questionCount.length > 0 ? parseInt(this.state.questionCount, 10) : 0,
 				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid ?? null,
+				quizDurationSeconds: this.state.quizDurationMinutes * 60,
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {

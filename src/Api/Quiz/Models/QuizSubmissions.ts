@@ -24,7 +24,8 @@ export interface QuizSubmission {
 	id: number,
 	account: Pick<Settings, 'id'>,
 	user: User,
-	timestamp: Date,
+	startTimestamp: Date,
+	endTimestamp: Date,
 	questionCount: number,
 	correctCount: number,
 	questions: QuestionResponse[],
@@ -86,7 +87,8 @@ export class QuizSubmissionModel {
 	}
 
 	public static denormalizeQuizSubmission(submission: QuizSubmission) {
-		submission.timestamp = parseApiTimestamp(submission.timestamp);
+		submission.startTimestamp = parseApiTimestamp(submission.startTimestamp);
+		submission.endTimestamp = parseApiTimestamp(submission.endTimestamp);
 
 		return submission;
 	}
