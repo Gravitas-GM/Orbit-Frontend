@@ -97,6 +97,10 @@ export class PointsModel {
 		return pointTrackingClient.put<'/points/users/:user'>(`/points/users/${userId}`, {
 			...payload,
 			timestamp: payload.timestamp.toISOString(),
+		}).then(response => {
+			response.data = PointsModel.denormalizePointItem(response.data);
+
+			return response;
 		});
 	}
 
