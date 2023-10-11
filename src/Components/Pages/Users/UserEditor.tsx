@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, H2, H6, Icon} from '@blueprintjs/core';
+import {Button, Divider, H2, H6, Icon} from '@blueprintjs/core';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {ValidationFailures} from '../../../Api/errors/symfony';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
@@ -19,12 +19,13 @@ import {renderUserName} from '../../Utility/string';
 import {UpdatableUserData, UserEditDialog} from './UserEditDialog';
 import {Spacing} from '../../../Styles/variables';
 import {ApiError} from '../../../Api/errors/rocket';
+import {TagsTable, TagsTableRow} from './UserAssignedTagsTable';
 
 export type DialogPointItem = {
 	pointValue: number;
 	sourceName: string;
 	description?: string;
-}
+};
 
 interface IRouteProps {
 	user: string;
@@ -44,7 +45,7 @@ interface IState {
 	deleteTargets: PointItem[];
 	showDeleteDialog: boolean;
 	assignedTags: QuestionTag[];
-	validationFailures: ValidationFailures | null,
+	validationFailures: ValidationFailures | null;
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -144,10 +145,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						icon="edit"
 						loading={this.state.processing}
 						onClick={this.onEditClick}
-					/>
+						/>
 				</div>
 
-				<div style={{display: 'flex'}}>
+				<div style={{display: 'flex', marginBottom: Spacing.Medium}}>
 					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
@@ -157,6 +158,18 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						</H6>
 					)}
 				</div>
+
+				<div className="settings-title-container">
+					<H2>Assigned Tags</H2>
+				</div>
+
+				<TagsTable>
+					{this.state.assignedTags.map((tag) => (
+						<TagsTableRow key={tag.id} item={tag} />
+					))}
+				</TagsTable>
+
+				<Divider style={{margin: `${Spacing.XLarge} 0`}} />
 
 				<div className="settings-title-container">
 					<H2>Points</H2>
@@ -222,20 +235,20 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	}
 
 	private onEditClick = () => this.setState({
-		showEditDialog: true,
-	});
+			showEditDialog: true,
+		});
 
 	private onEditDialogClose = () => this.setState({
-		showEditDialog: false,
-	});
+		  	showEditDialog: false,
+		});
 
 	private onAddPointsClick = () => this.setState({
-		showAddPointsDialog: true,
-	});
+			showAddPointsDialog: true,
+		});
 
 	private onAddPointsDialogClose = () => this.setState({
-		showAddPointsDialog: false,
-	});
+			showAddPointsDialog: false,
+		});
 
 	private onEditDialogSubmit = async (update: UpdatableUserData) => {
 		if (this.state.processing)
@@ -273,10 +286,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onBulkDeleteButtonClick = () => this.setState({
-		deleteSubject: 'Delete',
-		showDeleteDialog: true,
-		deleteTargets: this.state.selectedItems,
-	});
+			deleteSubject: 'Delete',
+			showDeleteDialog: true,
+			deleteTargets: this.state.selectedItems,
+		});
 
 	private onBeginDeleteButtonClick = (items: PointItem[]) => {
 		this.setState(({
@@ -287,8 +300,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onDeleteCancel = () => this.setState({
-		showDeleteDialog: false,
-	});
+			showDeleteDialog: false,
+		});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
