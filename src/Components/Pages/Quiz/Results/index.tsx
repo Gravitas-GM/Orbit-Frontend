@@ -27,7 +27,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 	public componentDidMount(): void {
 		if (this.props.match.params.submission) {
-			this.fetchQuizResult(this.props.match.params.submission);
+			this.fetchSubmission(this.props.match.params.submission);
 		}
 	}
 
@@ -41,7 +41,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 				<div className="results-header">
 					<h2>
-						<Icon icon="tick" /> {renderQuizScore(this.state.submission!)}
+						<Icon icon="tick" /> {renderScore(this.state.submission!)}
 					</h2>
 				</div>
 
@@ -59,7 +59,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		);
 	}
 
-	private fetchQuizResult = async (submissionId: string) => {
+	private fetchSubmission = async (submissionId: string) => {
 		let submission: QuizSubmission | null = null;
 
 		try {
@@ -81,7 +81,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 	};
 }
 
-export const renderQuizScore = (item: QuizSubmission) => {
+export const renderScore = (item: QuizSubmission) => {
 	return (
 		<span>
 			{Math.floor((item.correctCount / item.questions.length) * 100)}% ({item.correctCount} /{' '}
