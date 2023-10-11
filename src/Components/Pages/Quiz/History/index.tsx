@@ -11,6 +11,7 @@ import * as toaster from '../../../../Toaster';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
 import './QuizHistory.scss';
+import {formatDate} from '../../../Utility/date';
 
 interface IState {
 	loading: boolean;
@@ -153,7 +154,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 										<td>{submission.user.name}</td>
 									)}
 
-									<td>{submission.timestamp.getDate()}</td>
+									<td>{formatDate(submission.timestamp)}</td>
 
 									<td>{submission.correctCount}</td>
 

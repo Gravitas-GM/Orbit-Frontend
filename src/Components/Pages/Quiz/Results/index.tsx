@@ -8,6 +8,7 @@ import {QuizAnswers} from '../QuizAnswers';
 import * as toaster from '../../../../Toaster';
 import {history} from '../../../../history';
 import './QuizResultsPage.scss';
+import {formatDate} from '../../../Utility/date';
 
 interface IProps {
 	submission?: string;
@@ -37,12 +38,14 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={`Quiz #${this.state.submission?.timestamp} Results`} />
+				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission!.timestamp)}`} />
 
 				<div className="results-header">
-					<h2>
-						<Icon icon="tick" /> {renderScore(this.state.submission!)}
-					</h2>
+					<span>Score:</span>
+
+					<span>
+						<Icon icon="tick"/> {renderScore(this.state.submission!)}
+					</span>
 				</div>
 
 				<QuizAnswers questions={this.state.submission!.questions} />
