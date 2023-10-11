@@ -38,7 +38,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		let users: User[] = [];
 
 		try {
-			users = await UserModel.list().then((res) => res.data);
+			users = await UserModel.list().then(res => res.data);
 		} catch (err) {
 			toaster.showUnhandledErrorMessage();
 
@@ -52,7 +52,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		let submissions: QuizSubmission[] = [];
 
 		try {
-			submissions = await QuizSubmissionModel.list().then((res) => res.data);
+			submissions = await QuizSubmissionModel.list().then(res => res.data);
 		} catch (e) {
 			toaster.showUnhandledErrorMessage();
 
@@ -86,10 +86,10 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				return;
 			}
 
-			const submissionUsers = submissions.map((submission) => submission.user.id);
+			const submissionUsers = submissions.map(submission => submission.user.id);
 
-			this.setState((state) => ({
-				users: users.filter((user) => submissionUsers.includes(user.id)),
+			this.setState(state => ({
+				users: users.filter(user => submissionUsers.includes(user.id)),
 				submissions,
 				loading: false,
 			}));
@@ -131,7 +131,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 					items={this.state.submissions}
 					onItemFilter={this.onItemFilter}
 				>
-					{(items) => (
+					{items => (
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
@@ -147,13 +147,13 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 								</tr>
 							</thead>
 
-							{items.map((submission) => (
+							{items.map(submission => (
 								<tr key={submission.id}>
 									{this.context?.permissions.includes(Permission.ADMIN) && (
 										<td>{submission.user.name}</td>
 									)}
 
-									<td>{new Date(submission.timestamp).toLocaleDateString()}</td>
+									<td>{submission.timestamp.getDate()}</td>
 
 									<td>{submission.correctCount}</td>
 

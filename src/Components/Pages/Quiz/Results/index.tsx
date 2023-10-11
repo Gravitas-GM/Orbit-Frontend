@@ -32,7 +32,8 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 	}
 
 	public render() {
-		if (this.state.loading) return <FrameLoadingSpinner />;
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
 
 		return (
 			<section className="gm-page-wrapper">
@@ -62,7 +63,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		let submission: QuizSubmission | null = null;
 
 		try {
-			submission = await QuizSubmissionModel.read(submissionId).then((res) => res.data);
+			submission = await QuizSubmissionModel.read(submissionId).then(res => res.data);
 		} catch (error) {
 			toaster.error('Could not find specified quiz');
 

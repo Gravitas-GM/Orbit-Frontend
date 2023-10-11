@@ -8,7 +8,7 @@ export default {
 	component: QuizResultsPage,
 };
 
-const Template: ComponentStory<typeof QuizResultsPage> = (args) => <QuizResultsPage {...args} />;
+const Template: ComponentStory<typeof QuizResultsPage> = args => <QuizResultsPage {...args} />;
 
 const Basic = Template.bind({});
 
