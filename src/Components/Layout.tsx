@@ -20,6 +20,7 @@ import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
+import {TagEditorPage} from './Pages/Quiz/Tags/TagEditorPage';
 
 interface IProps {
 	loading: boolean;
@@ -50,13 +51,16 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
-								<Route path="/catalog" component={CatalogListPage} exact={true} />,
+								<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
 								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
 								<Route path="/quiz/settings" key="/quiz/settings" component={QuizSettings} exact={true} />,
 								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
 								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
-								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
+								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
+								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditorPage} exact={true} />,
+								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditorPage} exact={true} />
+
 							]}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [
