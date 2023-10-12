@@ -1,13 +1,9 @@
 import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {replace} from '../../../Utility/array';
-import {TagEditorDialog} from './TagEditorDialog';
 import {
 	QuestionTag,
-	QuestionTagCreatePayload,
 	QuestionTagModel,
-	QuestionTagUpdatePayload,
 } from '../../../../Api/Quiz/Models/QuestionTags';
 import * as toaster from '../../../../Toaster';
 import {history} from '../../../../history';
@@ -16,22 +12,20 @@ import {ObjectList} from '../../../ObjectList';
 import {Button, HTMLTable} from '@blueprintjs/core';
 
 interface IState {
-	tags: QuestionTag[];
 	activeTag: QuestionTag | null;
+	tags: QuestionTag[];
 	loading: boolean;
-	showEditDialog: boolean;
-	showDeleteDialog: boolean;
 	users: User[];
+	showDeleteDialog: boolean;
 }
 
 export class TagListPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		tags: [],
+		users: [],
 		activeTag: null,
 		showDeleteDialog: false,
-		showEditDialog: false,
-		users: [],
 	};
 
 	public async componentDidMount() {
@@ -88,7 +82,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<TableItem
 										key={item.id}
 										item={item}
-										onEditClick={() => this.onEditClick(item)}
+										onEditClick={() => history.push(`/quiz/tags/${item.id}`)}
 										onDelete={this.onTagDelete}
 									/>
 								))}
@@ -96,16 +90,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 						</HTMLTable>
 					)}
 				</ObjectList>
-
-				<TagEditorDialog
-					isOpen={
-						this.state.showEditDialog || (this.state.activeTag !== null && !this.state.showDeleteDialog)
-					}
-					onClose={this.onEditDialogClose}
-					tag={this.state.activeTag}
-					users={this.state.users}
-					onSubmit={this.onSubmit}
-				/>
 
 				<DeleteDialog
 					isOpen={this.state.showDeleteDialog}
@@ -117,13 +101,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		);
 	};
 
-	private onAddNewClick = () => this.setState({
-		showEditDialog: true,
-	});
-
-	private onEditClick = (tag: QuestionTag) => this.setState({
-		activeTag: tag,
-	});
+	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
 		activeTag: tag,
@@ -133,11 +111,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	private onDeleteDialogClose = () => this.setState({
 		activeTag: null,
 		showDeleteDialog: false,
-	});
-
-	private onEditDialogClose = () => this.setState({
-		activeTag: null,
-		showEditDialog: false,
 	});
 
 	private onConfirmDelete = async () => {
@@ -165,36 +138,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				showDeleteDialog: false,
 			}
 		));
-	};
-
-	private onSubmit = async (tag: QuestionTagCreatePayload | QuestionTagUpdatePayload) => {
-		try {
-			if (this.state.activeTag)
-				await this.onTagUpdate(tag as QuestionTagUpdatePayload);
-			else
-				await this.onTagCreate(tag as QuestionTagCreatePayload);
-		} catch (error) {
-			throw error;
-		}
-	};
-
-	private onTagUpdate = async (tag: QuestionTagUpdatePayload) => {
-		const updated = await QuestionTagModel.update(this.state.activeTag!.id, tag).then(r => r.data);
-
-		this.setState(state => ({
-			tags: replace(state.tags, state.activeTag!, updated),
-			activeTag: null,
-			showEditDialog: false,
-		}));
-	};
-
-	private onTagCreate = async (tag: QuestionTagCreatePayload) => {
-		const newTag = await QuestionTagModel.create(tag).then(r => r.data);
-
-		this.setState(state => ({
-			tags: [...state.tags, newTag],
-			showEditDialog: false,
-		}));
 	};
 
 	private onTagFilter = (tag: QuestionTag, searchText: string) => tag.label.toLocaleLowerCase().includes(searchText);
