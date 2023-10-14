@@ -1,7 +1,7 @@
 import React from 'react';
 import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {AnchorButton, Icon, Intent} from '@blueprintjs/core';
+import {Icon, Intent} from '@blueprintjs/core';
 import {RouteComponentProps} from 'react-router';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {QuizAnswers} from '../QuizAnswers';
@@ -9,6 +9,7 @@ import * as toaster from '../../../../Toaster';
 import {history} from '../../../../history';
 import './QuizResultsPage.scss';
 import {formatDate} from '../../../Utility/date';
+import {LinkButton} from '../../../LinkButton';
 
 interface IProps {
 	submission?: string;
@@ -44,7 +45,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 					<span>Score:</span>
 
 					<span>
-						<Icon icon="tick"/> {renderScore(this.state.submission!)}
+						<Icon icon="tick" /> {renderScore(this.state.submission!)}
 					</span>
 				</div>
 
@@ -56,7 +57,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 						justifyContent: 'center',
 					}}
 				>
-					<AnchorButton href="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
+					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
 				</div>
 			</section>
 		);

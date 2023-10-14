@@ -16,9 +16,7 @@ const AdminUser = Template.bind({});
 const NoData = Template.bind({});
 const Basic = Template.bind({});
 
-Basic.decorators = [
-	RegularUserContextMockDecorator,
-];
+Basic.decorators = [RegularUserContextMockDecorator];
 
 AdminUser.parameters = {
 	mockData: [
