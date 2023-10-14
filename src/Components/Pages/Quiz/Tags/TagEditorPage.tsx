@@ -35,7 +35,6 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 	public static contextType = UserContext;
 
 	public async componentDidMount() {
-
 		const idParam = this.props.match.params.tag;
 
 		const promises: Array<Promise<unknown>> = [
@@ -52,8 +51,8 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 					this.setState({
 						tag: r.data,
 					})
-				),
-			)
+				)
+			);
 		}
 
 		try {
@@ -74,10 +73,8 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 	}
 
 	public render() {
-		if (this.state.loading)
-			return <FrameLoadingSpinner />;
-		else if (this.state.redirect)
-			return <Redirect to="/quiz/tags" />;
+		if (this.state.loading) return <FrameLoadingSpinner />;
+		else if (this.state.redirect) return <Redirect to="/quiz/tags" />;
 
 		return (
 			<section className="gm-page-wrapper">

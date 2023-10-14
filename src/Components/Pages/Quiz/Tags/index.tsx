@@ -1,10 +1,7 @@
 import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {
-	QuestionTag,
-	QuestionTagModel,
-} from '../../../../Api/Quiz/Models/QuestionTags';
+import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import * as toaster from '../../../../Toaster';
 import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
@@ -53,7 +50,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			users,
 			loading: false,
 		});
-	};
+	}
 
 	public render() {
 		if (this.state.loading)
@@ -99,19 +96,19 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				/>
 			</section>
 		);
-	};
+	}
 
 	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
-		activeTag: tag,
-		showDeleteDialog: true,
-	});
+			activeTag: tag,
+			showDeleteDialog: true,
+		});
 
 	private onDeleteDialogClose = () => this.setState({
-		activeTag: null,
-		showDeleteDialog: false,
-	});
+			activeTag: null,
+			showDeleteDialog: false,
+		});
 
 	private onConfirmDelete = async () => {
 		if (!this.state.activeTag)
@@ -131,13 +128,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 		toaster.success(`Tag "${this.state.activeTag.label}" deleted successfully`);
 
-		this.setState(state => (
-			{
-				tags: state.tags.filter(item => item.id !== state.activeTag?.id),
-				activeTag: null,
-				showDeleteDialog: false,
-			}
-		));
+		this.setState(state => ({
+			tags: state.tags.filter(item => item.id !== state.activeTag?.id),
+			activeTag: null,
+			showDeleteDialog: false,
+		}));
 	};
 
 	private onTagFilter = (tag: QuestionTag, searchText: string) => tag.label.toLocaleLowerCase().includes(searchText);
@@ -157,7 +152,11 @@ const TableItem: React.FC<TableItemProps> = ({item, onEditClick, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.label}</td>
-			<td>{item.members.length} Member{item.members.length !== 1 ? 's' : ''}</td>
+
+			<td>
+				{item.members.length} Member{item.members.length !== 1 ? 's' : ''}
+			</td>
+
 			<td>
 				<Button icon="edit" onClick={onEditClick} minimal={true} />
 				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />

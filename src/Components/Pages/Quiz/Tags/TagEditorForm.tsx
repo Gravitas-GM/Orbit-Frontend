@@ -209,7 +209,8 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 	};
 
 	private userRenderer: ItemRenderer<User> = (user, state) => {
-		if (!state.modifiers.matchesPredicate) return null;
+		if (!state.modifiers.matchesPredicate)
+			return null;
 
 		return (
 			<MenuItem
