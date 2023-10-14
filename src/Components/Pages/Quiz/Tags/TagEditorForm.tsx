@@ -142,20 +142,17 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		}
 	};
 
-	private onMemberRemove = (target: User) =>
-		this.setState(state => ({
-			members: state.members.filter(item => item.id !== target.id),
-		}));
+	private onMemberRemove = (target: User) => this.setState(state => ({
+		members: state.members.filter(item => item.id !== target.id),
+	}));
 
-	private onSelectAllClick = () =>
-		this.setState({
-			members: this.props.users,
-		});
+	private onSelectAllClick = () => this.setState({
+		members: this.props.users,
+	});
 
-	private onSelectNoneClick = () =>
-		this.setState({
-			members: [],
-		});
+	private onSelectNoneClick = () => this.setState({
+		members: [],
+	});
 
 	private onSubmitClick = async () => {
 		if (this.state.processing)

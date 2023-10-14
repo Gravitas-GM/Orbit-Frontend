@@ -38,6 +38,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			]);
 		} catch (error) {
 			toaster.showUnhandledErrorMessage();
+
 			history.push('/');
 
 			return;

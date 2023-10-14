@@ -4,9 +4,10 @@ import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/Questio
 import {UserContext} from '../../../../Session';
 import {PageHeader} from '../../../PageHeader';
 import * as toaster from '../../../../Toaster';
-import {Redirect, RouteComponentProps} from 'react-router';
+import {RouteComponentProps} from 'react-router';
 import {TagEditorForm} from './TagEditorForm';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {history} from '../../../../history';
 
 interface IState {
 	loading: boolean;
@@ -60,9 +61,7 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 		} catch (error) {
 			toaster.showUnhandledErrorMessage();
 
-			this.setState({
-				redirect: true,
-			});
+			history.push('/quiz/tags');
 
 			return;
 		}
@@ -73,14 +72,17 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 	}
 
 	public render() {
-		if (this.state.loading) return <FrameLoadingSpinner />;
-		else if (this.state.redirect) return <Redirect to="/quiz/tags" />;
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
 
 		return (
 			<section className="gm-page-wrapper">
 				<PageHeader title={this.props.match.params.tag ? TagEditorPageTitle.EDIT : TagEditorPageTitle.ADD} />
 
-				<TagEditorForm tag={this.state.tag} users={this.state.users} />
+				<TagEditorForm
+					tag={this.state.tag}
+					users={this.state.users}
+				/>
 			</section>
 		);
 	}
