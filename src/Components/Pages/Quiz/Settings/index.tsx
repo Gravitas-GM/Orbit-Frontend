@@ -14,6 +14,7 @@ import * as toaster from '../../../../Toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Classes} from '../../../../classes';
+import {Prompt} from 'react-router';
 
 interface IState {
 	loading: boolean;
@@ -23,6 +24,7 @@ interface IState {
 	frequency: Frequency;
 	questionCount: string;
 	completedRewardSource: PointSourceItem | null;
+	dirty: boolean;
 }
 
 export class QuizSettings extends React.PureComponent<{}, IState> {
@@ -37,6 +39,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		frequency: Frequency.Weekly,
 		questionCount: '',
 		completedRewardSource: null,
+		dirty: false,
 	};
 
 	public async componentDidMount() {
@@ -153,6 +156,8 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 
 					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
 				</form>
+
+				<Prompt when={this.state.dirty} message="You have unsaved changes. Are you sure you want to leave?" />
 			</section>
 		);
 	}
@@ -167,6 +172,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		if (value.length === 0) {
 			this.setState({
 				questionCount: '',
+				dirty: true,
 			});
 
 			return;
@@ -179,16 +185,19 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 
 		this.setState({
 			questionCount: parsed.toString(10),
+			dirty: true,
 		});
 	};
 
 	private onRewardSourceChange = (source: PointSourceItem) => this.setState({
 		completedRewardSource: source,
+		dirty: true,
 	});
 
 	private onFrequencyChange = (frequency: Frequency) => {
 		this.setState({
 			frequency,
+			dirty: true,
 		});
 	};
 
@@ -223,6 +232,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		} finally {
 			this.setState({
 				processing: false,
+				dirty: false,
 			});
 		}
 
