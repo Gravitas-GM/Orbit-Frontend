@@ -49,7 +49,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
-					itemsPerPage={2}
+					itemsPerPage={20}
 				>
 					{items => (
 						<HTMLTable striped={true}>
