@@ -7,6 +7,7 @@ import {MultiSelect} from '../../../Select/MultiSelect';
 import {User} from '../../../../Api/Hub/Models/Users';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as toaster from '../../../../Toaster';
+import {Prompt} from 'react-router';
 
 interface IProps {
 	tag?: QuestionTag;
@@ -19,6 +20,7 @@ interface IState {
 	label: string;
 	autoAssign: boolean;
 	members: User[];
+	dirty: boolean;
 }
 
 export class TagEditorForm extends React.PureComponent<IProps, IState> {
@@ -31,6 +33,7 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 			autoAssign: this.props.tag ? this.props.tag.autoAssign : false,
 			validationFailures: null,
 			processing: false,
+			dirty: false,
 		};
 	}
 
@@ -109,6 +112,8 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 					onClick={this.onSubmitClick}
 					loading={this.state.processing}
 				/>
+
+				<Prompt when={this.state.dirty} message="Are you sure you want to leave? You have unsaved changes." />
 			</div>
 		);
 	}
@@ -116,16 +121,19 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 	private onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) =>
 		this.setState({
 			label: event.currentTarget.value,
+			dirty: true,
 		});
 
 	private onAutoAssignChange = () => {
 		if (this.state.autoAssign) {
 			this.setState({
 				autoAssign: false,
+				dirty: true,
 			});
 		} else {
 			this.setState({
 				autoAssign: true,
+				dirty: true,
 			});
 		}
 	};
@@ -134,24 +142,29 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		if (this.state.members.includes(user)) {
 			this.setState(state => ({
 				members: state.members.filter(item => item !== user),
+				dirty: true,
 			}));
 		} else {
 			this.setState(state => ({
 				members: [...state.members, user],
+				dirty: true,
 			}));
 		}
 	};
 
 	private onMemberRemove = (target: User) => this.setState(state => ({
 		members: state.members.filter(item => item.id !== target.id),
+		dirty: true,
 	}));
 
 	private onSelectAllClick = () => this.setState({
 		members: this.props.users,
+		dirty: true,
 	});
 
 	private onSelectNoneClick = () => this.setState({
 		members: [],
+		dirty: true,
 	});
 
 	private onSubmitClick = async () => {
@@ -163,7 +176,7 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		});
 
 		try {
-			await this.onTagCreate({
+			await this.onSave({
 				label: this.state.label,
 				autoAssign: this.state.autoAssign,
 				members: this.state.autoAssign
@@ -188,10 +201,11 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 
 		this.setState({
 			validationFailures: null,
+			dirty: false,
 		});
 	};
 
-	private onTagCreate = async (tag: QuestionTagCreatePayload) => {
+	private onSave = async (tag: QuestionTagCreatePayload) => {
 		if (this.props.tag) {
 			await QuestionTagModel.update(this.props.tag.id, tag).then(r => r.data);
 
