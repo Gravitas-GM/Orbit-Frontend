@@ -235,20 +235,20 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	}
 
 	private onEditClick = () => this.setState({
-			showEditDialog: true,
-		});
+		showEditDialog: true,
+	});
 
 	private onEditDialogClose = () => this.setState({
-		  	showEditDialog: false,
-		});
+		showEditDialog: false,
+	});
 
 	private onAddPointsClick = () => this.setState({
-			showAddPointsDialog: true,
-		});
+		showAddPointsDialog: true,
+	});
 
 	private onAddPointsDialogClose = () => this.setState({
-			showAddPointsDialog: false,
-		});
+		showAddPointsDialog: false,
+	});
 
 	private onEditDialogSubmit = async (update: UpdatableUserData) => {
 		if (this.state.processing)
@@ -286,10 +286,10 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onBulkDeleteButtonClick = () => this.setState({
-			deleteSubject: 'Delete',
-			showDeleteDialog: true,
-			deleteTargets: this.state.selectedItems,
-		});
+		deleteSubject: 'Delete',
+		showDeleteDialog: true,
+		deleteTargets: this.state.selectedItems,
+	});
 
 	private onBeginDeleteButtonClick = (items: PointItem[]) => {
 		this.setState(({
@@ -300,8 +300,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	};
 
 	private onDeleteCancel = () => this.setState({
-			showDeleteDialog: false,
-		});
+		showDeleteDialog: false,
+	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
