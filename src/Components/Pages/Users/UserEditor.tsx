@@ -145,7 +145,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						icon="edit"
 						loading={this.state.processing}
 						onClick={this.onEditClick}
-						/>
+					/>
 				</div>
 
 				<div style={{display: 'flex', marginBottom: Spacing.Medium}}>
