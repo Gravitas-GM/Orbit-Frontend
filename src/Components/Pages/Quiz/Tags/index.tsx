@@ -102,14 +102,14 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
-			activeTag: tag,
-			showDeleteDialog: true,
-		});
+		activeTag: tag,
+		showDeleteDialog: true,
+	});
 
 	private onDeleteDialogClose = () => this.setState({
-			activeTag: null,
-			showDeleteDialog: false,
-		});
+		activeTag: null,
+		showDeleteDialog: false,
+	});
 
 	private onConfirmDelete = async () => {
 		if (!this.state.activeTag)
