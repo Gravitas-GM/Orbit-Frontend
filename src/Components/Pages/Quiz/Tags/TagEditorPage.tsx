@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import {UserContext} from '../../../../Session';
 import {PageHeader} from '../../../PageHeader';
 import * as toaster from '../../../../Toaster';
 import {RouteComponentProps} from 'react-router';
@@ -32,8 +31,6 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 		tag: undefined,
 		redirect: false,
 	};
-
-	public static contextType = UserContext;
 
 	public async componentDidMount() {
 		const idParam = this.props.match.params.tag;
