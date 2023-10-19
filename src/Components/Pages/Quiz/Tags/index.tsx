@@ -158,7 +158,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 			</td>
 
 			<td>
-				<LinkButton to={`/quiz/tags/${item.id}`}icon="edit" minimal={true} />
+				<LinkButton to={`/quiz/tags/${item.id}`} icon="edit" minimal={true} />
 
 				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
 			</td>

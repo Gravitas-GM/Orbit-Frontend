@@ -1,4 +1,4 @@
-import {AnchorButton, Button, HTMLTable, Intent} from '@blueprintjs/core';
+import {Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Classes} from '../../../classes';
@@ -8,6 +8,7 @@ import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {PageHeader} from '../../PageHeader';
 import {compareStrings, renderUserName} from '../../Utility/string';
+import {LinkButton} from '../../LinkButton';
 
 interface IState {
 	users: User[];
@@ -76,10 +77,10 @@ export class UsersList extends React.PureComponent<{}, IState> {
 								<td>{user.emailAddress}</td>
 								<td>{user.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
 								<td style={{textAlign: 'center'}}>
-									<AnchorButton
+									<LinkButton
 										icon="edit"
 										minimal={true}
-										href={`/users/${user.id}`}
+										to={`/users/${user.id}`}
 									/>
 								</td>
 								<td style={{textAlign: 'center'}}>
