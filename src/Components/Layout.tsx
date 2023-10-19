@@ -20,7 +20,7 @@ import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
-import { QuizResultsPage } from './Pages/Quiz/Results';
+import {QuizResultsPage} from './Pages/Quiz/Results';
 
 interface IProps {
 	loading: boolean;
