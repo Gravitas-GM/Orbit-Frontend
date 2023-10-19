@@ -7,6 +7,7 @@ import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
 import {Button, HTMLTable} from '@blueprintjs/core';
+import { LinkButton } from '../../../LinkButton';
 
 interface IState {
 	activeTag: QuestionTag | null;
@@ -80,7 +81,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<TableItem
 										key={item.id}
 										item={item}
-										onEditClick={() => history.push(`/quiz/tags/${item.id}`)}
 										onDelete={this.onTagDelete}
 									/>
 								))}
@@ -141,11 +141,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 interface TableItemProps {
 	item: QuestionTag;
-	onEditClick: () => void;
 	onDelete: (item: QuestionTag) => void;
 }
 
-const TableItem: React.FC<TableItemProps> = ({item, onEditClick, onDelete}) => {
+const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -159,7 +158,8 @@ const TableItem: React.FC<TableItemProps> = ({item, onEditClick, onDelete}) => {
 			</td>
 
 			<td>
-				<Button icon="edit" onClick={onEditClick} minimal={true} />
+				<LinkButton to={`/quiz/tags/${item.id}`}icon="edit" minimal={true} />
+
 				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
 			</td>
 		</tr>
