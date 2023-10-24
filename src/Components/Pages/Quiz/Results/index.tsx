@@ -5,7 +5,7 @@ import {Icon, Intent} from '@blueprintjs/core';
 import {RouteComponentProps} from 'react-router';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {QuizAnswers} from '../QuizAnswers';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
 import './QuizResultsPage.scss';
 import {formatDate} from '../../../Utility/date';

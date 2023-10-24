@@ -2,7 +2,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import {PageHeader} from '../../../PageHeader';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {RouteComponentProps} from 'react-router';
 import {TagEditorForm} from './TagEditorForm';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
