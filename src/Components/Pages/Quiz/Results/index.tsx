@@ -39,7 +39,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission!.timestamp)}`} />
+				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission!.startTimestamp)}`} />
 
 				<div className="results-header">
 					<span>Score:</span>
