@@ -1,0 +1,41 @@
+@import '../../../../variables';
+
+.quiz-answers-container {
+	h3 {
+		margin: $spacing-large 0 $spacing-medium 0;
+	}
+}
+
+.question-title {
+	margin-bottom: $spacing-large;
+}
+
+.question-results-card {
+	display: flex;
+	align-items: center;
+	gap: $spacing-medium;
+	padding: $spacing-small;
+}
+
+.question-correct {
+	border: solid $spacing-pixel $pt-intent-success;
+}
+
+.question-wrong {
+	border: solid $spacing-pixel $pt-intent-warning;
+}
+
+.question-separator {
+	opacity: 0.1;
+	margin-bottom: $spacing-large;
+}
+
+.quiz-response-container {
+	hr {
+		margin-bottom: $spacing-large;
+
+		&:last-child {
+			display: none;
+		}
+	}
+}

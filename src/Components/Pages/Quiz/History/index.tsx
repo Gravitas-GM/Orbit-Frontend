@@ -1,29 +1,23 @@
 import * as React from 'react';
 import {UserContext} from '../../../../Session';
-import {PageHeader} from '../../../PageHeader';
-import {Button, Classes, Dialog, HTMLTable, Intent, MenuItem} from '@blueprintjs/core';
-import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
+import {Button, HTMLTable, Intent} from '@blueprintjs/core';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
-import {ucwords} from '../../../Utility/string';
 import {Permission} from '../../../../Permission';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
-import './QuizHistory.scss';
-import {Spacing} from '../../../../Styles/variables';
 import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
-import {QuizResponses} from './QuizResponses';
 import * as toaster from '../../../../Toaster';
-import {RenderHistoryItems} from './RenderHistoryItems';
+import {LinkButton} from '../../../LinkButton';
+import {ObjectList} from '../../../ObjectList';
+import './QuizHistory.scss';
+import {formatDate} from '../../../Utility/date';
 
 interface IState {
 	loading: boolean;
 	processing: boolean;
 	users: User[];
-	filteredSubmissions: QuizSubmission[] | null;
-	quizSubmissions: QuizSubmission[];
-	currentSubmission: QuizSubmission | null;
-	showQuizSubmissionDialog: boolean;
+	submissions: QuizSubmission[];
 }
 
 export class QuizHistoryPage extends React.PureComponent<{}, IState> {
@@ -34,10 +28,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		loading: false,
 		processing: false,
 		users: [],
-		filteredSubmissions: null,
-		quizSubmissions: [],
-		currentSubmission: null,
-		showQuizSubmissionDialog: false,
+		submissions: [],
 	};
 
 	public async componentDidMount(): Promise<void> {
@@ -48,7 +39,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		let users: User[] = [];
 
 		try {
-			users = await UserModel.list().then((res) => res.data);
+			users = await UserModel.list().then(res => res.data);
 		} catch (err) {
 			toaster.showUnhandledErrorMessage();
 
@@ -59,25 +50,27 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	}
 
 	private async fetchQuizSubmissions(): Promise<QuizSubmission[] | null> {
-		let quizSubmissions: QuizSubmission[] = [];
+		let submissions: QuizSubmission[] = [];
 
 		try {
-			quizSubmissions = await QuizSubmissionModel.list().then((res) => res.data);
+			submissions = await QuizSubmissionModel.list().then(res => res.data);
 		} catch (e) {
 			toaster.showUnhandledErrorMessage();
 
 			return null;
 		}
 
-		return quizSubmissions;
+		return submissions;
 	}
 
 	private async fetchHistoryData(): Promise<void> {
-		this.setState({loading: true});
+		this.setState({
+			loading: true,
+		});
 
-		const quizSubmissions = await this.fetchQuizSubmissions();
+		const submissions = await this.fetchQuizSubmissions();
 
-		if (!quizSubmissions) {
+		if (!submissions) {
 			this.setState({loading: false});
 
 			return;
@@ -87,17 +80,18 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			const users = await this.fetchUserData();
 
 			if (!users) {
-				this.setState({loading: false});
+				this.setState({
+					loading: false,
+				});
 
 				return;
 			}
 
-			const submissionUsers = quizSubmissions.map((submission) => submission.user.id);
+			const submissionUsers = submissions.map(submission => submission.user.id);
 
-			this.setState((state) => ({
-				users: state.users.filter((user) => submissionUsers.includes(user.id)),
-				quizSubmissions,
-				filteredSubmissions: null,
+			this.setState(state => ({
+				users: users.filter(user => submissionUsers.includes(user.id)),
+				submissions,
 				loading: false,
 			}));
 		} else {
@@ -106,7 +100,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			// or do we need to filter them here as well?
 
 			this.setState({
-				quizSubmissions,
+				submissions,
 				loading: false,
 			});
 		}
@@ -116,15 +110,15 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
-		if (this.state.quizSubmissions.length === 0) {
+		if (this.state.submissions.length === 0) {
 			return (
 				<NonIdealState
 					icon="wind"
-					action={(
+					action={
 						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
-					)}
+					}
 					title="No quiz history data found."
 				/>
 			);
@@ -132,130 +126,56 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title="Quiz - History" />
+				<ObjectList
+					title="Quiz History"
+					editorUrlPrefix="/quiz/history"
+					items={this.state.submissions}
+					onItemFilter={this.onItemFilter}
+				>
+					{items => (
+						<HTMLTable striped={true}>
+							<thead>
+								<tr>
+									{this.context?.permissions.includes(Permission.ADMIN) && (
+										<th style={{width: 220}}>Name</th>
+									)}
 
-				{this.context?.permissions.includes(Permission.ADMIN) ? (
-					<div className="history-filter">
-						<span>Sort by</span>
+									<th>Quiz Date</th>
 
-						<Select<User>
-							items={this.state.users}
-							noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
-							itemRenderer={renderUserOption}
-							onItemSelect={this.onUserSelect}
-						>
-							<Button>
-								{
-									this.state.filteredSubmissions && this.state.filteredSubmissions.length === 1
-										? `${this.state.filteredSubmissions[0].user.name}`
-										: 'All Users'
-								}
-							</Button>
-						</Select>
+									<th style={{width: 120}}>Score</th>
 
-						<Button minimal={true} small={true} onClick={this.clearFilter}>
-							Clear filter
-						</Button>
-					</div>
-				) : (
-					''
-				)}
+									<th style={{width: 120}}>&nbsp;</th>
+								</tr>
+							</thead>
 
-				<HTMLTable striped={true} interactive={true}>
-					<thead>
-					<tr>
-						<th>User</th>
-						<th>Score</th>
-						<th>Submission Date</th>
-						<th>&nbsp;</th>
-					</tr>
-					</thead>
+							{items.map(submission => (
+								<tr key={submission.id}>
+									{this.context?.permissions.includes(Permission.ADMIN) && (
+										<td>{submission.user.name}</td>
+									)}
 
-					<RenderHistoryItems
-						items={
-							this.state.filteredSubmissions ? this.state.filteredSubmissions : this.state.quizSubmissions
-						}
-						handleClick={this.onViewAnswersClick}
-					/>
-				</HTMLTable>
+									<td>{formatDate(submission.timestamp)}</td>
 
-				{this.state.currentSubmission && (
-					<Dialog
-						onClose={this.onClose}
-						isOpen={this.state.showQuizSubmissionDialog}
-						title={`Quiz Submission - ${this.state.currentSubmission.user.name}`}
-					>
-						<div className={Classes.DIALOG_BODY}>
-							<QuizResponses questions={this.state.currentSubmission.questions} />
+									<td>{submission.correctCount}</td>
 
-							<hr style={{margin: `${Spacing.Large} 0`}} />
-
-							<div className="question-details-total">
-								Score:{' '}
-								<span>
-									{this.state.currentSubmission?.correctCount} /
-									{this.state.currentSubmission.questions.length}
-								</span>
-							</div>
-						</div>
-					</Dialog>
-				)}
+									<td>
+										<LinkButton
+											to={`/quiz/history/${submission.id}`}
+											intent={Intent.PRIMARY}
+											small={true}
+										>
+											View
+										</LinkButton>
+									</td>
+								</tr>
+							))}
+						</HTMLTable>
+					)}
+				</ObjectList>
 			</section>
 		);
 	}
 
-	private clearFilter = () => {
-		this.setState({
-			filteredSubmissions: null,
-		});
-	};
-
-	private onUserSelect = (user: User) => {
-		this.setState(state => ({
-			filteredSubmissions: state.quizSubmissions.filter((submission) => submission.user.id === user.id),
-		}));
-	};
-
-	private onClose = () => {
-		this.setState({
-			currentSubmission: null,
-			showQuizSubmissionDialog: false,
-		});
-	};
-
-	private onViewAnswersClick = (index: number) => {
-		this.setState(({
-			filteredSubmissions,
-			quizSubmissions,
-		}) => {
-			if (filteredSubmissions) {
-				return {
-					currentSubmission: filteredSubmissions[index],
-					showQuizSubmissionDialog: true,
-				};
-			} else {
-				return {
-					currentSubmission: quizSubmissions[index],
-					showQuizSubmissionDialog: true,
-				};
-			}
-		});
-	};
+	private onItemFilter = (item: QuizSubmission, searchText: string) =>
+		item.user.name.toLocaleLowerCase().includes(searchText);
 }
-
-const renderUserOption: ItemRenderer<User> = (user, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate)
-		return null;
-
-	return (
-		<MenuItem
-			active={modifiers.active}
-			disabled={modifiers.disabled}
-			key={user.id}
-			onClick={handleClick}
-			onFocus={handleFocus}
-			roleStructure="listoption"
-			text={ucwords(`${user.firstName} ${user.lastName}`)}
-		/>
-	);
-};

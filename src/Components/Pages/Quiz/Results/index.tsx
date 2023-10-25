@@ -1,0 +1,95 @@
+import React from 'react';
+import {PageHeader} from '../../../PageHeader';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {Icon, Intent} from '@blueprintjs/core';
+import {RouteComponentProps} from 'react-router';
+import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {QuizAnswers} from '../QuizAnswers';
+import * as toaster from '../../../../Toaster';
+import {history} from '../../../../history';
+import './QuizResultsPage.scss';
+import {formatDate} from '../../../Utility/date';
+import {LinkButton} from '../../../LinkButton';
+
+interface IProps {
+	submission?: string;
+}
+interface IState {
+	loading: boolean;
+	justFinishedQuiz: boolean;
+	submission: QuizSubmission | null;
+}
+
+export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IProps>, IState> {
+	public state: Readonly<IState> = {
+		loading: true,
+		justFinishedQuiz: true,
+		submission: null,
+	};
+
+	public componentDidMount(): void {
+		if (this.props.match.params.submission) {
+			this.fetchSubmission(this.props.match.params.submission);
+		}
+	}
+
+	public render() {
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
+
+		return (
+			<section className="gm-page-wrapper">
+				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission!.timestamp)}`} />
+
+				<div className="results-header">
+					<span>Score:</span>
+
+					<span>
+						<Icon icon="tick" /> {renderScore(this.state.submission!)}
+					</span>
+				</div>
+
+				<QuizAnswers questions={this.state.submission!.questions} />
+
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+					}}
+				>
+					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
+				</div>
+			</section>
+		);
+	}
+
+	private fetchSubmission = async (submissionId: string) => {
+		let submission: QuizSubmission | null = null;
+
+		try {
+			submission = await QuizSubmissionModel.read(submissionId).then(res => res.data);
+		} catch (error) {
+			toaster.error('Could not find specified quiz');
+
+			this.setState({
+				loading: false,
+			});
+
+			history.push('/');
+		}
+
+		this.setState({
+			loading: false,
+			submission,
+		});
+	};
+}
+
+export const renderScore = (item: QuizSubmission) => {
+	return (
+		<span>
+			{Math.floor((item.correctCount / item.questions.length) * 100)}% ({item.correctCount} /{' '}
+			{item.questions.length})
+		</span>
+	);
+};

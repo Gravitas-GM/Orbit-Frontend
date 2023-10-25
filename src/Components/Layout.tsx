@@ -21,6 +21,7 @@ import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import {TagEditorPage} from './Pages/Quiz/Tags/TagEditorPage';
+import {QuizResultsPage} from './Pages/Quiz/Results';
 
 interface IProps {
 	loading: boolean;
@@ -46,6 +47,8 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
+
+							<Route path="/quiz/results/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,

@@ -1,3 +1,4 @@
+import {H3} from '@blueprintjs/core';
 import * as React from 'react';
 import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {
@@ -9,8 +10,7 @@ import {
 import {BooleanAnswer} from '../QuizAnswers/BooleanAnswer';
 import {FreeTextAnswer} from '../QuizAnswers/FreeTextAnswer';
 import {MultipleChoiceAnswer} from '../QuizAnswers/MultipleChoiceAnswer';
-import './QuizHistory.scss';
-import SimpleBar from 'simplebar-react';
+import './QuizAnswers.scss';
 
 interface IProps {
 	questions: QuestionResponse[];
@@ -28,25 +28,36 @@ function isFreeTextResponse(value: any): value is FreeTextResponse {
 	return typeof value === 'object' && value.kind === QuestionKind.FreeText;
 }
 
-export const QuizResponses: React.FC<IProps> = ({questions}) => {
+export const QuizAnswers: React.FC<IProps> = ({questions}) => {
 	return (
-		<SimpleBar className="questions-container">
-			{questions.map((question) => (
-				<Response question={question} key={question.prompt} />
+		<div className="quiz-answers-container">
+			<H3>Quiz Answers</H3>
+
+			{questions.map((question, index) => (
+				<div className="quiz-response-container" key={question.prompt}>
+					<Response question={question} index={index} />
+
+					<hr />
+				</div>
 			))}
-		</SimpleBar>
+		</div>
 	);
 };
 
-const Response: React.FC<{ question: QuestionResponse }> = ({question}) => {
+interface IResponseProps {
+	question: QuestionResponse;
+	index: number;
+}
+
+const Response: React.FC<IResponseProps> = ({question, index}) => {
 	if (isMultipleChoiceResponse(question))
-		return <MultipleChoiceAnswer question={question} />;
+		return <MultipleChoiceAnswer question={question} index={index} />;
 
 	if (isBooleanResponse(question))
-		return <BooleanAnswer question={question} />;
+		return <BooleanAnswer question={question} index={index} />;
 
 	if (isFreeTextResponse(question))
-		return <FreeTextAnswer question={question} />;
+		return <FreeTextAnswer question={question} index={index} />;
 
 	throw new Error(`Unsupported question kind.`);
 };
