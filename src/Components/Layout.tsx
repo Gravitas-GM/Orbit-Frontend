@@ -13,7 +13,6 @@ import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
-import './Layout.scss'
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {Config} from '../config';
 import {QuizHistoryPage} from './Pages/Quiz/History';
@@ -22,6 +21,8 @@ import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import {TagEditorPage} from './Pages/Quiz/Tags/TagEditorPage';
 import {QuizResultsPage} from './Pages/Quiz/Results';
+import {QuizPage} from './Pages/Quiz/Quiz';
+import './Layout.scss';
 
 interface IProps {
 	loading: boolean;
@@ -37,7 +38,7 @@ export const Layout: React.FC<IProps> = props => (
 			<div className="main-frame">
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
-						<Switch>
+						<Switch key={0}>
 							<Route path="/" component={Home} exact={true} />
 
 							<Route path="/leaderboard" component={Leaderboard} exact={true} />
@@ -46,6 +47,7 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
+							<Route path="/quiz" component={QuizPage} exact={true} />
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
 							<Route path="/quiz/results/:submission(\d+)" component={QuizResultsPage} exact={true} />

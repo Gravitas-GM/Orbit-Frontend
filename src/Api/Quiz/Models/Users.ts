@@ -50,7 +50,7 @@ export class UserModel {
 
 	public static getCurrentUsersSubmissions() {
 		return quizClient.get('/users/me/submissions').then(response => {
-			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+			response.data = response.data.map(QuizSubmissionModel.denormalize);
 
 			return response;
 		});

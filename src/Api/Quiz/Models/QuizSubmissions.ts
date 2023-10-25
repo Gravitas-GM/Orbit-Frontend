@@ -68,7 +68,7 @@ export class QuizSubmissionModel {
 				q: query,
 			},
 		}).then(response => {
-			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+			response.data = response.data.map(QuizSubmissionModel.denormalize);
 
 			return response;
 		});
@@ -80,7 +80,7 @@ export class QuizSubmissionModel {
 				p: projection,
 			},
 		}).then(response => {
-			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
+			response.data = QuizSubmissionModel.denormalize(response.data);
 
 			return response;
 		});
