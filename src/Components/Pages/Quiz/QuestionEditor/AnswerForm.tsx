@@ -10,7 +10,7 @@ import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ucwords} from '../../../Utility/string';
 import './AnswerForm.scss';
 import * as toaster from '../../../../Toaster';
-import {Link} from 'react-router-dom';
+import {Link, Prompt} from 'react-router-dom';
 import {QuestionForm} from './QuestionForm';
 import {Select} from '../../../Select/Select';
 
@@ -140,6 +140,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 					question={this.props.question}
 					processing={this.props.processing}
 				/>
+
+				<Prompt when={this.state.dirty} message="Are you sure you want to leave? You have unsaved changes." />
 			</form>
 		);
 	}

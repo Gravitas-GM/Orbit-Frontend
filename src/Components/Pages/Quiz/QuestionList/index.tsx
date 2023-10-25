@@ -49,7 +49,6 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
-					itemsPerPage={2}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -62,7 +61,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							</thead>
 
 							<tbody>
-								{items.map(item => <TableItem item={item} onDelete={this.onItemDelete} />)}
+								{items.map(item => <TableItem key={item.id} item={item} onDelete={this.onItemDelete} />)}
 							</tbody>
 						</HTMLTable>
 					)}
