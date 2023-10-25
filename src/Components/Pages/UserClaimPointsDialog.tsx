@@ -4,7 +4,7 @@ import * as React from 'react';
 import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../Session';
-import * as toaster from '../../Toaster';
+import {toaster} from '../../toaster';
 import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
 import {MultiSelect} from '../Select/MultiSelect';
 import {allSettled} from '../Utility/promise';

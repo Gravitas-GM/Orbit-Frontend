@@ -19,7 +19,7 @@ import {
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
 import {isGranted, Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {IsGranted} from '../../Security/IsGranted';
 import {replace} from '../../Utility/array';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, HTMLTable} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';

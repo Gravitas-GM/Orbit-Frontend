@@ -7,11 +7,11 @@ import {Permission} from '../../../../Permission';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
-import * as toaster from '../../../../Toaster';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
-import './QuizHistory.scss';
 import {formatDate} from '../../../Utility/date';
+import {toaster} from '../../../../toaster';
+import './QuizHistory.scss';
 
 interface IState {
 	loading: boolean;
@@ -154,7 +154,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 										<td>{submission.user.name}</td>
 									)}
 
-									<td>{formatDate(submission.timestamp)}</td>
+									<td>{formatDate(submission.endTimestamp)}</td>
 
 									<td>{submission.correctCount}</td>
 

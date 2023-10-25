@@ -2,7 +2,7 @@ import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';

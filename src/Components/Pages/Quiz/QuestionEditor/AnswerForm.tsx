@@ -9,8 +9,8 @@ import {ItemRenderer} from '@blueprintjs/select';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ucwords} from '../../../Utility/string';
 import './AnswerForm.scss';
-import * as toaster from '../../../../Toaster';
 import {Link, Prompt} from 'react-router-dom';
+import {toaster} from '../../../../toaster';
 import {QuestionForm} from './QuestionForm';
 import {Select} from '../../../Select/Select';
 
