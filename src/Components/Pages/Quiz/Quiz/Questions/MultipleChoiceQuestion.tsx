@@ -7,12 +7,14 @@ import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 interface Props {
 	name: string,
 	item: MultipleChoiceItem,
+	index: number,
+	setAnswer: (index: number, answer: MultipleChoiceItem['answer']) => void,
 	validationFailures: ValidationFailures | null,
 }
 
-export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
+export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationFailures, index, setAnswer}) => {
 	const onAnswerChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		item.answer = parseInt(event.currentTarget.value, 10);
+		setAnswer(index, parseInt(event.currentTarget.value, 10));
 	}, [item]);
 
 	return (
