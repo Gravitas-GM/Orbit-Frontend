@@ -86,7 +86,7 @@ export class QuizSubmissionModel {
 		});
 	}
 
-	public static denormalizeQuizSubmission(submission: QuizSubmission) {
+	public static denormalize(submission: QuizSubmission) {
 		submission.startTimestamp = parseApiTimestamp(submission.startTimestamp);
 		submission.endTimestamp = parseApiTimestamp(submission.endTimestamp);
 
