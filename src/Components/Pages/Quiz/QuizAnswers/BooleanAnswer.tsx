@@ -38,7 +38,7 @@ const RenderCorrectAnswer: React.FC<IProps> = ({question, index}) => {
 						defaultChecked={question.response === true}
 					/>
 
-					<p>{question.trueLabel}</p>
+					{question.trueLabel}
 				</>
 			</div>
 
@@ -48,7 +48,7 @@ const RenderCorrectAnswer: React.FC<IProps> = ({question, index}) => {
 				<>
 					<Radio style={{marginBottom: 'unset'}} disabled={true} defaultChecked={!question.response} />
 
-					<p>{question.falseLabel}</p>
+					{question.falseLabel}
 				</>
 			</div>
 		</div>
@@ -71,7 +71,7 @@ const RenderWrongAnswer: React.FC<IProps> = ({question, index}) => {
 						defaultChecked={question.response === true}
 					/>
 
-					<p>{question.trueLabel}</p>
+					{question.trueLabel}
 				</>
 			</div>
 
@@ -84,7 +84,7 @@ const RenderWrongAnswer: React.FC<IProps> = ({question, index}) => {
 				<>
 					<Radio style={{marginBottom: 'unset'}} disabled={true} defaultChecked={!question.response} />
 
-					<p>{question.falseLabel}</p>
+					{question.falseLabel}
 				</>
 			</div>
 		</div>
