@@ -56,14 +56,6 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 		setSubmitting(false);
 	}, [items]);
 
-	const setAnswer = React.useCallback((index: number, answer: QuizItem['answer']) => {
-		setItems(items => {
-			const newItems = [...items];
-			newItems[index].answer = answer;
-			return newItems;
-		});
-	}, [items]);
-
 	return (
 		<div>
 			{items.map((item, index) => (
@@ -72,8 +64,6 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 					name={`responses[${index}]`}
 					item={item}
 					validationFailures={validationFailures}
-					index={index}
-					setAnswer={setAnswer}
 				/>
 			))}
 

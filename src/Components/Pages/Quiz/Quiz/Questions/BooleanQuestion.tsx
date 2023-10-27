@@ -7,14 +7,12 @@ import {ValidationFailures} from '../../../../../Api/errors/symfony';
 interface Props {
 	name: string,
 	item: BooleanItem,
-	index: number,
-	setAnswer: (inde: number, answer: BooleanItem['answer']) => void,
 	validationFailures: ValidationFailures | null,
 }
 
-export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures, setAnswer, index}) => {
+export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
 	const onResponseChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		setAnswer(index, !!parseInt(event.currentTarget.value, 10));
+		item.answer = !!parseInt(event.currentTarget.value, 10);
 	}, [item]);
 
 	return (

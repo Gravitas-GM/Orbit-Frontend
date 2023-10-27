@@ -7,17 +7,14 @@ import {ValidationFailures} from '../../../../../Api/errors/symfony';
 interface Props {
 	name: string,
 	item: FreeTextItem,
-	index: number,
-	setAnswer: (index: number, answer: FreeTextItem['answer']) => void,
 	validationFailures: ValidationFailures | null,
 }
 
-export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailures, index, setAnswer}) => {
-	const [answerText, setAnswerText] = React.useState(item.answer);
+export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailures}) => {
+	const [answer, setAnswer] = React.useState(item.answer);
 
 	const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		setAnswerText(event.currentTarget.value);
-		setAnswer(index, event.currentTarget.value);
+		setAnswer(event.currentTarget.value);
 	}, []);
 
 	return (
@@ -30,7 +27,7 @@ export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailure
 		>
 			<InputGroup
 				name={`item-${item.prompt.id}`}
-				value={answerText ?? ''}
+				value={answer ?? ''}
 				onChange={onChange}
 			/>
 		</ValidationAwareFormGroup>
