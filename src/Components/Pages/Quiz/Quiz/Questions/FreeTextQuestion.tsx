@@ -14,6 +14,7 @@ export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailure
 	const [answer, setAnswer] = React.useState(item.answer);
 
 	const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		item.answer = event.currentTarget.value || null;
 		setAnswer(event.currentTarget.value);
 	}, []);
 
