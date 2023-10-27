@@ -51,15 +51,11 @@ export function renderPlayerInitials(player: PlayerState) {
 	return initials;
 }
 
-export function leftPad(input: string|number, length: number, character?: string): string {
+export function leftPad(input: string|number, length: number, character: string = ' '): string {
 	input = input.toString();
 
 	if (input.length >= length)
 		return input;
-
-	// babel was complaining about the newer syntax, so I had to do this in order to run Storybook
-	if (!character)
-		character = '';
 
 	if (character.length === 0)
 		throw new Error('Padding character must not be empty');
