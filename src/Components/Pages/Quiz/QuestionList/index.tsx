@@ -49,6 +49,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
+					onAddNewClick={this.onAddNewClick}
 					itemsPerPage={20}
 				>
 					{items => (
@@ -92,6 +93,8 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 			</>
 		);
 	};
+
+	private onAddNewClick = () => history.push('/quiz/questions/new');
 
 	private onItemFilter = (item: Question, searchText: string) => item.prompt.toLocaleLowerCase().includes(searchText);
 
