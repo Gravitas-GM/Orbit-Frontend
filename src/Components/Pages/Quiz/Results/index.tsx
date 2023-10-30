@@ -14,6 +14,7 @@ import {LinkButton} from '../../../LinkButton';
 interface IProps {
 	submission?: string;
 }
+
 interface IState {
 	loading: boolean;
 	justFinishedQuiz: boolean;
@@ -51,12 +52,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 
 				<QuizAnswers questions={this.state.submission!.questions} />
 
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'center',
-					}}
-				>
+				<div style={{display: 'flex', justifyContent: 'center'}}>
 					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
 				</div>
 			</section>
@@ -67,7 +63,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		let submission: QuizSubmission | null = null;
 
 		try {
-			submission = await QuizSubmissionModel.read(submissionId).then(res => res.data);
+			submission = await QuizSubmissionModel.read(submissionId).then(response => response.data);
 		} catch (error) {
 			toaster.error('Could not find specified quiz');
 

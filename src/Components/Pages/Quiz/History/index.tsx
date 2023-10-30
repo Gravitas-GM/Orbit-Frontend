@@ -39,7 +39,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		let users: User[] = [];
 
 		try {
-			users = await UserModel.list().then(res => res.data);
+			users = await UserModel.list().then(response => response.data);
 		} catch (err) {
 			toaster.showUnhandledErrorMessage();
 
@@ -53,7 +53,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		let submissions: QuizSubmission[] = [];
 
 		try {
-			submissions = await QuizSubmissionModel.list().then(res => res.data);
+			submissions = await QuizSubmissionModel.list().then(response => response.data);
 		} catch (e) {
 			toaster.showUnhandledErrorMessage();
 
@@ -114,11 +114,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return (
 				<NonIdealState
 					icon="wind"
-					action={
+					action={(
 						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
 							Back to the home page
 						</Button>
-					}
+					)}
 					title="No quiz history data found."
 				/>
 			);

@@ -118,11 +118,10 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		);
 	}
 
-	private onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-		this.setState({
-			label: event.currentTarget.value,
-			dirty: true,
-		});
+	private onLabelChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		label: event.currentTarget.value,
+		dirty: true,
+	});
 
 	private onAutoAssignChange = () => {
 		if (this.state.autoAssign) {
