@@ -63,7 +63,11 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							</thead>
 
 							<tbody>
-								{items.map(item => <TableItem key={item.id} item={item} onDelete={this.onItemDelete} />)}
+								{items.map(item => <TableItem
+									key={item.id}
+									item={item}
+									onDelete={this.onItemDelete}
+								/>)}
 							</tbody>
 						</HTMLTable>
 					)}
@@ -75,20 +79,16 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				>
-					<>
-						<p>
-							You are about to delete a question with the following prompt.
-						</p>
+					<p>You are about to delete a question with the following prompt:</p>
 
-						<Blockquote>
-							{this.state.deleteTarget?.prompt}
-						</Blockquote>
+					<Blockquote>
+						{this.state.deleteTarget?.prompt}
+					</Blockquote>
 
-						<p>
-							This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
-							"Confirm".
-						</p>
-					</>
+					<p>
+						This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
+						"Confirm".
+					</p>
 				</DeleteDialog>
 			</>
 		);
