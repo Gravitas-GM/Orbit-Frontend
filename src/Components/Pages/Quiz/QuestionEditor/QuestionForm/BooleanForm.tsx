@@ -68,7 +68,7 @@ export class BooleanForm extends React.PureComponent<Props, State> {
 					</ValidationAwareFormGroup>
 				</ControlGroup>
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()} />
+				<Controls onCancel={this.props.onCancel} onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()} />
 			</div>
 		);
 	}

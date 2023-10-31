@@ -14,6 +14,7 @@ import {FreeTextForm} from './FreeTextForm';
 
 export interface FormProps<TQuestion extends Question, THandler> {
 	onSave: THandler;
+	onCancel: () => void;
 	validationFailures: ValidationFailures | null;
 	question: TQuestion | null;
 	processing: boolean;
@@ -35,6 +36,7 @@ export type BooleanSaveHandler = SaveHandler<BooleanQuestion, 'answer' | 'trueLa
 interface BooleanProps extends BaseProps {
 	kind: QuestionKind.Boolean;
 	onSave: BooleanSaveHandler;
+	onCancel: () => void;
 }
 
 export type FreeTextSaveHandler = SaveHandler<FreeTextQuestion, 'answers'>;
@@ -42,6 +44,7 @@ export type FreeTextSaveHandler = SaveHandler<FreeTextQuestion, 'answers'>;
 interface FreeTextProps extends BaseProps {
 	kind: QuestionKind.FreeText;
 	onSave: FreeTextSaveHandler;
+	onCancel: () => void;
 }
 
 export type MultipleChoiceSaveHandler = SaveHandler<MultipleChoiceQuestion, 'choices' | 'answerIndex'>;
@@ -49,20 +52,21 @@ export type MultipleChoiceSaveHandler = SaveHandler<MultipleChoiceQuestion, 'cho
 interface MultipleChoiceProps extends BaseProps {
 	kind: QuestionKind.MultipleChoice;
 	onSave: MultipleChoiceSaveHandler;
+	onCancel: () => void;
 }
 
 type Props = BooleanProps | FreeTextProps | MultipleChoiceProps;
 
-export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
+export const QuestionForm: React.FC<Props> = ({kind, onSave, onCancel, question, ...formProps}) => {
 	switch (kind) {
 		case QuestionKind.Boolean:
-			return <BooleanForm onSave={onSave} question={question as BooleanQuestion | null} {...formProps} />;
+			return <BooleanForm onCancel={onCancel} onSave={onSave} question={question as BooleanQuestion | null} {...formProps} />;
 
 		case QuestionKind.MultipleChoice:
-			return <MultipleChoiceForm onSave={onSave} question={question as MultipleChoiceQuestion} {...formProps} />;
+			return <MultipleChoiceForm onCancel={onCancel} onSave={onSave} question={question as MultipleChoiceQuestion} {...formProps} />;
 
 		case QuestionKind.FreeText:
-			return <FreeTextForm onSave={onSave} question={question as FreeTextQuestion} {...formProps} />;
+			return <FreeTextForm onCancel={onCancel} onSave={onSave} question={question as FreeTextQuestion} {...formProps} />;
 
 		default:
 			throw new Error(`Unsupported question kind "${kind}"`);

@@ -5,12 +5,13 @@ import {ConfirmDialog} from '../../../../ConfirmDialog';
 
 interface Props {
 	onSaveClick: () => void;
+	onCancel: () => void;
 	loading: boolean;
 	dirty: boolean;
 	children?: React.ReactNode;
 }
 
-export const Controls: React.FC<Props> = ({onSaveClick, loading, children, dirty}) => {
+export const Controls: React.FC<Props> = ({onSaveClick, onCancel, loading, children, dirty}) => {
 	const [redirect, setRedirect] = React.useState(false);
 	const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -22,7 +23,11 @@ export const Controls: React.FC<Props> = ({onSaveClick, loading, children, dirty
 			setRedirect(true);
 	}, [dirty]);
 
-	const onDialogConfirmClick = React.useCallback(() => setRedirect(true), []);
+	const onDialogConfirmClick = React.useCallback(() => {
+		onCancel();
+
+		setRedirect(true);
+	}, []);
 	const onDialogCancelClick = React.useCallback(() => setShowConfirmDialog(false), []);
 
 	if (redirect)

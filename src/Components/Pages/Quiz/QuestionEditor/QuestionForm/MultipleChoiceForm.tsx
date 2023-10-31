@@ -35,6 +35,7 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 
 				{this.state.choices.map((text, index) => (
 					<ChoiceItem
+						key={`choice-${text}`}
 						isRemovable={this.state.choices.length > 1}
 						text={text}
 						index={index}
@@ -46,7 +47,7 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 					/>
 				))}
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()}>
+				<Controls onSaveClick={this.onSaveClick} onCancel={this.props.onCancel} loading={this.props.processing} dirty={this.isDirty()}>
 					<Button icon="plus" text="Add Choice" onClick={this.onAddChoiceClick} />
 				</Controls>
 			</div>

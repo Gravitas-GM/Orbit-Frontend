@@ -35,6 +35,7 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 
 				{this.state.answers.map((text, index) => (
 					<AnswerItem
+						key={`answer-${text}`}
 						text={text}
 						index={index}
 						validationFailures={this.props.validationFailures}
@@ -44,7 +45,7 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 					/>
 				))}
 
-				<Controls onSaveClick={this.onSave} loading={this.props.processing} dirty={this.isDirty()}>
+				<Controls onSaveClick={this.onSave} onCancel={this.props.onCancel} loading={this.props.processing} dirty={this.isDirty()}>
 					<Button icon="plus" text="Add Answer" onClick={this.onAddAnswerClick} />
 				</Controls>
 			</div>

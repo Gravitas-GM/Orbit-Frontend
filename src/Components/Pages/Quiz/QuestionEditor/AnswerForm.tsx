@@ -135,6 +135,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 					dirty={this.state.dirty}
 					kind={this.state.kind}
 					onSave={this.onSave}
+					onCancel={this.onCancel}
 					validationFailures={this.state.validationFailures}
 					question={this.props.question}
 					processing={this.props.processing}
@@ -175,6 +176,8 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 		tag: null,
 		dirty: true,
 	});
+
+	private onCancel = () => this.setState({ dirty: false });
 
 	private onSave = async (data: Partial<QuestionCreate>) => {
 		if (!this.state.kind)
