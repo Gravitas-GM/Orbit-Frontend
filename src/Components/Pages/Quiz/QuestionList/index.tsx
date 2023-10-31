@@ -57,6 +57,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							<thead>
 								<tr>
 									<th>Prompt</th>
+									<th>Kind</th>
 									<th>Tag</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
@@ -143,6 +144,8 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.prompt}</td>
+
+			<td>{item.kind}</td>
 
 			<td>{item.tag?.label ?? '—'}</td>
 
