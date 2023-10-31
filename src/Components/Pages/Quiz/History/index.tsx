@@ -149,25 +149,27 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 								</tr>
 							</thead>
 
-							{items.map(submission => (
-								<tr key={submission.id}>
-									{this.context?.permissions.includes(Permission.ADMIN) && (
-										<td>{submission.user.name}</td>
-									)}
+							<tbody>
+								{items.map(submission => (
+									<tr key={submission.id}>
+										{this.context?.permissions.includes(Permission.ADMIN) && (
+											<td>{submission.user.name}</td>
+										)}
 
-									<td>{formatDate(submission.endTimestamp)}</td>
+										<td>{formatDate(submission.endTimestamp)}</td>
 
-									<td>{renderScore(submission)}</td>
+										<td>{renderScore(submission)}</td>
 
-									<td style={{textAlign: 'center'}}>
-										<LinkButton
-											icon="eye-open"
-											to={`/quiz/history/${submission.id}`}
-											minimal={true}
-										/>
-									</td>
-								</tr>
-							))}
+										<td style={{textAlign: 'center'}}>
+											<LinkButton
+												icon="eye-open"
+												to={`/quiz/history/${submission.id}`}
+												minimal={true}
+											/>
+										</td>
+									</tr>
+								))}
+							</tbody>
 						</HTMLTable>
 					)}
 				</ObjectList>
