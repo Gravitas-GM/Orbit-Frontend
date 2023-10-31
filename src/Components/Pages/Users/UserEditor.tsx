@@ -168,14 +168,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					<H2>Assigned Tags</H2>
 				</div>
 
-				{this.state.assignedTags ?
-					(<TagsTable>
+				{this.state.assignedTags ? (
+					<TagsTable>
 						{this.state.assignedTags.map((tag) => (
 							<TagsTableRow key={tag.id} item={tag} />
 						))}
-					</TagsTable>)
-					:
-					<FrameLoadingSpinner />
+					</TagsTable>
+					) :	<FrameLoadingSpinner />
 				}
 
 				<Divider style={{margin: `${Spacing.XLarge} 0`}} />
@@ -199,8 +198,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				{this.state.pointItems ?
-					(<PointsTable
+				{this.state.pointItems ? (
+					<PointsTable
 						onAddPointsClick={this.onAddPointsClick}
 						onSelectAll={this.onSelectAll}
 						allSelected={this.isAllChecked()}
@@ -214,8 +213,8 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 								onSelect={this.onSelect}
 							/>
 						))}
-					</PointsTable>)
-					: <FrameLoadingSpinner />
+					</PointsTable>
+					) : <FrameLoadingSpinner />
 				}
 
 				<DeleteDialog
