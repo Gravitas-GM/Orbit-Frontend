@@ -9,7 +9,7 @@ import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
-import {formatDateTime, formatRemainingTime} from '../../../Utility/date';
+import {formatDateTime, formatDuration, formatRemainingTime} from '../../../Utility/date';
 import {toaster} from '../../../../toaster';
 import {renderScore} from '../Results';
 import './QuizHistory.scss';
@@ -162,7 +162,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 										<td>{formatDateTime(submission.endTimestamp)}</td>
 
-										<td>{this.renderDuration(submission)}</td>
+										<td>{formatDuration(submission.startTimestamp, submission.endTimestamp)}</td>
 
 										<td>{renderScore(submission)}</td>
 
@@ -185,12 +185,4 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 	private onItemFilter = (item: QuizSubmission, searchText: string) =>
 		item.user.name.toLocaleLowerCase().includes(searchText);
-
-	private renderDuration = (submission: QuizSubmission) => {
-		const diff = submission.endTimestamp.getTime() - submission.startTimestamp.getTime();
-
-		const seconds = Math.max(0, Math.floor(diff / 1000));
-
-		return formatRemainingTime(seconds);
-	};
 }

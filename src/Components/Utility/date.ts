@@ -38,3 +38,11 @@ export function formatRemainingTime(timeAsSeconds: number): string {
 
 	return `${leftPad(hours, 2, '0')}:${leftPad(minutes, 2, '0')}:${leftPad(timeAsSeconds, 2, '0')}`;
 }
+
+export function formatDuration(start: Date, end: Date): string {
+	const diff = end.getTime() - start.getTime();
+
+	const seconds = Math.max(0, Math.floor(diff / 1000));
+
+	return formatRemainingTime(seconds);
+}
