@@ -144,7 +144,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 									<th style={{width: 120}}>Score</th>
 
-									<th style={{width: 120}}>&nbsp;</th>
+									<th style={{width: 100, textAlign: 'center'}}>View</th>
 								</tr>
 							</thead>
 
@@ -158,14 +158,12 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 									<td>{submission.correctCount}</td>
 
-									<td>
+									<td style={{textAlign: 'center'}}>
 										<LinkButton
+											icon="eye-open"
 											to={`/quiz/history/${submission.id}`}
-											intent={Intent.PRIMARY}
-											small={true}
-										>
-											View
-										</LinkButton>
+											minimal={true}
+										/>
 									</td>
 								</tr>
 							))}

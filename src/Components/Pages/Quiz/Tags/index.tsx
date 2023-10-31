@@ -6,7 +6,7 @@ import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
-import {Button, HTMLTable} from '@blueprintjs/core';
+import {Button, HTMLTable, Intent} from '@blueprintjs/core';
 import { LinkButton } from '../../../LinkButton';
 
 interface IState {
@@ -72,7 +72,8 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 								<tr>
 									<th>Label</th>
 									<th style={{width: 250}}>Members</th>
-									<th style={{width: 100}}>Actions</th>
+									<th style={{textAlign: 'center', width: 100}}>Edit</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 								</tr>
 							</thead>
 
@@ -157,10 +158,16 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 				{item.members.length} Member{item.members.length !== 1 ? 's' : ''}
 			</td>
 
-			<td>
+			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/quiz/tags/${item.id}`} icon="edit" minimal={true} />
+			</td>
 
-				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
+			<td style={{textAlign: 'center'}}>
+				<Button
+					icon="delete"
+					intent={Intent.DANGER}
+					onClick={onDeleteButtonClick} minimal={true}
+				/>
 			</td>
 		</tr>
 	);

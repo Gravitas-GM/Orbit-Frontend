@@ -24,7 +24,8 @@ export const TagsTable: React.FC<ITableProps> = (props) => {
 			<thead>
 				<tr>
 					<th>Tag Name</th>
-					<th style={{width: 20}}>&nbsp;</th>
+
+					<th style={{width: 100, textAlign: 'center'}}>Edit</th>
 				</tr>
 			</thead>
 
@@ -42,8 +43,12 @@ export const TagsTableRow: React.FC<IRowProps> = ({item}) => {
 		<tr>
 			<td>{item.label}</td>
 
-			<td>
-				<LinkButton text="Edit" to={`/quiz/tags/${item.id}`} />
+			<td style={{textAlign: 'center'}}>
+				<LinkButton
+					icon="edit"
+					minimal={true}
+					to={`/quiz/tags/${item.id}`}
+				/>
 			</td>
 		</tr>
 	);
