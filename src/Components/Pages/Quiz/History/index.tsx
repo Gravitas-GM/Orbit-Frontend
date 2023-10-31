@@ -11,6 +11,7 @@ import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
 import {formatDate} from '../../../Utility/date';
 import {toaster} from '../../../../toaster';
+import { renderScore } from '../Results';
 import './QuizHistory.scss';
 
 interface IState {
@@ -156,7 +157,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 									<td>{formatDate(submission.endTimestamp)}</td>
 
-									<td>{submission.correctCount}</td>
+									<td>{renderScore(submission)}</td>
 
 									<td style={{textAlign: 'center'}}>
 										<LinkButton
