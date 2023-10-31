@@ -9,7 +9,7 @@ import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
-import {formatDateTime, formatDuration, formatRemainingTime} from '../../../Utility/date';
+import {formatDateTime, formatDuration} from '../../../Utility/date';
 import {toaster} from '../../../../toaster';
 import {renderScore} from '../Results';
 import './QuizHistory.scss';
