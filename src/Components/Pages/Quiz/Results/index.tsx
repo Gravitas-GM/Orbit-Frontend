@@ -2,7 +2,7 @@ import React from 'react';
 import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Icon, Intent} from '@blueprintjs/core';
-import {RouteComponentProps} from 'react-router';
+import {Redirect, RouteComponentProps} from 'react-router';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {QuizAnswers} from '../QuizAnswers';
 import {toaster} from '../../../../toaster';
@@ -36,19 +36,23 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
+		if (!this.state.submission) {
+			return <Redirect to="/quiz/history" />;
+		}
+
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission!.startTimestamp)}`} />
+				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission.startTimestamp)}`} />
 
 				<div className="results-header">
 					<span>Score:</span>
 
 					<span>
-						<Icon icon="tick" /> {renderScore(this.state.submission!)}
+						<Icon icon="tick" /> {renderScore(this.state.submission)}
 					</span>
 				</div>
 
-				<QuizAnswers questions={this.state.submission!.questions} />
+				<QuizAnswers questions={this.state.submission.questions} />
 
 				<div style={{display: 'flex', justifyContent: 'center'}}>
 					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
@@ -68,8 +72,6 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 			this.setState({
 				loading: false,
 			});
-
-			history.push('/');
 		}
 
 		this.setState({
