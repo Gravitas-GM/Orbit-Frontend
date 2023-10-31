@@ -4,7 +4,7 @@ import {history} from '../../../../history';
 import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
 import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
-import {Blockquote, Button, HTMLTable} from '@blueprintjs/core';
+import {Blockquote, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog} from '../../../DeleteDialog';
 
@@ -58,16 +58,19 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 								<tr>
 									<th>Prompt</th>
 									<th>Tag</th>
-									<th style={{width: 100}}>Actions</th>
+									<th style={{textAlign: 'center', width: 100}}>Edit</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 								</tr>
 							</thead>
 
 							<tbody>
-								{items.map(item => <TableItem
-									key={item.id}
-									item={item}
-									onDelete={this.onItemDelete}
-								/>)}
+								{items.map(item => (
+									<TableItem
+										key={item.id}
+										item={item}
+										onDelete={this.onItemDelete}
+									/>
+								))}
 							</tbody>
 						</HTMLTable>
 					)}
@@ -140,10 +143,20 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.prompt}</td>
+
 			<td>{item.tag?.label ?? '—'}</td>
-			<td>
+
+			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/quiz/questions/${item.id}`} icon="edit" minimal={true} />
-				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
+			</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Button
+					icon="delete"
+					intent={Intent.DANGER}
+					onClick={onDeleteButtonClick}
+					minimal={true}
+				/>
 			</td>
 		</tr>
 	);
