@@ -19,8 +19,8 @@ Basic.decorators = [RegularUserContextMockDecorator];
 Basic.args = {
 	match: {
 		isExact: false,
-		path: '/quiz/questions/:question',
-		url: '/quiz/questions',
+		path: '/submissions/:submission',
+		url: '/submissions',
 		params: {
 			submission: '1',
 		},
@@ -30,8 +30,8 @@ Basic.args = {
 WrongId.args = {
 	match: {
 		isExact: false,
-		path: '/quiz/questions/:question',
-		url: '/quiz/questions',
+		path: '/submissions/:submission',
+		url: '/submissions',
 		params: {
 			submission: '43',
 		},
@@ -49,5 +49,18 @@ Basic.parameters = {
 		},
 	],
 } as ComponentMeta<typeof QuizResultsPage>;
+
+WrongId.parameters = {
+	mockData: [
+		{
+			url: `http://quiz.test.api.happyorbit.com/submissions/43`,
+			method: 'GET',
+			status: 404,
+			delay: 1500,
+			response: {}
+		}
+	]
+}
+
 
 export {Basic, WrongId};
