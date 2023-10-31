@@ -1,6 +1,7 @@
 import * as React from 'react';
+import {Spacing} from '../../../../Styles/variables';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
-import {Button, InputGroup, Intent, MenuItem, Switch} from '@blueprintjs/core';
+import {Button, ControlGroup, InputGroup, Intent, MenuItem, Radio, RadioGroup} from '@blueprintjs/core';
 import {ValidationFailures, isValidationFailureError} from '../../../../Api/errors/symfony';
 import {QuestionTag, QuestionTagCreatePayload, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import {MultiSelect} from '../../../Select/MultiSelect';
@@ -57,27 +58,37 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		return (
 			<div>
 				<form>
-					<ValidationAwareFormGroup
-						labelFor="label"
-						label="Tag Name"
-						failures={this.state.validationFailures}
-					>
-						<InputGroup
-							name="label"
-							fill={true}
-							autoFocus={true}
-							value={this.state.label}
-							onChange={this.onLabelChange}
-						/>
-					</ValidationAwareFormGroup>
+					<ControlGroup fill={true}>
+						<ValidationAwareFormGroup
+							labelFor="label"
+							label="Tag Name"
+							failures={this.state.validationFailures}
+							style={{paddingRight: Spacing.Large}}
+						>
+							<InputGroup
+								name="label"
+								fill={true}
+								autoFocus={true}
+								value={this.state.label}
+								onChange={this.onLabelChange}
+							/>
+						</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="autoAssign" failures={this.state.validationFailures}>
-						<div className="settings-switch-container">
-							<span>Automatically assign to all users?</span>
-
-							<Switch checked={this.state.autoAssign} onChange={this.onAutoAssignChange} large={true} />
-						</div>
-					</ValidationAwareFormGroup>
+						<ValidationAwareFormGroup
+							labelFor="autoAssign"
+							label="Automatically assign to all users?"
+							failures={this.state.validationFailures}
+						>
+							<RadioGroup
+								onChange={this.onAutoAssignChange}
+								selectedValue={+this.state.autoAssign}
+								inline={true}
+							>
+								<Radio label="Yes" value={+true} />
+								<Radio label="No" value={+false} />
+							</RadioGroup>
+						</ValidationAwareFormGroup>
+					</ControlGroup>
 
 					{!this.state.autoAssign && (
 						<ValidationAwareFormGroup
@@ -123,19 +134,10 @@ export class TagEditorForm extends React.PureComponent<IProps, IState> {
 		dirty: true,
 	});
 
-	private onAutoAssignChange = () => {
-		if (this.state.autoAssign) {
-			this.setState({
-				autoAssign: false,
-				dirty: true,
-			});
-		} else {
-			this.setState({
-				autoAssign: true,
-				dirty: true,
-			});
-		}
-	};
+	private onAutoAssignChange = (event: React.FormEvent<HTMLInputElement>) => this.setState({
+		autoAssign: !!parseInt(event.currentTarget.value),
+		dirty: true,
+	});
 
 	private onMemberSelectionChange = (user: User) => {
 		if (this.state.members.includes(user)) {
