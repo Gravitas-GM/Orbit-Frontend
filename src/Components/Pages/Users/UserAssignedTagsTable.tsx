@@ -13,8 +13,8 @@ export const TagsTable: React.FC<ITableProps> = (props) => {
 		return (
 			<NonIdealState
 				title="This user doesn't have any tags assigned"
-				description="You can assign tags using the button below"
-				action={<LinkButton text="Assign tag" to="/quiz/tags/new" />}
+				description="You can assign tags here:"
+				action={<LinkButton text="Assign Tags" to="/quiz/tags" />}
 			/>
 		);
 	}
