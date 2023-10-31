@@ -50,7 +50,7 @@ export const Layout: React.FC<IProps> = props => (
 							<Route path="/quiz" component={QuizPage} exact={true} />
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
-							<Route path="/quiz/results/:submission(\d+)" component={QuizResultsPage} exact={true} />
+							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
