@@ -19,6 +19,16 @@ export function formatDate(input: Date) {
 	}).format(input);
 }
 
+export function formatDateTime(input: Date) {
+	return new Intl.DateTimeFormat('default', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+	}).format(input);
+}
+
 export function formatRemainingTime(timeAsSeconds: number): string {
 	const hours = Math.floor(timeAsSeconds / 3600);
 	timeAsSeconds -= hours * 3600;
