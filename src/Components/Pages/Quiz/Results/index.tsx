@@ -17,14 +17,12 @@ interface IProps {
 
 interface IState {
 	loading: boolean;
-	justFinishedQuiz: boolean;
 	submission: QuizSubmission | null;
 }
 
 export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IProps>, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
-		justFinishedQuiz: true,
 		submission: null,
 	};
 
@@ -65,7 +63,7 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		try {
 			submission = await QuizSubmissionModel.read(submissionId).then(response => response.data);
 		} catch (error) {
-			toaster.error('Could not find specified quiz');
+			toaster.error('Could not find specified quiz submission data');
 
 			this.setState({
 				loading: false,
