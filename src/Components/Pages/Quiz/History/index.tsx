@@ -61,8 +61,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return null;
 		}
 
-		console.log(submissions);
-
 		return submissions;
 	}
 
