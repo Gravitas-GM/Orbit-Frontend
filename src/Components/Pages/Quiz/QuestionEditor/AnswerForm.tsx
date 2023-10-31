@@ -42,8 +42,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 
 		this.state = {
 			tag,
-			// TODO Change this back to QuestionKind.MultipleChoice /tyler
-			kind: props.question?.kind ?? QuestionKind.FreeText,
+			kind: props.question?.kind ?? QuestionKind.MultipleChoice,
 			prompt: props.question?.prompt ?? '',
 			validationFailures: null,
 			dirty: false,
