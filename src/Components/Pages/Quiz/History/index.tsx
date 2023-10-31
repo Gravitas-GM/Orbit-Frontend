@@ -141,7 +141,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 										<th style={{width: 220}}>Name</th>
 									)}
 
-									<th>Quiz Date</th>
+									<th>Completed On</th>
 
 									<th style={{width: 120}}>Score</th>
 
