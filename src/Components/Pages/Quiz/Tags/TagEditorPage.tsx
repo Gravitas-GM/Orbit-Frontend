@@ -7,6 +7,7 @@ import {RouteComponentProps} from 'react-router';
 import {TagEditorForm} from './TagEditorForm';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
+import { allSettled } from '../../../Utility/promise';
 
 interface IState {
 	loading: boolean;
@@ -54,7 +55,7 @@ export class TagEditorPage extends React.PureComponent<RouteComponentProps<Route
 		}
 
 		try {
-			await Promise.all(promises);
+			await allSettled(promises);
 		} catch (error) {
 			toaster.showUnhandledErrorMessage();
 
