@@ -2,7 +2,7 @@ import * as React from 'react';
 import {BooleanSaveHandler, FormProps} from './index';
 import {ControlGroup, H3, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
-import {Controls} from './Controls';
+import {FormControls} from '../../../../FormControls';
 import {BooleanQuestion} from '../../../../../Api/Quiz/Models/Questions';
 
 type Props = FormProps<BooleanQuestion, BooleanSaveHandler>;
@@ -68,7 +68,12 @@ export class BooleanForm extends React.PureComponent<Props, State> {
 					</ValidationAwareFormGroup>
 				</ControlGroup>
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()} />
+				<FormControls
+					onSaveClick={this.onSaveClick}
+					loading={this.props.processing}
+					dirty={this.isDirty()}
+					redirectPath="/quiz/questions"
+				/>
 			</div>
 		);
 	}

@@ -5,7 +5,7 @@ import {Button, H3, InputGroup} from '@blueprintjs/core';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {replaceByIndex} from '../../../../Utility/array';
-import {Controls} from './Controls';
+import {FormControls} from '../../../../FormControls';
 
 type Props = FormProps<FreeTextQuestion, FreeTextSaveHandler>;
 
@@ -44,9 +44,14 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 					/>
 				))}
 
-				<Controls onSaveClick={this.onSave} loading={this.props.processing} dirty={this.isDirty()}>
+				<FormControls
+					onSaveClick={this.onSave}
+					loading={this.props.processing}
+					dirty={this.isDirty()}
+					redirectPath="/quiz/questions"
+				>
 					<Button icon="plus" text="Add Answer" onClick={this.onAddAnswerClick} />
-				</Controls>
+				</FormControls>
 			</div>
 		);
 	}
@@ -88,13 +93,13 @@ interface AnswerItemProps {
 }
 
 export const AnswerItem: React.FC<AnswerItemProps> = ({
-	text,
-	index,
-	validationFailures,
-	onDelete,
-	onTextChange,
-	isRemovable,
-}) => {
+														  text,
+														  index,
+														  validationFailures,
+														  onDelete,
+														  onTextChange,
+														  isRemovable,
+													  }) => {
 	const onDeleteClick = React.useCallback(() => onDelete(index), [index]);
 	const onTextInputChange = React.useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => onTextChange(event, index),

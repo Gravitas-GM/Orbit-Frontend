@@ -1,4 +1,4 @@
-import {Button, ControlGroup, InputGroup, Intent, MenuItem, Radio, RadioGroup} from '@blueprintjs/core';
+import {ControlGroup, InputGroup, MenuItem, Radio, RadioGroup} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
@@ -11,6 +11,7 @@ import {Prompt, Redirect, RouteComponentProps} from 'react-router';
 import {MultiSelect} from '../../../Select/MultiSelect';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {FormControls} from '../../../FormControls';
 
 interface IState {
 	loading: boolean;
@@ -113,8 +114,8 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 			<section className="gm-page-wrapper">
 				<PageHeader title={this.props.match.params.tag ? TagEditorPageTitle.EDIT : TagEditorPageTitle.ADD} />
 
-				<>
-					<form>
+				<div>
+					<form className="tag-editor-form">
 						<ControlGroup fill={true}>
 							<ValidationAwareFormGroup
 								labelFor="label"
@@ -170,20 +171,20 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 								noResults={<div>No results</div>}
 							/>
 						</ValidationAwareFormGroup>
-					</form>
 
-					<Button
-						intent={Intent.PRIMARY}
-						text="Submit"
-						onClick={this.onSubmitClick}
-						loading={this.state.processing}
-					/>
+						<FormControls
+							onSaveClick={this.onSaveClick}
+							loading={this.state.loading}
+							dirty={this.state.dirty}
+							redirectPath="/quiz/tags"
+						/>
+					</form>
 
 					<Prompt
 						when={this.state.dirty}
 						message="Are you sure you want to leave? You have unsaved changes."
 					/>
-				</>
+				</div>
 			</section>
 		);
 	}
@@ -227,7 +228,7 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		dirty: true,
 	});
 
-	private onSubmitClick = async () => {
+	private onSaveClick = async () => {
 		if (this.state.processing)
 			return;
 

@@ -1,16 +1,18 @@
 import * as React from 'react';
 import {Redirect} from 'react-router';
 import {Button, Intent} from '@blueprintjs/core';
-import {ConfirmDialog} from '../../../../ConfirmDialog';
+import {ConfirmDialog} from './ConfirmDialog';
+import './FormControls.scss';
 
 interface Props {
 	onSaveClick: () => void;
 	loading: boolean;
 	dirty: boolean;
+	redirectPath: string;
 	children?: React.ReactNode;
 }
 
-export const Controls: React.FC<Props> = ({onSaveClick, loading, children, dirty}) => {
+export const FormControls: React.FC<Props> = ({onSaveClick, loading, children, dirty, redirectPath}) => {
 	const [redirect, setRedirect] = React.useState(false);
 	const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -26,10 +28,10 @@ export const Controls: React.FC<Props> = ({onSaveClick, loading, children, dirty
 	const onDialogCancelClick = React.useCallback(() => setShowConfirmDialog(false), []);
 
 	if (redirect)
-		return <Redirect to="/quiz/questions" />;
+		return <Redirect to={redirectPath} />;
 
 	return (
-		<div className="form-controls">
+		<div id="form-controls">
 			<div className="left-controls">
 				{children}
 			</div>
