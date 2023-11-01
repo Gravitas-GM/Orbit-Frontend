@@ -2,11 +2,25 @@
 
 #quiz-form {
 	.quiz-item {
-		margin-bottom: $pt-grid-size * 4;
+		margin-bottom: $pt-grid-size * 3;
 	}
 
-	.boolean-item > .#{$bp-ns}-radio {
-		gap: $pt-grid-size;
+	.boolean-item {
+		.option {
+			display: flex;
+			align-items: center;
+			margin-top: $pt-grid-size;
+			gap: $pt-grid-size;
+
+			.#{$bp-ns}-radio {
+				margin-bottom: 0;
+				margin-top: 0;
+			}
+		}
+
+		.#{$bp-ns}-radio {
+			gap: $pt-grid-size;
+		}
 	}
 
 	.multiple-choice-item {
@@ -14,13 +28,21 @@
 			display: flex;
 			flex-wrap: wrap;
 
-			> .#{$bp-ns}-radio {
+			> .choice {
+				display: flex;
+				gap: $pt-grid-size;
+
 				flex: 1 0 calc(50% - $pt-grid-size);
 				margin-top: $pt-grid-size;
 				margin-right: $pt-grid-size;
 
 				&:nth-child(even) {
 					margin-right: 0;
+				}
+
+				.#{$bp-ns}-radio {
+					margin-top: 0;
+					margin-bottom: 0;
 				}
 			}
 		}

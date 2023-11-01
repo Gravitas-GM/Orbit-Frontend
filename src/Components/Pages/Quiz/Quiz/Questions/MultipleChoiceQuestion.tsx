@@ -25,13 +25,14 @@ export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationF
 		>
 			<div className="choices">
 				{item.prompt.choices.map((text, index) => (
-					<Radio
-						key={index}
-						name={name}
-						label={text}
-						value={index}
-						onChange={onAnswerChange}
-					/>
+					<div className="choice" key={index}>
+						<Radio
+							name={name}
+							label={text}
+							value={index}
+							onChange={onAnswerChange}
+						/>
+					</div>
 				))}
 			</div>
 		</ValidationAwareFormGroup>
