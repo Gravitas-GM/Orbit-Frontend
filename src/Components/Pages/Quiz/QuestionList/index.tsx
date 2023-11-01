@@ -7,6 +7,7 @@ import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog} from '../../../DeleteDialog';
+import {ucwords} from '../../../Utility/string';
 
 interface IState {
 	questions: Question[];
@@ -57,6 +58,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 							<thead>
 								<tr>
 									<th>Prompt</th>
+									<th>Type</th>
 									<th>Tag</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
@@ -143,7 +145,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.prompt}</td>
-
+			<td>{ucwords(item.kind)}</td>
 			<td>{item.tag?.label ?? '—'}</td>
 
 			<td style={{textAlign: 'center'}}>
