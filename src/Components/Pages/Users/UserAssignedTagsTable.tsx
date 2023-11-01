@@ -1,15 +1,19 @@
 import {HTMLTable} from '@blueprintjs/core';
 import * as React from 'react';
-import {NonIdealState} from '../../NonIdealState';
-import {LinkButton} from '../../LinkButton';
 import {QuestionTag} from '../../../Api/Quiz/Models/QuestionTags';
+import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {LinkButton} from '../../LinkButton';
+import {NonIdealState} from '../../NonIdealState';
 
 interface ITableProps {
+	items: QuestionTag[] | null;
 	children?: React.ReactNode;
 }
 
-export const TagsTable: React.FC<ITableProps> = (props) => {
-	if (React.Children.count(props.children) === 0) {
+export const TagsTable: React.FC<ITableProps> = ({items}) => {
+	if (items === null)
+		return <FrameLoadingSpinner />;
+	else if (items.length === 0) {
 		return (
 			<NonIdealState
 				title="This user doesn't have any tags assigned"
@@ -24,12 +28,12 @@ export const TagsTable: React.FC<ITableProps> = (props) => {
 			<thead>
 				<tr>
 					<th>Tag Name</th>
-
-					<th style={{width: 100, textAlign: 'center'}}>Edit</th>
 				</tr>
 			</thead>
 
-			<tbody>{props.children}</tbody>
+			<tbody>
+				{items.map(item => <TagsTableRow key={item.id} item={item} />)}
+			</tbody>
 		</HTMLTable>
 	);
 };
@@ -42,14 +46,6 @@ export const TagsTableRow: React.FC<IRowProps> = ({item}) => {
 	return (
 		<tr>
 			<td>{item.label}</td>
-
-			<td style={{textAlign: 'center'}}>
-				<LinkButton
-					icon="edit"
-					minimal={true}
-					to={`/quiz/tags/${item.id}`}
-				/>
-			</td>
 		</tr>
 	);
 };
