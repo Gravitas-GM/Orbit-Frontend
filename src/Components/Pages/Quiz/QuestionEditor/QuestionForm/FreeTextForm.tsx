@@ -93,13 +93,13 @@ interface AnswerItemProps {
 }
 
 export const AnswerItem: React.FC<AnswerItemProps> = ({
-														  text,
-														  index,
-														  validationFailures,
-														  onDelete,
-														  onTextChange,
-														  isRemovable,
-													  }) => {
+	text,
+	index,
+	validationFailures,
+	onDelete,
+	onTextChange,
+	isRemovable,
+}) => {
 	const onDeleteClick = React.useCallback(() => onDelete(index), [index]);
 	const onTextInputChange = React.useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => onTextChange(event, index),
