@@ -12,7 +12,7 @@ import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
 import {UserContext} from '../../../../../../Session';
 import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
 import {PreviewRow} from './PreviewRow';
-import * as toaster from '../../../../../../Toaster';
+import {toaster} from '../../../../../../toaster';
 import './UpdatePreviewDialog.scss';
 import {Spacing} from '../../../../../../Styles/variables';
 

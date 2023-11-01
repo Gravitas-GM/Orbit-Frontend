@@ -8,7 +8,7 @@ export default {
 	component: TagListPage,
 } as ComponentMeta<typeof TagListPage>;
 
-const Template: ComponentStory<typeof TagListPage> = (args) => (
+const Template: ComponentStory<typeof TagListPage> = args => (
 	<div className="bp4-dark">
 		<TagListPage {...args} />
 	</div>

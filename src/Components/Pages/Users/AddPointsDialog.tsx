@@ -6,7 +6,7 @@ import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {MultiSelect} from '../../Select/MultiSelect';
 import {ucwords} from '../../Utility/string';
 import {DialogPointItem} from './UserEditor';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {Spacing} from '../../../Styles/variables';
 
 interface IProps {

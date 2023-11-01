@@ -6,7 +6,7 @@ import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
 import {GamesModel} from '../../../Api/Game-State/Models/Games';
 import {Images} from '../../../Images';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {ucwords} from '../../Utility/string';
 import {BoardInfoCard} from './BoardInfoCard';

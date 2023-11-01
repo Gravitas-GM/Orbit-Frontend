@@ -7,7 +7,7 @@ import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../Utility/string';
 import {NonIdealState} from '../../NonIdealState';

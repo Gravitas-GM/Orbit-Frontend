@@ -1,5 +1,5 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
-import {quizClient} from '../../index';
+import {Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
@@ -12,6 +12,7 @@ export interface QuizEndpoints {
 
 	'/quiz/finish': {
 		POST: {
+			query: Projectable;
 			body: QuizFinishPayload;
 			response: QuizSubmission;
 		};
@@ -20,7 +21,8 @@ export interface QuizEndpoints {
 
 export interface Quiz {
 	questions: QuestionPrompt[],
-	endTimestamp: Date,
+	startTimestamp: Date,
+	endTimestamp: Date | null,
 }
 
 interface QuestionPromptBase {
@@ -53,44 +55,50 @@ interface AnswerBase {
 
 export interface FreeTextAnswer extends AnswerBase {
 	kind: QuestionKind.FreeText,
-	response: string,
+	answer: string | null,
 }
 
 export interface BooleanAnswer extends AnswerBase {
 	kind: QuestionKind.Boolean,
-	response: boolean,
+	answer: boolean | null,
 }
 
 export interface MultipleChoiceAnswer extends AnswerBase {
 	kind: QuestionKind.MultipleChoice,
-	response: number,
+	answerIndex: number | null,
 }
 
 export type Answer = FreeTextAnswer | BooleanAnswer | MultipleChoiceAnswer;
 
 export interface QuizFinishPayload {
-	answers: Answer[],
+	responses: Answer[],
 }
 
 export class QuizModel {
-	public static start() {
-		return quizClient.post('/quiz/start').then(response => {
-			response.data = QuizModel.denormalizeQuiz(response.data);
+	public static async start() {
+		const response = await quizClient.post('/quiz/start');
+		response.data = QuizModel.denormalize(response.data);
 
-			return response;
-		});
+		return response;
 	}
 
-	public static finish(payload: QuizFinishPayload) {
-		return quizClient.post('/quiz/finish', payload).then(response => {
-			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
-
-			return response;
+	public static async finish(payload: QuizFinishPayload, projection?: Projection) {
+		const response = await quizClient.post('/quiz/finish', payload, {
+			params: {
+				p: projection,
+			},
 		});
+
+		response.data = QuizSubmissionModel.denormalize(response.data);
+
+		return response;
 	}
 
-	private static denormalizeQuiz(quiz: Quiz) {
-		quiz.endTimestamp = parseApiTimestamp(quiz.endTimestamp);
+	private static denormalize(quiz: Quiz) {
+		quiz.startTimestamp = parseApiTimestamp(quiz.startTimestamp);
+
+		if (quiz.endTimestamp !== null)
+			quiz.endTimestamp = parseApiTimestamp(quiz.endTimestamp);
 
 		return quiz;
 	}

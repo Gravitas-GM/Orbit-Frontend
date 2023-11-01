@@ -1,29 +1,31 @@
-import {Button, H2, H6, Icon} from '@blueprintjs/core';
+import {Button, Divider, H2, H6, Icon} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {ApiError} from '../../../Api/errors/rocket';
+import {ValidationFailures} from '../../../Api/errors/symfony';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel, UserPoints} from '../../../Api/Point-Tracking/Models/Points';
+import {PointItem, PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {QuestionTag, QuestionTagModel} from '../../../Api/Quiz/Models/QuestionTags';
 import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {Spacing} from '../../../Styles/variables';
+import {toaster} from '../../../toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {AddPointsDialog} from './AddPointsDialog';
-import {PointsTable, PointsTableRow} from './UserPointsTable';
 import {renderUserName} from '../../Utility/string';
+import {AddPointsDialog} from './AddPointsDialog';
+import {TagsTable} from './UserAssignedTagsTable';
 import {UpdatableUserData, UserEditDialog} from './UserEditDialog';
-import {isAxiosErrorResponse} from '../../../Api/errors';
-import {Spacing} from '../../../Styles/variables';
-import {ApiError} from '../../../Api/errors/rocket';
+import {PointsTable, PointsTableRow} from './UserPointsTable';
 
 export type DialogPointItem = {
 	pointValue: number;
 	sourceName: string;
 	description?: string;
-}
+};
 
 interface IRouteProps {
 	user: string;
@@ -32,7 +34,7 @@ interface IRouteProps {
 interface IState {
 	user: User | null;
 	loading: boolean;
-	pointItems: PointItem[];
+	pointItems: PointItem[] | null;
 	processing: boolean;
 	redirect: boolean;
 	showAddPointsDialog: boolean;
@@ -42,6 +44,8 @@ interface IState {
 	deleteSubject: string | undefined;
 	deleteTargets: PointItem[];
 	showDeleteDialog: boolean;
+	assignedTags: QuestionTag[] | null;
+	validationFailures: ValidationFailures | null;
 }
 
 export class UserEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
@@ -51,26 +55,27 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	public state: Readonly<IState> = {
 		user: null,
 		loading: true,
-		pointItems: [],
 		processing: false,
 		redirect: false,
 		showAddPointsDialog: false,
 		showEditDialog: false,
-		sources: [],
 		selectedItems: [],
 		deleteSubject: undefined,
 		deleteTargets: [],
 		showDeleteDialog: false,
+		sources: [],
+		pointItems: null,
+		assignedTags: null,
+		validationFailures: null,
 	};
 
 	public async componentDidMount() {
 		const idParam = this.props.match.params.user;
-
 		let user: User;
 
 		try {
-			user = await UserModel.read(idParam).then(response => response.data);
-		} catch (_) {
+			user = await UserModel.read(idParam).then(r => r.data);
+		} catch {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
@@ -80,31 +85,46 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			return;
 		}
 
-		let userPoints: UserPoints | null = null;
-
-		try {
-			userPoints = await PointsModel.getFull(idParam).then(response => response.data);
-		} catch (error) {
-			// The Points API can return a response with a 404 status code if a user does not exist in the Points API.
-			// In those cases, just silently ignore the error.
-			if (error instanceof ApiError && error.isNotFound())
-				toaster.showUnhandledErrorMessage();
-		}
-
-		let sources: PointSourceItem[] = [];
-
-		try {
-			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
-		}
-
 		this.setState({
 			user,
-			pointItems: userPoints?.points ?? [],
-			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
+
+		PointsModel.getFull(idParam)
+			.then(r => this.setState({
+				pointItems: r.data.points,
+			}))
+			.catch(error => {
+				// The Points API can return a response with a 404 status code if a user does not exist in the Points
+				// API. In those cases, just silently ignore the error.
+				if (error instanceof ApiError && !error.isNotFound())
+					toaster.showUnhandledErrorMessage();
+			});
+
+		PointSourceModel.list(this.context!.account.id)
+			.then(r => this.setState({
+				sources: r.data,
+			}))
+			.catch(() => toaster.showUnhandledErrorMessage());
+
+		QuestionTagModel.list({
+				_default: true,
+				'members.id': true,
+			})
+			.then(r => {
+				const tags = r.data;
+				const assignedTags: QuestionTag[] = [];
+
+				for (const tag of tags) {
+					if (tag.members.find(member => member.id === user.id))
+						assignedTags.push(tag);
+				}
+
+				this.setState({
+					assignedTags,
+				});
+			})
+			.catch(() => toaster.showUnhandledErrorMessage());
 	}
 
 	public render() {
@@ -126,7 +146,12 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<div style={{display: 'flex'}}>
+				<div
+					style={{
+						display: 'flex',
+						marginBottom: Spacing.Medium,
+					}}
+				>
 					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
@@ -136,6 +161,14 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 						</H6>
 					)}
 				</div>
+
+				<div className="settings-title-container">
+					<H2>Assigned Tags</H2>
+				</div>
+
+				<TagsTable items={this.state.assignedTags} />
+
+				<Divider style={{margin: `${Spacing.XLarge} 0`}} />
 
 				<div className="settings-title-container">
 					<H2>Points</H2>
@@ -156,21 +189,25 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<PointsTable
-					onAddPointsClick={this.onAddPointsClick}
-					onSelectAll={this.onSelectAll}
-					allSelected={this.isAllChecked()}
-				>
-					{this.state.pointItems.map(item => (
-						<PointsTableRow
-							key={item.id.$oid}
-							item={item}
-							onDelete={this.onBeginDeleteButtonClick}
-							isChecked={this.isChecked(item)}
-							onSelect={this.onSelect}
-						/>
-					))}
-				</PointsTable>
+				{this.state.pointItems ?
+					(
+						<PointsTable
+							onAddPointsClick={this.onAddPointsClick}
+							onSelectAll={this.onSelectAll}
+							allSelected={this.isAllChecked()}
+						>
+							{this.state.pointItems.map(item => (
+								<PointsTableRow
+									key={item.id.$oid}
+									item={item}
+									onDelete={this.onBeginDeleteButtonClick}
+									isChecked={this.isChecked(item)}
+									onSelect={this.onSelect}
+								/>
+							))}
+						</PointsTable>
+					) : <FrameLoadingSpinner />
+				}
 
 				<DeleteDialog
 					isOpen={this.state.showDeleteDialog}
@@ -225,7 +262,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 
 		// Name is a bit of a misnomer; it isn't a "new" user, but the replacement object
-		// after the chnages have been applied by the API.
+		// after the changes have been applied by the API.
 		let newUser: User;
 
 		try {
@@ -258,11 +295,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	});
 
 	private onBeginDeleteButtonClick = (items: PointItem[]) => {
-		this.setState(({
-			deleteSubject: items[0].source,
-			deleteTargets: items,
-			showDeleteDialog: true,
-		}));
+		this.setState((
+			{
+				deleteSubject: items[0].source,
+				deleteTargets: items,
+				showDeleteDialog: true,
+			}
+		));
 	};
 
 	private onDeleteCancel = () => this.setState({
@@ -298,14 +337,16 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
 
-		this.setState(state => ({
-			pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
-			selectedItems: [],
-			deleteTargets: [],
-			deleteSubject: '',
-			showDeleteDialog: false,
-			processing: false,
-		}));
+		this.setState(state => (
+			{
+				pointItems: state.pointItems!.filter(item => !deletedItems.includes(item)),
+				selectedItems: [],
+				deleteTargets: [],
+				deleteSubject: '',
+				showDeleteDialog: false,
+				processing: false,
+			}
+		));
 	};
 
 	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
@@ -338,9 +379,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			newItems.push(result.value);
 		}
 
-		this.setState(state => ({
-			pointItems: [...state.pointItems, ...newItems],
-		}));
+		this.setState(state => (
+			{
+				pointItems: [...state.pointItems!, ...newItems],
+			}
+		));
 
 		if (failureCount === 0) // complete success, no failures
 			toaster.success('Points Added');
@@ -357,16 +400,21 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
 
-	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems.length;
+	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems!.length;
 
 	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
-			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
+			this.setState(state => (
+				{selectedItems: state.selectedItems.filter(target => target !== item)}
+			));
 			return;
 		}
-		this.setState((state) => ({
-			selectedItems: [...state.selectedItems, item],
-		}));
+
+		this.setState((state) => (
+			{
+				selectedItems: [...state.selectedItems, item],
+			}
+		));
 	};
 
 	private onSelectAll = () => {
@@ -376,7 +424,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			});
 		} else {
 			this.setState({
-				selectedItems: [...this.state.pointItems],
+				selectedItems: [...this.state.pointItems!],
 			});
 		}
 	};

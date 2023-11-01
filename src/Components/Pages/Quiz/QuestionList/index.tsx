@@ -2,11 +2,12 @@ import * as React from 'react';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {history} from '../../../../history';
 import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
-import {Blockquote, Button, HTMLTable} from '@blueprintjs/core';
+import {Blockquote, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog} from '../../../DeleteDialog';
+import {ucwords} from '../../../Utility/string';
 
 interface IState {
 	questions: Question[];
@@ -49,20 +50,29 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
-					itemsPerPage={2}
+					onAddNewClick={this.onAddNewClick}
+					itemsPerPage={20}
 				>
 					{items => (
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
 									<th>Prompt</th>
+									<th>Type</th>
 									<th>Tag</th>
-									<th style={{width: 100}}>Actions</th>
+									<th style={{textAlign: 'center', width: 100}}>Edit</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 								</tr>
 							</thead>
 
 							<tbody>
-								{items.map(item => <TableItem item={item} onDelete={this.onItemDelete} />)}
+								{items.map(item => (
+									<TableItem
+										key={item.id}
+										item={item}
+										onDelete={this.onItemDelete}
+									/>
+								))}
 							</tbody>
 						</HTMLTable>
 					)}
@@ -74,24 +84,22 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				>
-					<>
-						<p>
-							You are about to delete a question with the following prompt.
-						</p>
+					<p>You are about to delete a question with the following prompt:</p>
 
-						<Blockquote>
-							{this.state.deleteTarget?.prompt}
-						</Blockquote>
+					<Blockquote>
+						{this.state.deleteTarget?.prompt}
+					</Blockquote>
 
-						<p>
-							This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
-							"Confirm".
-						</p>
-					</>
+					<p>
+						This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
+						"Confirm".
+					</p>
 				</DeleteDialog>
 			</>
 		);
 	};
+
+	private onAddNewClick = () => history.push('/quiz/questions/new');
 
 	private onItemFilter = (item: Question, searchText: string) => item.prompt.toLocaleLowerCase().includes(searchText);
 
@@ -137,10 +145,20 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.prompt}</td>
+			<td>{ucwords(item.kind)}</td>
 			<td>{item.tag?.label ?? '—'}</td>
-			<td>
+
+			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/quiz/questions/${item.id}`} icon="edit" minimal={true} />
-				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
+			</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Button
+					icon="delete"
+					intent={Intent.DANGER}
+					onClick={onDeleteButtonClick}
+					minimal={true}
+				/>
 			</td>
 		</tr>
 	);

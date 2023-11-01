@@ -5,7 +5,7 @@ import {isAuthenticated, login, tokenStorage} from '../../Api';
 import {ApiError} from '../../Api/errors/symfony';
 import {User, UserModel} from '../../Api/Hub/Models/Users';
 import {Spacing} from '../../Styles/variables';
-import * as toaster from '../../Toaster';
+import {toaster} from '../../toaster';
 import {getPreviousPathFromState} from '../Utility/router';
 import './Login.scss';
 import {StartActivationDialog} from './StartActivationDialog';

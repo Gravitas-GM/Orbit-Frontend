@@ -4,7 +4,7 @@ import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
-import * as toaster from '../../Toaster';
+import {toaster} from '../../toaster';
 import './Activate.scss';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 import {Spacing} from '../../Styles/variables';

@@ -24,7 +24,8 @@ export interface QuizSubmission {
 	id: number,
 	account: Pick<Settings, 'id'>,
 	user: User,
-	timestamp: Date,
+	startTimestamp: Date,
+	endTimestamp: Date,
 	questionCount: number,
 	correctCount: number,
 	questions: QuestionResponse[],
@@ -67,7 +68,7 @@ export class QuizSubmissionModel {
 				q: query,
 			},
 		}).then(response => {
-			response.data = response.data.map(QuizSubmissionModel.denormalizeQuizSubmission);
+			response.data = response.data.map(QuizSubmissionModel.denormalize);
 
 			return response;
 		});
@@ -79,14 +80,15 @@ export class QuizSubmissionModel {
 				p: projection,
 			},
 		}).then(response => {
-			response.data = QuizSubmissionModel.denormalizeQuizSubmission(response.data);
+			response.data = QuizSubmissionModel.denormalize(response.data);
 
 			return response;
 		});
 	}
 
-	public static denormalizeQuizSubmission(submission: QuizSubmission) {
-		submission.timestamp = parseApiTimestamp(submission.timestamp);
+	public static denormalize(submission: QuizSubmission) {
+		submission.startTimestamp = parseApiTimestamp(submission.startTimestamp);
+		submission.endTimestamp = parseApiTimestamp(submission.endTimestamp);
 
 		return submission;
 	}

@@ -1,38 +1,29 @@
 import * as React from 'react';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {replace} from '../../../Utility/array';
-import {TagEditorDialog} from './TagEditorDialog';
-import {
-	QuestionTag,
-	QuestionTagCreatePayload,
-	QuestionTagModel,
-	QuestionTagUpdatePayload,
-} from '../../../../Api/Quiz/Models/QuestionTags';
-import * as toaster from '../../../../Toaster';
+import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
+import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
-import {Button, HTMLTable} from '@blueprintjs/core';
-import {LinkButton} from '../../../LinkButton';
+import {Button, HTMLTable, Intent} from '@blueprintjs/core';
+import { LinkButton } from '../../../LinkButton';
 
 interface IState {
-	tags: QuestionTag[];
 	activeTag: QuestionTag | null;
+	tags: QuestionTag[];
 	loading: boolean;
-	showEditDialog: boolean;
-	showDeleteDialog: boolean;
 	users: User[];
+	showDeleteDialog: boolean;
 }
 
 export class TagListPage extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		tags: [],
+		users: [],
 		activeTag: null,
 		showDeleteDialog: false,
-		showEditDialog: false,
-		users: [],
 	};
 
 	public async componentDidMount() {
@@ -48,6 +39,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			]);
 		} catch (error) {
 			toaster.showUnhandledErrorMessage();
+
 			history.push('/');
 
 			return;
@@ -60,7 +52,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			users,
 			loading: false,
 		});
-	};
+	}
 
 	public render() {
 		if (this.state.loading)
@@ -80,26 +72,23 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 								<tr>
 									<th>Label</th>
 									<th style={{width: 250}}>Members</th>
-									<th style={{width: 100}}>Actions</th>
+									<th style={{textAlign: 'center', width: 100}}>Edit</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 								</tr>
 							</thead>
 
 							<tbody>
 								{items.map(item => (
-									<TableItem key={item.id} item={item} onDelete={this.onTagDelete} />
+									<TableItem
+										key={item.id}
+										item={item}
+										onDelete={this.onTagDelete}
+									/>
 								))}
 							</tbody>
 						</HTMLTable>
 					)}
 				</ObjectList>
-
-				<TagEditorDialog
-					isOpen={this.state.showEditDialog}
-					onClose={this.onEditDialogClose}
-					tag={this.state.showEditDialog ? this.state.activeTag : null}
-					users={this.state.users}
-					onSubmit={this.onSubmit}
-				/>
 
 				<DeleteDialog
 					isOpen={this.state.showDeleteDialog}
@@ -109,11 +98,9 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				/>
 			</section>
 		);
-	};
+	}
 
-	private onAddNewClick = () => this.setState({
-		showEditDialog: true,
-	});
+	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
 		activeTag: tag,
@@ -123,11 +110,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	private onDeleteDialogClose = () => this.setState({
 		activeTag: null,
 		showDeleteDialog: false,
-	});
-
-	private onEditDialogClose = () => this.setState({
-		activeTag: null,
-		showEditDialog: false,
 	});
 
 	private onConfirmDelete = async () => {
@@ -148,42 +130,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 		toaster.success(`Tag "${this.state.activeTag.label}" deleted successfully`);
 
-		this.setState(state => (
-			{
-				tags: state.tags.filter(item => item.id !== state.activeTag?.id),
-				activeTag: null,
-				showDeleteDialog: false,
-			}
-		));
-	};
-
-	private onSubmit = async (tag: QuestionTagCreatePayload | QuestionTagUpdatePayload) => {
-		try {
-			if (this.state.activeTag)
-				await this.onTagUpdate(tag as QuestionTagUpdatePayload);
-			else
-				await this.onTagCreate(tag as QuestionTagCreatePayload);
-		} catch (error) {
-			throw error;
-		}
-	};
-
-	private onTagUpdate = async (tag: QuestionTagUpdatePayload) => {
-		const updated = await QuestionTagModel.update(this.state.activeTag!.id, tag).then(r => r.data);
-
 		this.setState(state => ({
-			tags: replace(state.tags, state.activeTag!, updated),
+			tags: state.tags.filter(item => item.id !== state.activeTag?.id),
 			activeTag: null,
-			showEditDialog: false,
-		}));
-	};
-
-	private onTagCreate = async (tag: QuestionTagCreatePayload) => {
-		const newTag = await QuestionTagModel.create(tag).then(r => r.data);
-
-		this.setState(state => ({
-			tags: [...state.tags, newTag],
-			showEditDialog: false,
+			showDeleteDialog: false,
 		}));
 	};
 
@@ -203,10 +153,21 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.label}</td>
-			<td>{item.members.length} Member{item.members.length !== 1 ? 's' : ''}</td>
+
 			<td>
+				{item.members.length} Member{item.members.length !== 1 ? 's' : ''}
+			</td>
+
+			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/quiz/tags/${item.id}`} icon="edit" minimal={true} />
-				<Button icon="trash" onClick={onDeleteButtonClick} minimal={true} />
+			</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Button
+					icon="delete"
+					intent={Intent.DANGER}
+					onClick={onDeleteButtonClick} minimal={true}
+				/>
 			</td>
 		</tr>
 	);

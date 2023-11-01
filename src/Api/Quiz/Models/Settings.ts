@@ -20,6 +20,7 @@ export interface Settings {
 	quizFrequency: Frequency,
 	questionCount: number,
 	completedRewardPointSourceId: string | null,
+	quizDurationSeconds: number,
 }
 
 export enum Frequency {

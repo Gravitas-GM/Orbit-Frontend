@@ -4,7 +4,7 @@ import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {useState, useCallback, useEffect} from 'react';
 import {Game, GameModel} from '../../../../../../Api/Game-Catalog/Models/Games';
 import {GameStartPayload} from '../../../../../../Api/Game-State/Models/Games';
-import * as toaster from '../../../../../../Toaster';
+import {toaster} from '../../../../../../toaster';
 import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
 import {Spacing} from '../../../../../../Styles/variables';
 

@@ -5,7 +5,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import {Question, QuestionCreate, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
 import {AnswerForm} from './AnswerForm';
-import * as toaster from '../../../../Toaster';
+import {toaster} from '../../../../toaster';
 import './QuestionEditor.scss';
 
 interface IState {

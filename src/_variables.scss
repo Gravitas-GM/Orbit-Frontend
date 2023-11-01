@@ -27,3 +27,10 @@ $gm-main-frame-height: calc(100% - #{$gm-nav-header-height});
 
 $gm-sidebar-footer-height: 100px;
 $gm-sidebar-history-height: 300px;
+
+// Missing Blueprint constants
+$pt-progress-bar-height: 8px;
+
+$pt-normal-line-height: $pt-font-size * $pt-line-height;
+$pt-small-line-height: $pt-font-size-small * $pt-line-height;
+$pt-large-line-height: $pt-font-size-large * $pt-line-height;
