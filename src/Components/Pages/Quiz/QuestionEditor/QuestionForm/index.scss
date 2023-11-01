@@ -9,27 +9,5 @@
 				margin-right: 0;
 			}
 		}
-
-		.form-controls {
-			display: flex;
-			// justify-content: end;
-
-			button {
-				margin-right: 10px;
-
-				&:last-of-type {
-					margin-right: 0;
-				}
-			}
-
-			.left-controls {
-				flex: 1;
-			}
-
-			.right-controls {
-				display: flex;
-				justify-content: end;
-			}
-		}
 	}
 }

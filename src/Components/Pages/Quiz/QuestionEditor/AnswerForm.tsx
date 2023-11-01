@@ -140,8 +140,6 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 					question={this.props.question}
 					processing={this.props.processing}
 				/>
-
-				<Prompt when={this.state.dirty} message="Are you sure you want to leave? You have unsaved changes." />
 			</form>
 		);
 	}

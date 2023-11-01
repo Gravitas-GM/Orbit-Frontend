@@ -8,6 +8,7 @@ import {PageNotFound} from './PageNotFound';
 import {GameInfo} from './Pages/Catalog/GameInfo';
 import {GameBoardPage} from './Pages/Game';
 import {Leaderboard} from './Pages/Leaderboard';
+import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
 import {UsersList} from './Pages/Users';
 import {UserEditor} from './Pages/Users/UserEditor';
@@ -19,7 +20,6 @@ import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
-import {TagEditorPage} from './Pages/Quiz/Tags/TagEditorPage';
 import {QuizResultsPage} from './Pages/Quiz/Results';
 import {QuizPage} from './Pages/Quiz/Quiz';
 import './Layout.scss';
@@ -63,8 +63,8 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
 								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
-								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditorPage} exact={true} />,
-								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditorPage} exact={true} />
+								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditor} exact={true} />,
+								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditor} exact={true} />
 
 							]}
 

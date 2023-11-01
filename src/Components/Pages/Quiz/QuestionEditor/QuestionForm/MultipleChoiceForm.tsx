@@ -5,7 +5,7 @@ import {Button, ControlGroup, FormGroup, H3, InputGroup, Radio} from '@blueprint
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {replaceByIndex} from '../../../../Utility/array';
-import {Controls} from './Controls';
+import {FormControls} from '../../../../FormControls';
 
 type Props = FormProps<MultipleChoiceQuestion, MultipleChoiceSaveHandler>;
 
@@ -46,9 +46,14 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 					/>
 				))}
 
-				<Controls onSaveClick={this.onSaveClick} loading={this.props.processing} dirty={this.isDirty()}>
+				<FormControls
+					onSaveClick={this.onSaveClick}
+					loading={this.props.processing}
+					dirty={this.isDirty()}
+					redirectPath="/quiz/questions"
+				>
 					<Button icon="plus" text="Add Choice" onClick={this.onAddChoiceClick} />
-				</Controls>
+				</FormControls>
 			</div>
 		);
 	}
