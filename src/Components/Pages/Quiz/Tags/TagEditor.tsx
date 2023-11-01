@@ -237,7 +237,7 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		});
 
 		try {
-			await this.onSave({
+			await this.saveTag({
 				label: this.state.label,
 				autoAssign: this.state.autoAssign,
 				members: this.state.members.map(item => item.id),
@@ -249,7 +249,8 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 				this.setState({
 					validationFailures: error.context.failures,
 				});
-			} else toaster.showUnhandledErrorMessage();
+			} else
+				toaster.showUnhandledErrorMessage();
 
 			return;
 		} finally {
@@ -263,18 +264,18 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		});
 	};
 
-	private onSave = async (tag: QuestionTagCreatePayload) => {
+	private saveTag = async (tag: QuestionTagCreatePayload) => {
 		if (this.props.match.params.tag) {
-			await QuestionTagModel.update(this.props.match.params.tag, tag).then(r => r.data);
+			await QuestionTagModel.update(this.props.match.params.tag, tag);
 
 			toaster.success(`Tag "${this.state.label}" updated successfully`);
 
 			return;
 		}
 
-		const newTag = await QuestionTagModel.create(tag).then(r => r.data);
+		await QuestionTagModel.create(tag);
 
-		toaster.success(`Tag "${newTag.label}" created successfully`);
+		toaster.success(`Tag "${this.state.label}" created successfully`);
 	};
 
 	private userRenderer: ItemRenderer<User> = (user, state) => {
