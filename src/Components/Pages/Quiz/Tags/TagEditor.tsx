@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {ControlGroup, InputGroup, MenuItem, Radio, RadioGroup} from '@blueprintjs/core';
+import {ControlGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2'
 import {ItemRenderer} from '@blueprintjs/select';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
@@ -48,7 +49,7 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 	};
 
 	public async componentDidMount() {
-		let users: User[] = [];
+		let users: User[];
 
 		try {
 			users = await UserModel.list().then(response => response.data);
@@ -92,7 +93,8 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		for (const member of tag.members) {
 			const found = users.find(user => user.id === member.id);
 
-			if (found) members.push(found);
+			if (found)
+				members.push(found);
 		}
 
 		this.setState({
@@ -260,15 +262,11 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 	private saveTag = async (tag: QuestionTagCreatePayload) => {
 		if (this.props.match.params.tag) {
 			await QuestionTagModel.update(this.props.match.params.tag, tag);
-
 			toaster.success(`Tag "${this.state.label}" updated successfully`);
-
-			return;
+		} else {
+			await QuestionTagModel.create(tag);
+			toaster.success(`Tag "${this.state.label}" created successfully`);
 		}
-
-		await QuestionTagModel.create(tag);
-
-		toaster.success(`Tag "${this.state.label}" created successfully`);
 	};
 
 	private userRenderer: ItemRenderer<User> = (user, state) => {
