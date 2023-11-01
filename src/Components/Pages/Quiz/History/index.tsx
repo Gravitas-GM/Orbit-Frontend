@@ -9,9 +9,9 @@ import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
-import {formatDate} from '../../../Utility/date';
+import {formatDateTime, formatDuration} from '../../../Utility/date';
 import {toaster} from '../../../../toaster';
-import { renderScore } from '../Results';
+import {renderScore} from '../Results';
 import './QuizHistory.scss';
 
 interface IState {
@@ -143,31 +143,37 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 									<th>Completed On</th>
 
-									<th style={{width: 120}}>Score</th>
+									<th>Duration</th>
+
+									<th>Score</th>
 
 									<th style={{width: 100, textAlign: 'center'}}>View</th>
 								</tr>
 							</thead>
 
-							{items.map(submission => (
-								<tr key={submission.id}>
-									{this.context?.permissions.includes(Permission.ADMIN) && (
-										<td>{submission.user.name}</td>
-									)}
+							<tbody>
+								{items.map(submission => (
+									<tr key={submission.id}>
+										{this.context?.permissions.includes(Permission.ADMIN) && (
+											<td>{submission.user.name}</td>
+										)}
 
-									<td>{formatDate(submission.endTimestamp)}</td>
+										<td>{formatDateTime(submission.endTimestamp)}</td>
 
-									<td>{renderScore(submission)}</td>
+										<td>{formatDuration(submission.startTimestamp, submission.endTimestamp)}</td>
 
-									<td style={{textAlign: 'center'}}>
-										<LinkButton
-											icon="eye-open"
-											to={`/quiz/history/${submission.id}`}
-											minimal={true}
-										/>
-									</td>
-								</tr>
-							))}
+										<td>{renderScore(submission)}</td>
+
+										<td style={{textAlign: 'center'}}>
+											<LinkButton
+												icon="eye-open"
+												to={`/quiz/history/${submission.id}`}
+												minimal={true}
+											/>
+										</td>
+									</tr>
+								))}
+							</tbody>
 						</HTMLTable>
 					)}
 				</ObjectList>
