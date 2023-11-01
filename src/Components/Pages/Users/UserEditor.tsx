@@ -1,6 +1,7 @@
-import * as React from 'react';
 import {Button, Divider, H2, H6, Icon} from '@blueprintjs/core';
+import * as React from 'react';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {ApiError} from '../../../Api/errors/rocket';
 import {ValidationFailures} from '../../../Api/errors/symfony';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel} from '../../../Api/Point-Tracking/Models/Points';
@@ -9,17 +10,16 @@ import {QuestionTag, QuestionTagModel} from '../../../Api/Quiz/Models/QuestionTa
 import {Classes} from '../../../classes';
 import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
+import {Spacing} from '../../../Styles/variables';
 import {toaster} from '../../../toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {AddPointsDialog} from './AddPointsDialog';
-import {PointsTable, PointsTableRow} from './UserPointsTable';
 import {renderUserName} from '../../Utility/string';
+import {AddPointsDialog} from './AddPointsDialog';
+import {TagsTable} from './UserAssignedTagsTable';
 import {UpdatableUserData, UserEditDialog} from './UserEditDialog';
-import {Spacing} from '../../../Styles/variables';
-import {ApiError} from '../../../Api/errors/rocket';
-import {TagsTable, TagsTableRow} from './UserAssignedTagsTable';
+import {PointsTable, PointsTableRow} from './UserPointsTable';
 
 export type DialogPointItem = {
 	pointValue: number;
@@ -71,12 +71,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	public async componentDidMount() {
 		const idParam = this.props.match.params.user;
-
 		let user: User;
 
 		try {
-			user = await UserModel.read(idParam).then(response => response.data);
-		} catch (_) {
+			user = await UserModel.read(idParam).then(r => r.data);
+		} catch {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
@@ -92,32 +91,28 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		});
 
 		PointsModel.getFull(idParam)
-			.then(response => {
-				this.setState({
-					pointItems: response.data.points,
-				})
-			})
+			.then(r => this.setState({
+				pointItems: r.data.points,
+			}))
 			.catch(error => {
-				// The Points API can return a response with a 404 status code if a user does not exist in the Points API.
-				// In those cases, just silently ignore the error.
-				if (error instanceof ApiError && error.isNotFound())
+				// The Points API can return a response with a 404 status code if a user does not exist in the Points
+				// API. In those cases, just silently ignore the error.
+				if (error instanceof ApiError && !error.isNotFound())
 					toaster.showUnhandledErrorMessage();
 			});
 
 		PointSourceModel.list(this.context!.account.id)
-			.then(response => {
-				this.setState({
-					sources: response.data,
-				});
+			.then(r => this.setState({
+				sources: r.data,
+			}))
+			.catch(() => toaster.showUnhandledErrorMessage());
+
+		QuestionTagModel.list({
+				_default: true,
+				'members.id': true,
 			})
-			.catch (_ => {
-				toaster.showUnhandledErrorMessage();
-			});
-
-		QuestionTagModel.list({_default: true, 'members.id': true})
-			.then(response => {
-				const tags = response.data;
-
+			.then(r => {
+				const tags = r.data;
 				const assignedTags: QuestionTag[] = [];
 
 				for (const tag of tags) {
@@ -129,9 +124,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					assignedTags,
 				});
 			})
-			.catch(() => {
-				toaster.showUnhandledErrorMessage();
-			});
+			.catch(() => toaster.showUnhandledErrorMessage());
 	}
 
 	public render() {
@@ -153,7 +146,12 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				<div style={{display: 'flex', marginBottom: Spacing.Medium}}>
+				<div
+					style={{
+						display: 'flex',
+						marginBottom: Spacing.Medium,
+					}}
+				>
 					<H6 style={{flex: 1}}>{this.state.user!.emailAddress}</H6>
 
 					{this.state.user!.permissions.includes(Permission.ADMIN) && (
@@ -168,14 +166,7 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					<H2>Assigned Tags</H2>
 				</div>
 
-				{this.state.assignedTags ? (
-					<TagsTable>
-						{this.state.assignedTags.map((tag) => (
-							<TagsTableRow key={tag.id} item={tag} />
-						))}
-					</TagsTable>
-					) :	<FrameLoadingSpinner />
-				}
+				<TagsTable items={this.state.assignedTags} />
 
 				<Divider style={{margin: `${Spacing.XLarge} 0`}} />
 
@@ -198,22 +189,23 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 					/>
 				</div>
 
-				{this.state.pointItems ? (
-					<PointsTable
-						onAddPointsClick={this.onAddPointsClick}
-						onSelectAll={this.onSelectAll}
-						allSelected={this.isAllChecked()}
-					>
-						{this.state.pointItems.map(item => (
-							<PointsTableRow
-								key={item.id.$oid}
-								item={item}
-								onDelete={this.onBeginDeleteButtonClick}
-								isChecked={this.isChecked(item)}
-								onSelect={this.onSelect}
-							/>
-						))}
-					</PointsTable>
+				{this.state.pointItems ?
+					(
+						<PointsTable
+							onAddPointsClick={this.onAddPointsClick}
+							onSelectAll={this.onSelectAll}
+							allSelected={this.isAllChecked()}
+						>
+							{this.state.pointItems.map(item => (
+								<PointsTableRow
+									key={item.id.$oid}
+									item={item}
+									onDelete={this.onBeginDeleteButtonClick}
+									isChecked={this.isChecked(item)}
+									onSelect={this.onSelect}
+								/>
+							))}
+						</PointsTable>
 					) : <FrameLoadingSpinner />
 				}
 
@@ -303,11 +295,13 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 	});
 
 	private onBeginDeleteButtonClick = (items: PointItem[]) => {
-		this.setState(({
-			deleteSubject: items[0].source,
-			deleteTargets: items,
-			showDeleteDialog: true,
-		}));
+		this.setState((
+			{
+				deleteSubject: items[0].source,
+				deleteTargets: items,
+				showDeleteDialog: true,
+			}
+		));
 	};
 
 	private onDeleteCancel = () => this.setState({
@@ -343,14 +337,16 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
 
-		this.setState(state => ({
-			pointItems: state.pointItems!.filter(item => !deletedItems.includes(item)),
-			selectedItems: [],
-			deleteTargets: [],
-			deleteSubject: '',
-			showDeleteDialog: false,
-			processing: false,
-		}));
+		this.setState(state => (
+			{
+				pointItems: state.pointItems!.filter(item => !deletedItems.includes(item)),
+				selectedItems: [],
+				deleteTargets: [],
+				deleteSubject: '',
+				showDeleteDialog: false,
+				processing: false,
+			}
+		));
 	};
 
 	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
@@ -383,9 +379,11 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 			newItems.push(result.value);
 		}
 
-		this.setState(state => ({
-			pointItems: [...state.pointItems!, ...newItems],
-		}));
+		this.setState(state => (
+			{
+				pointItems: [...state.pointItems!, ...newItems],
+			}
+		));
 
 		if (failureCount === 0) // complete success, no failures
 			toaster.success('Points Added');
@@ -406,12 +404,17 @@ export class UserEditor extends React.PureComponent<RouteComponentProps<IRoutePr
 
 	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
-			this.setState(state => ({selectedItems: state.selectedItems.filter(target => target !== item)}));
+			this.setState(state => (
+				{selectedItems: state.selectedItems.filter(target => target !== item)}
+			));
 			return;
 		}
-		this.setState((state) => ({
-			selectedItems: [...state.selectedItems, item],
-		}));
+
+		this.setState((state) => (
+			{
+				selectedItems: [...state.selectedItems, item],
+			}
+		));
 	};
 
 	private onSelectAll = () => {
