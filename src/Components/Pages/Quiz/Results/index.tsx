@@ -1,18 +1,17 @@
 import React from 'react';
 import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {Icon, Intent} from '@blueprintjs/core';
+import {Intent} from '@blueprintjs/core';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
-import {QuizAnswers} from '../QuizAnswers';
 import {toaster} from '../../../../toaster';
-import {history} from '../../../../history';
 import './QuizResultsPage.scss';
-import {formatDate} from '../../../Utility/date';
+import {formatDate, formatRemainingTime} from '../../../Utility/date';
 import {LinkButton} from '../../../LinkButton';
+import {Answers} from './Answers';
 
 interface IProps {
-	submission?: string;
+	submission: string;
 }
 
 interface IState {
@@ -26,66 +25,56 @@ export class QuizResultsPage extends React.PureComponent<RouteComponentProps<IPr
 		submission: null,
 	};
 
-	public componentDidMount(): void {
-		if (this.props.match.params.submission) {
-			this.fetchSubmission(this.props.match.params.submission);
+	public async componentDidMount() {
+		try {
+			this.setState({
+				submission: await QuizSubmissionModel.read(this.props.match.params.submission)
+					.then(r => r.data),
+			});
+		} catch {
+			toaster.showUnhandledErrorMessage();
+		} finally {
+			// Failure state is detected by setting `state.loading` to `false` while leaving `state.submission` set to
+			// `null`.
+			this.setState({
+				loading: false,
+			});
 		}
 	}
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-
-		if (!this.state.submission) {
+		else if (this.state.submission === null)
 			return <Redirect to="/quiz/history" />;
-		}
+
+		const submission = this.state.submission;
+		const duration = Math.floor((submission.endTimestamp.getTime() - submission.startTimestamp.getTime()) / 1000);
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={`Quiz Results - ${formatDate(this.state.submission.startTimestamp)}`} />
+				<PageHeader title={`Quiz Results - ${formatDate(submission.endTimestamp)}`} />
 
 				<div className="results-header">
-					<span>Score:</span>
-
-					<span>
-						<Icon icon="tick" /> {renderScore(this.state.submission)}
-					</span>
+					<strong>Score:</strong> {renderScore(submission)}
 				</div>
 
-				<QuizAnswers questions={this.state.submission.questions} />
+				<div className="results-header">
+					<strong>Duration:</strong> {formatRemainingTime(duration)}
+				</div>
 
-				<div style={{display: 'flex', justifyContent: 'center'}}>
-					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="View Submission History" />
+				<Answers items={submission.questions} />
+
+				<div style={{display: 'flex', justifyContent: 'right'}}>
+					<LinkButton to="/quiz/history" intent={Intent.PRIMARY} text="Done" />
 				</div>
 			</section>
 		);
 	}
-
-	private fetchSubmission = async (submissionId: string) => {
-		let submission: QuizSubmission | null = null;
-
-		try {
-			submission = await QuizSubmissionModel.read(submissionId).then(response => response.data);
-		} catch (error) {
-			toaster.error('Could not find specified quiz submission data');
-
-			this.setState({
-				loading: false,
-			});
-		}
-
-		this.setState({
-			loading: false,
-			submission,
-		});
-	};
 }
 
-export const renderScore = (item: QuizSubmission) => {
-	return (
-		<span>
-			{Math.floor((item.correctCount / item.questions.length) * 100)}% 
-			({item.correctCount} / {item.questions.length})
-		</span>
-	);
-};
+export const renderScore = (item: QuizSubmission) => (
+	<span>
+		{Math.floor(item.correctCount / item.questionCount * 100)}% ({item.correctCount} / {item.questionCount})
+	</span>
+);
