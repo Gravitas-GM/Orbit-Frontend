@@ -41,8 +41,7 @@ export function formatRemainingTime(timeAsSeconds: number): string {
 
 export function formatDuration(start: Date, end: Date): string {
 	const diff = end.getTime() - start.getTime();
-
-	const seconds = Math.max(0, Math.floor(diff / 1000));
+	const seconds = Math.abs(Math.floor(diff / 1000));
 
 	return formatRemainingTime(seconds);
 }
