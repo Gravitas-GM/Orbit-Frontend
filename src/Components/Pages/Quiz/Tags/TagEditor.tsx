@@ -280,16 +280,18 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		if (!state.modifiers.matchesPredicate)
 			return null;
 
+		const selected = this.state.members.includes(user);
+
 		return (
 			<MenuItem
 				roleStructure="listoption"
-				selected={this.state.members.includes(user)}
 				key={user.id}
 				active={state.modifiers.active}
 				disabled={state.modifiers.disabled}
 				text={`${user.firstName} ${user.lastName}`}
 				onClick={state.handleClick}
 				onFocus={state.handleFocus}
+				icon={selected ? 'small-tick' : 'blank'}
 			/>
 		);
 	};
