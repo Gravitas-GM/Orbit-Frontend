@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Redirect} from 'react-router';
+import {Prompt, Redirect} from 'react-router';
 import {Button, Intent} from '@blueprintjs/core';
 import {ConfirmDialog} from './ConfirmDialog';
 import './FormControls.scss';
@@ -12,7 +12,13 @@ interface Props {
 	children?: React.ReactNode;
 }
 
-export const FormControls: React.FC<Props> = ({onSaveClick, loading, children, dirty, redirectPath}) => {
+export const FormControls: React.FC<Props> = ({
+	onSaveClick,
+	loading,
+	children,
+	dirty,
+	redirectPath,
+}) => {
 	const [redirect, setRedirect] = React.useState(false);
 	const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -44,6 +50,11 @@ export const FormControls: React.FC<Props> = ({onSaveClick, loading, children, d
 			<ConfirmDialog onConfirm={onDialogConfirmClick} onCancel={onDialogCancelClick} isOpen={showConfirmDialog}>
 				Are you sure you want to discard your changes?
 			</ConfirmDialog>
+
+			<Prompt
+				when={dirty && !redirect}
+				message="Are you sure you want to leave? You have unsaved changes."
+			/>
 		</div>
 	);
 };

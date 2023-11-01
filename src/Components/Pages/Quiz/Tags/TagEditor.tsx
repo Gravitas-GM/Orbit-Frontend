@@ -178,11 +178,6 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 						redirectPath="/quiz/tags"
 					/>
 				</form>
-
-				<Prompt
-					when={this.state.dirty}
-					message="Are you sure you want to leave? You have unsaved changes."
-				/>
 			</section>
 		);
 	}
