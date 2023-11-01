@@ -1,6 +1,6 @@
+import * as React from 'react';
 import {ControlGroup, InputGroup, MenuItem, Radio, RadioGroup} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
-import * as React from 'react';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {QuestionTag, QuestionTagCreatePayload, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
@@ -114,77 +114,75 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 			<section className="gm-page-wrapper">
 				<PageHeader title={this.props.match.params.tag ? TagEditorPageTitle.EDIT : TagEditorPageTitle.ADD} />
 
-				<div>
-					<form className="tag-editor-form">
-						<ControlGroup fill={true}>
-							<ValidationAwareFormGroup
-								labelFor="label"
-								label="Tag Name"
-								failures={this.state.validationFailures}
-								style={{paddingRight: Spacing.Large}}
-							>
-								<InputGroup
-									name="label"
-									fill={true}
-									autoFocus={true}
-									value={this.state.label}
-									onChange={this.onLabelChange}
-								/>
-							</ValidationAwareFormGroup>
-
-							<ValidationAwareFormGroup
-								labelFor="autoAssign"
-								label="Automatically assign to new users?"
-								failures={this.state.validationFailures}
-							>
-								<RadioGroup
-									onChange={this.onAutoAssignChange}
-									selectedValue={+this.state.autoAssign}
-									inline={true}
-								>
-									<Radio label="Yes" value={+true} />
-									<Radio label="No" value={+false} />
-								</RadioGroup>
-							</ValidationAwareFormGroup>
-						</ControlGroup>
-
+				<form>
+					<ControlGroup fill={true}>
 						<ValidationAwareFormGroup
-							labelFor="members"
-							label="Select Users"
+							labelFor="label"
+							label="Tag Name"
 							failures={this.state.validationFailures}
+							style={{paddingRight: Spacing.Large}}
 						>
-							<MultiSelect
-								tagInputProps={{
-									inputProps: {
-										name: 'members',
-									},
-								}}
+							<InputGroup
+								name="label"
 								fill={true}
-								items={this.state.users}
-								selectedItems={this.state.members}
-								onItemSelect={this.onMemberSelectionChange}
-								onRemove={this.onMemberRemove}
-								onSelectAll={this.onSelectAllClick}
-								onSelectNone={this.onSelectNoneClick}
-								itemRenderer={this.userRenderer}
-								tagRenderer={tagRenderer}
-								noResults={<div>No results</div>}
+								autoFocus={true}
+								value={this.state.label}
+								onChange={this.onLabelChange}
 							/>
 						</ValidationAwareFormGroup>
 
-						<FormControls
-							onSaveClick={this.onSaveClick}
-							loading={this.state.loading}
-							dirty={this.state.dirty}
-							redirectPath="/quiz/tags"
-						/>
-					</form>
+						<ValidationAwareFormGroup
+							labelFor="autoAssign"
+							label="Automatically assign to new users?"
+							failures={this.state.validationFailures}
+						>
+							<RadioGroup
+								onChange={this.onAutoAssignChange}
+								selectedValue={+this.state.autoAssign}
+								inline={true}
+							>
+								<Radio label="Yes" value={+true} />
+								<Radio label="No" value={+false} />
+							</RadioGroup>
+						</ValidationAwareFormGroup>
+					</ControlGroup>
 
-					<Prompt
-						when={this.state.dirty}
-						message="Are you sure you want to leave? You have unsaved changes."
+					<ValidationAwareFormGroup
+						labelFor="members"
+						label="Select Users"
+						failures={this.state.validationFailures}
+					>
+						<MultiSelect
+							tagInputProps={{
+								inputProps: {
+									name: 'members',
+								},
+							}}
+							fill={true}
+							items={this.state.users}
+							selectedItems={this.state.members}
+							onItemSelect={this.onMemberSelectionChange}
+							onRemove={this.onMemberRemove}
+							onSelectAll={this.onSelectAllClick}
+							onSelectNone={this.onSelectNoneClick}
+							itemRenderer={this.userRenderer}
+							tagRenderer={tagRenderer}
+							noResults={<div>No results</div>}
+						/>
+					</ValidationAwareFormGroup>
+
+					<FormControls
+						onSaveClick={this.onSaveClick}
+						loading={this.state.loading}
+						dirty={this.state.dirty}
+						redirectPath="/quiz/tags"
 					/>
-				</div>
+				</form>
+
+				<Prompt
+					when={this.state.dirty}
+					message="Are you sure you want to leave? You have unsaved changes."
+				/>
 			</section>
 		);
 	}
