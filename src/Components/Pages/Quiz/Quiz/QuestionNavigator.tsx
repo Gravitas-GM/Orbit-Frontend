@@ -9,14 +9,13 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, dismiss}) => {
-	const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
 	const [unansweredQuestions, setUnansweredQuestions] = React.useState<QuizItem[]>([]);
 
 	React.useEffect(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
 		setUnansweredQuestions(unanswered);
-	}, [questions, show, currentQuestionIndex]);
+	}, [questions, show]);
 
 	const onNextClick = React.useCallback(() => {
 		const unanswered = questions.filter(item => item.answer === null);
@@ -25,15 +24,11 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, dismiss}) =
 
 		if (unanswered.length === 0) {
 			dismiss();
-
-			return;
 		}
+	}, [questions]);
 
-		if (currentQuestionIndex + 1 >= unanswered.length) setCurrentQuestionIndex(0);
-		else setCurrentQuestionIndex(currentQuestionIndex + 1);
-	}, [questions, currentQuestionIndex]);
-
-	if (!show) return null;
+	if (!show)
+		return null;
 
 	return (
 		<div
