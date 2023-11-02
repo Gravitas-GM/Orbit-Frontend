@@ -54,7 +54,7 @@ export const QuestionNavigator: React.FC<Props> = ({ questions, show, dismiss })
 
 			className="question-navigator-container"
 		>
-			<span>{currentQuestionIndex + 1}/{unansweredQuestions.length}</span>
+			<span>{unansweredQuestions.length} questions unanswered.</span>
 
 			<Button text="Next Question" onClick={onNextClick} />
 		</div>
