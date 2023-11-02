@@ -17,7 +17,7 @@ export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures
 
 	return (
 		<ValidationAwareFormGroup
-			label={<H3>{item.prompt.prompt}</H3>}
+			label={<H3 id={`question-${item.prompt.id}`}>{item.prompt.prompt}</H3>}
 			labelFor={`${name}.answer`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
