@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { Button } from '@blueprintjs/core';
-import { QuizItem } from './Questions';
+import {Button} from '@blueprintjs/core';
+import {QuizItem} from './Questions';
 
 interface Props {
-	questions: QuizItem[],
-	show: boolean,
-	dismiss: () => void
+	questions: QuizItem[];
+	show: boolean;
+	dismiss: () => void;
 }
 
-export const QuestionNavigator: React.FC<Props> = ({ questions, show, dismiss }) => {
+export const QuestionNavigator: React.FC<Props> = ({questions, show, dismiss}) => {
 	const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
 	const [unansweredQuestions, setUnansweredQuestions] = React.useState<QuizItem[]>([]);
 
@@ -29,17 +29,15 @@ export const QuestionNavigator: React.FC<Props> = ({ questions, show, dismiss })
 			return;
 		}
 
-		if (currentQuestionIndex + 1 >= unanswered.length)
-			setCurrentQuestionIndex(0);
-		else
-			setCurrentQuestionIndex(currentQuestionIndex + 1);
-	}, [questions, currentQuestionIndex])
+		if (currentQuestionIndex + 1 >= unanswered.length) setCurrentQuestionIndex(0);
+		else setCurrentQuestionIndex(currentQuestionIndex + 1);
+	}, [questions, currentQuestionIndex]);
 
-	if (!show)
-		return null;
+	if (!show) return null;
 
 	return (
-		<div style={{
+		<div
+			style={{
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'center',
