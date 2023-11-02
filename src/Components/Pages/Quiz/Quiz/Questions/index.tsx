@@ -13,6 +13,7 @@ import {Question} from './Question';
 import './index.scss';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {Button, Intent} from '@blueprintjs/core';
+import { QuestionNavigator } from '../QuestionNavigator';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,
@@ -41,6 +42,8 @@ interface Props {
 export const Questions: React.FC<Props> = ({questions, validationFailures, onSubmit}) => {
 	const [items, setItems] = React.useState<QuizItem[]>([]);
 
+	const [showQuestionNavigator, setShowQuestionNavigator] = React.useState(false);
+
 	React.useEffect(() => {
 		setItems(questions.map(item => ({
 			kind: item.kind,
@@ -52,9 +55,24 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 	const [submitting, setSubmitting] = React.useState(false);
 	const onSubmitClick = React.useCallback(async () => {
 		setSubmitting(true);
+
+		const unanswered = items.filter(item => item.answer === null);
+
+		if (unanswered.length > 0) {
+			setSubmitting(false);
+
+			setShowQuestionNavigator(true);
+
+			return;
+		}
+
 		await onSubmit(items);
 		setSubmitting(false);
 	}, [items]);
+
+	const onDismiss = React.useCallback(() => {
+		setShowQuestionNavigator(false);
+	}, []);
 
 	return (
 		<div>
@@ -70,6 +88,12 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 			<div>
 				<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY} />
 			</div>
+
+			<QuestionNavigator
+				show={showQuestionNavigator}
+				questions={items}
+				dismiss={onDismiss}
+			/>
 		</div>
 	);
 };
