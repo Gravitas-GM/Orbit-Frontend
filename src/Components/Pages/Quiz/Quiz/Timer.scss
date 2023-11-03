@@ -12,6 +12,7 @@ $gm-timer-height: $pt-grid-size * 2 + $pt-normal-line-height + $pt-progress-bar-
 	width: 100%;
 	background-color: $gray3;
 	min-height: $gm-timer-height;
+	z-index: 100;
 
 	.#{$bp-ns}-progress-bar {
 		margin-top: $pt-grid-size;
