@@ -20,11 +20,11 @@ export const FreeTextQuestion: React.FC<Props> = ({name, item, validationFailure
 
 	return (
 		<ValidationAwareFormGroup
-			label={<H3 id={`question-${item.prompt.id}`}>{item.prompt.prompt}</H3>}
+			label={<H3>{item.prompt.prompt}</H3>}
 			labelFor={`${name}.answer`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
-			className="quiz-item free-text-item"
+			className={`quiz-item free-text-item question-${item.prompt.id}`}
 		>
 			<InputGroup
 				name={`item-${item.prompt.id}`}

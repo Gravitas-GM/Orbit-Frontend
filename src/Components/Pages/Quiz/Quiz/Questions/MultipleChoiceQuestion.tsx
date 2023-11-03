@@ -17,11 +17,11 @@ export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationF
 
 	return (
 		<ValidationAwareFormGroup
-			label={<H3 id={`question-${item.prompt.id}`}>{item.prompt.prompt}</H3>}
+			label={<H3>{item.prompt.prompt}</H3>}
 			labelFor={`${name}.answerIndex`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
-			className="quiz-item multiple-choice-item"
+			className={`quiz-item multiple-choice-item question-${item.prompt.id}`}
 		>
 			<div className="choices">
 				{item.prompt.choices.map((text, index) => (

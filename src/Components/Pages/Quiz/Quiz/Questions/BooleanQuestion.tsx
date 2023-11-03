@@ -17,11 +17,11 @@ export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures
 
 	return (
 		<ValidationAwareFormGroup
-			label={<H3 id={`question-${item.prompt.id}`}>{item.prompt.prompt}</H3>}
+			label={<H3>{item.prompt.prompt}</H3>}
 			labelFor={`${name}.answer`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
-			className="quiz-item boolean-item"
+			className={`quiz-item boolean-item question-${item.prompt.id}`}
 		>
 			<Radio name={name} label={item.prompt.trueLabel ?? 'True'} value={1} onChange={onResponseChange} />
 			<Radio name={name} label={item.prompt.falseLabel ?? 'False'} value={0} onChange={onResponseChange} />

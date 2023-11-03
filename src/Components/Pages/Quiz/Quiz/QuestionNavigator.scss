@@ -1,0 +1,24 @@
+@import '../../../../variables';
+
+.question-navigator-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: $spacing-large;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: $spacing-xxlarge;
+	background-color: black;
+}
+
+.highlight {
+	&::after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: $spacing-small;
+		background-color: $pt-dark-link-color;
+	}
+}
