@@ -1,4 +1,5 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {ApiError} from '../../errors/symfony';
 import {Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
@@ -102,4 +103,8 @@ export class QuizModel {
 
 		return quiz;
 	}
+}
+
+export function isQuizNotReadyError(value: any): value is ApiError {
+	return value instanceof ApiError && value.code === 'quiz.not_ready';
 }

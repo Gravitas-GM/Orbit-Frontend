@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Answer, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
+import {Answer, isQuizNotReadyError, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
 import {toaster} from '../../../../toaster';
 import {Redirect} from 'react-router';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
@@ -31,7 +31,10 @@ export class QuizPage extends React.PureComponent<{}, State> {
 				quiz: await QuizModel.start().then(r => r.data),
 			});
 		} catch (error) {
-			toaster.showUnhandledErrorMessage();
+			if (isQuizNotReadyError(error))
+				toaster.warning(error.message);
+			else
+				toaster.showUnhandledErrorMessage();
 
 			this.setState({
 				redirectTo: '/',
