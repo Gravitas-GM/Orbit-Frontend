@@ -1,6 +1,7 @@
 import GraphemeSplitter from 'grapheme-splitter';
 import {PlayerState} from '../../Api/Game-State/Models/Games';
 import {User} from '../../Api/Hub/Models/Users';
+import {QuestionKind} from '../../Api/Quiz/Models/Questions';
 
 export function ucfirst(value: string) {
 	if (!value.length)
@@ -61,4 +62,13 @@ export function leftPad(input: string|number, length: number, character: string 
 		throw new Error('Padding character must not be empty');
 
 	return character.charAt(0).repeat(length - input.length) + input;
+}
+
+export function renderKindLabel(kind: QuestionKind): string {
+	let label = kind.valueOf();
+
+	if (kind === QuestionKind.Boolean)
+		label = "True / False";
+
+	return ucwords(label);
 }
