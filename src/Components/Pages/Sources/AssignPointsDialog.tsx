@@ -63,7 +63,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		const title = `Assign points for ${ucwords(this.props.source.name)}`;
 
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title={title}>
+			<Dialog onClose={this.props.onClose} isOpen={true} title={title} canOutsideClickClose={false}>
 				<div className={Classes.DIALOG_BODY}>
 					<form>
 						<FormGroup
