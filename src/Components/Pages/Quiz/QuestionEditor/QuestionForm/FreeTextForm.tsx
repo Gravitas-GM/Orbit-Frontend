@@ -110,7 +110,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
 
 	return (
 		<ValidationAwareFormGroup
-			label={index === 0 ? 'Answer' : ''}
+			label={index === 0 ? 'Accepted Answers' : ''}
 			labelFor={inputName}
 			failures={validationFailures}
 		>
