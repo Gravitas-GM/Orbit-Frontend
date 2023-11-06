@@ -117,5 +117,5 @@ export class QuizModel {
 }
 
 export function isQuizNotReadyError(value: any): value is ApiError {
-	return value instanceof ApiError && value.code === 'quiz.not_ready';
+	return value instanceof ApiError && value.code === ErrorCodes.QuizNotReady;
 }

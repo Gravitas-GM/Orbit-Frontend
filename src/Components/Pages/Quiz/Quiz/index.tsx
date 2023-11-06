@@ -100,6 +100,7 @@ export class QuizPage extends React.PureComponent<{}, State> {
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
+
 				this.setState({
 					validationFailures: error.context.failures,
 				});
