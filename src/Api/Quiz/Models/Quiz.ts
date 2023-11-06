@@ -1,6 +1,6 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
-import {ApiError} from '../../errors/symfony';
-import {Projectable, Projection, quizClient} from '../../index';
+import {ApiError, ErrorCodes} from '../../errors/symfony';
+import {Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
@@ -18,6 +18,13 @@ export interface QuizEndpoints {
 			response: QuizSubmission;
 		};
 	};
+
+	'/quiz/reset/:user': {
+		POST: {
+			params: Id,
+			response: void,
+		}
+	}
 }
 
 export interface Quiz {
@@ -93,6 +100,10 @@ export class QuizModel {
 		response.data = QuizSubmissionModel.denormalize(response.data);
 
 		return response;
+	}
+
+	public static reset(userId: Id) {
+		return quizClient.post<'/quiz/reset/:user'>(`/quiz/reset/${userId}`);
 	}
 
 	private static denormalize(quiz: Quiz) {
