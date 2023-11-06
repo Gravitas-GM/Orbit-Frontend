@@ -8,4 +8,9 @@ export const Classes = {
 	// Intended as a stand-in for Blueprint's sub-label CSS class. BP's sub-label inherits its color from the control's
 	// `intent` prop, which we don't want in most cases.
 	FORM_GROUP_SUB_LABEL: 'gm-sub-label',
+
+	FLEX_CONTAINER: 'gm-flex-container',
+	FLEX_ITEMS_PREFIX: 'gm-flex-items-',
+
+	SETTINGS_TITLE_WRAPPER: 'settings-title-container',
 };

@@ -114,3 +114,19 @@ a.plain-link {
 	font-size: $pt-font-size-small;
 	margin-bottom: 5px;
 }
+
+.gm-flex-container {
+	display: flex;
+
+	@for $i from 1 through 10 {
+		> .gm-flex-items-#{$i} > * {
+
+		}
+	}
+}
+
+// Fix for alignment of form controls rendered inside of table cells. BP adds a small bottom margin on controls, which
+// pushes the rest of the row's content down and leaves the control slightly above everything else.
+td > .#{$bp-ns}-control {
+	margin-bottom: 0;
+}

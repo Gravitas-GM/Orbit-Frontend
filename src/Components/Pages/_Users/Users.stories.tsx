@@ -3,7 +3,7 @@ import {UsersList} from '.';
 import {userMock} from '../../../mocks/User';
 
 export default {
-	title: 'Users List Page',
+	title: '_Users List Page',
 	component: UsersList,
 	parameters: {
 		mockData: [
