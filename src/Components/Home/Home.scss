@@ -23,10 +23,6 @@
 		text-decoration: none;
 	}
 
-	&.admin {
-		grid-template-columns: repeat(2,1fr);
-	}
-
 	p {
 		color: $blue5;
 	}

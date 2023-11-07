@@ -63,12 +63,39 @@ export const Home: React.FC = () => {
 								</Link>
 							</div>
 
+							<H4 style={{marginTop: Spacing.XLarge}}>Quiz</H4>
+
+							<div className="cards-container">
+								<Link to="/quiz">
+									<Card interactive={true}>
+										<Icon icon="predictive-analysis" size={35} />
+										<div>
+											<H4>Take A Quiz</H4>
+
+											<p>Complete the current quiz.</p>
+										</div>
+									</Card>
+								</Link>
+
+								<Link to="/quiz/history">
+									<Card interactive={true}>
+										<Icon icon="history" size={35} />
+
+										<div>
+											<H4>Quiz History</H4>
+
+											<p>View past quiz submissions.</p>
+										</div>
+									</Card>
+								</Link>
+							</div>
+
 							{
 								isGranted(Permission.ADMIN) &&
 								<>
 									<H4 style={{marginTop: Spacing.XLarge}}>Admin</H4>
 
-									<div className="cards-container admin">
+									<div className="cards-container">
 										<Link to="/catalog">
 											<Card interactive={true}>
 												<Icon icon="layers" size={IconSize.XLARGE} />
@@ -97,6 +124,40 @@ export const Home: React.FC = () => {
 													<H4>Sources</H4>
 
 													<p>Manage point sources and give points to multiple users.</p>
+												</div>
+											</Card>
+										</Link>
+
+										<Link to="/quiz/questions">
+											<Card interactive={true}>
+												<Icon icon="clipboard" size={35} />
+												<div>
+													<H4>Questions</H4>
+
+													<p>Manage quiz questions.</p>
+												</div>
+											</Card>
+										</Link>
+
+										<Link to="/quiz/tags">
+											<Card interactive={true}>
+												<Icon icon="tag" size={35} />
+
+												<div>
+													<H4>Question Tags</H4>
+
+													<p>Manage question tags and tag assignment.</p>
+												</div>
+											</Card>
+										</Link>
+
+										<Link to="/quiz/settings">
+											<Card interactive={true}>
+												<Icon icon="cog" size={35} />
+												<div>
+													<H4>Quiz Settings</H4>
+
+													<p>Manage quiz settings.</p>
 												</div>
 											</Card>
 										</Link>
