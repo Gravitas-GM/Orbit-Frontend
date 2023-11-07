@@ -1,15 +1,16 @@
+import * as React from 'react';
 import {
 	Button,
 	Classes,
 	Dialog,
 	FormGroup,
-	H2,
 	HTMLTable,
 	InputGroup,
-	Intent, Menu, MenuItem,
-	NumericInput, Popover,
+	Intent, Menu,
+	NumericInput,
 } from '@blueprintjs/core';
-import * as React from 'react';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';

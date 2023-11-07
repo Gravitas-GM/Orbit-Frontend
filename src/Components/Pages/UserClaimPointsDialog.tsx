@@ -1,6 +1,7 @@
-import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
-import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
+import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {ItemRenderer} from '@blueprintjs/select';
 import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../Session';
