@@ -65,10 +65,8 @@ export function leftPad(input: string|number, length: number, character: string 
 }
 
 export function renderKindLabel(kind: QuestionKind): string {
-	let label = kind.valueOf();
-
 	if (kind === QuestionKind.Boolean)
-		label = "True / False";
+		return ("True / False");
 
-	return ucwords(label);
+	return ucwords(kind);
 }
