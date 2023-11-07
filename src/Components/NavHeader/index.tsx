@@ -4,7 +4,6 @@ import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {Link} from 'react-router-dom';
 import {Permission, PermissionContext} from '../../Permission';
 import {UserContext} from '../../Session';
-import {UserClaimPointsDialog} from '../Pages/UserClaimPointsDialog';
 import {renderUserName} from '../Utility/string';
 import {GameMenu} from './GameMenu';
 import {QuizMenu} from './QuizMenu';
@@ -14,10 +13,6 @@ import './index.scss';
 export const NavHeader: React.FC = () => {
 	const user = React.useContext(UserContext);
 	const [isGranted] = React.useContext(PermissionContext);
-	const [showDialog, setShowDialog] = React.useState(false);
-
-	const onDialogOpen = React.useCallback(() => setShowDialog(true), []);
-	const onDialogClose = React.useCallback(() => setShowDialog(false), []);
 
 	return (
 		<>
@@ -48,13 +43,6 @@ export const NavHeader: React.FC = () => {
 						<Button text="Quiz" minimal={true} rightIcon="caret-down" />
 					</Popover>
 
-					<Button
-						icon="plus"
-						text="Claim Points"
-						minimal={true}
-						onClick={onDialogOpen}
-					/>
-
 					{isGranted(Permission.ADMIN) && (
 						<>
 							<Navbar.Divider />
@@ -84,8 +72,6 @@ export const NavHeader: React.FC = () => {
 					) : <Spinner size={20} intent={Intent.PRIMARY} />}
 				</Navbar.Group>
 			</Navbar>
-
-			<UserClaimPointsDialog onClose={onDialogClose} isOpen={showDialog} />
 		</>
 	);
 };
