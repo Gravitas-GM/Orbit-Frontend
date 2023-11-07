@@ -146,7 +146,7 @@ export const Home: React.FC = () => {
 												<div>
 													<H4>Question Tags</H4>
 
-													<p>Manage question tags and tag assignment.</p>
+													<p>Manage question tags and tag assignment to users.</p>
 												</div>
 											</Card>
 										</Link>
@@ -157,7 +157,7 @@ export const Home: React.FC = () => {
 												<div>
 													<H4>Quiz Settings</H4>
 
-													<p>Manage quiz settings.</p>
+													<p>Manage quiz frequency, question count, and point reward.</p>
 												</div>
 											</Card>
 										</Link>
