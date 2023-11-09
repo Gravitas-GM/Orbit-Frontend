@@ -1,40 +1,46 @@
 import * as React from 'react';
-import {Button} from '@blueprintjs/core';
+import {Button, Intent} from '@blueprintjs/core';
 import {QuizItem} from './Questions';
 import './QuestionNavigator.scss';
 
 interface Props {
 	questions: QuizItem[];
 	show: boolean;
-	dismiss: () => void;
+	submitting: boolean;
+	onSubmit: () => Promise<void>;
 }
 
-export const QuestionNavigator: React.FC<Props> = ({questions, show, dismiss}) => {
-	const [unansweredQuestions, setUnansweredQuestions] = React.useState<QuizItem[]>([]);
+export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, submitting}) => {
 
 	React.useEffect(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
-		setUnansweredQuestions(unanswered);
-
-		unansweredQuestions.length > 0 && highlightUnaswered();
+		unanswered.length > 0 && goToNextQuestion();
 	}, [questions, show]);
 
-	const onNextClick = React.useCallback(() => {
+	const onSubmitClick = React.useCallback(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
-		setUnansweredQuestions(unanswered);
-
 		if (unanswered.length === 0) {
-			dismiss();
+			onSubmit();
 
 			return;
 		}
 
-		highlightUnaswered();
-	}, [questions, unansweredQuestions]);
+		goToNextQuestion();
 
-	const highlightUnaswered = React.useCallback(() => {
+		onSubmit();
+	}, [questions]);
+
+	const focusChildInput = React.useCallback((rootElement: Element) => {
+		const input = rootElement.getElementsByTagName('input')[0];
+
+		if (input) {
+			input.focus();
+		}
+	}, []);
+
+	const goToNextQuestion = React.useCallback(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
 		const question = document.getElementsByClassName(`question-${unanswered[0].prompt.id}`)[0];
@@ -42,24 +48,20 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, dismiss}) =
 		if (question) {
 			question.scrollIntoView({behavior: 'smooth', block: 'center'});
 
-			question.classList.add('highlight');
-
-			setTimeout(() => {
-				question.classList.remove('highlight');
-			}, 500);
+			focusChildInput(question);
 		}
-	}, [questions, unansweredQuestions]);
+	}, [questions]);
 
 	if (!show)
 		return null;
 
 	return (
-		<div className="question-navigator-container" key={unansweredQuestions.length}>
+		<div className="question-navigator-container">
 			<span>
-				You have {unansweredQuestions.length} unanswered question{unansweredQuestions.length > 1 ? 's' : ''}.
+				You have unanswered questions.
 			</span>
 
-			<Button text="Next Question" onClick={onNextClick} />
+			<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY}/>
 		</div>
 	);
 };

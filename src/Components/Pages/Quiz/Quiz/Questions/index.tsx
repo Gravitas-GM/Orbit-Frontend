@@ -52,27 +52,19 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 		} as QuizItem)));
 	}, [questions]);
 
+	React.useEffect(() => {
+		setShowQuestionNavigator(!!validationFailures);
+	}, [validationFailures]);
+
 	const [submitting, setSubmitting] = React.useState(false);
+
 	const onSubmitClick = React.useCallback(async () => {
 		setSubmitting(true);
 
-		const unanswered = items.filter(item => item.answer === null);
-
-		if (unanswered.length > 0) {
-			setSubmitting(false);
-
-			setShowQuestionNavigator(true);
-
-			return;
-		}
-
 		await onSubmit(items);
+
 		setSubmitting(false);
 	}, [items]);
-
-	const onDismiss = React.useCallback(() => {
-		setShowQuestionNavigator(false);
-	}, []);
 
 	return (
 		<div>
@@ -92,7 +84,8 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 			<QuestionNavigator
 				show={showQuestionNavigator}
 				questions={items}
-				dismiss={onDismiss}
+				onSubmit={onSubmitClick}
+				submitting={submitting}
 			/>
 		</div>
 	);
