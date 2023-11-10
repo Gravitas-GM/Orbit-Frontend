@@ -54,6 +54,7 @@ interface IState {
 	loading: boolean;
 	redirect: boolean;
 	processing: boolean;
+	disablePlayButton: boolean;
 }
 
 export class GameBoardPage extends React.PureComponent<{}, IState> {
@@ -71,6 +72,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		loading: true,
 		redirect: false,
 		processing: false,
+		disablePlayButton: false,
 	};
 
 	public async componentDidMount() {
@@ -96,6 +98,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				<div>
 					<Sidebar
 						processing={this.state.processing}
+						disabled={this.state.disablePlayButton}
 						buttonLabel={this.state.playerAnnouncements.isEmpty() ? 'Start' : 'Next'}
 						onButtonClick={(
 							this.state.playerAnnouncements.isEmpty()
