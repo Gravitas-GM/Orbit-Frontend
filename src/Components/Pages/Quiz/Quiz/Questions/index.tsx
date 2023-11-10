@@ -13,7 +13,7 @@ import {Question} from './Question';
 import './index.scss';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {Button, Intent} from '@blueprintjs/core';
-import { QuestionNavigator } from '../QuestionNavigator';
+import {QuestionNavigator} from '../QuestionNavigator';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,

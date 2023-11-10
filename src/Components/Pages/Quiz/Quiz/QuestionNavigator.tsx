@@ -11,7 +11,6 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, submitting}) => {
-
 	React.useEffect(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
@@ -57,11 +56,9 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, s
 
 	return (
 		<div className="question-navigator-container">
-			<span>
-				You have unanswered questions.
-			</span>
+			<span>You have unanswered questions.</span>
 
-			<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY}/>
+			<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY} />
 		</div>
 	);
 };
