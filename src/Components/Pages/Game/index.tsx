@@ -17,7 +17,7 @@ import {
 	UpdateResultType,
 } from '../../../Api/Game-State/Models/Games';
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
-import {isGranted, Permission} from '../../../Permission';
+import {Permission} from '../../../Permission';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
@@ -400,9 +400,6 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		else
 			players = [...players, newPlayerState];
 
-		if (this.state.playerAnnouncements.isEmpty())
-			toaster.success('All players have been moved.');
-
 		this.setState(state => ({
 			movingPlayer,
 			history: state.history ? [...state.history, movingPlayer!.history_item] : [movingPlayer!.history_item],
@@ -411,6 +408,20 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 				players,
 			},
 		}));
+
+		if (this.state.playerAnnouncements.isEmpty()) {
+			this.setState({
+				disablePlayButton: true,
+			});
+
+			toaster.success('All players have been moved.');
+
+			setTimeout(() => {
+				this.setState({
+					disablePlayButton: false,
+				});
+			}, 5000);
+		}
 	};
 }
 
