@@ -110,13 +110,32 @@ export class UserTab extends React.PureComponent<Props, State> {
 
 		try {
 			await UserModel.update(this.props.user.id, {
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
 				admin: this.state.admin,
 			});
-		} catch {
-			// TODO Once we can modify other user fields (like name) here, we'll need to check for validation errors
-			//  /tyler
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
+
+				this.setState({
+					validationFailures: error.context.failures,
+				});
+			} else
+				toaster.showUnhandledErrorMessage();
+
+			return;
+		} finally {
+			this.setState({
+				processing: false,
+			});
 		}
+
+		this.setState({
+			dirty: false,
+		});
+
+		toaster.success('User updated.');
 	};
 }
 
