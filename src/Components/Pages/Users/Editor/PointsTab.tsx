@@ -245,11 +245,11 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 			}
 		));
 
-		if (failureCount === 0) // complete success, no failures
+		if (failureCount === 0)
 			toaster.success('Points Added');
-		else if (failureCount !== results.length) // some failures, but fewer than the number of requests we sent
+		else if (failureCount !== results.length)
 			toaster.warning('Some points couldn\'t be added');
-		else // complete failure
+		else
 			toaster.error('Failed to add points.');
 
 		this.setState({
