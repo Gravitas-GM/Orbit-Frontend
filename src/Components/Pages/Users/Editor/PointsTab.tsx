@@ -15,7 +15,7 @@ interface Props {
 	user: User,
 }
 
-export const QuizTab: React.FC<Props> = ({user}) => {
+export const PointsTab: React.FC<Props> = ({user}) => {
 	const [points, setPoints] = React.useState<PointItem[] | null>(null);
 
 	React.useEffect(() => {

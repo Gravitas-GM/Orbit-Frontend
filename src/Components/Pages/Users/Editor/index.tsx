@@ -1,5 +1,5 @@
-import {Divider, H1, Tab, Tabs} from '@blueprintjs/core';
 import * as React from 'react';
+import {Divider, H1, Tab, Tabs} from '@blueprintjs/core';
 import {Redirect, Route, RouteComponentProps, Switch} from 'react-router';
 import {Link} from 'react-router-dom';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
@@ -7,7 +7,7 @@ import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {renderUserName} from '../../../Utility/string';
-import {QuizTab} from './QuizTab';
+import {PointsTab} from './PointsTab';
 import {UserTab} from './UserTab';
 
 const TabId = {
@@ -67,7 +67,7 @@ export class UserEditor extends React.PureComponent<Props, State> {
 
 				<Tabs selectedTabId={this.state.activeTab} onChange={this.onTabChange}>
 					<Tab id={TabId.USER} title={<Link to={`/users/${this.state.user.id}`}>Basic Info</Link>} />
-					<Tab id={TabId.QUIZ} title={<Link to={`/users/${this.state.user.id}/quiz`}>Quiz Settings</Link>} />
+					<Tab id={TabId.POINTS} title={<Link to={`/users/${this.state.user.id}/points`}>Points</Link>} />
 				</Tabs>
 
 				<div style={{marginTop: 10}}>
@@ -75,8 +75,8 @@ export class UserEditor extends React.PureComponent<Props, State> {
 						<Route path="/users/:user(\d+)" children={<UserTab user={this.state.user} />} exact={true} />
 
 						<Route
-							path="/users/:user(\d+)/quiz"
-							children={<QuizTab user={this.state.user} />}
+							path="/users/:user(\d+)/points"
+							children={<PointsTab user={this.state.user} />}
 							exact={true}
 						/>
 					</Switch>
@@ -95,8 +95,8 @@ function getInitialTabId(): string {
 
 	if (/^\/users\/\d+$/.test(path))
 		return TabId.USER;
-	else if (/^\/users\/\d+\/quiz$/.test(path))
-		return TabId.QUIZ;
+	else if (/^\/users\/\d+\/points$/.test(path))
+		return TabId.POINTS;
 
 	return '';
 }
