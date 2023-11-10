@@ -50,8 +50,12 @@ export class UserTab extends React.PureComponent<Props, State> {
 		return (
 			<form>
 				<ControlGroup fill={true} style={{gap: 10}}>
-					<FormGroup label="Name" labelFor="name" helperText="Can only be updated via Slack">
-						<InputGroup name="name" disabled={true} value={renderUserName(this.props.user)} />
+					<FormGroup label="First Name" labelFor="firstName">
+						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
+					</FormGroup>
+
+					<FormGroup label="Last Name" labelFor="lastName">
+						<InputGroup name="lastName" value={this.state.lastName} onChange={this.onLastNameChange} />
 					</FormGroup>
 
 					<FormGroup label="Email Address" labelFor="emailAddress" helperText="Can only be updated via Slack">
@@ -78,6 +82,16 @@ export class UserTab extends React.PureComponent<Props, State> {
 			</form>
 		);
 	}
+
+	private onFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		firstName: event.currentTarget.value,
+		dirty: true,
+	});
+
+	private onLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		lastName: event.currentTarget.value,
+		dirty: true,
+	});
 
 	private onAdminChange = () => this.setState(state => (
 		{
