@@ -1,251 +1,291 @@
-import {Button, Checkbox, H2, HTMLTable, Intent} from '@blueprintjs/core';
-import React from 'react';
+import * as React from 'react';
+import {Button, H2} from '@blueprintjs/core';
+import {ApiError} from '../../../../Api/errors/rocket';
+import {ValidationFailures} from '../../../../Api/errors/symfony';
 import {User} from '../../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel} from '../../../../Api/Point-Tracking/Models/Points';
+import {PointItem, PointsModel, UserPoints} from '../../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
 import {Classes} from '../../../../classes';
-import {Spacing} from '../../../../Styles/variables';
+import {UserContext} from '../../../../Session';
 import {toaster} from '../../../../toaster';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {NonIdealState} from '../../../NonIdealState';
-import {formatDate} from '../../../Utility/date';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {AddPointsDialog} from '../../_Users/AddPointsDialog';
+import {PointsTable, PointsTableRow} from './PointsTable';
 
-interface Props {
-	user: User,
+export type DialogPointItem = {
+	pointValue: number;
+	sourceName: string;
+	description?: string;
+};
+
+interface IProps {
+	user: User;
 }
 
-export const PointsTab: React.FC<Props> = ({user}) => {
-	const [points, setPoints] = React.useState<PointItem[] | null>(null);
+interface IState {
+	loading: boolean;
+	pointItems: PointItem[] | null;
+	processing: boolean;
+	showAddPointsDialog: boolean;
+	sources: PointSourceItem[];
+	selectedItems: PointItem[];
+	deleteSubject: string | undefined;
+	deleteTargets: PointItem[];
+	showDeleteDialog: boolean;
+	validationFailures: ValidationFailures | null;
+}
 
-	React.useEffect(() => {
-		PointsModel.getFull(user.id).then(r => {
-			setPoints(r.data.points);
-		}).catch(() => {
-			toaster.error('Could not load points.');
-		});
-	}, [user]);
+export class PointsTab extends React.PureComponent<IProps, IState> {
+	public static contextType = UserContext;
+	declare context: React.ContextType<typeof UserContext>;
 
-	const onDelete = React.useCallback(() => {
-		// TODO
-	}, [user]);
+	public state: Readonly<IState> = {
+		loading: true,
+		processing: false,
+		showAddPointsDialog: false,
+		selectedItems: [],
+		deleteSubject: undefined,
+		deleteTargets: [],
+		showDeleteDialog: false,
+		sources: [],
+		pointItems: null,
+		validationFailures: null,
+	};
 
-	const onItemDelete = React.useCallback(async (target: PointItem) => {
+	public async componentDidMount() {
+		let userPoints: UserPoints | null = null;
+
 		try {
-			await PointsModel.delete(user.id, target.id);
+			userPoints = await PointsModel.getFull(this.props.user.id).then(response => response.data);
 		} catch (error) {
-			toaster.showUnhandledErrorMessage();
-			throw error;
+			// The Points API can return a response with a 404 status code if a user does not exist in the Points API.
+			// In those cases, just silently ignore the error.
+			if (error instanceof ApiError && !error.isNotFound())
+				toaster.showUnhandledErrorMessage();
 		}
 
-		setPoints(points => {
-			if (points === null)
-				return points;
+		let sources: PointSourceItem[] = [];
 
-			return points.filter(item => item !== target);
+		try {
+			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
+		}
+
+		this.setState({
+			pointItems: userPoints?.points ?? [],
+			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
+			loading: false,
 		});
-	}, [user]);
+	}
 
-	const onBulkDelete = React.useCallback(async (items: PointItem[]) => {
-		const results = await allSettled(items.map(async item => {
-			await PointsModel.delete(user.id, item.id);
+	public render() {
+		if (this.state.loading)
+			return <FrameLoadingSpinner />;
+
+		return (
+			<div className={Classes.PAGE_WRAPPER}>
+				<div className="settings-title-container">
+					<H2>Points</H2>
+
+					<Button
+						text="Delete Selected"
+						icon="delete"
+						intent="danger"
+						onClick={this.onBulkDeleteButtonClick}
+						disabled={this.state.selectedItems.length === 0}
+					/>
+
+					<Button
+						text="Add Points"
+						icon="plus"
+						intent="primary"
+						onClick={this.onAddPointsClick}
+					/>
+				</div>
+
+				<PointsTable
+					onAddPointsClick={this.onAddPointsClick}
+					onSelectAll={this.onSelectAll}
+					allSelected={this.isAllChecked()}
+				>
+					{this.state.pointItems?.map(item => (
+						<PointsTableRow
+							key={item.id.$oid}
+							item={item}
+							onDelete={this.onBeginDeleteButtonClick}
+							isChecked={this.isChecked(item)}
+							onSelect={this.onSelect}
+						/>
+					))}
+				</PointsTable>
+
+				<DeleteDialog
+					isOpen={this.state.showDeleteDialog}
+					subject={this.state.deleteSubject}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+					multiple={this.state.selectedItems.length > 1}
+				/>
+
+				{this.state.showAddPointsDialog && (
+					<AddPointsDialog
+						sources={this.state.sources}
+						processing={this.state.processing}
+						onClose={this.onAddPointsDialogClose}
+						onSubmit={this.onAddPointsDialogSubmit}
+					/>
+				)}
+			</div>
+		);
+	}
+
+	private onAddPointsClick = () => this.setState({
+		showAddPointsDialog: true,
+	});
+
+	private onAddPointsDialogClose = () => this.setState({
+		showAddPointsDialog: false,
+	});
+
+	private onBulkDeleteButtonClick = () => this.setState({
+		deleteSubject: 'Delete',
+		showDeleteDialog: true,
+		deleteTargets: this.state.selectedItems,
+	});
+
+	private onBeginDeleteButtonClick = (items: PointItem[]) => {
+		this.setState({
+			deleteSubject: items[0].source,
+			deleteTargets: items,
+			showDeleteDialog: true,
+		});
+	};
+
+	private onDeleteCancel = () => this.setState({
+		showDeleteDialog: false,
+	});
+
+	private onDeleteConfirm = async () => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		const results = await allSettled(this.state.deleteTargets.map(async item => {
+			await PointsModel.delete(this.props.user.id, item.id);
+
 			return item;
 		}));
 
+		let failureCount = 0;
 		const deletedItems: PointItem[] = [];
 
 		for (const result of results) {
-			if (isRejectedResult(result))
+			if (isRejectedResult(result)) {
+				failureCount++;
 				continue;
+			}
 
 			deletedItems.push(result.value);
 		}
 
-		if (deletedItems.length !== items.length)
-			toaster.error('Some points could not be deleted. Please try again later.');
+		if (failureCount > 0)
+			toaster.showUnhandledErrorMessage();
 
-		setPoints(points => {
-			if (points === null)
-				return points;
+		this.setState(state => (
+			{
+				pointItems: state.pointItems!.filter(item => !deletedItems.includes(item)),
+				selectedItems: [],
+				deleteTargets: [],
+				deleteSubject: '',
+				showDeleteDialog: false,
+				processing: false,
+			}
+		));
+	};
 
-			return points.filter(item => !deletedItems.includes(item));
+	private onAddPointsDialogSubmit = async (dialogPointItems: DialogPointItem[]) => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
 		});
 
-		return deletedItems;
-	}, [user]);
+		const results = await allSettled(dialogPointItems.map(item => {
+			return PointsModel.create(this.props.user.id, {
+				timestamp: new Date(),
+				point_value: item.pointValue,
+				source: item.sourceName,
+				description: item.description,
+			}).then(r => r.data);
+		}));
 
-	if (points === null)
-		return <FrameLoadingSpinner />;
+		let failureCount = 0;
+		let newItems: PointItem[] = [];
 
-	return (
-		<div>
-			<PointsTable items={points} onItemDelete={onItemDelete} onBulkDelete={onBulkDelete} />
-		</div>
-	);
-};
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				++failureCount;
 
-interface TableProps {
-	items: PointItem[],
-	onItemDelete: (item: PointItem) => Promise<void>,
-	onBulkDelete: (items: PointItem[]) => Promise<PointItem[]>,
-}
+				continue;
+			}
 
-function PointsTable({items, onItemDelete: onItemDeleteBase, onBulkDelete}: TableProps): JSX.Element {
-	const [selected, setSelected] = React.useState<PointItem[]>([]);
-	const [showDialog, setShowDialog] = React.useState(false);
-
-	const onItemSelectChange = React.useCallback((target: PointItem, selected: boolean) => {
-		if (selected)
-			setSelected(selected => [...selected, target]);
-		else
-			setSelected(selected => selected.filter(item => item !== target));
-	}, []);
-
-	const onItemDelete = React.useCallback(async (target: PointItem) => {
-		try {
-			await onItemDeleteBase(target);
-		} catch {
-			return;
-		} finally {
-			setShowDialog(false);
+			newItems.push(result.value);
 		}
 
-		setSelected(selected => {
-			if (!selected.includes(target))
-				return selected;
+		this.setState(state => (
+			{
+				pointItems: [...state.pointItems!, ...newItems],
+			}
+		));
 
-			return selected.filter(item => item !== target);
+		if (failureCount === 0) // complete success, no failures
+			toaster.success('Points Added');
+		else if (failureCount !== results.length) // some failures, but fewer than the number of requests we sent
+			toaster.warning('Some points couldn\'t be added');
+		else // complete failure
+			toaster.error('Failed to add points.');
+
+		this.setState({
+			processing: false,
+			showAddPointsDialog: false,
 		});
-	}, [onItemDeleteBase]);
+	};
 
-	const onSelectAllClick = React.useCallback(() => {
-		if (items.length === selected.length)
-			setSelected([]);
-		else
-			setSelected(items);
-	}, [items, selected]);
+	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
 
-	const onBulkDeleteClick = React.useCallback(() => setShowDialog(true), []);
+	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems!.length;
 
-	const onBulkDeleteConfirm = React.useCallback(async () => {
-		if (selected.length === 0)
+	private onSelect = (item: PointItem) => {
+		if (this.isChecked(item)) {
+			this.setState(state => (
+				{selectedItems: state.selectedItems.filter(target => target !== item)}
+			));
 			return;
+		}
 
-		const deleted = await onBulkDelete(selected);
+		this.setState(state => (
+			{
+				selectedItems: [...state.selectedItems, item],
+			}
+		));
+	};
 
-		if (deleted.length === selected.length)
-			toaster.success('Selected points deleted successfully.');
-
-		setSelected([]);
-		setShowDialog(false);
-	}, [onBulkDelete, selected]);
-
-	const onBulkDeleteCancel = React.useCallback(() => setShowDialog(false), []);
-
-	if (items.length === 0) {
-		return (
-			<NonIdealState
-				title="This user doesn't have any points assigned"
-				description="You can start assigning points using the button below"
-				action={(
-					<Button
-						icon="plus"
-						text="Add Points"
-						outlined={true}
-						intent={Intent.PRIMARY}
-					/>
-				)}
-			/>
-		);
-	}
-
-	return (
-		<>
-			<div className={Classes.SETTINGS_TITLE_WRAPPER}>
-				<H2>Points</H2>
-
-				<Button
-					text="Delete Selected"
-					icon="delete"
-					intent={Intent.DANGER}
-					disabled={selected.length === 0}
-					onClick={onBulkDeleteClick}
-				/>
-			</div>
-
-			<HTMLTable striped={true}>
-				<thead>
-					<tr>
-						<th style={{width: Spacing.XLarge}}>
-							<Checkbox checked={items.length === selected.length} onClick={onSelectAllClick} />
-						</th>
-
-						<th>Source</th>
-						<th>Point Value</th>
-						<th>Timestamp</th>
-						<th>Description</th>
-						<th style={{width: 100, textAlign: 'center'}}>Delete</th>
-					</tr>
-				</thead>
-
-				<tbody>
-					{items.map(item => (
-						<PointRow
-							key={item.id.$oid}
-							item={item}
-							selected={selected.includes(item)}
-							onSelectChange={onItemSelectChange}
-							onDelete={onItemDelete}
-						/>
-					))}
-				</tbody>
-			</HTMLTable>
-
-			<DeleteDialog
-				isOpen={showDialog}
-				onConfirm={onBulkDeleteConfirm}
-				onCancel={onBulkDeleteCancel}
-				multiple={true}
-			/>
-		</>
-	);
-}
-
-interface RowProps {
-	item: PointItem,
-	selected: boolean,
-	onSelectChange: (item: PointItem, selected: boolean) => void,
-	onDelete: (item: PointItem) => void,
-}
-
-function PointRow({item, selected, onSelectChange, onDelete}: RowProps): JSX.Element {
-	const onSelectCheckboxClick = React.useCallback(() => {
-		onSelectChange(item, !selected);
-	}, [item, selected, onSelectChange]);
-
-	const onDeleteClick = React.useCallback(() => {
-		onDelete(item);
-	}, [onDelete, item]);
-
-	return (
-		<tr>
-			<td>
-				<Checkbox checked={selected} onClick={onSelectCheckboxClick} />
-			</td>
-
-			<td>{item.source}</td>
-			<td>{item.point_value}</td>
-			<td>{formatDate(item.timestamp)}</td>
-			<td>{item.description ?? '—'}</td>
-
-			<td style={{textAlign: 'center'}}>
-				<Button
-					icon="delete"
-					minimal={true}
-					intent={Intent.DANGER}
-					onClick={onDeleteClick}
-				/>
-			</td>
-		</tr>
-	);
+	private onSelectAll = () => {
+		if (this.isAllChecked()) {
+			this.setState({
+				selectedItems: [],
+			});
+		} else {
+			this.setState({
+				selectedItems: [...this.state.pointItems!],
+			});
+		}
+	};
 }
