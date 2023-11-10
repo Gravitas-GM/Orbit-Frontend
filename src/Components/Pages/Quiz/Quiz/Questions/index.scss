@@ -3,15 +3,6 @@
 #quiz-form {
 	.quiz-item {
 		margin-bottom: $pt-grid-size * 3;
-
-		&::after {
-			content: '';
-			display: block;
-			width: 100%;
-			height: 5px;
-		}
-
-		transition: all 0.5s ease-in-out;
 	}
 
 	.boolean-item {
