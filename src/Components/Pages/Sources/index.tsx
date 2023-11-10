@@ -98,13 +98,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
 								<td style={{textAlign: 'center'}}>
-									<Popover>
-										<Button
-											icon="cog"
-											minimal={true}
-											disabled={this.state.processing}
-										/>
-
+									<Popover content={(
 										<Menu>
 											<MenuItem
 												text="Assign Points"
@@ -125,6 +119,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 												onClick={() => this.onBeginDeleteButtonClick(source)}
 											/>
 										</Menu>
+									)}>
+										<Button
+											icon="cog"
+											minimal={true}
+											disabled={this.state.processing}
+										/>
 									</Popover>
 								</td>
 							</tr>
