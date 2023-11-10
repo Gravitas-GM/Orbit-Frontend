@@ -1,10 +1,10 @@
-import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
 import * as React from 'react';
+import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {Permission, PermissionContext} from '../../../../Permission';
 import {toaster} from '../../../../toaster';
 import {FormControls} from '../../../FormControls';
-import {renderUserName} from '../../../Utility/string';
 
 interface Props {
 	user: User,
@@ -13,7 +13,10 @@ interface Props {
 interface State {
 	admin: boolean,
 	dirty: boolean,
+	firstName: string;
+	lastName: string;
 	processing: boolean,
+	validationFailures: ValidationFailures | null;
 }
 
 export class UserTab extends React.PureComponent<Props, State> {
@@ -26,7 +29,10 @@ export class UserTab extends React.PureComponent<Props, State> {
 		this.state = {
 			...getInitialPermissionProps(props.user.permissions),
 			dirty: false,
+			firstName: props.user.firstName ?? '',
+			lastName: props.user.lastName ?? '',
 			processing: false,
+			validationFailures: null,
 		};
 	}
 
