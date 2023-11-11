@@ -6,11 +6,11 @@ import './QuestionNavigator.scss';
 interface Props {
 	questions: QuizItem[];
 	show: boolean;
-	submitting: boolean;
+	processing: boolean;
 	onSubmit: () => Promise<void>;
 }
 
-export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, submitting}) => {
+export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, processing}) => {
 	React.useEffect(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
@@ -20,13 +20,8 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, s
 	const onSubmitClick = React.useCallback(() => {
 		const unanswered = questions.filter(item => item.answer === null);
 
-		if (unanswered.length === 0) {
-			onSubmit();
-
-			return;
-		}
-
-		goToNextQuestion();
+		if (unanswered.length > 0)
+			goToNextQuestion();
 
 		onSubmit();
 	}, [questions]);
@@ -58,7 +53,11 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, s
 		<div className="question-navigator-container">
 			<span>You have unanswered questions.</span>
 
-			<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY} />
+			<div className="question-navigator-buttons">
+				<Button text="Next Question" onClick={goToNextQuestion} intent={Intent.NONE} />
+
+				<Button text="Submit" onClick={onSubmitClick} loading={processing} intent={Intent.PRIMARY} />
+			</div>
 		</div>
 	);
 };

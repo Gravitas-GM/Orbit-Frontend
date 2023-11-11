@@ -85,7 +85,7 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 				show={showQuestionNavigator}
 				questions={items}
 				onSubmit={onSubmitClick}
-				submitting={submitting}
+				processing={submitting}
 			/>
 		</div>
 	);
