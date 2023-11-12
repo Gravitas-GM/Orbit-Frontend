@@ -1,25 +1,24 @@
+import * as React from 'react';
 import {
 	Button,
 	Classes,
 	Dialog,
 	FormGroup,
-	H2,
 	HTMLTable,
 	InputGroup,
-	Intent, Menu, MenuItem,
-	NumericInput, Popover,
+	Intent,
+	NumericInput,
 } from '@blueprintjs/core';
-import * as React from 'react';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
 import {DeleteDialog} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {PageHeader} from '../../PageHeader';
 import {replace} from '../../Utility/array';
-import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
+import {ObjectList} from '../../ObjectList';
+import {TableItem} from './TableItem';
 
 interface IState {
 	deleteTarget: PointSourceItem | null;
@@ -72,64 +71,39 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className={GmClasses.PAGE_WRAPPER}>
-				<PageHeader title="Sources">
-					<div>
-						<Button
-							text="Add"
-							icon="plus"
-							intent="primary"
-							onClick={this.onAddButtonClick}
-						/>
-					</div>
-				</PageHeader>
+				<ObjectList
+					items={this.state.sources}
+					title="Sources"
+					editorUrlPrefix="/sources"
+					onAddNewClick={this.onAddButtonClick}
+					onItemFilter={this.onItemFilter}
+				>
+					{items => (
+						<HTMLTable striped={true}>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Value</th>
+									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
+								</tr>
+							</thead>
+							<tbody>
+								{items.map(source => (
+									<TableItem
+										key={source.id.$oid}
+										item={source}
+										onAssignPoints={this.onAssignPointsClick}
+										onEdit={this.onEditClick}
+										onDelete={this.onBeginDeleteButtonClick}
+										processing={this.state.processing}
+									/>
+								))}
+							</tbody>
+						</HTMLTable>
+					)}
+				</ObjectList>
 
-				<HTMLTable striped={true}>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Value</th>
-							<th style={{width: 100, textAlign: 'center'}}>Edit</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.state.sources.map(source => (
-							<tr key={`source-${source.id.$oid}`}>
-								<td>{ucwords(source.name)}</td>
-								<td>{formatNumber(source.point_value)}</td>
-								<td style={{textAlign: 'center'}}>
-									<Popover>
-										<Button
-											icon="cog"
-											minimal={true}
-											disabled={this.state.processing}
-										/>
 
-										<Menu>
-											<MenuItem
-												text="Assign Points"
-												icon="plus"
-												onClick={() => this.onAssignPointsClick(source)}
-											/>
-
-											<MenuItem
-												text="Edit"
-												icon="edit"
-												onClick={() => this.onEditClick(source)}
-											/>
-
-											<MenuItem
-												text="Delete"
-												icon="delete"
-												intent={Intent.DANGER}
-												onClick={() => this.onBeginDeleteButtonClick(source)}
-											/>
-										</Menu>
-									</Popover>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</HTMLTable>
 
 				{this.state.showSourceDialog && (
 					<Dialog
@@ -202,6 +176,8 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			</div>
 		);
 	}
+
+	private onItemFilter = (source: PointSourceItem, searchText: string): any => source.name.toLocaleLowerCase().includes(searchText);
 
 	private onAddButtonClick = () => this.setState({
 		showSourceDialog: true,
