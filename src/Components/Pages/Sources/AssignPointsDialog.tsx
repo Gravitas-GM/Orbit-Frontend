@@ -1,4 +1,4 @@
-import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
+import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import {MultiSelect} from '../../Select/MultiSelect';
 import * as React from 'react';
@@ -7,6 +7,7 @@ import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {toaster} from '../../../toaster';
 import {allSettled} from '../../Utility/promise';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
 
 interface IProps {
