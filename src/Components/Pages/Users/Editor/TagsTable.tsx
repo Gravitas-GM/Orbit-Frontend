@@ -1,29 +1,28 @@
-import {Button, HTMLTable, Intent, Checkbox} from '@blueprintjs/core';
 import * as React from 'react';
-import {PointItem} from '../../../Api/Point-Tracking/Models/Points';
-import {Spacing} from '../../../Styles/variables';
-import {NonIdealState} from '../../NonIdealState';
-import {formatDate} from '../../Utility/date';
-import {formatNumber, ucwords} from '../../Utility/string';
+import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
+import {Spacing} from '../../../../Styles/variables';
+import {NonIdealState} from '../../../NonIdealState';
+import {ucwords} from '../../../Utility/string';
 
 interface ITableProps {
-	onAddPointsClick: () => void;
+	onAddTagClick: () => void;
 	onSelectAll: () => void;
 	allSelected: boolean;
 	children?: React.ReactNode;
 }
 
-export const PointsTable: React.FC<ITableProps> = props => {
+export const TagsTable: React.FC<ITableProps> = props => {
 	if (React.Children.count(props.children) === 0) {
 		return (
 			<NonIdealState
-				title="This user doesn't have any points assigned"
-				description="You can start assigning points using the button below"
+				title="This user doesn't have any tags assigned"
+				description="You can start assigning tags using the button below"
 				action={(
 					<Button
 						icon="plus"
-						text="Add Points"
-						onClick={props.onAddPointsClick}
+						text="Add Tag"
+						onClick={props.onAddTagClick}
 						outlined={true}
 						intent={Intent.PRIMARY}
 					/>
@@ -40,10 +39,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
 					</th>
 
-					<th>Source</th>
-					<th>Point Value</th>
-					<th>Timestamp</th>
-					<th>Description</th>
+					<th>Label</th>
 					<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 				</tr>
 			</thead>
@@ -56,24 +52,21 @@ export const PointsTable: React.FC<ITableProps> = props => {
 };
 
 interface IRowProps {
-	item: PointItem;
-	onDelete: (items: PointItem[]) => void;
+	item: QuestionTag;
+	onDelete: (items: QuestionTag[]) => void;
 	isChecked: boolean;
-	onSelect: (item: PointItem) => void;
+	onSelect: (item: QuestionTag) => void;
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
+export const TagsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
 	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (
 		<tr>
 			<td><Checkbox checked={isChecked} onClick={onCheckboxClick} /></td>
-			<td>{ucwords(item.source)}</td>
-			<td>{formatNumber(item.point_value)}</td>
-			<td>{formatDate(item.timestamp)}</td>
-			<td>{item.description ?? <>—</>}</td>
+			<td>{ucwords(item.label)}</td>
 			<td style={{textAlign: 'center'}}>
 				<Button
 					icon="delete"
