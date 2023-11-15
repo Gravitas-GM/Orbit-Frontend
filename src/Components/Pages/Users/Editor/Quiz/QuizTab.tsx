@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {Button, H2} from '@blueprintjs/core';
-import {User} from '../../../../Api/Hub/Models/Users';
-import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Classes} from '../../../../classes';
-import {UserContext} from '../../../../Session';
-import {toaster} from '../../../../toaster';
-import {DeleteDialog} from '../../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {User} from '../../../../../Api/Hub/Models/Users';
+import {QuestionTag, QuestionTagModel} from '../../../../../Api/Quiz/Models/QuestionTags';
+import {Classes} from '../../../../../classes';
+import {UserContext} from '../../../../../Session';
+import {toaster} from '../../../../../toaster';
+import {DeleteDialog} from '../../../../DeleteDialog';
+import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
+import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {AddTagDialog} from './AddTagDialog';
 import {TagsTable, TagsTableRow} from './TagsTable';
 

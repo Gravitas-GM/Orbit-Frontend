@@ -2,8 +2,8 @@ import * as React from 'react';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Select} from '../../../Select/Select';
+import {QuestionTag} from '../../../../../Api/Quiz/Models/QuestionTags';
+import {Select} from '../../../../Select/Select';
 
 interface IProps {
 	tags: QuestionTag[];

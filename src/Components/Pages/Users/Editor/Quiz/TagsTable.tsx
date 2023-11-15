@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
-import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Spacing} from '../../../../Styles/variables';
-import {NonIdealState} from '../../../NonIdealState';
-import {ucwords} from '../../../Utility/string';
+import {QuestionTag} from '../../../../../Api/Quiz/Models/QuestionTags';
+import {Spacing} from '../../../../../Styles/variables';
+import {NonIdealState} from '../../../../NonIdealState';
+import {ucwords} from '../../../../Utility/string';
 
 interface ITableProps {
 	onAddTagClick: () => void;

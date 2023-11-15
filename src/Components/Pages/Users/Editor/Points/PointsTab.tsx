@@ -1,17 +1,17 @@
 import {stat} from 'fs';
 import * as React from 'react';
 import {Button, H2} from '@blueprintjs/core';
-import {ApiError} from '../../../../Api/errors/rocket';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {User} from '../../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel, UserPoints} from '../../../../Api/Point-Tracking/Models/Points';
-import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
-import {Classes} from '../../../../classes';
-import {UserContext} from '../../../../Session';
-import {toaster} from '../../../../toaster';
-import {DeleteDialog} from '../../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {ApiError} from '../../../../../Api/errors/rocket';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
+import {User} from '../../../../../Api/Hub/Models/Users';
+import {PointItem, PointsModel, UserPoints} from '../../../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../../../classes';
+import {UserContext} from '../../../../../Session';
+import {toaster} from '../../../../../toaster';
+import {DeleteDialog} from '../../../../DeleteDialog';
+import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
+import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './PointsTable';
 
