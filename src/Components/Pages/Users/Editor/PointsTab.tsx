@@ -11,7 +11,7 @@ import {toaster} from '../../../../toaster';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {AddPointsDialog} from '../../_Users/AddPointsDialog';
+import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './PointsTable';
 
 export type DialogPointItem = {
@@ -26,7 +26,7 @@ interface IProps {
 
 interface IState {
 	loading: boolean;
-	pointItems: PointItem[] | null;
+	pointItems: PointItem[];
 	processing: boolean;
 	showAddPointsDialog: boolean;
 	sources: PointSourceItem[];
@@ -50,7 +50,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		deleteTargets: [],
 		showDeleteDialog: false,
 		sources: [],
-		pointItems: null,
+		pointItems: [],
 		validationFailures: null,
 	};
 
@@ -199,7 +199,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 		this.setState(state => (
 			{
-				pointItems: state.pointItems!.filter(item => !deletedItems.includes(item)),
+				pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
 				selectedItems: [],
 				deleteTargets: [],
 				deleteSubject: '',
@@ -241,7 +241,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 		this.setState(state => (
 			{
-				pointItems: [...state.pointItems!, ...newItems],
+				pointItems: [...state.pointItems, ...newItems],
 			}
 		));
 
@@ -260,7 +260,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 	private isChecked = (item: PointItem) => this.state.selectedItems.includes(item);
 
-	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems!.length;
+	private isAllChecked = () => this.state.selectedItems.length === this.state.pointItems.length;
 
 	private onSelect = (item: PointItem) => {
 		if (this.isChecked(item)) {
@@ -284,7 +284,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 			});
 		} else {
 			this.setState({
-				selectedItems: [...this.state.pointItems!],
+				selectedItems: [...this.state.pointItems],
 			});
 		}
 	};
