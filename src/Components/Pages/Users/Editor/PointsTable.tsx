@@ -57,14 +57,14 @@ export const PointsTable: React.FC<ITableProps> = props => {
 
 interface IRowProps {
 	item: PointItem;
-	onDelete: (items: PointItem[]) => void;
+	onDelete: (items: PointItem) => void;
 	isChecked: boolean;
 	onSelect: (item: PointItem) => void;
 	loading?: boolean;
 }
 
 export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
-	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
+	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (

@@ -1,3 +1,4 @@
+import {stat} from 'fs';
 import * as React from 'react';
 import {Button, H2} from '@blueprintjs/core';
 import {ApiError} from '../../../../Api/errors/rocket';
@@ -94,7 +95,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 						text="Delete Selected"
 						icon="delete"
 						intent="danger"
-						onClick={this.onBulkDeleteButtonClick}
+						onClick={this.onBulkDeleteClick}
 						disabled={this.state.selectedItems.length === 0}
 					/>
 
@@ -115,7 +116,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 						<PointsTableRow
 							key={item.id.$oid}
 							item={item}
-							onDelete={this.onBeginDeleteButtonClick}
+							onDelete={this.onDeleteClick}
 							isChecked={this.isChecked(item)}
 							onSelect={this.onSelect}
 						/>
@@ -127,7 +128,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
-					multiple={this.state.selectedItems.length > 1}
+					multiple={this.state.deleteTargets.length > 1}
 				/>
 
 				{this.state.showAddPointsDialog && (
@@ -150,16 +151,18 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		showAddPointsDialog: false,
 	});
 
-	private onBulkDeleteButtonClick = () => this.setState({
-		deleteSubject: 'Delete',
-		showDeleteDialog: true,
-		deleteTargets: this.state.selectedItems,
-	});
+	private onBulkDeleteClick = () => this.setState(state => (
+		{
+			deleteSubject: 'Delete',
+			showDeleteDialog: true,
+			deleteTargets: state.selectedItems,
+		}
+	));
 
-	private onBeginDeleteButtonClick = (items: PointItem[]) => {
+	private onDeleteClick = (item: PointItem) => {
 		this.setState({
-			deleteSubject: items[0].source,
-			deleteTargets: items,
+			deleteSubject: item.source,
+			deleteTargets: [item],
 			showDeleteDialog: true,
 		});
 	};
@@ -200,7 +203,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		this.setState(state => (
 			{
 				pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
-				selectedItems: [],
+				selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 				deleteTargets: [],
 				deleteSubject: '',
 				showDeleteDialog: false,
