@@ -7,8 +7,8 @@ import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {renderUserName} from '../../../Utility/string';
-import {PointsTab} from './Points/PointsTab';
-import {QuizTab} from './Quiz/QuizTab';
+import {PointsTab} from './Points';
+import {QuizTab} from './Quiz';
 import {UserTab} from './UserTab';
 
 const TabId = {

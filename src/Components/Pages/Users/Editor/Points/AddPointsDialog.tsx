@@ -7,7 +7,7 @@ import {MultiSelect} from '../../../../Select/MultiSelect';
 import {ucwords} from '../../../../Utility/string';
 import {toaster} from '../../../../../toaster';
 import {Spacing} from '../../../../../Styles/variables';
-import {DialogPointItem} from './PointsTab';
+import {DialogPointItem} from './index';
 
 interface IProps {
 	sources: PointSourceItem[];
