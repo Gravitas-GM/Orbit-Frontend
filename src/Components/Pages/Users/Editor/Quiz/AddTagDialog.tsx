@@ -20,6 +20,7 @@ export const AddTagDialog: React.FC<IProps> = props => {
 			onClose={props.onClose}
 			isOpen={true}
 			title="Add Tag"
+			canOutsideClickClose={false}
 		>
 			<div className={Classes.DIALOG_BODY}>
 				<FormGroup
@@ -62,7 +63,7 @@ export const AddTagDialog: React.FC<IProps> = props => {
 					<Button
 						intent={Intent.PRIMARY}
 						text="Submit"
-						disabled={selectedTag === null}
+						disabled={!selectedTag}
 						onClick={() => props.onSubmit(selectedTag!)}
 						loading={props.processing}
 					/>
