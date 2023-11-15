@@ -218,12 +218,15 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return null;
 		}
 
+		const selected = this.state.selectedSources.includes(item);
+
 		return (
 			<MenuItem
 				active={modifiers.active}
 				key={`selectItem-${item.id.$oid}`}
 				text={ucwords(item.name)}
 				onClick={handleClick}
+				icon={selected ? 'small-tick' : 'blank'}
 			/>
 		);
 	};
