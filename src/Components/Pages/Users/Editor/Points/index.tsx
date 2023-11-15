@@ -1,4 +1,3 @@
-import {stat} from 'fs';
 import * as React from 'react';
 import {Button, H2} from '@blueprintjs/core';
 import {ApiError} from '../../../../../Api/errors/rocket';

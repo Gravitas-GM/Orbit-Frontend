@@ -63,7 +63,13 @@ interface IRowProps {
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
+export const PointsTableRow: React.FC<IRowProps> = ({
+	item,
+	loading,
+	isChecked,
+	onDelete,
+	onSelect,
+}) => {
 	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 

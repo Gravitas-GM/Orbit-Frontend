@@ -70,9 +70,15 @@ export const AddTagDialog: React.FC<IProps> = props => {
 			</div>
 		</Dialog>
 	);
-}
+};
 
-const renderTag: ItemRenderer<QuestionTag> = (tag, {handleClick, handleFocus, modifiers}) => {
+const renderTag: ItemRenderer<QuestionTag> = (tag,
+	{
+		handleClick,
+		handleFocus,
+		modifiers,
+	},
+) => {
 	if (!modifiers.matchesPredicate)
 		return null;
 
