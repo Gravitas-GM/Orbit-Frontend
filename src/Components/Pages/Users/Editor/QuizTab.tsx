@@ -8,6 +8,7 @@ import {toaster} from '../../../../toaster';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {AddTagDialog} from './AddTagDialog';
 import {TagsTable, TagsTableRow} from './TagsTable';
 
 interface IProps {
@@ -46,7 +47,10 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 		let tags: QuestionTag[] = [];
 
 		try {
-			tags = await QuestionTagModel.list({_default: true, 'members.id': true}).then(r => r.data);
+			tags = await QuestionTagModel.list({
+				_default: true,
+				'members.id': true,
+			}).then(r => r.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 		}
@@ -78,7 +82,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 						text="Delete Selected"
 						icon="delete"
 						intent="danger"
-						onClick={this.onBulkDeleteButtonClick}
+						onClick={this.onBulkDeleteClick}
 						disabled={this.state.selectedItems.length === 0}
 					/>
 
@@ -99,7 +103,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 						<TagsTableRow
 							key={item.id}
 							item={item}
-							onDelete={this.onBeginDeleteButtonClick}
+							onDelete={this.onDeleteClick}
 							isChecked={this.isChecked(item)}
 							onSelect={this.onSelect}
 						/>
@@ -111,13 +115,16 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
-					multiple={this.state.selectedItems.length > 1}
+					multiple={this.state.deleteTargets.length > 1}
 				/>
 
 				{this.state.showAddTagDialog && (
-					<>
-						{/*TODO: Create Add Tag dialog*/}
-					</>
+					<AddTagDialog
+						tags={this.state.tags.filter(tag => !this.state.assignedTags.includes(tag))}
+						processing={this.state.processing}
+						onClose={this.onAddTagDialogClose}
+						onSubmit={this.onAddTagDialogSubmit}
+					/>
 				)}
 			</div>
 		);
@@ -131,7 +138,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 		showAddTagDialog: false,
 	});
 
-	private onAddTagDialogSubmit = async (questionTag: QuestionTag) => {
+	private onAddTagDialogSubmit = async (tag: QuestionTag) => {
 		if (this.state.processing)
 			return;
 
@@ -139,24 +146,43 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 			processing: true,
 		});
 
-		//TODO: assign tag to user
+		try {
+			await QuestionTagModel.update(
+				tag.id,
+				{
+					members: [...tag.members.map(user => user.id), this.props.user.id],
+				},
+			);
+		} catch (_) {
+			toaster.showUnhandledErrorMessage();
 
-		this.setState({
-			processing: false,
-			showAddTagDialog: false,
-		});
+			return;
+		} finally {
+			this.setState({
+				processing: false,
+				showAddTagDialog: false,
+			});
+		}
+
+		this.setState(state => (
+			{
+				assignedTags: [...state.assignedTags, tag],
+			}
+		));
 	};
 
-	private onBulkDeleteButtonClick = () => this.setState({
-		deleteSubject: 'Delete',
-		showDeleteDialog: true,
-		deleteTargets: this.state.selectedItems,
-	});
+	private onBulkDeleteClick = () => this.setState(state => (
+		{
+			deleteSubject: 'Delete',
+			showDeleteDialog: true,
+			deleteTargets: state.selectedItems,
+		}
+	));
 
-	private onBeginDeleteButtonClick = (items: QuestionTag[]) => {
+	private onDeleteClick = (item: QuestionTag) => {
 		this.setState({
-			deleteSubject: items[0].label,
-			deleteTargets: items,
+			deleteSubject: item.label,
+			deleteTargets: [item],
 			showDeleteDialog: true,
 		});
 	};
@@ -199,7 +225,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 		this.setState(state => (
 			{
 				assignedTags: state.assignedTags.filter(item => !deletedItems.includes(item)),
-				selectedItems: [],
+				selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 				deleteTargets: [],
 				deleteSubject: '',
 				showDeleteDialog: false,

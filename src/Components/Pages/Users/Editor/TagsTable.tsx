@@ -53,14 +53,14 @@ export const TagsTable: React.FC<ITableProps> = props => {
 
 interface IRowProps {
 	item: QuestionTag;
-	onDelete: (items: QuestionTag[]) => void;
+	onDelete: (items: QuestionTag) => void;
 	isChecked: boolean;
 	onSelect: (item: QuestionTag) => void;
 	loading?: boolean;
 }
 
 export const TagsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
-	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
+	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (
