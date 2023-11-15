@@ -12,7 +12,6 @@ import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
 import {UserEditor} from './Pages/Users/Editor';
 import {UsersList} from './Pages/Users/List';
-import {UserEditor as OldUserEditor} from './Pages/_Users/UserEditor';
 import {CatalogListPage} from './Pages/Catalog';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import {DebugControls} from './Pages/Admin/DebugControls';
@@ -56,7 +55,6 @@ export const Layout: React.FC<IProps> = props => (
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} />,
-								<Route path="/old/users/:user(\d+)" key="/old/users/:user" component={OldUserEditor} exact={true} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
