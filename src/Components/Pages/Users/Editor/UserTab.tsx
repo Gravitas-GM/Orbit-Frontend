@@ -1,10 +1,10 @@
-import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
 import * as React from 'react';
+import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {Permission, PermissionContext} from '../../../../Permission';
 import {toaster} from '../../../../toaster';
 import {FormControls} from '../../../FormControls';
-import {renderUserName} from '../../../Utility/string';
 
 interface Props {
 	user: User,
@@ -13,7 +13,10 @@ interface Props {
 interface State {
 	admin: boolean,
 	dirty: boolean,
+	firstName: string;
+	lastName: string;
 	processing: boolean,
+	validationFailures: ValidationFailures | null;
 }
 
 export class UserTab extends React.PureComponent<Props, State> {
@@ -26,7 +29,10 @@ export class UserTab extends React.PureComponent<Props, State> {
 		this.state = {
 			...getInitialPermissionProps(props.user.permissions),
 			dirty: false,
+			firstName: props.user.firstName ?? '',
+			lastName: props.user.lastName ?? '',
 			processing: false,
+			validationFailures: null,
 		};
 	}
 
@@ -44,8 +50,12 @@ export class UserTab extends React.PureComponent<Props, State> {
 		return (
 			<form>
 				<ControlGroup fill={true} style={{gap: 10}}>
-					<FormGroup label="Name" labelFor="name" helperText="Can only be updated via Slack">
-						<InputGroup name="name" disabled={true} value={renderUserName(this.props.user)} />
+					<FormGroup label="First Name" labelFor="firstName">
+						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
+					</FormGroup>
+
+					<FormGroup label="Last Name" labelFor="lastName">
+						<InputGroup name="lastName" value={this.state.lastName} onChange={this.onLastNameChange} />
 					</FormGroup>
 
 					<FormGroup label="Email Address" labelFor="emailAddress" helperText="Can only be updated via Slack">
@@ -73,6 +83,16 @@ export class UserTab extends React.PureComponent<Props, State> {
 		);
 	}
 
+	private onFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		firstName: event.currentTarget.value,
+		dirty: true,
+	});
+
+	private onLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
+		lastName: event.currentTarget.value,
+		dirty: true,
+	});
+
 	private onAdminChange = () => this.setState(state => (
 		{
 			admin: !state.admin,
@@ -90,13 +110,32 @@ export class UserTab extends React.PureComponent<Props, State> {
 
 		try {
 			await UserModel.update(this.props.user.id, {
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
 				admin: this.state.admin,
 			});
-		} catch {
-			// TODO Once we can modify other user fields (like name) here, we'll need to check for validation errors
-			//  /tyler
-			toaster.showUnhandledErrorMessage();
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
+
+				this.setState({
+					validationFailures: error.context.failures,
+				});
+			} else
+				toaster.showUnhandledErrorMessage();
+
+			return;
+		} finally {
+			this.setState({
+				processing: false,
+			});
 		}
+
+		this.setState({
+			dirty: false,
+		});
+
+		toaster.success('User updated.');
 	};
 }
 
