@@ -24,7 +24,7 @@ export const AddTagDialog: React.FC<IProps> = props => {
 		>
 			<div className={Classes.DIALOG_BODY}>
 				<FormGroup
-					label="Assign Tag to this User"
+					label="Assign Tag to this user"
 					labelFor="selectedTag"
 				>
 					<Select

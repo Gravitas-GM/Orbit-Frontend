@@ -1,14 +1,13 @@
 import * as React from 'react';
 import {Button, H2} from '@blueprintjs/core';
 import {ApiError} from '../../../../../Api/errors/rocket';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {User} from '../../../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../../../Api/Point-Tracking/Models/Sources';
 import {Classes} from '../../../../../classes';
 import {UserContext} from '../../../../../Session';
 import {toaster} from '../../../../../toaster';
-import {DeleteDialog} from '../../../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {AddPointsDialog} from './AddPointsDialog';
@@ -31,10 +30,9 @@ interface IState {
 	showAddPointsDialog: boolean;
 	sources: PointSourceItem[];
 	selectedItems: PointItem[];
-	deleteSubject: string | undefined;
+	deleteSubject: string | null;
 	deleteTargets: PointItem[];
 	showDeleteDialog: boolean;
-	validationFailures: ValidationFailures | null;
 }
 
 export class PointsTab extends React.PureComponent<IProps, IState> {
@@ -46,12 +44,11 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		processing: false,
 		showAddPointsDialog: false,
 		selectedItems: [],
-		deleteSubject: undefined,
+		deleteSubject: null,
 		deleteTargets: [],
 		showDeleteDialog: false,
 		sources: [],
 		pointItems: [],
-		validationFailures: null,
 	};
 
 	public async componentDidMount() {
@@ -111,7 +108,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 					onSelectAll={this.onSelectAll}
 					allSelected={this.isAllChecked()}
 				>
-					{this.state.pointItems?.map(item => (
+					{this.state.pointItems.map(item => (
 						<PointsTableRow
 							key={item.id.$oid}
 							item={item}
@@ -152,19 +149,17 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 	private onBulkDeleteClick = () => this.setState(state => (
 		{
-			deleteSubject: 'Delete',
+			deleteSubject: DeleteSubject.DELETE,
 			showDeleteDialog: true,
 			deleteTargets: state.selectedItems,
 		}
 	));
 
-	private onDeleteClick = (item: PointItem) => {
-		this.setState({
-			deleteSubject: item.source,
-			deleteTargets: [item],
-			showDeleteDialog: true,
-		});
-	};
+	private onDeleteClick = (item: PointItem) => this.setState({
+		deleteSubject: item.source,
+		deleteTargets: [item],
+		showDeleteDialog: true,
+	});
 
 	private onDeleteCancel = () => this.setState({
 		showDeleteDialog: false,
@@ -204,7 +199,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 				pointItems: state.pointItems.filter(item => !deletedItems.includes(item)),
 				selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 				deleteTargets: [],
-				deleteSubject: '',
+				deleteSubject: null,
 				showDeleteDialog: false,
 				processing: false,
 			}

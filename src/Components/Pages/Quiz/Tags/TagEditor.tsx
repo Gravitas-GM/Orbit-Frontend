@@ -54,7 +54,7 @@ export class TagEditor extends React.PureComponent<RouteComponentProps<IRoutePro
 		try {
 			users = await UserModel.list().then(response => response.data);
 		} catch (error) {
-			toaster.error('Could not load _Users.');
+			toaster.error('Could not load users.');
 
 			this.setState({
 				redirect: true,

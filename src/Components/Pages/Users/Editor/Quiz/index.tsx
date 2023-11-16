@@ -5,7 +5,7 @@ import {QuestionTag, QuestionTagModel} from '../../../../../Api/Quiz/Models/Ques
 import {Classes} from '../../../../../classes';
 import {UserContext} from '../../../../../Session';
 import {toaster} from '../../../../../toaster';
-import {DeleteDialog} from '../../../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {ucwords} from '../../../../Utility/string';
@@ -19,7 +19,7 @@ interface IProps {
 interface IState {
 	loading: boolean;
 	processing: boolean;
-	deleteSubject: string | undefined;
+	deleteSubject: string | null;
 	deleteTargets: QuestionTag[];
 	showAddTagDialog: boolean;
 	showDeleteDialog: boolean;
@@ -35,7 +35,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		processing: false,
-		deleteSubject: undefined,
+		deleteSubject: null,
 		deleteTargets: [],
 		showAddTagDialog: false,
 		showDeleteDialog: false,
@@ -171,24 +171,22 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 			}
 		));
 
-		toaster.success(`${ucwords(tag.label)} assigned to user.`)
+		toaster.success(`${ucwords(tag.label)} assigned to user.`);
 	};
 
 	private onBulkDeleteClick = () => this.setState(state => (
 		{
-			deleteSubject: 'Delete',
+			deleteSubject: DeleteSubject.DELETE,
 			showDeleteDialog: true,
 			deleteTargets: state.selectedItems,
 		}
 	));
 
-	private onDeleteClick = (item: QuestionTag) => {
-		this.setState({
-			deleteSubject: item.label,
-			deleteTargets: [item],
-			showDeleteDialog: true,
-		});
-	};
+	private onDeleteClick = (item: QuestionTag) => this.setState({
+		deleteSubject: item.label,
+		deleteTargets: [item],
+		showDeleteDialog: true,
+	});
 
 	private onDeleteCancel = () => this.setState({
 		showDeleteDialog: false,
@@ -230,7 +228,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 				assignedTags: state.assignedTags.filter(item => !deletedItems.includes(item)),
 				selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 				deleteTargets: [],
-				deleteSubject: '',
+				deleteSubject: null,
 				showDeleteDialog: false,
 				processing: false,
 			}
