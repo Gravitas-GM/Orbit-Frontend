@@ -8,6 +8,7 @@ import {toaster} from '../../../../../toaster';
 import {DeleteDialog} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
 import {allSettled, isRejectedResult} from '../../../../Utility/promise';
+import {ucwords} from '../../../../Utility/string';
 import {AddTagDialog} from './AddTagDialog';
 import {TagsTable, TagsTableRow} from './TagsTable';
 
@@ -63,8 +64,8 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 		}
 
 		this.setState({
-			tags,
-			assignedTags,
+			tags: tags.sort((a, b) => a.label.localeCompare(b.label)),
+			assignedTags: assignedTags.sort((a, b) => a.label.localeCompare(b.label)),
 			loading: false,
 		});
 	}
@@ -166,9 +167,11 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 
 		this.setState(state => (
 			{
-				assignedTags: [...state.assignedTags, tag],
+				assignedTags: [...state.assignedTags, tag].sort((a, b) => a.label.localeCompare(b.label)),
 			}
 		));
+
+		toaster.success(`${ucwords(tag.label)} assigned to user.`)
 	};
 
 	private onBulkDeleteClick = () => this.setState(state => (
