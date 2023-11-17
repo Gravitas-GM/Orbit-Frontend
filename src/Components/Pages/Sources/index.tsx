@@ -1,15 +1,16 @@
+import * as React from 'react';
 import {
 	Button,
 	Classes,
 	Dialog,
 	FormGroup,
-	H2,
 	HTMLTable,
 	InputGroup,
-	Intent, Menu, MenuItem,
-	NumericInput, Popover,
+	Intent, Menu,
+	NumericInput,
 } from '@blueprintjs/core';
-import * as React from 'react';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
@@ -97,13 +98,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 								<td>{ucwords(source.name)}</td>
 								<td>{formatNumber(source.point_value)}</td>
 								<td style={{textAlign: 'center'}}>
-									<Popover>
-										<Button
-											icon="cog"
-											minimal={true}
-											disabled={this.state.processing}
-										/>
-
+									<Popover content={(
 										<Menu>
 											<MenuItem
 												text="Assign Points"
@@ -124,6 +119,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 												onClick={() => this.onBeginDeleteButtonClick(source)}
 											/>
 										</Menu>
+									)}>
+										<Button
+											icon="cog"
+											minimal={true}
+											disabled={this.state.processing}
+										/>
 									</Popover>
 								</td>
 							</tr>

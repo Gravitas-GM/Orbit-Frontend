@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {Button, H5, H6, Popover} from '@blueprintjs/core';
+import {Button, H5, H6} from '@blueprintjs/core';
+import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PlayerState} from '../../../../Api/Game-State/Models/Games';
 import {formatNumber, renderPlayerInitials, ucwords} from '../../../Utility/string';
 import './GamePlayer.scss';
