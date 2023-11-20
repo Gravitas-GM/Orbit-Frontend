@@ -1,5 +1,5 @@
-import {Button, Icon, IconSize, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {Button, Icon, IconSize, Intent} from '@blueprintjs/core';
 import {useContext} from 'react';
 import SimpleBar from 'simplebar-react';
 import {Permission, PermissionContext} from '../../../../Permission';
@@ -11,6 +11,7 @@ interface IProps {
 	processing: boolean;
 	buttonLabel: string;
 	onButtonClick: () => void;
+	disabled: boolean;
 }
 
 export const Sidebar: React.FC<IProps> = props => {
@@ -25,6 +26,8 @@ export const Sidebar: React.FC<IProps> = props => {
 
 			{isAdmin && (
 				<Button
+					loading={props.processing}
+					disabled={props.disabled}
 					intent={Intent.PRIMARY}
 					onClick={props.onButtonClick}
 					large

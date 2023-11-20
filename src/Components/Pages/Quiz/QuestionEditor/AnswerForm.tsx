@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {Button, ControlGroup, Intent, TextArea} from '@blueprintjs/core';
-import {Question, QuestionCreate, QuestionKind} from '../../../../Api/Quiz/Models/Questions';
-import {Spacing} from '../../../../Styles/variables';
-import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
-import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
-import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {ItemRenderer} from '@blueprintjs/select';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {ucwords} from '../../../Utility/string';
-import './AnswerForm.scss';
-import {Link, Prompt} from 'react-router-dom';
+import {ItemRenderer} from '@blueprintjs/select';
+import {Link} from 'react-router-dom';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
+import {Question, QuestionCreate, QuestionKind} from '../../../../Api/Quiz/Models/Questions';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
+import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
-import {QuestionForm} from './QuestionForm';
 import {Select} from '../../../Select/Select';
+import {renderKindLabel, ucwords} from '../../../Utility/string';
+import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {QuestionForm} from './QuestionForm';
+import './AnswerForm.scss';
 
 const QuestionKindNames = Object.values(QuestionKind);
 
@@ -93,7 +93,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 									disabled={isKindSelectDisabled}
 									fill={true}
 									alignText="left"
-									text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
+									text={this.state.kind ? renderKindLabel(this.state.kind) : 'Select question kind'}
 									rightIcon="double-caret-vertical"
 									placeholder="Select question kind"
 								/>
@@ -211,7 +211,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 				onClick={props.handleClick}
 				onFocus={props.handleFocus}
 				roleStructure="listoption"
-				text={ucwords(kind)}
+				text={renderKindLabel(kind)}
 			/>
 		);
 	};

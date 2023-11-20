@@ -1,5 +1,6 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
-import {Projectable, Projection, quizClient} from '../../index';
+import {ApiError, ErrorCodes} from '../../errors/symfony';
+import {Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
@@ -17,6 +18,13 @@ export interface QuizEndpoints {
 			response: QuizSubmission;
 		};
 	};
+
+	'/quiz/reset/:user': {
+		POST: {
+			params: Id,
+			response: void,
+		}
+	}
 }
 
 export interface Quiz {
@@ -94,6 +102,10 @@ export class QuizModel {
 		return response;
 	}
 
+	public static reset(userId: Id) {
+		return quizClient.post<'/quiz/reset/:user'>(`/quiz/reset/${userId}`);
+	}
+
 	private static denormalize(quiz: Quiz) {
 		quiz.startTimestamp = parseApiTimestamp(quiz.startTimestamp);
 
@@ -102,4 +114,8 @@ export class QuizModel {
 
 		return quiz;
 	}
+}
+
+export function isQuizNotReadyError(value: any): value is ApiError {
+	return value instanceof ApiError && value.code === ErrorCodes.QuizNotReady;
 }

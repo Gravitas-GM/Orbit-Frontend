@@ -7,7 +7,7 @@ import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog} from '../../../DeleteDialog';
-import {ucwords} from '../../../Utility/string';
+import {renderKindLabel} from '../../../Utility/string';
 
 interface IState {
 	questions: Question[];
@@ -145,7 +145,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 	return (
 		<tr>
 			<td>{item.prompt}</td>
-			<td>{ucwords(item.kind)}</td>
+			<td>{renderKindLabel(item.kind)}</td>
 			<td>{item.tag?.label ?? '—'}</td>
 
 			<td style={{textAlign: 'center'}}>
