@@ -3,9 +3,9 @@ import {Button} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords, formatNumber} from '../../Utility/string';
-import {Commands} from './Commands';
+import {EditCommands} from './EditCommands';
 
-interface TableItemProps {
+interface IProps {
 	processing: boolean;
 	item: PointSourceItem;
 	onDelete: (item: PointSourceItem) => void;
@@ -13,7 +13,7 @@ interface TableItemProps {
 	onAssignPoints: (item: PointSourceItem) => void;
 }
 
-export const TableItem: React.FC<TableItemProps> = ({item, onDelete, onEdit, onAssignPoints, processing}) => {
+export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, processing}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -36,7 +36,7 @@ export const TableItem: React.FC<TableItemProps> = ({item, onDelete, onEdit, onA
 					minimal={true}
 					position="top"
 					content={
-						<Commands
+						<EditCommands
 							onDelete={onDeleteButtonClick}
 							onEdit={onEditButtonClick}
 							onAssignPoints={onAssignPointsClick}

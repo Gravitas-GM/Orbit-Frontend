@@ -74,7 +74,6 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				<ObjectList
 					items={this.state.sources}
 					title="Sources"
-					editorUrlPrefix="/sources"
 					onAddNewClick={this.onAddButtonClick}
 					onItemFilter={this.onItemFilter}
 				>
@@ -102,8 +101,6 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						</HTMLTable>
 					)}
 				</ObjectList>
-
-
 
 				{this.state.showSourceDialog && (
 					<Dialog
