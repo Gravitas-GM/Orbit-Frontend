@@ -42,8 +42,6 @@ interface Props {
 export const Questions: React.FC<Props> = ({questions, validationFailures, onSubmit}) => {
 	const [items, setItems] = React.useState<QuizItem[]>([]);
 
-	const [showQuestionNavigator, setShowQuestionNavigator] = React.useState(false);
-
 	React.useEffect(() => {
 		setItems(questions.map(item => ({
 			kind: item.kind,
@@ -51,10 +49,6 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 			answer: null,
 		} as QuizItem)));
 	}, [questions]);
-
-	React.useEffect(() => {
-		setShowQuestionNavigator(!!validationFailures);
-	}, [validationFailures]);
 
 	const [submitting, setSubmitting] = React.useState(false);
 
@@ -82,7 +76,7 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 			</div>
 
 			<QuestionNavigator
-				show={showQuestionNavigator}
+				show={!!validationFailures}
 				questions={items}
 				onSubmit={onSubmitClick}
 				processing={submitting}
