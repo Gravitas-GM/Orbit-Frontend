@@ -11,40 +11,40 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, processing}) => {
-	React.useEffect(() => {
-		const unanswered = questions.filter(item => item.answer === null);
+	const hasUnanswered = React.useCallback(() => questions.filter(item => item.answer === null), [questions]);
 
-		unanswered.length > 0 && goToNextQuestion();
-	}, [questions, show]);
+	const focusChildInput = React.useCallback(() => {
+		const unansweredQuestions = hasUnanswered();
+
+		const question = document.getElementsByClassName(`question-${unansweredQuestions[0].prompt.id}`)[0];
+		const input = question.getElementsByTagName('input')[0];
+
+		if (question && input) {
+			input.focus();
+
+			question.scrollIntoView({behavior: 'smooth', block: 'center'});
+		}
+	}, [questions]);
+
+	const onNextButtonClick = React.useCallback(() => {
+		const unansweredQuestions = hasUnanswered();
+
+		if (unansweredQuestions.length > 0)
+			focusChildInput();
+	}, [questions]);
 
 	const onSubmitClick = React.useCallback(() => {
-		const unanswered = questions.filter(item => item.answer === null);
+		const unansweredQuestions = hasUnanswered();
 
-		if (unanswered.length > 0)
-			goToNextQuestion();
+		if (unansweredQuestions.length > 0)
+			onNextButtonClick();
 
 		onSubmit();
 	}, [questions]);
 
-	const focusChildInput = React.useCallback((rootElement: Element) => {
-		const input = rootElement.getElementsByTagName('input')[0];
-
-		if (input) {
-			input.focus();
-		}
-	}, []);
-
-	const goToNextQuestion = React.useCallback(() => {
-		const unanswered = questions.filter(item => item.answer === null);
-
-		const question = document.getElementsByClassName(`question-${unanswered[0].prompt.id}`)[0];
-
-		if (question) {
-			question.scrollIntoView({behavior: 'smooth', block: 'center'});
-
-			focusChildInput(question);
-		}
-	}, [questions]);
+	React.useEffect(() => {
+		onNextButtonClick();
+	}, [questions, show]);
 
 	if (!show)
 		return null;
@@ -54,7 +54,7 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 			<span>You have unanswered questions.</span>
 
 			<div className="question-navigator-buttons">
-				<Button text="Next Question" onClick={goToNextQuestion} intent={Intent.NONE} />
+				<Button text="Next Question" onClick={onNextButtonClick} intent={Intent.NONE} />
 
 				<Button text="Submit" onClick={onSubmitClick} loading={processing} intent={Intent.PRIMARY} />
 			</div>
