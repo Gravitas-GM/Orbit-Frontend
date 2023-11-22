@@ -3,7 +3,7 @@ import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Question, QuestionCreate, QuestionModel, QuestionUpdate} from '../../../../Api/Quiz/Models/Questions';
+import {Question, QuestionCreate, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
 import {AnswerForm} from './AnswerForm';
 import {toaster} from '../../../../toaster';
 import './QuestionEditor.scss';
