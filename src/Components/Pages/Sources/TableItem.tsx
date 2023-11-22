@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button} from '@blueprintjs/core';
+import {Button, Checkbox} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords, formatNumber} from '../../Utility/string';
@@ -11,9 +11,10 @@ interface IProps {
 	onDelete: (item: PointSourceItem) => void;
 	onEdit: (item: PointSourceItem) => void;
 	onAssignPoints: (item: PointSourceItem) => void;
+	onSelect: (item: PointSourceItem) => void;
 }
 
-export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, processing}) => {
+export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, onSelect, processing}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -25,6 +26,10 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 	const onAssignPointsClick = React.useCallback(() => {
 		onAssignPoints(item);
 	}, [item, onAssignPoints]);
+
+	const onSelectClick = React.useCallback(() => {
+		onSelect(item);
+	}, [item, onSelect]);
 
 	return (
 		<tr>
@@ -45,6 +50,10 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 				>
 					<Button icon="cog" minimal={true} disabled={processing} />
 				</Popover>
+			</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Checkbox onClick={onSelectClick}/>
 			</td>
 		</tr>
 	);

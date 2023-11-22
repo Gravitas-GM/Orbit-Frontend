@@ -19,11 +19,14 @@ import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
 import {ObjectList} from '../../ObjectList';
 import {TableItem} from './TableItem';
+import {allSettled, isRejectedResult} from '../../Utility/promise';
 
 interface IState {
-	deleteTarget: PointSourceItem | null;
+	deleteTargets: PointSourceItem[];
 	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
+	selectedItems: PointSourceItem[];
+	deleteSubject: string | undefined;
 	showAsssignPointsDialog: boolean;
 	sources: PointSourceItem[];
 	sourceName: string;
@@ -38,7 +41,9 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		deleteTarget: null,
+		selectedItems: [],
+		deleteTargets: [],
+		deleteSubject: undefined,
 		isEditSource: false,
 		selectedSource: null,
 		showAsssignPointsDialog: false,
@@ -72,6 +77,8 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		return (
 			<div className={GmClasses.PAGE_WRAPPER}>
 				<ObjectList
+					onBulkDeleteClick={this.onBeginBulkDeleteButtonClick}
+					bulkDeleteDisabled={this.state.selectedItems.length === 0}
 					items={this.state.sources}
 					title="Sources"
 					onAddNewClick={this.onAddButtonClick}
@@ -84,6 +91,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									<th>Name</th>
 									<th>Value</th>
 									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
+									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -94,6 +102,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 										onAssignPoints={this.onAssignPointsClick}
 										onEdit={this.onEditClick}
 										onDelete={this.onBeginDeleteButtonClick}
+										onSelect={this.onSelectClick}
 										processing={this.state.processing}
 									/>
 								))}
@@ -158,10 +167,11 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				)}
 
 				<DeleteDialog
-					isOpen={this.state.deleteTarget !== null}
-					subject={this.state.deleteTarget?.name}
+					isOpen={this.state.deleteTargets.length > 0}
+					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
+					multiple={this.state.deleteTargets.length > 1}
 				/>
 
 				{this.state.showAsssignPointsDialog && this.state.selectedSource && (
@@ -175,6 +185,17 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	}
 
 	private onItemFilter = (source: PointSourceItem, searchText: string): any => source.name.toLocaleLowerCase().includes(searchText);
+
+	private onSelectClick = (selectedSource: PointSourceItem) => {
+		if (this.state.selectedItems.includes(selectedSource))
+			this.setState(state => ({
+				selectedItems: state.selectedItems.filter(item => item !== selectedSource),
+			}));
+		else
+			this.setState(state => ({
+				selectedItems: [...state.selectedItems, selectedSource],
+			}));
+	};
 
 	private onAddButtonClick = () => this.setState({
 		showSourceDialog: true,
@@ -270,42 +291,56 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		});
 	};
 
+	private onBeginBulkDeleteButtonClick = () => this.setState(state => ({
+			deleteTargets: state.selectedItems,
+			deleteSubject: 'Delete',
+	}));
+
 	private onBeginDeleteButtonClick = (item: PointSourceItem) => this.setState({
-		deleteTarget: item,
+		deleteTargets: [item],
+		deleteSubject: item.name,
 	});
 
 	private onDeleteCancel = () => this.setState({
-		deleteTarget: null,
+		deleteTargets: [],
 	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
 			return;
 
-		let target = this.state.deleteTarget;
-
-		if (!target)
-			return;
-
 		this.setState({
 			processing: true,
 		});
 
-		try {
-			await PointSourceModel.delete(target.id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		const results = await allSettled(
+			this.state.deleteTargets.map(async item => {
+				await PointSourceModel.delete(item.id);
 
-			this.setState({
-				processing: false,
-			});
+				return item;
+			})
+		);
 
-			return;
+		let failureCount = 0;
+		const deletedItems: PointSourceItem[] = [];
+
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				failureCount++;
+				continue;
+			}
+
+			deletedItems.push(result.value);
 		}
 
+		if (failureCount > 0)
+			toaster.showUnhandledErrorMessage();
+
 		this.setState(state => ({
-			deleteTarget: null,
-			sources: state.sources.filter(item => item !== target),
+			sources: state.sources.filter(item => !deletedItems.includes(item)),
+			selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
+			deleteTargets: [],
+			deleteSubject: '',
 			processing: false,
 		}));
 	};
