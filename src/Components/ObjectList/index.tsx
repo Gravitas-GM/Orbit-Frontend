@@ -15,6 +15,8 @@ interface Props<T> {
 	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
 	onAddNewClick?: () => void;
+	onBulkDeleteClick?: () => void;
+	bulkDeleteDisabled?: boolean;
 	itemsPerPage?: number;
 }
 
@@ -82,9 +84,24 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	let newButton: React.ReactNode = null;
 
 	if (props.editorUrlPrefix && props.onAddNewClick)
-		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="add" text="Add New" fill={true} />;
-	else if (props.onAddNewClick)
-		newButton = <Button icon="add" text="Add New" fill={true} onClick={props.onAddNewClick} />;
+		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="plus" text="Add New" intent="primary" />;
+	else if (props.onAddNewClick) {
+		newButton = <Button icon="plus" text="Add New" intent="primary" onClick={props.onAddNewClick} />;
+	}
+
+	let deleteButton: React.ReactNode = null;
+
+	if (props.onBulkDeleteClick) {
+		deleteButton = (
+			<Button
+				text="Delete Selected"
+				icon="delete"
+				intent="danger"
+				onClick={props.onBulkDeleteClick}
+				disabled={props.bulkDeleteDisabled}
+			/>
+		);
+	}
 
 	return (
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
@@ -107,7 +124,11 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 						value={searchText}
 					/>
 
-					{newButton}
+					<div className="header-buttons">
+						{deleteButton}
+
+						{newButton}
+					</div>
 				</div>
 			</PageHeader>
 
