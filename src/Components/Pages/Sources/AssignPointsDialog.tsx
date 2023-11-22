@@ -1,7 +1,8 @@
+import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {MultiSelect} from '../../Select/MultiSelect';
-import * as React from 'react';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
@@ -64,7 +65,7 @@ export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
 		const title = `Assign points for ${ucwords(this.props.source.name)}`;
 
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title={title}>
+			<Dialog onClose={this.props.onClose} isOpen={true} title={title} canOutsideClickClose={false}>
 				<div className={Classes.DIALOG_BODY}>
 					<form>
 						<FormGroup
