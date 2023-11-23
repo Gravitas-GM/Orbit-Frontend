@@ -6,15 +6,18 @@ import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
-import {Button, HTMLTable, Intent} from '@blueprintjs/core';
+import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import { LinkButton } from '../../../LinkButton';
-
+import { allSettled, isRejectedResult } from '../../../Utility/promise';
 interface IState {
 	activeTag: QuestionTag | null;
 	tags: QuestionTag[];
 	loading: boolean;
 	users: User[];
 	showDeleteDialog: boolean;
+	selectedItems: QuestionTag[];
+	deleteTargets: QuestionTag[];
+	deleteSubject: string | undefined;
 }
 
 export class TagListPage extends React.PureComponent<{}, IState> {
@@ -24,6 +27,9 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		users: [],
 		activeTag: null,
 		showDeleteDialog: false,
+		selectedItems: [],
+		deleteTargets: [],
+		deleteSubject: undefined,
 	};
 
 	public async componentDidMount() {
@@ -65,6 +71,8 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					items={this.state.tags}
 					onItemFilter={this.onTagFilter}
 					onAddNewClick={this.onAddNewClick}
+					bulkDeleteDisabled={this.state.selectedItems.length === 0}
+					onBulkDeleteClick={this.onTagBulkDelete}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -74,6 +82,12 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<th style={{width: 250}}>Members</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
+									<th style={{width: 100, textAlign: 'center'}}>
+										<Checkbox
+											checked={items.length > 0 && items.length === this.state.selectedItems.length}
+											onClick={this.onSelectAll}
+										/>
+									</th>
 								</tr>
 							</thead>
 
@@ -83,6 +97,8 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 										key={item.id}
 										item={item}
 										onDelete={this.onTagDelete}
+										onSelect={this.onTagSelect}
+										isChecked={this.isChecked(item, this.state.selectedItems)}
 									/>
 								))}
 							</tbody>
@@ -91,10 +107,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				</ObjectList>
 
 				<DeleteDialog
-					isOpen={this.state.showDeleteDialog}
+					isOpen={this.state.deleteTargets.length > 0}
+					multiple={this.state.deleteTargets.length > 1}
 					onCancel={this.onDeleteDialogClose}
 					onConfirm={this.onConfirmDelete}
-					subject={this.state.showDeleteDialog ? this.state.activeTag?.label : null}
+					subject={this.state.deleteSubject}
 				/>
 			</section>
 		);
@@ -103,52 +120,102 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
-		activeTag: tag,
-		showDeleteDialog: true,
+		deleteTargets: [tag],
+		deleteSubject: tag.label,
 	});
 
+	private onTagBulkDelete = () => this.setState(state => ({
+		deleteTargets: state.selectedItems,
+		deleteSubject: 'Delete',
+	}));
+
 	private onDeleteDialogClose = () => this.setState({
-		activeTag: null,
-		showDeleteDialog: false,
+		deleteTargets: [],
+		deleteSubject: undefined,
 	});
 
 	private onConfirmDelete = async () => {
-		if (!this.state.activeTag)
+		if (this.state.deleteTargets.length === 0)
 			return;
 
-		try {
-			await QuestionTagModel.delete(this.state.activeTag.id);
-		} catch (err) {
-			this.setState({
-				showDeleteDialog: false,
-			});
+		const results = await allSettled(this.state.deleteTargets.map(async item => {
+			 QuestionTagModel.delete(item.id)
 
-			toaster.error('Failed to delete tag');
+			 return item
+		}));
 
-			return;
+		let failureCount = 0;
+		const deletedItems: QuestionTag[] = [];
+
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				failureCount++;
+				continue;
+			}
+
+			deletedItems.push(result.value);
 		}
 
-		toaster.success(`Tag "${this.state.activeTag.label}" deleted successfully`);
+		if (failureCount > 0)
+			toaster.showUnhandledErrorMessage();
+
+		toaster.success(`Tag${ this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
 
 		this.setState(state => ({
-			tags: state.tags.filter(item => item.id !== state.activeTag?.id),
 			activeTag: null,
-			showDeleteDialog: false,
+			tags: state.tags.filter(item => !deletedItems.includes(item)),
+			selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
+			deleteTargets: [],
 		}));
 	};
 
 	private onTagFilter = (tag: QuestionTag, searchText: string) => tag.label.toLocaleLowerCase().includes(searchText);
+
+	private isChecked<T>(item: T, collection: T[]):boolean {
+		return collection.includes(item);
+	};
+
+	private isAllChecked = () => this.state.selectedItems.length === this.state.tags.length;
+
+	private onSelectAll = () => {
+		if (this.isAllChecked()) {
+			this.setState({
+				selectedItems: [],
+			});
+		} else {
+			this.setState( state => ({
+				selectedItems: [...state.tags],
+			}));
+		}
+	};
+
+	private onTagSelect = (item: QuestionTag) => {
+		if (this.state.selectedItems.includes(item))
+			this.setState(state => ({
+				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
+			}));
+		else
+			this.setState(state => ({
+				selectedItems: [...state.selectedItems, item],
+			}));
+	};
 }
 
 interface TableItemProps {
 	item: QuestionTag;
 	onDelete: (item: QuestionTag) => void;
+	onSelect: (item: QuestionTag) => void;
+	isChecked: boolean;
 }
 
-const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
+const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecked}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
+
+	const onSelectButtonClick = React.useCallback(() => {
+		onSelect(item);
+	}, [item, onSelect]);
 
 	return (
 		<tr>
@@ -167,6 +234,13 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete}) => {
 					icon="delete"
 					intent={Intent.DANGER}
 					onClick={onDeleteButtonClick} minimal={true}
+				/>
+			</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Checkbox
+					checked={isChecked}
+					onClick={onSelectButtonClick}
 				/>
 			</td>
 		</tr>
