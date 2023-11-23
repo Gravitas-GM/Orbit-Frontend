@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
 	Button,
+	Checkbox,
 	Classes,
 	Dialog,
 	FormGroup,
@@ -91,7 +92,13 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									<th>Name</th>
 									<th>Value</th>
 									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
-									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
+
+									<th style={{width: 100, textAlign: 'center'}}>
+										<Checkbox
+											checked={this.state.selectedItems.length === items.length}
+											onClick={this.onSelectAllClick}
+										/>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -104,6 +111,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 										onDelete={this.onBeginDeleteButtonClick}
 										onSelect={this.onSelectClick}
 										processing={this.state.processing}
+										isChecked={this.isChecked(source, this.state.selectedItems)}
 									/>
 								))}
 							</tbody>
@@ -185,6 +193,17 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	}
 
 	private onItemFilter = (source: PointSourceItem, searchText: string): any => source.name.toLocaleLowerCase().includes(searchText);
+
+	private isChecked<T>(item: T, collection: T[]): boolean {
+		return collection.includes(item);
+	}
+
+	private onSelectAllClick = () => {
+		if (this.state.selectedItems.length === this.state.sources.length)
+			this.setState({selectedItems: []});
+		else
+			this.setState(state => ({selectedItems: state.sources}));
+	}
 
 	private onSelectClick = (selectedSource: PointSourceItem) => {
 		if (this.state.selectedItems.includes(selectedSource))

@@ -12,9 +12,10 @@ interface IProps {
 	onEdit: (item: PointSourceItem) => void;
 	onAssignPoints: (item: PointSourceItem) => void;
 	onSelect: (item: PointSourceItem) => void;
+	isChecked: boolean;
 }
 
-export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, onSelect, processing}) => {
+export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, onSelect, isChecked, processing}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -53,7 +54,10 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 			</td>
 
 			<td style={{textAlign: 'center'}}>
-				<Checkbox onClick={onSelectClick}/>
+				<Checkbox
+					onClick={onSelectClick}
+					checked={isChecked}
+				/>
 			</td>
 		</tr>
 	);
