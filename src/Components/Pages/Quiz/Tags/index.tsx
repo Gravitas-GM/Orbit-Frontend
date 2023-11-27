@@ -4,7 +4,7 @@ import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
 import {toaster} from '../../../../toaster';
 import {history} from '../../../../history';
-import {DeleteDialog} from '../../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import { LinkButton } from '../../../LinkButton';
@@ -127,7 +127,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 	private onTagBulkDelete = () => this.setState(state => ({
 		deleteTargets: state.selectedItems,
-		deleteSubject: 'Delete',
+		deleteSubject: DeleteSubject.DELETE,
 	}));
 
 	private onDeleteDialogClose = () => this.setState({

@@ -6,7 +6,7 @@ import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
-import {DeleteDialog} from '../../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
 
@@ -150,12 +150,12 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 
 	private onItemDelete = (target: Question) => this.setState({
 		deleteTargets: [target],
-		deleteSubject: 'DELETE', // use delete subject enum
+		deleteSubject: DeleteSubject.DELETE,
 	});
 
 	private onItemBulkDelete = () => this.setState(state => ({
 		deleteTargets: state.selectedItems,
-		deleteSubject: 'Delete',
+		deleteSubject: DeleteSubject.DELETE,
 	}));
 
 	private onDeleteConfirm = async () => {

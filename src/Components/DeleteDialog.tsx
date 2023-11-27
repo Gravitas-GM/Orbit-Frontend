@@ -1,6 +1,10 @@
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 
+export enum DeleteSubject {
+	DELETE = 'Delete',
+}
+
 interface IProps {
 	isOpen: boolean,
 	subject: string | undefined | null,
