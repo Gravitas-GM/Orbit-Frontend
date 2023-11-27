@@ -8,7 +8,7 @@ import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core
 import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
-import { allSettled, isRejectedResult } from '../../../Utility/promise';
+import {allSettled, isRejectedResult} from '../../../Utility/promise';
 
 interface IState {
 	questions: Question[];
