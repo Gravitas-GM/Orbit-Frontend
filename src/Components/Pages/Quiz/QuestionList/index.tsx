@@ -71,6 +71,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
+											className="gm-table-checkbox"
 											checked={this.state.selectedItems.length === items.length}
 											onClick={this.onSelectAll}
 										/>
@@ -235,6 +236,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 			<td style={{textAlign: 'center'}}>
 				<Checkbox
+					className="gm-table-checkbox"
 					checked={isChecked}
 					onClick={onSelectButtonClick}
 				/>

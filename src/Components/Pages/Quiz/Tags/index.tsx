@@ -7,11 +7,10 @@ import {history} from '../../../../history';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
-import { LinkButton } from '../../../LinkButton';
+import {LinkButton} from '../../../LinkButton';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
 
 interface IState {
-	activeTag: QuestionTag | null;
 	tags: QuestionTag[];
 	loading: boolean;
 	users: User[];
@@ -26,7 +25,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		loading: true,
 		tags: [],
 		users: [],
-		activeTag: null,
 		showDeleteDialog: false,
 		selectedItems: [],
 		deleteTargets: [],
@@ -85,6 +83,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
+											className="gm-table-checkbox"
 											checked={items.length > 0 && items.length === this.state.selectedItems.length}
 											onClick={this.onSelectAll}
 										/>
@@ -163,7 +162,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		toaster.success(`Tag${ this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
 
 		this.setState(state => ({
-			activeTag: null,
 			tags: state.tags.filter(item => !deletedItems.includes(item)),
 			selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 			deleteTargets: [],
@@ -240,6 +238,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 			<td style={{textAlign: 'center'}}>
 				<Checkbox
+					className="gm-table-checkbox"
 					checked={isChecked}
 					onClick={onSelectButtonClick}
 				/>
