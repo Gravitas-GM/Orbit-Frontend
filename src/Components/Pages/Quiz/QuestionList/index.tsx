@@ -110,7 +110,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					}
 
 					<p>
-						This action cannot be undone. To confirm, please type "DELETE" in the box below, then click
+						This action cannot be undone. To confirm, please type {DeleteSubject.DELETE} in the box below, then click
 						"Confirm".
 					</p>
 				</DeleteDialog>
