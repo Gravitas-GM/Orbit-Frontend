@@ -21,6 +21,7 @@ import {Classes as GmClasses} from '../../../classes';
 import {ObjectList} from '../../ObjectList';
 import {TableItem} from './TableItem';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {DeleteSubject} from '../../DeleteDialog';
 
 interface IState {
 	deleteTargets: PointSourceItem[];
@@ -312,7 +313,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private onBeginBulkDeleteButtonClick = () => this.setState(state => ({
 			deleteTargets: state.selectedItems,
-			deleteSubject: 'Delete',
+			deleteSubject: DeleteSubject.DELETE,
 	}));
 
 	private onBeginDeleteButtonClick = (item: PointSourceItem) => this.setState({
