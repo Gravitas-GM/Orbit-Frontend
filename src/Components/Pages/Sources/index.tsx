@@ -13,7 +13,7 @@ import {
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
-import {DeleteDialog} from '../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {replace} from '../../Utility/array';
 import {AssignPointsDialog} from './AssignPointsDialog';
@@ -21,7 +21,6 @@ import {Classes as GmClasses} from '../../../classes';
 import {ObjectList} from '../../ObjectList';
 import {TableItem} from './TableItem';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
-import {DeleteSubject} from '../../DeleteDialog';
 
 interface IState {
 	deleteTargets: PointSourceItem[];
