@@ -9,6 +9,7 @@ import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {Classes} from '../../../../classes';
 
 interface IState {
 	tags: QuestionTag[];
@@ -83,7 +84,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
-											className="gm-table-checkbox"
+											className={Classes.OBJECT_LIST_CHECKBOX}
 											checked={items.length > 0 && items.length === this.state.selectedItems.length}
 											onClick={this.onSelectAllClick}
 										/>
@@ -234,7 +235,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 			<td style={{textAlign: 'center'}}>
 				<Checkbox
-					className="gm-table-checkbox"
+					className={Classes.OBJECT_LIST_CHECKBOX}
 					checked={isChecked}
 					onClick={onSelectButtonClick}
 				/>

@@ -9,6 +9,7 @@ import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {Classes} from '../../../../classes';
 
 interface IState {
 	questions: Question[];
@@ -70,7 +71,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
-											className="gm-table-checkbox"
+											className={Classes.OBJECT_LIST_CHECKBOX}
 											checked={this.state.selectedItems.length === items.length}
 											onClick={this.onSelectAllClick}
 										/>
@@ -233,7 +234,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 			<td style={{textAlign: 'center'}}>
 				<Checkbox
-					className="gm-table-checkbox"
+					className={Classes.OBJECT_LIST_CHECKBOX}
 					checked={isChecked}
 					onClick={onSelectButtonClick}
 				/>
