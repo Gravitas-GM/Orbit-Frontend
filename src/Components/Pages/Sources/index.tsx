@@ -78,7 +78,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		return (
 			<div className={GmClasses.PAGE_WRAPPER}>
 				<ObjectList
-					onBulkDeleteClick={this.onBeginBulkDeleteButtonClick}
+					onBulkDeleteClick={this.onBulkDeleteClick}
 					bulkDeleteDisabled={this.state.selectedItems.length === 0}
 					items={this.state.sources}
 					title="Sources"
@@ -95,6 +95,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
+											className={GmClasses.OBJECT_LIST_CHECKBOX}
 											checked={this.state.selectedItems.length === items.length}
 											onClick={this.onSelectAllClick}
 										/>
@@ -108,10 +109,10 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 										item={source}
 										onAssignPoints={this.onAssignPointsClick}
 										onEdit={this.onEditClick}
-										onDelete={this.onBeginDeleteButtonClick}
+										onDelete={this.onDeleteClick}
 										onSelect={this.onSelectClick}
 										processing={this.state.processing}
-										isChecked={this.isChecked(source, this.state.selectedItems)}
+										isChecked={this.isChecked(source)}
 									/>
 								))}
 							</tbody>
@@ -194,9 +195,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private onItemFilter = (source: PointSourceItem, searchText: string): any => source.name.toLocaleLowerCase().includes(searchText);
 
-	private isChecked<T>(item: T, collection: T[]): boolean {
-		return collection.includes(item);
-	}
+	private isChecked = (item: PointSourceItem) => this.state.selectedItems.includes(item);
 
 	private onSelectAllClick = () => {
 		if (this.state.selectedItems.length === this.state.sources.length)
@@ -310,12 +309,12 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private onBeginBulkDeleteButtonClick = () => this.setState(state => ({
+	private onBulkDeleteClick = () => this.setState(state => ({
 			deleteTargets: state.selectedItems,
 			deleteSubject: DeleteSubject.DELETE,
 	}));
 
-	private onBeginDeleteButtonClick = (item: PointSourceItem) => this.setState({
+	private onDeleteClick = (item: PointSourceItem) => this.setState({
 		deleteTargets: [item],
 		deleteSubject: item.name,
 	});

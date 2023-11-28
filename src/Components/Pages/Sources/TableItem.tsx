@@ -4,6 +4,7 @@ import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {ucwords, formatNumber} from '../../Utility/string';
 import {EditCommands} from './EditCommands';
+import {Classes} from '../../../classes';
 
 interface IProps {
 	processing: boolean;
@@ -55,6 +56,7 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 
 			<td style={{textAlign: 'center'}}>
 				<Checkbox
+					className={Classes.OBJECT_LIST_CHECKBOX}
 					onClick={onSelectClick}
 					checked={isChecked}
 				/>
