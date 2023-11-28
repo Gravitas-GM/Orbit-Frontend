@@ -55,9 +55,8 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/questions"
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
-					onAddNewClick={this.onAddNewClick}
 					itemsPerPage={20}
-					onBulkDeleteClick={this.onItemBulkDelete}
+					onBulkDeleteClick={this.onBulkDeleteClick}
 					bulkDeleteDisabled={this.state.selectedItems.length === 0}
 				>
 					{items => (
@@ -73,7 +72,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 										<Checkbox
 											className="gm-table-checkbox"
 											checked={this.state.selectedItems.length === items.length}
-											onClick={this.onSelectAll}
+											onClick={this.onSelectAllClick}
 										/>
 									</th>
 								</tr>
@@ -84,8 +83,8 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 									<TableItem
 										key={item.id}
 										item={item}
-										onDelete={this.onItemDelete}
-										onSelect={this.onItemSelect}
+										onDelete={this.onDeleteClick}
+										onSelect={this.onSelectClick}
 										isChecked={this.isChecked(item)}
 									/>
 								))}
@@ -110,7 +109,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					}
 
 					<p>
-						This action cannot be undone. To confirm, please type {DeleteSubject.DELETE} in the box below, then click
+						This action cannot be undone. To confirm, please type "{DeleteSubject.DELETE}" in the box below, then click
 						"Confirm".
 					</p>
 				</DeleteDialog>
@@ -118,15 +117,13 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		);
 	};
 
-	private onAddNewClick = () => history.push('/quiz/questions/new');
-
 	private onItemFilter = (item: Question, searchText: string) => item.prompt.toLocaleLowerCase().includes(searchText);
 
 	private isChecked = (item: Question) => this.state.selectedItems.includes(item);
 
 	private isAllChecked = () => this.state.selectedItems.length === this.state.questions.length;
 
-	private onSelectAll = () => {
+	private onSelectAllClick = () => {
 		if (this.isAllChecked()) {
 			this.setState({
 				selectedItems: [],
@@ -138,7 +135,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
-	private onItemSelect = (item: Question) => {
+	private onSelectClick = (item: Question) => {
 		if (this.state.selectedItems.includes(item))
 			this.setState(state => ({
 				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
@@ -149,12 +146,12 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 			}));
 	};
 
-	private onItemDelete = (target: Question) => this.setState({
+	private onDeleteClick = (target: Question) => this.setState({
 		deleteTargets: [target],
 		deleteSubject: DeleteSubject.DELETE,
 	});
 
-	private onItemBulkDelete = () => this.setState(state => ({
+	private onBulkDeleteClick = () => this.setState(state => ({
 		deleteTargets: state.selectedItems,
 		deleteSubject: DeleteSubject.DELETE,
 	}));

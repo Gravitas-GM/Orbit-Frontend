@@ -69,9 +69,9 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					title="Question Tags"
 					items={this.state.tags}
 					onItemFilter={this.onTagFilter}
-					onAddNewClick={this.onAddNewClick}
+					editorUrlPrefix="/quiz/tags"
 					bulkDeleteDisabled={this.state.selectedItems.length === 0}
-					onBulkDeleteClick={this.onTagBulkDelete}
+					onBulkDeleteClick={this.onBulkDeleteClick}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -85,7 +85,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 										<Checkbox
 											className="gm-table-checkbox"
 											checked={items.length > 0 && items.length === this.state.selectedItems.length}
-											onClick={this.onSelectAll}
+											onClick={this.onSelectAllClick}
 										/>
 									</th>
 								</tr>
@@ -96,9 +96,9 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 									<TableItem
 										key={item.id}
 										item={item}
-										onDelete={this.onTagDelete}
-										onSelect={this.onTagSelect}
-										isChecked={this.isChecked(item, this.state.selectedItems)}
+										onDelete={this.onDeleteClick}
+										onSelect={this.onSelectClick}
+										isChecked={this.isChecked(item)}
 									/>
 								))}
 							</tbody>
@@ -117,14 +117,12 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onAddNewClick = () => history.push('/quiz/tags/new');
-
-	private onTagDelete = (tag: QuestionTag) => this.setState({
+	private onDeleteClick = (tag: QuestionTag) => this.setState({
 		deleteTargets: [tag],
 		deleteSubject: tag.label,
 	});
 
-	private onTagBulkDelete = () => this.setState(state => ({
+	private onBulkDeleteClick = () => this.setState(state => ({
 		deleteTargets: state.selectedItems,
 		deleteSubject: DeleteSubject.DELETE,
 	}));
@@ -170,13 +168,11 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 	private onTagFilter = (tag: QuestionTag, searchText: string) => tag.label.toLocaleLowerCase().includes(searchText);
 
-	private isChecked<T>(item: T, collection: T[]):boolean {
-		return collection.includes(item);
-	};
+	private isChecked = (item: QuestionTag) => this.state.selectedItems.includes(item);
 
 	private isAllChecked = () => this.state.selectedItems.length === this.state.tags.length;
 
-	private onSelectAll = () => {
+	private onSelectAllClick = () => {
 		if (this.isAllChecked()) {
 			this.setState({
 				selectedItems: [],
@@ -188,7 +184,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		}
 	};
 
-	private onTagSelect = (item: QuestionTag) => {
+	private onSelectClick = (item: QuestionTag) => {
 		if (this.state.selectedItems.includes(item))
 			this.setState(state => ({
 				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
