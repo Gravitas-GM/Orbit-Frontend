@@ -2,7 +2,7 @@ import {ComponentMeta, ComponentStory} from '@storybook/react';
 import {TopRankedPlayersCard} from './';
 
 export default {
-	title: 'Top Ranked _Users Card',
+	title: 'Top Ranked Users Card',
 	component: TopRankedPlayersCard,
 } as ComponentMeta<typeof TopRankedPlayersCard>;
 
