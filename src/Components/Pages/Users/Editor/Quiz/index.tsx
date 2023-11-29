@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Button, H2} from '@blueprintjs/core';
 import {User} from '../../../../../Api/Hub/Models/Users';
 import {QuestionTag, QuestionTagModel} from '../../../../../Api/Quiz/Models/QuestionTags';
 import {Classes} from '../../../../../classes';
@@ -7,6 +6,7 @@ import {UserContext} from '../../../../../Session';
 import {toaster} from '../../../../../toaster';
 import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
+import {ObjectList} from '../../../../ObjectList';
 import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {ucwords} from '../../../../Utility/string';
 import {AddTagDialog} from './AddTagDialog';
@@ -76,40 +76,33 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 
 		return (
 			<div className={Classes.PAGE_WRAPPER}>
-				<div className="settings-title-container">
-					<H2>Tags</H2>
-
-					<Button
-						text="Delete Selected"
-						icon="delete"
-						intent="danger"
-						onClick={this.onBulkDeleteClick}
-						disabled={this.state.selectedItems.length === 0}
-					/>
-
-					<Button
-						text="Add Tag"
-						icon="plus"
-						intent="primary"
-						onClick={this.onAddTagClick}
-					/>
-				</div>
-
-				<TagsTable
-					onAddTagClick={this.onAddTagClick}
-					onSelectAll={this.onSelectAll}
-					allSelected={this.isAllChecked()}
+				<ObjectList
+					title="Assigned Tags"
+					items={this.state.assignedTags}
+					onItemFilter={this.onItemFilter}
+					onAddNewClick={this.onAddTagClick}
+					onBulkDeleteClick={this.onBulkDeleteClick}
+					bulkDeleteDisabled={this.state.selectedItems.length === 0}
+					itemsPerPage={20}
 				>
-					{this.state.assignedTags?.map(item => (
-						<TagsTableRow
-							key={item.id}
-							item={item}
-							onDelete={this.onDeleteClick}
-							isChecked={this.isChecked(item)}
-							onSelect={this.onSelect}
-						/>
-					))}
-				</TagsTable>
+					{items => (
+						<TagsTable
+							onAddTagClick={this.onAddTagClick}
+							onSelectAll={this.onSelectAll}
+							allSelected={this.isAllChecked()}
+						>
+							{items.map(item => (
+								<TagsTableRow
+									key={item.id}
+									item={item}
+									onDelete={this.onDeleteClick}
+									isChecked={this.isChecked(item)}
+									onSelect={this.onSelect}
+								/>
+							))}
+						</TagsTable>
+					)}
+				</ObjectList>
 
 				<DeleteDialog
 					isOpen={this.state.showDeleteDialog}
@@ -129,6 +122,10 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 				)}
 			</div>
 		);
+	}
+
+	private onItemFilter = (item: QuestionTag, searchText: string) => {
+		return item.label.toLocaleLowerCase().includes(searchText);
 	}
 
 	private onAddTagClick = () => this.setState({
