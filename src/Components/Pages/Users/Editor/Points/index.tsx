@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Button, H2} from '@blueprintjs/core';
 import {ApiError} from '../../../../../Api/errors/rocket';
 import {User} from '../../../../../Api/Hub/Models/Users';
 import {PointItem, PointsModel, UserPoints} from '../../../../../Api/Point-Tracking/Models/Points';
@@ -9,6 +8,7 @@ import {UserContext} from '../../../../../Session';
 import {toaster} from '../../../../../toaster';
 import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
+import {ObjectList} from '../../../../ObjectList';
 import {allSettled, isRejectedResult} from '../../../../Utility/promise';
 import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './PointsTable';
@@ -84,40 +84,33 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 		return (
 			<div className={Classes.PAGE_WRAPPER}>
-				<div className="settings-title-container">
-					<H2>Points</H2>
-
-					<Button
-						text="Delete Selected"
-						icon="delete"
-						intent="danger"
-						onClick={this.onBulkDeleteClick}
-						disabled={this.state.selectedItems.length === 0}
-					/>
-
-					<Button
-						text="Add Points"
-						icon="plus"
-						intent="primary"
-						onClick={this.onAddPointsClick}
-					/>
-				</div>
-
-				<PointsTable
-					onAddPointsClick={this.onAddPointsClick}
-					onSelectAll={this.onSelectAll}
-					allSelected={this.isAllChecked()}
+				<ObjectList
+					title="Points"
+					items={this.state.pointItems}
+					onItemFilter={this.onItemFilter}
+					onAddNewClick={this.onAddPointsClick}
+					onBulkDeleteClick={this.onBulkDeleteClick}
+					bulkDeleteDisabled={this.state.selectedItems.length === 0}
+					itemsPerPage={20}
 				>
-					{this.state.pointItems.map(item => (
-						<PointsTableRow
-							key={item.id.$oid}
-							item={item}
-							onDelete={this.onDeleteClick}
-							isChecked={this.isChecked(item)}
-							onSelect={this.onSelect}
-						/>
-					))}
-				</PointsTable>
+					{items => (
+						<PointsTable
+							onAddPointsClick={this.onAddPointsClick}
+							onSelectAll={this.onSelectAll}
+							allSelected={this.isAllChecked()}
+						>
+							{items.map(item => (
+								<PointsTableRow
+									key={item.id.$oid}
+									item={item}
+									onDelete={this.onDeleteClick}
+									isChecked={this.isChecked(item)}
+									onSelect={this.onSelect}
+								/>
+							))}
+						</PointsTable>
+					)}
+				</ObjectList>
 
 				<DeleteDialog
 					isOpen={this.state.showDeleteDialog}
@@ -137,6 +130,10 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 				)}
 			</div>
 		);
+	}
+
+	private onItemFilter = (item: PointItem, searchText: string) => {
+		return item.source.toLocaleLowerCase().includes(searchText);
 	}
 
 	private onAddPointsClick = () => this.setState({
