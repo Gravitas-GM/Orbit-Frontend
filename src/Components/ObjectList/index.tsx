@@ -83,7 +83,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	let newButton: React.ReactNode = null;
 
-	if (props.editorUrlPrefix && props.onAddNewClick)
+	if (props.editorUrlPrefix)
 		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="plus" text="Add New" intent="primary" />;
 	else if (props.onAddNewClick) {
 		newButton = <Button icon="plus" text="Add New" intent="primary" onClick={props.onAddNewClick} />;
