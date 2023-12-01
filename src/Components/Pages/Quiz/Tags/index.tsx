@@ -68,6 +68,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Question Tags"
+					editorUrlPrefix="/quiz/tags"
 					items={this.state.tags}
 					onItemFilter={this.onTagFilter}
 					editorUrlPrefix="/quiz/tags"
