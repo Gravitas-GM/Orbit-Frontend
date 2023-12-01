@@ -62,9 +62,9 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Question Tags"
+					editorUrlPrefix="/quiz/tags"
 					items={this.state.tags}
 					onItemFilter={this.onTagFilter}
-					onAddNewClick={this.onAddNewClick}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -99,8 +99,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 			</section>
 		);
 	}
-
-	private onAddNewClick = () => history.push('/quiz/tags/new');
 
 	private onTagDelete = (tag: QuestionTag) => this.setState({
 		activeTag: tag,
