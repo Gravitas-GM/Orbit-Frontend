@@ -129,7 +129,6 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Quiz History"
-					editorUrlPrefix="/quiz/history"
 					items={this.state.submissions}
 					onItemFilter={this.onItemFilter}
 				>
