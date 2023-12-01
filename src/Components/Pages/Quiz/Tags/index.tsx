@@ -71,7 +71,6 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 					editorUrlPrefix="/quiz/tags"
 					items={this.state.tags}
 					onItemFilter={this.onTagFilter}
-					editorUrlPrefix="/quiz/tags"
 					bulkDeleteDisabled={this.state.selectedItems.length === 0}
 					onBulkDeleteClick={this.onBulkDeleteClick}
 				>
