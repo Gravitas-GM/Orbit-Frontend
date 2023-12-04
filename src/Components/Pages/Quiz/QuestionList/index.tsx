@@ -9,7 +9,6 @@ import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {Classes} from '../../../../classes';
 
 interface IState {
 	questions: Question[];
@@ -43,14 +42,14 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 
 			return;
 		}
-	};
+	}
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
 		return (
-			<>
+			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Questions"
 					editorUrlPrefix="/quiz/questions"
@@ -64,18 +63,18 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
+									<th style={{textAlign: 'center'}}>
+										<Checkbox
+											checked={this.state.selectedItems.length === items.length}
+											onClick={this.onSelectAllClick}
+										/>
+									</th>
+
 									<th>Prompt</th>
 									<th>Type</th>
 									<th>Tag</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
-									<th style={{width: 100, textAlign: 'center'}}>
-										<Checkbox
-											className={Classes.OBJECT_LIST_CHECKBOX}
-											checked={this.state.selectedItems.length === items.length}
-											onClick={this.onSelectAllClick}
-										/>
-									</th>
 								</tr>
 							</thead>
 
@@ -101,22 +100,23 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				>
-					<p>You are about to delete {this.state.deleteTargets.length > 1 ? "multiple questions" : "a question with the following prompt"}:</p>
-
-					{this.state.deleteTargets.length === 1 &&
-						<Blockquote>
-							{this.state.deleteTargets[0]?.prompt}
-						</Blockquote>
-					}
-
 					<p>
-						This action cannot be undone. To confirm, please type "{DeleteSubject.DELETE}" in the box below, then click
-						"Confirm".
+						You are about to delete
+						{this.state.deleteTargets.length > 1
+							? 'multiple questions'
+							: 'a question with the following prompt'}
+						:
+					</p>
+
+					<Blockquote>{this.state.deleteTargets[0]?.prompt}</Blockquote>
+					<p>
+						This action cannot be undone. To confirm, please type "{DeleteSubject.DELETE}" in the box below,
+						then click "Confirm".
 					</p>
 				</DeleteDialog>
-			</>
+			</section>
 		);
-	};
+	}
 
 	private onItemFilter = (item: Question, searchText: string) => item.prompt.toLocaleLowerCase().includes(searchText);
 
@@ -130,7 +130,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 				selectedItems: [],
 			});
 		} else {
-			this.setState( state => ({
+			this.setState(state => ({
 				selectedItems: [...state.questions],
 			}));
 		}
@@ -161,11 +161,13 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		if (this.state.deleteTargets.length === 0)
 			return;
 
-		const results = await allSettled(this.state.deleteTargets.map(async item => {
-			QuestionModel.delete(item.id)
+		const results = await allSettled(
+			this.state.deleteTargets.map(async item => {
+				await QuestionModel.delete(item.id);
 
-			return item;
-		}));
+				return item;
+			})
+		);
 
 		let failureCount = 0;
 		const deletedItems: Question[] = [];
@@ -182,7 +184,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
 
-		toaster.success(`Question${ this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
+		toaster.success(`Question${this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
 
 		this.setState(state => ({
 			questions: state.questions.filter(item => !deletedItems.includes(item)),
@@ -215,6 +217,10 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
+			<td style={{textAlign: 'center'}}>
+				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
+			</td>
+
 			<td>{item.prompt}</td>
 			<td>{renderKindLabel(item.kind)}</td>
 			<td>{item.tag?.label ?? '—'}</td>
@@ -229,14 +235,6 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 					intent={Intent.DANGER}
 					onClick={onDeleteButtonClick}
 					minimal={true}
-				/>
-			</td>
-
-			<td style={{textAlign: 'center'}}>
-				<Checkbox
-					className={Classes.OBJECT_LIST_CHECKBOX}
-					checked={isChecked}
-					onClick={onSelectButtonClick}
 				/>
 			</td>
 		</tr>

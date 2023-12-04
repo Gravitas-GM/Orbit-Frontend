@@ -9,7 +9,6 @@ import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {Classes} from '../../../../classes';
 
 interface IState {
 	tags: QuestionTag[];
@@ -78,17 +77,21 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
+									<th
+										style={{textAlign: 'center', width: 50}}
+									>
+										<Checkbox
+											checked={
+												items.length > 0 && items.length === this.state.selectedItems.length
+											}
+											onClick={this.onSelectAllClick}
+										/>
+									</th>
+
 									<th>Label</th>
 									<th style={{width: 250}}>Members</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{width: 100, textAlign: 'center'}}>Delete</th>
-									<th style={{width: 100, textAlign: 'center'}}>
-										<Checkbox
-											className={Classes.OBJECT_LIST_CHECKBOX}
-											checked={items.length > 0 && items.length === this.state.selectedItems.length}
-											onClick={this.onSelectAllClick}
-										/>
-									</th>
 								</tr>
 							</thead>
 
@@ -132,16 +135,17 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		deleteTargets: [],
 		deleteSubject: undefined,
 	});
-
 	private onConfirmDelete = async () => {
 		if (this.state.deleteTargets.length === 0)
 			return;
 
-		const results = await allSettled(this.state.deleteTargets.map(async item => {
-			 QuestionTagModel.delete(item.id)
+		const results = await allSettled(
+			this.state.deleteTargets.map(async item => {
+				await QuestionTagModel.delete(item.id);
 
-			 return item
-		}));
+				return item;
+			})
+		);
 
 		let failureCount = 0;
 		const deletedItems: QuestionTag[] = [];
@@ -158,7 +162,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
 
-		toaster.success(`Tag${ this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
+		toaster.success(`Tag${this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
 
 		this.setState(state => ({
 			tags: state.tags.filter(item => !deletedItems.includes(item)),
@@ -179,7 +183,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 				selectedItems: [],
 			});
 		} else {
-			this.setState( state => ({
+			this.setState(state => ({
 				selectedItems: [...state.tags],
 			}));
 		}
@@ -215,6 +219,10 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
+			<td style={{textAlign: 'center'}}>
+				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
+			</td>
+
 			<td>{item.label}</td>
 
 			<td>
@@ -229,15 +237,8 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 				<Button
 					icon="delete"
 					intent={Intent.DANGER}
-					onClick={onDeleteButtonClick} minimal={true}
-				/>
-			</td>
-
-			<td style={{textAlign: 'center'}}>
-				<Checkbox
-					className={Classes.OBJECT_LIST_CHECKBOX}
-					checked={isChecked}
-					onClick={onSelectButtonClick}
+					onClick={onDeleteButtonClick}
+					minimal={true}
 				/>
 			</td>
 		</tr>
