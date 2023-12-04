@@ -109,8 +109,10 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					</p>
 
 					<Blockquote>{this.state.deleteTargets[0]?.prompt}</Blockquote>
+
 					<p>
-						This action cannot be undone. To confirm, please type "{DeleteSubject.DELETE}" in the box below,
+						This action cannot be undone.
+						To confirm, please type "{DeleteSubject.DELETE}" in the box below,
 						then click "Confirm".
 					</p>
 				</DeleteDialog>
