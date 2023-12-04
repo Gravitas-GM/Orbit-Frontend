@@ -102,6 +102,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 									</th>
 								</tr>
 							</thead>
+
 							<tbody>
 								{items.map(source => (
 									<TableItem
@@ -193,7 +194,8 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (source: PointSourceItem, searchText: string): any => source.name.toLocaleLowerCase().includes(searchText);
+	private onItemFilter = (source: PointSourceItem, searchText: string): any =>
+		source.name.toLocaleLowerCase().includes(searchText);
 
 	private isChecked = (item: PointSourceItem) => this.state.selectedItems.includes(item);
 
