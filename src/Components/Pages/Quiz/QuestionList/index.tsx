@@ -9,7 +9,7 @@ import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import { Spacing } from '../../../../Styles/variables';
+import {Spacing} from '../../../../Styles/variables';
 
 interface IState {
 	questions: Question[];
