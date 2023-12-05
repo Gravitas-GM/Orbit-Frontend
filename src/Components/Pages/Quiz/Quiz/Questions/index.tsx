@@ -58,7 +58,7 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 		await onSubmit(items);
 
 		setSubmitting(false);
-	}, [items]);
+	}, [items, onSubmit]);
 
 	return (
 		<div>

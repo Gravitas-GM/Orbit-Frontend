@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Button, Intent} from '@blueprintjs/core';
 import {QuizItem} from './Questions';
 import './QuestionNavigator.scss';
+import { on } from 'events';
 
 interface Props {
 	questions: QuizItem[];
@@ -11,12 +12,15 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, processing}) => {
-	const hasUnanswered = React.useCallback(() => questions.filter(item => item.answer === null), [questions]);
+	const getNextUnansweredQuestion = React.useCallback(() => questions.find(item => item.answer === null), [questions]);
 
 	const focusChildInput = React.useCallback(() => {
-		const unansweredQuestions = hasUnanswered();
+		const nextUnansweredQuestion = getNextUnansweredQuestion();
 
-		const question = document.getElementsByClassName(`question-${unansweredQuestions[0].prompt.id}`)[0];
+		if (!nextUnansweredQuestion)
+			return;
+
+		const question = document.getElementsByClassName(`question-${nextUnansweredQuestion.prompt.id}`)[0];
 		const input = question.getElementsByTagName('input')[0];
 
 		if (question && input) {
@@ -27,16 +31,16 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 	}, [questions]);
 
 	const onNextButtonClick = React.useCallback(() => {
-		const unansweredQuestions = hasUnanswered();
+		const nextUnansweredQuestion = getNextUnansweredQuestion();
 
-		if (unansweredQuestions.length > 0)
+		if (nextUnansweredQuestion)
 			focusChildInput();
 	}, [questions]);
 
 	const onSubmitClick = React.useCallback(() => {
-		const unansweredQuestions = hasUnanswered();
+		const nextUnansweredQuestion = getNextUnansweredQuestion();
 
-		if (unansweredQuestions.length > 0)
+		if (nextUnansweredQuestion)
 			onNextButtonClick();
 
 		onSubmit();
@@ -44,7 +48,7 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 
 	React.useEffect(() => {
 		onNextButtonClick();
-	}, [questions, show]);
+	}, [onNextButtonClick]);
 
 	if (!show)
 		return null;
