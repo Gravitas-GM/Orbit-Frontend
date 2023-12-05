@@ -9,6 +9,7 @@ import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {Spacing} from '../../../../Styles/variables';
 
 interface IState {
 	tags: QuestionTag[];
@@ -219,7 +220,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
-			<td style={{textAlign: 'center'}}>
+			<td style={{width: Spacing.XXLarge}}>
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
