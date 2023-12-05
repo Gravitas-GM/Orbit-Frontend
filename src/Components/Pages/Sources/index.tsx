@@ -89,10 +89,6 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
-									<th>Name</th>
-									<th>Value</th>
-									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
-
 									<th style={{width: 100, textAlign: 'center'}}>
 										<Checkbox
 											className={GmClasses.OBJECT_LIST_CHECKBOX}
@@ -100,6 +96,10 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 											onClick={this.onSelectAllClick}
 										/>
 									</th>
+
+									<th>Name</th>
+									<th>Value</th>
+									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
 								</tr>
 							</thead>
 

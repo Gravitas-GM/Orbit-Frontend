@@ -35,6 +35,14 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 
 	return (
 		<tr>
+			<td style={{textAlign: 'center'}}>
+				<Checkbox
+					className={Classes.OBJECT_LIST_CHECKBOX}
+					onClick={onSelectClick}
+					checked={isChecked}
+				/>
+			</td>
+
 			<td>{ucwords(item.name)}</td>
 			<td>{formatNumber(item.point_value)}</td>
 
@@ -52,14 +60,6 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 				>
 					<Button icon="cog" minimal={true} disabled={processing} />
 				</Popover>
-			</td>
-
-			<td style={{textAlign: 'center'}}>
-				<Checkbox
-					className={Classes.OBJECT_LIST_CHECKBOX}
-					onClick={onSelectClick}
-					checked={isChecked}
-				/>
 			</td>
 		</tr>
 	);
