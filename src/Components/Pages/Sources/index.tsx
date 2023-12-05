@@ -21,6 +21,7 @@ import {Classes as GmClasses} from '../../../classes';
 import {ObjectList} from '../../ObjectList';
 import {TableItem} from './TableItem';
 import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {Spacing} from '../../../Styles/variables';
 
 interface IState {
 	deleteTargets: PointSourceItem[];
@@ -89,7 +90,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
-									<th style={{width: 100, textAlign: 'center'}}>
+									<th style={{width: Spacing.XLarge}}>
 										<Checkbox
 											className={GmClasses.OBJECT_LIST_CHECKBOX}
 											checked={this.state.selectedItems.length === items.length}
