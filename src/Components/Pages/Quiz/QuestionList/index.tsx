@@ -9,6 +9,7 @@ import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {renderKindLabel} from '../../../Utility/string';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import { Spacing } from '../../../../Styles/variables';
 
 interface IState {
 	questions: Question[];
@@ -219,7 +220,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
-			<td style={{textAlign: 'center'}}>
+			<td style={{width: Spacing.XXLarge}}>
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
