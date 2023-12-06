@@ -92,7 +92,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 								<tr>
 									<th style={{width: Spacing.XLarge}}>
 										<Checkbox
-											checked={this.state.selectedItems.length === items.length}
+											checked={this.isAllChecked()}
 											onClick={this.onSelectAllClick}
 										/>
 									</th>
@@ -199,8 +199,10 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private isChecked = (item: PointSourceItem) => this.state.selectedItems.includes(item);
 
+	private isAllChecked = () => this.state.selectedItems.length === this.state.sources.length;
+
 	private onSelectAllClick = () => {
-		if (this.state.selectedItems.length === this.state.sources.length)
+		if (this.isAllChecked())
 			this.setState({selectedItems: []});
 		else
 			this.setState(state => ({selectedItems: state.sources}));
