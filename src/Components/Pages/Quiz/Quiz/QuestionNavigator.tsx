@@ -11,8 +11,6 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, processing}) => {
-	const getNextUnansweredQuestion = (items: QuizItem[]) => items.find(item => item.answer === null);
-
 	const focusChildInput = React.useCallback(() => {
 		const nextUnansweredQuestion = getNextUnansweredQuestion(questions);
 
@@ -63,4 +61,8 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 			</div>
 		</div>
 	);
+};
+
+function getNextUnansweredQuestion(items: QuizItem[]) {
+	return items.find(item => item.answer === null);
 };
