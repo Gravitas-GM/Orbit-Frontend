@@ -104,12 +104,17 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 					<p>
 						You are about to delete
 						{this.state.deleteTargets.length > 1
-							? 'multiple questions'
-							: 'a question with the following prompt'}
+							? ' multiple questions'
+							: ' a question with the following prompt'}
 						:
 					</p>
 
-					<Blockquote>{this.state.deleteTargets[0]?.prompt}</Blockquote>
+					{
+						this.state.deleteTargets.length === 1 &&
+							<Blockquote>
+								{this.state.deleteTargets[0]?.prompt}
+							</Blockquote>
+					}
 
 					<p>
 						This action cannot be undone.
