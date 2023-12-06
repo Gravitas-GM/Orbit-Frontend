@@ -65,4 +65,4 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 
 function getNextUnansweredQuestion(items: QuizItem[]) {
 	return items.find(item => item.answer === null);
-};
+}
