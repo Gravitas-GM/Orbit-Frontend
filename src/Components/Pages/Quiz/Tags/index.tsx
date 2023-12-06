@@ -79,12 +79,10 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 							<thead>
 								<tr>
 									<th
-										style={{textAlign: 'center', width: 50}}
+										style={{width: Spacing.XLarge}}
 									>
 										<Checkbox
-											checked={
-												items.length > 0 && items.length === this.state.selectedItems.length
-											}
+											checked={this.isAllChecked()}
 											onClick={this.onSelectAllClick}
 										/>
 									</th>
@@ -220,7 +218,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
-			<td style={{width: Spacing.XXLarge}}>
+			<td>
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 

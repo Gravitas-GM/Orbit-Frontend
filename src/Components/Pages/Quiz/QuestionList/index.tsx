@@ -64,9 +64,9 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
-									<th style={{textAlign: 'center'}}>
+									<th style={{width: Spacing.XLarge}}>
 										<Checkbox
-											checked={this.state.selectedItems.length === items.length}
+											checked={this.isAllChecked()}
 											onClick={this.onSelectAllClick}
 										/>
 									</th>
@@ -220,7 +220,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 
 	return (
 		<tr>
-			<td style={{width: Spacing.XXLarge}}>
+			<td>
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
