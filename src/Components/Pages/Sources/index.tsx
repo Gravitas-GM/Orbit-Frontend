@@ -313,7 +313,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 	private onBulkDeleteClick = () => this.setState(state => ({
 			deleteTargets: state.selectedItems,
-			deleteSubject: DeleteSubject.DELETE,
+			deleteSubject: state.selectedItems.length > 1 ? DeleteSubject.DELETE : state.selectedItems[0].name,
 	}));
 
 	private onDeleteClick = (item: PointSourceItem) => this.setState({
