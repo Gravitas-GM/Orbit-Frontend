@@ -92,7 +92,6 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 								<tr>
 									<th style={{width: Spacing.XLarge}}>
 										<Checkbox
-											className={GmClasses.OBJECT_LIST_CHECKBOX}
 											checked={this.state.selectedItems.length === items.length}
 											onClick={this.onSelectAllClick}
 										/>
