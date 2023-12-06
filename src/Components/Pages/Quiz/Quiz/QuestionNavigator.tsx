@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Button, Intent} from '@blueprintjs/core';
 import {QuizItem} from './Questions';
 import './QuestionNavigator.scss';
-import { on } from 'events';
 
 interface Props {
 	questions: QuizItem[];
@@ -12,10 +11,10 @@ interface Props {
 }
 
 export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, processing}) => {
-	const getNextUnansweredQuestion = React.useCallback(() => questions.find(item => item.answer === null), [questions]);
+	const getNextUnansweredQuestion = (items: QuizItem[]) => items.find(item => item.answer === null);
 
 	const focusChildInput = React.useCallback(() => {
-		const nextUnansweredQuestion = getNextUnansweredQuestion();
+		const nextUnansweredQuestion = getNextUnansweredQuestion(questions);
 
 		if (!nextUnansweredQuestion)
 			return;
@@ -31,14 +30,14 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 	}, [questions]);
 
 	const onNextButtonClick = React.useCallback(() => {
-		const nextUnansweredQuestion = getNextUnansweredQuestion();
+		const nextUnansweredQuestion = getNextUnansweredQuestion(questions);
 
 		if (nextUnansweredQuestion)
 			focusChildInput();
 	}, [questions]);
 
 	const onSubmitClick = React.useCallback(() => {
-		const nextUnansweredQuestion = getNextUnansweredQuestion();
+		const nextUnansweredQuestion = getNextUnansweredQuestion(questions);
 
 		if (nextUnansweredQuestion)
 			onNextButtonClick();
