@@ -127,7 +127,7 @@ export class TagListPage extends React.PureComponent<{}, IState> {
 
 	private onBulkDeleteClick = () => this.setState(state => ({
 		deleteTargets: state.selectedItems,
-		deleteSubject: DeleteSubject.DELETE,
+		deleteSubject: state.selectedItems.length > 1 ? DeleteSubject.DELETE : state.selectedItems[0].label,
 	}));
 
 	private onDeleteDialogClose = () => this.setState({
