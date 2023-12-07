@@ -146,7 +146,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 	private onBulkDeleteClick = () => this.setState(state => (
 		{
-			deleteSubject: DeleteSubject.DELETE,
+			deleteSubject: state.selectedItems.length > 1 ? DeleteSubject.DELETE : state.selectedItems[0].source,
 			showDeleteDialog: true,
 			deleteTargets: state.selectedItems,
 		}
