@@ -1,31 +1,34 @@
 import * as React from 'react';
 import {
 	Button,
+	Checkbox,
 	Classes,
 	Dialog,
 	FormGroup,
 	HTMLTable,
 	InputGroup,
-	Intent, Menu,
+	Intent,
 	NumericInput,
 } from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
-import {DeleteDialog} from '../../DeleteDialog';
+import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {PageHeader} from '../../PageHeader';
 import {replace} from '../../Utility/array';
-import {formatNumber, ucwords} from '../../Utility/string';
 import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
+import {ObjectList} from '../../ObjectList';
+import {TableItem} from './TableItem';
+import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {Spacing} from '../../../Styles/variables';
 
 interface IState {
-	deleteTarget: PointSourceItem | null;
+	deleteTargets: PointSourceItem[];
 	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
+	selectedItems: PointSourceItem[];
+	deleteSubject: string | undefined;
 	showAsssignPointsDialog: boolean;
 	sources: PointSourceItem[];
 	sourceName: string;
@@ -40,7 +43,9 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 	declare context: React.ContextType<typeof UserContext>;
 
 	public state: Readonly<IState> = {
-		deleteTarget: null,
+		selectedItems: [],
+		deleteTargets: [],
+		deleteSubject: undefined,
 		isEditSource: false,
 		selectedSource: null,
 		showAsssignPointsDialog: false,
@@ -73,64 +78,48 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 
 		return (
 			<div className={GmClasses.PAGE_WRAPPER}>
-				<PageHeader title="Sources">
-					<div>
-						<Button
-							text="Add"
-							icon="plus"
-							intent="primary"
-							onClick={this.onAddButtonClick}
-						/>
-					</div>
-				</PageHeader>
-
-				<HTMLTable striped={true}>
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Value</th>
-							<th style={{width: 100, textAlign: 'center'}}>Edit</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.state.sources.map(source => (
-							<tr key={`source-${source.id.$oid}`}>
-								<td>{ucwords(source.name)}</td>
-								<td>{formatNumber(source.point_value)}</td>
-								<td style={{textAlign: 'center'}}>
-									<Popover content={(
-										<Menu>
-											<MenuItem
-												text="Assign Points"
-												icon="plus"
-												onClick={() => this.onAssignPointsClick(source)}
-											/>
-
-											<MenuItem
-												text="Edit"
-												icon="edit"
-												onClick={() => this.onEditClick(source)}
-											/>
-
-											<MenuItem
-												text="Delete"
-												icon="delete"
-												intent={Intent.DANGER}
-												onClick={() => this.onBeginDeleteButtonClick(source)}
-											/>
-										</Menu>
-									)}>
-										<Button
-											icon="cog"
-											minimal={true}
-											disabled={this.state.processing}
+				<ObjectList
+					onBulkDeleteClick={this.onBulkDeleteClick}
+					bulkDeleteDisabled={this.state.selectedItems.length === 0}
+					items={this.state.sources}
+					title="Sources"
+					onAddNewClick={this.onAddButtonClick}
+					onItemFilter={this.onItemFilter}
+				>
+					{items => (
+						<HTMLTable striped={true}>
+							<thead>
+								<tr>
+									<th style={{width: Spacing.XLarge}}>
+										<Checkbox
+											checked={this.isAllChecked()}
+											onClick={this.onSelectAllClick}
 										/>
-									</Popover>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</HTMLTable>
+									</th>
+
+									<th>Name</th>
+									<th>Value</th>
+									<th style={{width: 100, textAlign: 'center'}}>Edit</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{items.map(source => (
+									<TableItem
+										key={source.id.$oid}
+										item={source}
+										onAssignPoints={this.onAssignPointsClick}
+										onEdit={this.onEditClick}
+										onDelete={this.onDeleteClick}
+										onSelect={this.onSelectClick}
+										processing={this.state.processing}
+										isChecked={this.isChecked(source)}
+									/>
+								))}
+							</tbody>
+						</HTMLTable>
+					)}
+				</ObjectList>
 
 				{this.state.showSourceDialog && (
 					<Dialog
@@ -188,10 +177,11 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 				)}
 
 				<DeleteDialog
-					isOpen={this.state.deleteTarget !== null}
-					subject={this.state.deleteTarget?.name}
+					isOpen={this.state.deleteTargets.length > 0}
+					subject={this.state.deleteSubject}
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
+					multiple={this.state.deleteTargets.length > 1}
 				/>
 
 				{this.state.showAsssignPointsDialog && this.state.selectedSource && (
@@ -203,6 +193,31 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 			</div>
 		);
 	}
+
+	private onItemFilter = (source: PointSourceItem, searchText: string): any =>
+		source.name.toLocaleLowerCase().includes(searchText);
+
+	private isChecked = (item: PointSourceItem) => this.state.selectedItems.includes(item);
+
+	private isAllChecked = () => this.state.selectedItems.length === this.state.sources.length;
+
+	private onSelectAllClick = () => {
+		if (this.isAllChecked())
+			this.setState({selectedItems: []});
+		else
+			this.setState(state => ({selectedItems: state.sources}));
+	}
+
+	private onSelectClick = (selectedSource: PointSourceItem) => {
+		if (this.state.selectedItems.includes(selectedSource))
+			this.setState(state => ({
+				selectedItems: state.selectedItems.filter(item => item !== selectedSource),
+			}));
+		else
+			this.setState(state => ({
+				selectedItems: [...state.selectedItems, selectedSource],
+			}));
+	};
 
 	private onAddButtonClick = () => this.setState({
 		showSourceDialog: true,
@@ -298,42 +313,56 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		});
 	};
 
-	private onBeginDeleteButtonClick = (item: PointSourceItem) => this.setState({
-		deleteTarget: item,
+	private onBulkDeleteClick = () => this.setState(state => ({
+			deleteTargets: state.selectedItems,
+			deleteSubject: state.selectedItems.length > 1 ? DeleteSubject.DELETE : state.selectedItems[0].name,
+	}));
+
+	private onDeleteClick = (item: PointSourceItem) => this.setState({
+		deleteTargets: [item],
+		deleteSubject: item.name,
 	});
 
 	private onDeleteCancel = () => this.setState({
-		deleteTarget: null,
+		deleteTargets: [],
 	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.processing)
 			return;
 
-		let target = this.state.deleteTarget;
-
-		if (!target)
-			return;
-
 		this.setState({
 			processing: true,
 		});
 
-		try {
-			await PointSourceModel.delete(target.id);
-		} catch (_) {
-			toaster.showUnhandledErrorMessage();
+		const results = await allSettled(
+			this.state.deleteTargets.map(async item => {
+				await PointSourceModel.delete(item.id);
 
-			this.setState({
-				processing: false,
-			});
+				return item;
+			})
+		);
 
-			return;
+		let failureCount = 0;
+		const deletedItems: PointSourceItem[] = [];
+
+		for (const result of results) {
+			if (isRejectedResult(result)) {
+				failureCount++;
+				continue;
+			}
+
+			deletedItems.push(result.value);
 		}
 
+		if (failureCount > 0)
+			toaster.showUnhandledErrorMessage();
+
 		this.setState(state => ({
-			deleteTarget: null,
-			sources: state.sources.filter(item => item !== target),
+			sources: state.sources.filter(item => !deletedItems.includes(item)),
+			selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
+			deleteTargets: [],
+			deleteSubject: '',
 			processing: false,
 		}));
 	};
