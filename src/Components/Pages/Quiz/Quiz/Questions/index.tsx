@@ -13,6 +13,7 @@ import {Question} from './Question';
 import './index.scss';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {Button, Intent} from '@blueprintjs/core';
+import {QuestionNavigator} from '../QuestionNavigator';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,
@@ -50,11 +51,14 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 	}, [questions]);
 
 	const [submitting, setSubmitting] = React.useState(false);
+
 	const onSubmitClick = React.useCallback(async () => {
 		setSubmitting(true);
+
 		await onSubmit(items);
+
 		setSubmitting(false);
-	}, [items]);
+	}, [items, onSubmit]);
 
 	return (
 		<div>
@@ -70,6 +74,13 @@ export const Questions: React.FC<Props> = ({questions, validationFailures, onSub
 			<div>
 				<Button text="Submit" onClick={onSubmitClick} loading={submitting} intent={Intent.PRIMARY} />
 			</div>
+
+			<QuestionNavigator
+				show={!!validationFailures}
+				questions={items}
+				onSubmit={onSubmitClick}
+				processing={submitting}
+			/>
 		</div>
 	);
 };

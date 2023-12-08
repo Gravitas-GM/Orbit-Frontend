@@ -21,7 +21,7 @@ export const MultipleChoiceQuestion: React.FC<Props> = ({name, item, validationF
 			labelFor={`${name}.answerIndex`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
-			className="quiz-item multiple-choice-item"
+			className={`quiz-item multiple-choice-item question-${item.prompt.id}`}
 		>
 			<div className="choices">
 				{item.prompt.choices.map((text, index) => (

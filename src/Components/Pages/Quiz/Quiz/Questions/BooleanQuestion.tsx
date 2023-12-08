@@ -21,7 +21,7 @@ export const BooleanQuestion: React.FC<Props> = ({name, item, validationFailures
 			labelFor={`${name}.answer`}
 			failures={validationFailures}
 			failureMessage="This question has not been answered."
-			className="quiz-item boolean-item"
+			className={`quiz-item boolean-item question-${item.prompt.id}`}
 		>
 			<Radio name={name} label={item.prompt.trueLabel ?? 'True'} value={1} onChange={onResponseChange} />
 			<Radio name={name} label={item.prompt.falseLabel ?? 'False'} value={0} onChange={onResponseChange} />
