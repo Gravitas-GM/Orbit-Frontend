@@ -10,8 +10,8 @@ import {GameBoardPage} from './Pages/Game';
 import {Leaderboard} from './Pages/Leaderboard';
 import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
-import {UsersList} from './Pages/Users';
-import {UserEditor} from './Pages/Users/UserEditor';
+import {UserEditor} from './Pages/Users/Editor';
+import {UsersList} from './Pages/Users/List';
 import {CatalogListPage} from './Pages/Catalog';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import {DebugControls} from './Pages/Admin/DebugControls';
@@ -54,7 +54,7 @@ export const Layout: React.FC<IProps> = props => (
 
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
-								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} exact={true} />,
+								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} />,
 								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
 								<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
 								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
@@ -64,8 +64,7 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditor} exact={true} />,
-								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditor} exact={true} />
-
+								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditor} exact={true} />,
 							]}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [

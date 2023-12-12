@@ -1,13 +1,13 @@
+import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import * as React from 'react';
-import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
-import {MultiSelect} from '../../Select/MultiSelect';
-import {ucwords} from '../../Utility/string';
-import {DialogPointItem} from './UserEditor';
-import {toaster} from '../../../toaster';
-import {Spacing} from '../../../Styles/variables';
+import {PointSourceItem} from '../../../../../Api/Point-Tracking/Models/Sources';
+import {MultiSelect} from '../../../../Select/MultiSelect';
+import {ucwords} from '../../../../Utility/string';
+import {toaster} from '../../../../../toaster';
+import {Spacing} from '../../../../../Styles/variables';
+import {DialogPointItem} from './index';
 
 interface IProps {
 	sources: PointSourceItem[];
@@ -218,12 +218,15 @@ export class AddPointsDialog extends React.PureComponent<IProps, IState> {
 			return null;
 		}
 
+		const selected = this.state.selectedSources.includes(item);
+
 		return (
 			<MenuItem
 				active={modifiers.active}
 				key={`selectItem-${item.id.$oid}`}
 				text={ucwords(item.name)}
 				onClick={handleClick}
+				icon={selected ? 'small-tick' : 'blank'}
 			/>
 		);
 	};

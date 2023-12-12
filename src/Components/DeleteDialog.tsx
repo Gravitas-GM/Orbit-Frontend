@@ -1,5 +1,9 @@
-import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
+
+export enum DeleteSubject {
+	DELETE = 'Delete',
+}
 
 export enum DeleteSubject {
 	DELETE = 'Delete',
@@ -7,7 +11,7 @@ export enum DeleteSubject {
 
 interface IProps {
 	isOpen: boolean,
-	subject: string | undefined | null,
+	subject?: string | null,
 	multiple?: boolean,
 	onConfirm: () => Promise<void>,
 	onCancel: () => void,
@@ -36,6 +40,9 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 		[setConfirmText],
 	);
 
+	if (!subject)
+		subject = DeleteSubject.DELETE;
+
 	return (
 		<Dialog
 			isOpen={isOpen}
@@ -51,12 +58,11 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 						<>
 							<p>
 								You are about to delete {multiple ? 'multiple items' : `"${subject}"`}. This action
-								cannot be
-								reversed.
+								cannot be reversed.
 							</p>
 
 							<p>
-								To confirm, please type "{multiple ? 'Delete' : subject}" in the box below, then click
+								To confirm, please type "{subject}" in the box below, then click
 								"Confirm."
 							</p>
 						</>
@@ -75,7 +81,7 @@ export const DeleteDialog: React.FC<IProps> = ({isOpen, subject, multiple = fals
 							intent={Intent.WARNING}
 							onClick={onConfirmCallback}
 							loading={processing}
-							disabled={processing || subject?.toLowerCase() !== confirmText.toLowerCase()}
+							disabled={processing || subject.toLowerCase() !== confirmText.toLowerCase()}
 						/>
 					</div>
 				</div>
