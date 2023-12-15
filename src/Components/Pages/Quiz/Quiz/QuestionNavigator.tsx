@@ -45,7 +45,7 @@ export const QuestionNavigator: React.FC<Props> = ({questions, show, onSubmit, p
 
 	React.useEffect(() => {
 		onNextButtonClick();
-	}, [onNextButtonClick]);
+	}, [onNextButtonClick, show]);
 
 	if (!show)
 		return null;
