@@ -56,10 +56,8 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		const totalPages = Math.ceil(items.length / itemsPerPage);
 		setTotalPages(totalPages);
 
-		// Current page is no longer valid if the total number of pages has changed or a search filter is applied.
-		// Specially when we had no items and then added an item, the total pages must change from 0 to 1, otherwise
-		// startIndex will have a negative value, affecting the slice function that gets the items for the current page.
-		setCurrentPage(1)
+		// Handles the case where the user is on the final page of the list, and deletes the final item on that page.
+		setCurrentPage(Math.min(currentPage, totalPages));
 	}, [props.items, props.onItemFilter, itemsPerPage]);
 
 	const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +79,13 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	}, [props.items]);
 
 	const startIndex = (currentPage - 1) * itemsPerPage;
- 	const items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
+
+	let items: T[];
+
+	if (props.items.length === 1)
+		items = filteredItems ?? props.items;
+	else
+		items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
 
 	let newButton: React.ReactNode = null;
 
