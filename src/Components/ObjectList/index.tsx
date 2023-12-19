@@ -42,7 +42,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const [searchText, setSearchText] = React.useState('');
 
 	const onPageBack = React.useCallback(() => setCurrentPage(page => Math.max(1, page - 1)), []);
-	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), []);
+	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), [totalPages]);
 
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
