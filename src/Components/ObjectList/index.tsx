@@ -42,7 +42,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const [searchText, setSearchText] = React.useState('');
 
 	const onPageBack = React.useCallback(() => setCurrentPage(page => Math.max(1, page - 1)), []);
-	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), []);
+	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), [totalPages]);
 
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
@@ -79,7 +79,14 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	}, [props.items]);
 
 	const startIndex = (currentPage - 1) * itemsPerPage;
-	const items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
+
+	let items: T[];
+
+	// Handles an item being added to an empty list page
+	if (props.items.length === 1)
+		items = filteredItems ?? props.items;
+	else
+		items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
 
 	let newButton: React.ReactNode = null;
 
