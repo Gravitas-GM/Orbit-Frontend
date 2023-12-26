@@ -82,6 +82,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	let items: T[];
 
+	// Handles an item being added to an empty list page
 	if (props.items.length === 1)
 		items = filteredItems ?? props.items;
 	else
