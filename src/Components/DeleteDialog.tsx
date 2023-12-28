@@ -5,10 +5,6 @@ export enum DeleteSubject {
 	DELETE = 'Delete',
 }
 
-export enum DeleteSubject {
-	DELETE = 'Delete',
-}
-
 interface IProps {
 	isOpen: boolean,
 	subject?: string | null,
