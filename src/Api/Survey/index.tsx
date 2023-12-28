@@ -5,8 +5,9 @@ import {DepartmentEndpoints} from './Models/Departments';
 import {SettingsEndpoints} from './Models/Settings';
 import {SurveyEndpoints} from './Models/Survey';
 import {SurveyBankEndpoints} from './Models/SurveyBank';
+import {UserEndpoints} from './Models/Users';
 
-type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SettingsEndpoints & DepartmentEndpoints;
+type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SettingsEndpoints & UserEndpoints & DepartmentEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({
