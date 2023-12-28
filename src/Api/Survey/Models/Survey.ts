@@ -77,11 +77,6 @@ export interface Survey {
 	questions: Question[],
 }
 
-export type QuestionUpdate = Omit<Question, 'id'>;
-export type SurveyUpdatePayload = Omit<Survey, 'id' | 'questions'> & {
-	questions: QuestionUpdate[],
-}
-
 interface SurveyResponseBase {
 	id: Id,
 	questionId: number,
@@ -114,6 +109,11 @@ export interface SurveySubmission {
 
 export interface SurveySubmissionFilter {
 	drillDown: boolean,
+}
+
+export type QuestionUpdate = Omit<Question, 'id'>;
+export type SurveyUpdatePayload = Omit<Survey, 'id' | 'questions'> & {
+	questions: QuestionUpdate[],
 }
 
 export type SurveyResponseUpdate = Omit<SurveyResponse, 'id'>;
