@@ -5,6 +5,7 @@ import * as pointTrackingApi from './Point-Tracking';
 import * as gameStateApi from './Game-State';
 import * as gameCatalogApi from './Game-Catalog';
 import * as quizApi from './Quiz';
+import * as surveyApi from './Survey';
 import { history } from '../history';
 
 export interface QueryDocument {
@@ -28,6 +29,7 @@ export const pointTrackingClient = pointTrackingApi.init();
 export const gameStateClient = gameStateApi.init();
 export const gameCatalogClient = gameCatalogApi.init();
 export const quizClient = quizApi.init();
+export const surveyClient = surveyApi.init();
 
 export const tokenStorage = new TokenStorage();
 tokenStorage.initialize();
