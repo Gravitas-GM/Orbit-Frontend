@@ -48,7 +48,7 @@ export enum SurveyQuestionKind {
 
 interface QuestionBase {
 	id: Id,
-	surveyId: number,
+	survey: number,
 	kind: SurveyQuestionKind,
 	prompt: string,
 }
@@ -72,14 +72,14 @@ export type Question = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion
 
 export interface Survey {
 	id: Id,
-	accountId: number,
+	account: number,
 	startedDate: Date,
 	questions: Question[],
 }
 
 interface SurveyResponseBase {
 	id: Id,
-	questionId: number,
+	question: number,
 	kind: SurveyQuestionKind,
 }
 
@@ -102,7 +102,7 @@ export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceRe
 
 export interface SurveySubmission {
 	id: Id,
-	surveyId: number,
+	survey: number,
 	submittedDate: Date,
 	responses: SurveyResponse[],
 }

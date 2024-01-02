@@ -18,7 +18,7 @@ export interface UserEndpoints {
 
 export interface User {
 	id: Id,
-	departmentId: number,
+	department: number,
 	surveySubmitted: boolean,
 }
 

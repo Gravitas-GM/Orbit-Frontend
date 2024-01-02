@@ -37,7 +37,7 @@ export interface SurveyBankEndpoints {
 
 interface BankQuestionBase {
 	id: Id,
-	surveyId: number,
+	survey: number,
 	kind: SurveyQuestionKind,
 	prompt: string,
 }
