@@ -22,7 +22,7 @@ export interface User {
 	surveySubmitted: boolean,
 }
 
-export type UserUpdatePayload = Omit<User, 'id'>;
+export type UserUpdatePayload = Partial<Omit<User, 'id'>>;
 
 export class UserModel {
 	public static read(user: Id, projection?: Projection) {
