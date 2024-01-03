@@ -1,5 +1,6 @@
 import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../..';
 import {Permission} from '../../../Permission';
+import {Department} from '../../Survey/Models/Departments';
 import {Account} from './Accounts';
 
 export interface UserEndpoints {
@@ -38,6 +39,7 @@ export interface UserEndpoints {
 export interface User {
 	id: number;
 	account: Pick<Account, 'id'>;
+	department: Pick<Department, 'id'>;
 	emailAddress: string;
 	permissions: Permission[];
 	firstName?: string | null;
