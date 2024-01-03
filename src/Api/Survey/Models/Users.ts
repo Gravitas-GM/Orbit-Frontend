@@ -1,3 +1,4 @@
+import {Department} from '../../Hub/Models/Departments';
 import {Id, Projectable, Projection, surveyClient} from '../../index';
 
 export interface UserEndpoints {
@@ -18,11 +19,13 @@ export interface UserEndpoints {
 
 export interface User {
 	id: Id;
-	department: Id;
+	department: Pick<Department, 'id' | 'name'>;
 	surveySubmitted: boolean;
 }
 
-export type UserUpdatePayload = Partial<Omit<User, 'id'>>;
+export type UserUpdatePayload = Partial<Omit<User, 'id' | 'department'> & {
+	department?: number | null;
+}>;
 
 export class UserModel {
 	public static read(user: Id, projection?: Projection) {
