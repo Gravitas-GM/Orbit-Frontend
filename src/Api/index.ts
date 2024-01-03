@@ -7,7 +7,6 @@ import {Token, TokenStorage} from './jwt';
 import * as pointTrackingApi from './Point-Tracking';
 import * as quizApi from './Quiz';
 import * as surveyApi from './Survey';
-import { history } from '../history';
 
 export interface Entity {
 	id: number,
