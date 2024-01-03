@@ -1,6 +1,6 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {ApiError, ErrorCodes} from '../../errors/symfony';
-import {Id, Projectable, Projection, quizClient} from '../../index';
+import {Entity, Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
@@ -24,7 +24,7 @@ export interface QuizEndpoints {
 			params: Id,
 			response: void,
 		}
-	}
+	};
 }
 
 export interface Quiz {
@@ -33,8 +33,7 @@ export interface Quiz {
 	endTimestamp: Date | null,
 }
 
-interface QuestionPromptBase {
-	id: number,
+interface QuestionPromptBase extends Entity {
 	prompt: string,
 	kind: QuestionKind,
 }
@@ -56,8 +55,7 @@ export interface MultipleChoiceQuestionPrompt extends QuestionPromptBase {
 
 export type QuestionPrompt = FreeTextQuestionPrompt | BooleanQuestionPrompt | MultipleChoiceQuestionPrompt;
 
-interface AnswerBase {
-	id: number,
+interface AnswerBase extends Entity {
 	kind: QuestionKind,
 }
 

@@ -1,5 +1,5 @@
 import {parseApiTimestamp} from '../../../Components/Utility/date';
-import {Id, quizClient} from '../../index';
+import {Entity, Id, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
@@ -24,8 +24,7 @@ export interface UserEndpoints {
 	};
 }
 
-export interface User {
-	id: number,
+export interface User extends Entity {
 	name: string,
 	nextQuizTimestamp: Date,
 	assignedTags: QuestionTag[],
