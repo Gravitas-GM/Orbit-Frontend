@@ -1,4 +1,4 @@
-import {Id, Projection, quizClient} from '../../index';
+import {Entity, Id, Projection, quizClient, Update} from '../../index';
 
 export interface SettingsEndpoints {
 	'/settings/:account': {
@@ -15,8 +15,7 @@ export interface SettingsEndpoints {
 	};
 }
 
-export interface Settings {
-	id: number,
+export interface Settings extends Entity {
 	quizFrequency: Frequency,
 	questionCount: number,
 	completedRewardPointSourceId: string | null,
@@ -29,7 +28,7 @@ export enum Frequency {
 	Monthly = 'monthly',
 }
 
-export type SettingsUpdatePayload = Partial<Omit<Settings, 'id'>>;
+export type SettingsUpdatePayload = Update<Settings>;
 
 export class SettingsModel {
 	public static read(account: Id, projection?: Projection) {

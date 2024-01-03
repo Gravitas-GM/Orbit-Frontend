@@ -1,4 +1,4 @@
-import {gameCatalogClient, Id} from '../..';
+import {Entity, gameCatalogClient, Id} from '../..';
 import {Stage} from './Stages';
 
 export interface BoardEndpoints {
@@ -10,8 +10,7 @@ export interface BoardEndpoints {
 	};
 }
 
-export interface Board {
-	id: number;
+export interface Board extends Entity {
 	name: string;
 	game: number;
 	sequence: number;

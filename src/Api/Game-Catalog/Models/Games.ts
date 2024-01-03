@@ -1,4 +1,4 @@
-import {gameCatalogClient, Id} from '../..';
+import {Entity, gameCatalogClient, Id} from '../..';
 import {Board} from './Boards';
 
 export interface GameEndpoints {
@@ -16,8 +16,7 @@ export interface GameEndpoints {
 	};
 }
 
-export interface Game {
-	id: number;
+export interface Game extends Entity {
 	name: string;
 	description: string;
 	publishedDate: Date | null;

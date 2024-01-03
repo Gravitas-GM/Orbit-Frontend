@@ -1,4 +1,4 @@
-import {gameCatalogClient, Id} from '../..';
+import {Entity, gameCatalogClient, Id} from '../..';
 
 export interface StageEndpoints {
 	'/stages/:id': {
@@ -16,8 +16,7 @@ export interface BoardRegion {
 	height: number;
 }
 
-export interface Stage {
-	id: number;
+export interface Stage extends Entity {
 	name: string;
 	board: number;
 	requiredPoints: number;
