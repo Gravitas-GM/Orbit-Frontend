@@ -1,4 +1,4 @@
-import {Id, Projectable, Projection, Queryable, QueryDocument, surveyClient} from '../../index';
+import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../../index';
 
 export interface DepartmentEndpoints {
 	'/departments': {
@@ -31,7 +31,7 @@ export interface DepartmentEndpoints {
 			params: Id;
 			response: void;
 		}
-	}
+	};
 }
 
 export interface Department {
@@ -44,7 +44,7 @@ export type DepartmentUpdatePayload = Partial<Omit<Department, 'id'>>;
 
 export class DepartmentModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
-		return surveyClient.get('/departments', {
+		return hubApiClient.get('/departments', {
 			params: {
 				p: projection,
 				q: query,
@@ -53,7 +53,7 @@ export class DepartmentModel {
 	}
 
 	public static create(payload: DepartmentUpdatePayload, projection?: Projection) {
-		return surveyClient.put('/departments', payload, {
+		return hubApiClient.put('/departments', payload, {
 			params: {
 				p: projection,
 			},
@@ -61,7 +61,7 @@ export class DepartmentModel {
 	}
 
 	public static read(department: Id, projection?: Projection) {
-		return surveyClient.get<'/departments/:department'>(`/departments/${department}`, {
+		return hubApiClient.get<'/departments/:department'>(`/departments/${department}`, {
 			params: {
 				p: projection,
 			},
@@ -69,7 +69,7 @@ export class DepartmentModel {
 	}
 
 	public static update(department: Id, payload: DepartmentUpdatePayload, projection?: Projection) {
-		return surveyClient.patch<'/departments/:department'>(`/departments/${department}`, payload, {
+		return hubApiClient.patch<'/departments/:department'>(`/departments/${department}`, payload, {
 			params: {
 				p: projection,
 			},
@@ -77,6 +77,6 @@ export class DepartmentModel {
 	}
 
 	public static delete(department: Id) {
-		return surveyClient.delete<'/departments/:department'>(`/departments/${department}`);
+		return hubApiClient.delete<'/departments/:department'>(`/departments/${department}`);
 	}
 }
