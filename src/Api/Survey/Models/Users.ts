@@ -1,5 +1,4 @@
 import {Id, Projectable, Projection, surveyClient} from '../../index';
-import {Department} from './Departments';
 
 export interface UserEndpoints {
 	'/users/:user': {
@@ -19,7 +18,7 @@ export interface UserEndpoints {
 
 export interface User {
 	id: Id;
-	department: Pick<Department, 'id'>;
+	department: Id;
 	surveySubmitted: boolean;
 }
 

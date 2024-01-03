@@ -1,5 +1,5 @@
 import {Id, Projectable, Projection, Queryable, QueryDocument, surveyClient} from '../../index';
-import {Survey, SurveyQuestionKind} from './Survey';
+import {SurveyQuestionKind} from './Survey';
 
 export interface SurveyBankEndpoints {
 	'/survey-bank': {
@@ -37,7 +37,7 @@ export interface SurveyBankEndpoints {
 
 interface BankQuestionBase {
 	id: Id;
-	survey: Pick<Survey, 'id'>;
+	survey: Id;
 	kind: SurveyQuestionKind;
 	prompt: string;
 }
