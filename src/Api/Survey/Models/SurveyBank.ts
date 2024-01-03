@@ -32,44 +32,44 @@ export interface SurveyBankEndpoints {
 			params: Id;
 			response: void;
 		}
-	}
+	};
 }
 
 interface BankQuestionBase {
-	id: Id,
-	survey: Pick<Survey, 'id'>,
-	kind: SurveyQuestionKind,
-	prompt: string,
+	id: Id;
+	survey: Pick<Survey, 'id'>;
+	kind: SurveyQuestionKind;
+	prompt: string;
 }
 
 export interface BankFreeTextQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.FreeText,
+	kind: SurveyQuestionKind.FreeText;
 }
 
 export interface BankScaleQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.Scale,
-	minValue: number,
-	maxValue: number,
+	kind: SurveyQuestionKind.Scale;
+	minValue: number;
+	maxValue: number;
 }
 
 export interface BankMultipleChoiceQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice,
-	choices: string[],
+	kind: SurveyQuestionKind.MultipleChoice;
+	choices: string[];
 }
 
 export type BankQuestion = BankFreeTextQuestion | BankScaleQuestion | BankMultipleChoiceQuestion;
 
 export interface BankSurvey {
-	id: Id,
-	sort: number,
-	protected: boolean,
-	questions: BankQuestion[],
+	id: Id;
+	sort: number;
+	protected: boolean;
+	questions: BankQuestion[];
 }
 
 export type BankQuestionUpdate = Omit<BankQuestion, 'id'>;
 export type BankSurveyUpdatePayload = Omit<BankSurvey, 'id' | 'questions'> & {
-	questions: BankQuestionUpdate[],
-}
+	questions: BankQuestionUpdate[];
+};
 
 export class SurveyBankModel {
 	public static list(projection?: Projection, query?: QueryDocument) {

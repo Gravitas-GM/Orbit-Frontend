@@ -18,9 +18,9 @@ export interface UserEndpoints {
 }
 
 export interface User {
-	id: Id,
-	department: Pick<Department, 'id'>,
-	surveySubmitted: boolean,
+	id: Id;
+	department: Pick<Department, 'id'>;
+	surveySubmitted: boolean;
 }
 
 export type UserUpdatePayload = Partial<Omit<User, 'id'>>;

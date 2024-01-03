@@ -35,9 +35,9 @@ export interface DepartmentEndpoints {
 }
 
 export interface Department {
-	id: Id,
-	name: string,
-	allowSplitReporting: boolean,
+	id: Id;
+	name: string;
+	allowSplitReporting: boolean;
 }
 
 export type DepartmentUpdatePayload = Partial<Omit<Department, 'id'>>;
