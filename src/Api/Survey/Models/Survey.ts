@@ -1,4 +1,5 @@
 import {Id, Projectable, Projection, QueryDocument, surveyClient} from '../../index';
+import {Settings} from './Settings';
 
 export interface SurveyEndpoints {
 	'/surveys': {
@@ -48,7 +49,7 @@ export enum SurveyQuestionKind {
 
 interface QuestionBase {
 	id: Id,
-	survey: number,
+	survey: Pick<Survey, 'id'>,
 	kind: SurveyQuestionKind,
 	prompt: string,
 }
@@ -72,14 +73,14 @@ export type Question = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion
 
 export interface Survey {
 	id: Id,
-	account: number,
+	account: Pick<Settings, 'id'>,
 	startedDate: Date,
 	questions: Question[],
 }
 
 interface SurveyResponseBase {
 	id: Id,
-	question: number,
+	question: Pick<Question, 'id'>,
 	kind: SurveyQuestionKind,
 }
 
@@ -102,7 +103,7 @@ export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceRe
 
 export interface SurveySubmission {
 	id: Id,
-	survey: number,
+	survey: Pick<Survey, 'id'>,
 	submittedDate: Date,
 	responses: SurveyResponse[],
 }
