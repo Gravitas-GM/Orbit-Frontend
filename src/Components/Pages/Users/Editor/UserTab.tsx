@@ -6,10 +6,11 @@ import {Permission, PermissionContext} from '../../../../Permission';
 import {toaster} from '../../../../toaster';
 import {FormControls} from '../../../FormControls';
 import {Select} from '../../../Select/Select';
-import {Department, DepartmentModel} from '../../../../Api/Survey/Models/Departments';
+import {Department, DepartmentModel} from '../../../../Api/Hub/Models/Departments';
 import {UserModel as SurveyUserModel} from '../../../../Api/Survey/Models/Users';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
+import {Id} from '../../../../Api';
 
 interface Props {
 	user: User,
@@ -23,7 +24,7 @@ interface State {
 	processing: boolean,
 	validationFailures: ValidationFailures | null;
 	departments: Department[];
-	selectedDepartment: Department | null;
+	selectedDepartment: Id | null;
 }
 
 export class UserTab extends React.PureComponent<Props, State> {
@@ -174,7 +175,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 				SurveyUserModel.update(
 					this.props.user.id,
 					{
-						department: this.state.selectedDepartment?.id ?? null,
+						department: this.state.selectedDepartment ?? null,
 					}
 				)
 			]);
@@ -207,8 +208,8 @@ export class UserTab extends React.PureComponent<Props, State> {
 		dirty: true,
 	});
 
-	private onDepartmentSelect = (item: Department) => this.setState({
-		selectedDepartment: item,
+	private onDepartmentSelect = (department: Department) => this.setState({
+		selectedDepartment: department.id,
 		dirty: true,
 	});
 
@@ -221,7 +222,7 @@ private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, 
 		<MenuItem
 			key={item.id}
 			text={item.name}
-			selected={item === this.state.selectedDepartment}
+			selected={item.id === this.state.selectedDepartment}
 			active={modifiers.active}
 			disabled={modifiers.disabled}
 			onClick={handleClick}
