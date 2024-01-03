@@ -47,74 +47,74 @@ export enum SurveyQuestionKind {
 }
 
 interface QuestionBase {
-	id: Id,
-	survey: number,
-	kind: SurveyQuestionKind,
-	prompt: string,
+	id: Id;
+	survey: Id;
+	kind: SurveyQuestionKind;
+	prompt: string;
 }
 
 export interface FreeTextQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.FreeText,
+	kind: SurveyQuestionKind.FreeText;
 }
 
 export interface ScaleQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.Scale,
-	minValue: number,
-	maxValue: number,
+	kind: SurveyQuestionKind.Scale;
+	minValue: number;
+	maxValue: number;
 }
 
 export interface MultipleChoiceQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice,
-	choices: string[],
+	kind: SurveyQuestionKind.MultipleChoice;
+	choices: string[];
 }
 
 export type Question = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion;
 
 export interface Survey {
-	id: Id,
-	account: number,
-	startedDate: Date,
-	questions: Question[],
+	id: Id;
+	account: Id;
+	startedDate: Date;
+	questions: Question[];
 }
 
 interface SurveyResponseBase {
-	id: Id,
-	question: number,
-	kind: SurveyQuestionKind,
+	id: Id;
+	question: Id;
+	kind: SurveyQuestionKind;
 }
 
 export interface FreeTextResponse extends SurveyResponseBase {
-	kind: SurveyQuestionKind.FreeText,
-	response: string,
+	kind: SurveyQuestionKind.FreeText;
+	response: string;
 }
 
 export interface ScaleResponse extends SurveyResponseBase {
-	kind: SurveyQuestionKind.Scale,
-	response: number,
+	kind: SurveyQuestionKind.Scale;
+	response: number;
 }
 
 export interface MultipleChoiceResponse extends SurveyResponseBase {
-	kind: SurveyQuestionKind.MultipleChoice,
-	responseIndex: number,
+	kind: SurveyQuestionKind.MultipleChoice;
+	responseIndex: number;
 }
 
 export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceResponse;
 
 export interface SurveySubmission {
-	id: Id,
-	survey: number,
-	submittedDate: Date,
-	responses: SurveyResponse[],
+	id: Id;
+	survey: Id;
+	submittedDate: Date;
+	responses: SurveyResponse[];
 }
 
 export interface SurveySubmissionFilter {
-	drillDown: boolean,
+	drillDown: boolean;
 }
 
 export type QuestionUpdate = Omit<Question, 'id'>;
 export type SurveyUpdatePayload = Omit<Survey, 'id' | 'questions'> & {
-	questions: QuestionUpdate[],
-}
+	questions: QuestionUpdate[];
+};
 
 export type SurveyResponseUpdate = Omit<SurveyResponse, 'id'>;
 export type SurveySubmissionPayload = Omit<SurveySubmission, 'id' | 'responses'> & {

@@ -38,6 +38,7 @@ export interface UserEndpoints {
 export interface User {
 	id: number;
 	account: Pick<Account, 'id'>;
+	department: Id;
 	emailAddress: string;
 	permissions: Permission[];
 	firstName?: string | null;

@@ -28,9 +28,9 @@ export enum DayOfWeek {
 }
 
 export interface Settings {
-	id: Id,
-	surveyRefreshDay: DayOfWeek,
-	userSurveyReminder: boolean,
+	id: Id;
+	surveyRefreshDay: DayOfWeek;
+	userSurveyReminder: boolean;
 }
 
 export type SettingsUpdatePayload = Partial<Omit<Settings, 'id'>>;
