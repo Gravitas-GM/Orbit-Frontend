@@ -1,10 +1,15 @@
 import * as React from 'react';
-import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
+import {Button, ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {Permission, PermissionContext} from '../../../../Permission';
 import {toaster} from '../../../../toaster';
 import {FormControls} from '../../../FormControls';
+import {Select} from '../../../Select/Select';
+import {Department, DepartmentModel} from '../../../../Api/Survey/Models/Departments';
+import {UserModel as SurveyUserModel} from '../../../../Api/Survey/Models/Users';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {ItemRenderer} from '@blueprintjs/select';
 
 interface Props {
 	user: User,
@@ -17,6 +22,8 @@ interface State {
 	lastName: string;
 	processing: boolean,
 	validationFailures: ValidationFailures | null;
+	departments: Department[];
+	selectedDepartment: Department | null;
 }
 
 export class UserTab extends React.PureComponent<Props, State> {
@@ -33,7 +40,25 @@ export class UserTab extends React.PureComponent<Props, State> {
 			lastName: props.user.lastName ?? '',
 			processing: false,
 			validationFailures: null,
+			departments: [],
+			selectedDepartment: props.user.department ?? null,
 		};
+	}
+
+	public async componentDidMount(): Promise<void> {
+		let departments: Department[] = [];
+
+		try {
+			departments = await DepartmentModel.list().then(res => res.data);
+		} catch (error) {
+			toaster.error("Failed to load departments data.");
+
+			return;
+		}
+
+		this.setState({
+			departments,
+		});
 	}
 
 	public componentDidUpdate(prevProps: Readonly<Props>): void {
@@ -48,7 +73,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 		const redirectPath = hasPermission(Permission.ADMIN) ? '/users' : '/';
 
 		return (
-			<form>
+			<form style={{ display: 'flex', flexDirection: 'column'}}>
 				<ControlGroup fill={true} style={{gap: 10}}>
 					<FormGroup label="First Name" labelFor="firstName">
 						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
@@ -57,9 +82,37 @@ export class UserTab extends React.PureComponent<Props, State> {
 					<FormGroup label="Last Name" labelFor="lastName">
 						<InputGroup name="lastName" value={this.state.lastName} onChange={this.onLastNameChange} />
 					</FormGroup>
+				</ControlGroup>
 
+				<ControlGroup fill={true} style={{gap: 10}}>
 					<FormGroup label="Email Address" labelFor="emailAddress" helperText="Can only be updated via Slack">
 						<InputGroup name="emailAddress" disabled={true} value={this.props.user.emailAddress} />
+					</FormGroup>
+
+					<FormGroup label="Department" labelFor="department">
+						<Select<Department>
+							fill={true}
+							filterable={false}
+							items={this.state.departments}
+							itemRenderer={this.renderDepartmentOption}
+							onClear={this.onDepartmentClear}
+							onItemSelect={this.onDepartmentSelect}
+							noResults={(
+								<MenuItem
+									disabled={true}
+									text="No results."
+									roleStructure="listoption"
+								/>
+							)}
+						>
+							<Button
+								fill={true}
+								alignText="left"
+								text={this.state.selectedDepartment ? this.state.selectedDepartment.name : 'Select a department'}
+								rightIcon="double-caret-vertical"
+								placeholder="Select a department"
+							/>
+						</Select>
 					</FormGroup>
 
 					<RadioGroup
@@ -109,11 +162,22 @@ export class UserTab extends React.PureComponent<Props, State> {
 		});
 
 		try {
-			await UserModel.update(this.props.user.id, {
-				firstName: this.state.firstName,
-				lastName: this.state.lastName,
-				admin: this.state.admin,
-			});
+			await Promise.all([
+				UserModel.update(
+					this.props.user.id,
+					{
+						firstName: this.state.firstName,
+						lastName: this.state.lastName,
+						admin: this.state.admin,
+					}
+				),
+				SurveyUserModel.update(
+					this.props.user.id,
+					{
+						department: this.state.selectedDepartment?.id ?? null,
+					}
+				)
+			]);
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
@@ -137,6 +201,36 @@ export class UserTab extends React.PureComponent<Props, State> {
 
 		toaster.success('User updated.');
 	};
+
+	private onDepartmentClear = () => this.setState({
+		selectedDepartment: null,
+		dirty: true,
+	});
+
+	private onDepartmentSelect = (item: Department) => this.setState({
+		selectedDepartment: item,
+		dirty: true,
+	});
+
+
+private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, handleFocus, modifiers}) => {
+	if (!modifiers.matchesPredicate)
+		return null;
+
+	return (
+		<MenuItem
+			key={item.id}
+			text={item.name}
+			selected={item === this.state.selectedDepartment}
+			active={modifiers.active}
+			disabled={modifiers.disabled}
+			onClick={handleClick}
+			onFocus={handleFocus}
+			roleStructure="listoption"
+		/>
+	);
+};
+
 }
 
 function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admin'> {
@@ -144,3 +238,4 @@ function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admi
 		admin: permissions.includes(Permission.ADMIN),
 	};
 }
+
