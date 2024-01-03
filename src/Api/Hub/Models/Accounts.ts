@@ -1,4 +1,4 @@
-import {hubApiClient, Id, Projectable, Projection} from '../..';
+import {Create, Entity, hubApiClient, Id, Projectable, Projection} from '../..';
 
 export interface AccountEndpoints {
 	'/accounts': {
@@ -17,12 +17,11 @@ export interface AccountEndpoints {
 	};
 }
 
-export interface Account {
-	id: number;
+export interface Account extends Entity {
 	name: string;
 }
 
-export type AccountCreatePayload = Omit<Account, 'id'>;
+export type AccountCreatePayload = Create<Account, 'name'>;
 
 export class AccountModel {
 	public static create(payload: AccountCreatePayload, projection?: Projection) {
