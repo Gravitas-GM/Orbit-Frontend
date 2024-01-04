@@ -162,15 +162,12 @@ export class UserTab extends React.PureComponent<Props, State> {
 		});
 
 		try {
-			await UserModel.update(
-					this.props.user.id,
-					{
-						firstName: this.state.firstName,
-						lastName: this.state.lastName,
-						admin: this.state.admin,
-						department: this.state.selectedDepartment?.id ?? null,
-					}
-				);
+			await UserModel.update(this.props.user.id, {
+					firstName: this.state.firstName,
+					lastName: this.state.lastName,
+					admin: this.state.admin,
+					department: this.state.selectedDepartment?.id ?? null,
+				});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
@@ -208,24 +205,23 @@ export class UserTab extends React.PureComponent<Props, State> {
 		dirty: true,
 	});
 
+	private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, handleFocus, modifiers}) => {
+		if (!modifiers.matchesPredicate)
+			return null;
 
-private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, handleFocus, modifiers}) => {
-	if (!modifiers.matchesPredicate)
-		return null;
-
-	return (
-		<MenuItem
-			key={item.id}
-			text={item.name}
-			selected={item.id === this.state.selectedDepartment?.id}
-			active={modifiers.active}
-			disabled={modifiers.disabled}
-			onClick={handleClick}
-			onFocus={handleFocus}
-			roleStructure="listoption"
-		/>
-	);
-};
+		return (
+			<MenuItem
+				key={item.id}
+				text={item.name}
+				selected={item.id === this.state.selectedDepartment?.id}
+				active={modifiers.active}
+				disabled={modifiers.disabled}
+				onClick={handleClick}
+				onFocus={handleFocus}
+				roleStructure="listoption"
+			/>
+		);
+	};
 }
 
 function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admin'> {
@@ -233,4 +229,3 @@ function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admi
 		admin: permissions.includes(Permission.ADMIN),
 	};
 }
-
