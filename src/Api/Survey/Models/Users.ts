@@ -1,4 +1,3 @@
-import {Department} from '../../Hub/Models/Departments';
 import {Entity, Id, Projection, Stub, surveyClient} from '../../index';
 
 export interface UserEndpoints {
@@ -11,7 +10,7 @@ export interface UserEndpoints {
 }
 
 export interface User extends Entity {
-	department: Stub<Department, 'id' | 'name'>;
+	department: number;
 	surveySubmitted: boolean;
 }
 
