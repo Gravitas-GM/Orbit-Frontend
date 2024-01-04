@@ -11,7 +11,7 @@ export interface UserEndpoints {
 }
 
 export interface User extends Entity {
-	department: Stub<Department, 'name'>;
+	department: Stub<Department, 'id' | 'name'>;
 	surveySubmitted: boolean;
 }
 
