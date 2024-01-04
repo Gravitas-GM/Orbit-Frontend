@@ -1,6 +1,17 @@
-import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
-import {Settings} from './Settings';
+import {
+	Create,
+	Entity,
+	Id,
+	Projectable,
+	Projection,
+	Queryable,
+	QueryDocument,
+	quizClient,
+	Stub,
+	Update,
+} from '../../index';
 import {QuestionTag} from './QuestionTags';
+import {Settings} from './Settings';
 
 export interface QuestionEndpoints {
 	'/questions': {
@@ -35,10 +46,9 @@ export interface QuestionEndpoints {
 	};
 }
 
-interface QuestionBase {
-	id: number,
-	account: Pick<Settings, 'id'>,
-	tag: QuestionTag | null,
+interface QuestionBase extends Entity {
+	account: Stub<Settings>,
+	tag: Stub<QuestionTag> | null,
 	prompt: string,
 	kind: QuestionKind,
 }
@@ -69,32 +79,10 @@ export interface MultipleChoiceQuestion extends QuestionBase {
 
 export type Question = FreeTextQuestion | BooleanQuestion | MultipleChoiceQuestion;
 
-interface QuestionUpdateBase {
+export type QuestionCreate = Create<FreeTextQuestion> | Create<BooleanQuestion> | Create<MultipleChoiceQuestion>;
+export type QuestionUpdate = (Update<FreeTextQuestion> | Update<BooleanQuestion> | Update<MultipleChoiceQuestion>) & {
 	kind: QuestionKind,
-	prompt: string,
-	tag?: Id,
-}
-
-export interface FreeTextQuestionUpdate extends QuestionUpdateBase {
-	kind: QuestionKind.FreeText,
-	answers: string[],
-}
-
-export interface BooleanQuestionUpdate extends QuestionUpdateBase {
-	kind: QuestionKind.Boolean,
-	answer: boolean,
-	trueLabel: string | null,
-	falseLabel: string | null,
-}
-
-export interface MultipleChoiceQuestionUpdate extends QuestionUpdateBase {
-	kind: QuestionKind.MultipleChoice,
-	choices: string[],
-	answerIndex: number,
-}
-
-export type QuestionCreate = FreeTextQuestionUpdate | BooleanQuestionUpdate | MultipleChoiceQuestionUpdate;
-export type QuestionUpdate = Partial<Omit<QuestionCreate, 'kind'>> & Pick<QuestionCreate, 'kind'>;
+};
 
 export class QuestionModel {
 	public static list(projection?: Projection, query?: QueryDocument) {

@@ -1,4 +1,15 @@
-import {Id, Projectable, Projection, Queryable, QueryDocument, quizClient} from '../../index';
+import {
+	Create,
+	Entity,
+	Id,
+	Projectable,
+	Projection,
+	Queryable,
+	QueryDocument,
+	quizClient,
+	Stub,
+	Update,
+} from '../../index';
 import {Settings} from './Settings';
 import {User} from './Users';
 
@@ -35,21 +46,15 @@ export interface QuestionTagEndpoints {
 	};
 }
 
-export interface QuestionTag {
-	id: Id,
-	account: Pick<Settings, 'id'>,
+export interface QuestionTag extends Entity {
+	account: Stub<Settings>,
 	label: string,
 	autoAssign: boolean;
 	members: User[],
 }
 
-export type QuestionTagCreatePayload = Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
-	members: Id[],
-};
-
-export type QuestionTagUpdatePayload = Partial<Omit<QuestionTag, 'id' | 'account' | 'members' | 'questions'> & {
-	members: Id[],
-}>;
+export type QuestionTagCreatePayload = Create<QuestionTag, keyof QuestionTag, 'account'>;
+export type QuestionTagUpdatePayload = Update<QuestionTag, 'account'>;
 
 export class QuestionTagModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
