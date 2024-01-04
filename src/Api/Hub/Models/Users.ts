@@ -1,7 +1,6 @@
 import {Create, Entity, hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument, Stub, Update} from '../..';
 import {Permission} from '../../../Permission';
 import {Account} from './Accounts';
-import {Department} from './Departments';
 
 export interface UserEndpoints {
 	'/users': {
