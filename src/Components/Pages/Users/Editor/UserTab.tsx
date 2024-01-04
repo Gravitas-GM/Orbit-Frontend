@@ -7,10 +7,9 @@ import {toaster} from '../../../../toaster';
 import {FormControls} from '../../../FormControls';
 import {Select} from '../../../Select/Select';
 import {Department, DepartmentModel} from '../../../../Api/Hub/Models/Departments';
-import {UserModel as SurveyUserModel} from '../../../../Api/Survey/Models/Users';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import {Id} from '../../../../Api';
+import {Stub} from '../../../../Api';
 
 interface Props {
 	user: User,
@@ -24,7 +23,7 @@ interface State {
 	processing: boolean,
 	validationFailures: ValidationFailures | null;
 	departments: Department[];
-	selectedDepartment: Id | null;
+	selectedDepartment:  Stub<Department, 'id' | 'name'> | null;
 }
 
 export class UserTab extends React.PureComponent<Props, State> {
@@ -74,7 +73,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 		const redirectPath = hasPermission(Permission.ADMIN) ? '/users' : '/';
 
 		return (
-			<form style={{ display: 'flex', flexDirection: 'column'}}>
+			<form style={{display: 'flex', flexDirection: 'column'}}>
 				<ControlGroup fill={true} style={{gap: 10}}>
 					<FormGroup label="First Name" labelFor="firstName">
 						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
@@ -90,7 +89,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 						<InputGroup name="emailAddress" disabled={true} value={this.props.user.emailAddress} />
 					</FormGroup>
 
-					<FormGroup label="Department" labelFor="department">
+					<FormGroup style={{flex: 1}} label="Department" labelFor="department">
 						<Select<Department>
 							fill={true}
 							filterable={false}
@@ -107,8 +106,8 @@ export class UserTab extends React.PureComponent<Props, State> {
 							)}
 						>
 							<Button
-								fill={true}
 								alignText="left"
+								fill={true}
 								text={this.state.selectedDepartment ? this.state.selectedDepartment.name : 'Select a department'}
 								rightIcon="double-caret-vertical"
 								placeholder="Select a department"
@@ -163,22 +162,15 @@ export class UserTab extends React.PureComponent<Props, State> {
 		});
 
 		try {
-			await Promise.all([
-				UserModel.update(
+			await UserModel.update(
 					this.props.user.id,
 					{
 						firstName: this.state.firstName,
 						lastName: this.state.lastName,
 						admin: this.state.admin,
+						department: this.state.selectedDepartment?.id ?? null,
 					}
-				),
-				SurveyUserModel.update(
-					this.props.user.id,
-					{
-						department: this.state.selectedDepartment ?? null,
-					}
-				)
-			]);
+				);
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
@@ -203,13 +195,16 @@ export class UserTab extends React.PureComponent<Props, State> {
 		toaster.success('User updated.');
 	};
 
-	private onDepartmentClear = () => this.setState({
+	private onDepartmentClear = () => this.setState(state => ({
 		selectedDepartment: null,
-		dirty: true,
-	});
+		dirty: state.selectedDepartment !== null,
+	}));
 
 	private onDepartmentSelect = (department: Department) => this.setState({
-		selectedDepartment: department.id,
+		selectedDepartment: {
+			id: department.id,
+			name: department.name
+		},
 		dirty: true,
 	});
 
@@ -222,7 +217,7 @@ private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, 
 		<MenuItem
 			key={item.id}
 			text={item.name}
-			selected={item.id === this.state.selectedDepartment}
+			selected={item.id === this.state.selectedDepartment?.id}
 			active={modifiers.active}
 			disabled={modifiers.disabled}
 			onClick={handleClick}
@@ -231,7 +226,6 @@ private renderDepartmentOption: ItemRenderer<Department> = (item, {handleClick, 
 		/>
 	);
 };
-
 }
 
 function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admin'> {
