@@ -10,6 +10,7 @@ import {Department, DepartmentModel} from '../../../../Api/Hub/Models/Department
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Stub} from '../../../../Api';
+import {Spacing} from '../../../../Styles/variables';
 
 interface Props {
 	user: User,
@@ -51,7 +52,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 		try {
 			departments = await DepartmentModel.list().then(res => res.data);
 		} catch (error) {
-			toaster.error("Failed to load departments data.");
+			toaster.error("Failed to load departments.");
 
 			return;
 		}
@@ -74,7 +75,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 
 		return (
 			<form style={{display: 'flex', flexDirection: 'column'}}>
-				<ControlGroup fill={true} style={{gap: 10}}>
+				<ControlGroup fill={true} style={{gap: Spacing.Medium}}>
 					<FormGroup label="First Name" labelFor="firstName">
 						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
 					</FormGroup>
@@ -84,7 +85,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 					</FormGroup>
 				</ControlGroup>
 
-				<ControlGroup fill={true} style={{gap: 10}}>
+				<ControlGroup fill={true} style={{gap: Spacing.Medium}}>
 					<FormGroup label="Email Address" labelFor="emailAddress" helperText="Can only be updated via Slack">
 						<InputGroup name="emailAddress" disabled={true} value={this.props.user.emailAddress} />
 					</FormGroup>
