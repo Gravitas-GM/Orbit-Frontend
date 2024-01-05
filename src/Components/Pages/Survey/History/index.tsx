@@ -1,11 +1,11 @@
 import React from 'react';
 
-const SurveyHistory: React.FC = () => {
+export const SurveyHistory: React.FC = () => {
 	return (
 		<div>
 			<h1>Hello, I'm a dummy component!</h1>
+
+			<p>Survey History</p>
 		</div>
 	);
 };
-
-export default SurveyHistory;

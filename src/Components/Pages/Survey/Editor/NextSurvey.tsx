@@ -1,11 +1,11 @@
 import React from 'react';
 
-const SurveyBank: React.FC = () => {
+export const NextSurvey: React.FC = () => {
 	return (
 		<div>
 			<h1>Hello, I'm a dummy component!</h1>
+
+			<p>Next Survey</p>
 		</div>
 	);
 };
-
-export default SurveyBank;
