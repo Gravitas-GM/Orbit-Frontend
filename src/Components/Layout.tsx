@@ -23,6 +23,13 @@ import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import {QuizResultsPage} from './Pages/Quiz/Results';
 import {QuizPage} from './Pages/Quiz/Quiz';
 import './Layout.scss';
+import path from 'path';
+import SurveyResults from './Pages/Survey/Results';
+import SurveySettings from './Pages/Survey/Settings';
+import SurveyPage from './Pages/Survey/Survey';
+import NextSurvey from './Pages/Survey/Editor/NextSurvey';
+import SurveyBank from './Pages/Survey/Editor/SurveyBank';
+import SurveyHistory from './Pages/Survey/History';
 
 interface IProps {
 	loading: boolean;
@@ -52,6 +59,10 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
+							{/* Taking the survey and see its results: */}
+							<Route path="/survey" key="/survey" component={SurveyPage} exact={true} />
+							<Route path="/survey/results" component={SurveyResults} exact={true} />,
+
 							{isGranted(Permission.ADMIN) && [
 								<Route path="/users" key="/users" component={UsersList} exact={true} />,
 								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} />,
@@ -64,7 +75,18 @@ export const Layout: React.FC<IProps> = props => (
 								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
 								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditor} exact={true} />,
-								<Route path="/quiz/tags/new" key="/quiz/tags/new" component={TagEditor} exact={true} />,
+
+								// Editor
+								<Route path="/survey/bank" key="/survey/bank" component={SurveyBank} exact={true} />,
+								<Route path="/survey/bank/:id(\d+)" key="/survey/bank/:id" component={SurveyBank} exact={true} />,
+								<Route path="/survey/next" key="/survey/next" component={NextSurvey} exact={true} />, // or next survey?
+
+								// Settings
+								<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
+
+								// Submission History & Details
+								<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
+								<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
 							]}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [
