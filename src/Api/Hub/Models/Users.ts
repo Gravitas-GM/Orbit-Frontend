@@ -38,15 +38,15 @@ export interface UserEndpoints {
 
 export interface User extends Entity {
 	account: Stub<Account>;
+	department: Stub<Department, 'id' | 'name'> | null;
 	emailAddress: string;
 	permissions: Permission[];
-	firstName?: string | null;
-	lastName?: string | null;
+	firstName: string | null;
+	lastName: string | null;
 }
 
-export type UserCreatePayload = Create<User, 'account' | 'emailAddress', 'permissions'> & {
+export type UserCreatePayload = Create<User, 'account' | 'emailAddress' | 'permissions'> & {
 	admin?: boolean;
-	department?: number | null;
 };
 
 export type UserUpdatePayload = Update<User, 'account' | 'permissions'> & {

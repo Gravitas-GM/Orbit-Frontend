@@ -1,5 +1,16 @@
-import {Id, Projectable, Projection, Queryable, QueryDocument, surveyClient} from '../../index';
-import {SurveyQuestionKind} from './Survey';
+import {
+	Create,
+	Entity,
+	Id,
+	Projectable,
+	Projection,
+	Queryable,
+	QueryDocument,
+	Stub,
+	surveyClient,
+	Update,
+} from '../../index';
+import {Survey, SurveyQuestionKind} from './Survey';
 
 export interface SurveyBankEndpoints {
 	'/survey-bank': {
@@ -35,9 +46,8 @@ export interface SurveyBankEndpoints {
 	};
 }
 
-interface BankQuestionBase {
-	id: Id;
-	survey: Id;
+interface BankQuestionBase extends Entity {
+	survey: Stub<Survey>;
 	kind: SurveyQuestionKind;
 	prompt: string;
 }
@@ -59,16 +69,18 @@ export interface BankMultipleChoiceQuestion extends BankQuestionBase {
 
 export type BankQuestion = BankFreeTextQuestion | BankScaleQuestion | BankMultipleChoiceQuestion;
 
-export interface BankSurvey {
-	id: Id;
+export interface BankSurvey extends Entity {
 	sort: number;
 	protected: boolean;
 	questions: BankQuestion[];
 }
 
-export type BankQuestionUpdate = Omit<BankQuestion, 'id'>;
-export type BankSurveyUpdatePayload = Omit<BankSurvey, 'id' | 'questions'> & {
-	questions: BankQuestionUpdate[];
+export type BankSurveyCreatePayload = Create<BankSurvey, 'questions'> & {
+	questions: Create<BankQuestion>[];
+};
+
+export type BankSurveyUpdatePayload = Update<BankSurvey, 'questions'> & {
+	questions: Update<BankQuestion>[];
 };
 
 export class SurveyBankModel {
@@ -81,7 +93,7 @@ export class SurveyBankModel {
 		});
 	}
 
-	public static create(payload: BankSurveyUpdatePayload, projection?: Projection) {
+	public static create(payload: BankSurveyCreatePayload, projection?: Projection) {
 		return surveyClient.put('/survey-bank', payload, {
 			params: {
 				p: projection,

@@ -1,5 +1,4 @@
-import {Department} from '../../Hub/Models/Departments';
-import {Id, Projection, surveyClient} from '../../index';
+import {Entity, Id, Projection, surveyClient} from '../../index';
 
 export interface UserEndpoints {
 	'/users/:user': {
@@ -10,9 +9,8 @@ export interface UserEndpoints {
 	};
 }
 
-export interface User {
-	id: Id;
-	department: Pick<Department, 'id' | 'name'>;
+export interface User extends Entity {
+	department: number;
 	surveySubmitted: boolean;
 }
 

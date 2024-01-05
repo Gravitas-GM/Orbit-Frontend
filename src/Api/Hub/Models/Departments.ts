@@ -1,4 +1,4 @@
-import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../../index';
+import {Create, Entity, hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument, Update} from '../../index';
 
 export interface DepartmentEndpoints {
 	'/departments': {
@@ -34,13 +34,13 @@ export interface DepartmentEndpoints {
 	};
 }
 
-export interface Department {
-	id: Id;
+export interface Department extends Entity {
 	name: string;
 	allowSplitReporting: boolean;
 }
 
-export type DepartmentUpdatePayload = Partial<Omit<Department, 'id'>>;
+export type DepartmentCreatePayload = Create<Department>;
+export type DepartmentUpdatePayload = Update<Department>;
 
 export class DepartmentModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
@@ -52,7 +52,7 @@ export class DepartmentModel {
 		});
 	}
 
-	public static create(payload: DepartmentUpdatePayload, projection?: Projection) {
+	public static create(payload: DepartmentCreatePayload, projection?: Projection) {
 		return hubApiClient.put('/departments', payload, {
 			params: {
 				p: projection,

@@ -1,4 +1,4 @@
-import {Id, Projectable, Projection, surveyClient} from '../../index';
+import {Entity, Id, Projectable, Projection, surveyClient, Update} from '../../index';
 
 export interface SettingsEndpoints {
 	'/settings/:account': {
@@ -27,13 +27,12 @@ export enum DayOfWeek {
 	SUNDAY = 'sunday',
 }
 
-export interface Settings {
-	id: Id;
+export interface Settings extends Entity {
 	surveyRefreshDay: DayOfWeek;
 	userSurveyReminder: boolean;
 }
 
-export type SettingsUpdatePayload = Partial<Omit<Settings, 'id'>>;
+export type SettingsUpdatePayload = Update<Settings>;
 
 export class SettingsModel {
 	public static read(account: Id, projection?: Projection) {

@@ -1,9 +1,10 @@
-import {Id, Projectable, Projection, QueryDocument, surveyClient} from '../../index';
+import {Create, Entity, Id, Projectable, Projection, QueryDocument, Stub, surveyClient, Update} from '../../index';
+import {Settings} from './Settings';
 
 export interface SurveyEndpoints {
 	'/surveys': {
 		GET: {
-			response: SurveySubmission[];
+			response: Survey[];
 		};
 
 		PUT: {
@@ -13,11 +14,11 @@ export interface SurveyEndpoints {
 		};
 	};
 
-	'/surveys/:submission': {
+	'/surveys/:survey': {
 		POST: {
 			params: Id;
 			body: SurveySubmissionFilter;
-			response: SurveySubmission;
+			response: Survey;
 		}
 	}
 
@@ -46,9 +47,8 @@ export enum SurveyQuestionKind {
 	Scale = 'scale',
 }
 
-interface QuestionBase {
-	id: Id;
-	survey: Id;
+interface QuestionBase extends Entity {
+	survey: Stub<Survey>;
 	kind: SurveyQuestionKind;
 	prompt: string;
 }
@@ -70,16 +70,14 @@ export interface MultipleChoiceQuestion extends QuestionBase {
 
 export type Question = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion;
 
-export interface Survey {
-	id: Id;
-	account: Id;
+export interface Survey extends Entity {
+	account: Stub<Settings>;
 	startedDate: Date;
 	questions: Question[];
 }
 
-interface SurveyResponseBase {
-	id: Id;
-	question: Id;
+interface SurveyResponseBase extends Entity {
+	question: Stub<Question>;
 	kind: SurveyQuestionKind;
 }
 
@@ -100,9 +98,8 @@ export interface MultipleChoiceResponse extends SurveyResponseBase {
 
 export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceResponse;
 
-export interface SurveySubmission {
-	id: Id;
-	survey: Id;
+export interface SurveySubmission extends Entity {
+	survey: Stub<Survey>;
 	submittedDate: Date;
 	responses: SurveyResponse[];
 }
@@ -111,14 +108,12 @@ export interface SurveySubmissionFilter {
 	drillDown: boolean;
 }
 
-export type QuestionUpdate = Omit<Question, 'id'>;
-export type SurveyUpdatePayload = Omit<Survey, 'id' | 'questions'> & {
-	questions: QuestionUpdate[];
+export type SurveyUpdatePayload = Update<Survey, 'questions'> & {
+	questions: Update<Question>[];
 };
 
-export type SurveyResponseUpdate = Omit<SurveyResponse, 'id'>;
-export type SurveySubmissionPayload = Omit<SurveySubmission, 'id' | 'responses'> & {
-	responses: SurveyResponseUpdate[];
+export type SurveySubmissionPayload = Create<SurveySubmission, 'responses'> & {
+	responses: Create<SurveyResponse>[];
 };
 
 export class SurveyModel {
@@ -139,8 +134,8 @@ export class SurveyModel {
 		});
 	}
 
-	public static read(submission: Id, payload: SurveySubmissionFilter, projection?: Projection) {
-		return surveyClient.post<'/surveys/:submission'>(`/surveys/${submission}`, payload, {
+	public static read(survey: Id, payload: SurveySubmissionFilter, projection?: Projection) {
+		return surveyClient.post<'/surveys/:survey'>(`/surveys/${survey}`, payload, {
 			params: {
 				p: projection,
 			},
