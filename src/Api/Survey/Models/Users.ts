@@ -1,4 +1,4 @@
-import {Entity, Id, Projection, Stub, surveyClient} from '../../index';
+import {Entity, Id, Projection, surveyClient} from '../../index';
 
 export interface UserEndpoints {
 	'/users/:user': {

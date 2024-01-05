@@ -4,7 +4,7 @@ import {Settings} from './Settings';
 export interface SurveyEndpoints {
 	'/surveys': {
 		GET: {
-			response: SurveySubmission[];
+			response: Survey[];
 		};
 
 		PUT: {
@@ -14,11 +14,11 @@ export interface SurveyEndpoints {
 		};
 	};
 
-	'/surveys/:submission': {
+	'/surveys/:survey': {
 		POST: {
 			params: Id;
 			body: SurveySubmissionFilter;
-			response: SurveySubmission;
+			response: Survey;
 		}
 	}
 
@@ -134,8 +134,8 @@ export class SurveyModel {
 		});
 	}
 
-	public static read(submission: Id, payload: SurveySubmissionFilter, projection?: Projection) {
-		return surveyClient.post<'/surveys/:submission'>(`/surveys/${submission}`, payload, {
+	public static read(survey: Id, payload: SurveySubmissionFilter, projection?: Projection) {
+		return surveyClient.post<'/surveys/:survey'>(`/surveys/${survey}`, payload, {
 			params: {
 				p: projection,
 			},
