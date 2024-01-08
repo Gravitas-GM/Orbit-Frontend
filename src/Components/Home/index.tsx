@@ -6,6 +6,7 @@ import {DefaultCards} from './DefaultCards';
 import {GameCards} from './GameCards';
 import {QuizCards} from './QuizCards';
 import {AdminCards} from './AdminCards';
+import {SurveyCards} from './SurveyCards';
 import './Home.scss';
 
 export const Home: React.FC = () => {
@@ -19,6 +20,7 @@ export const Home: React.FC = () => {
 
 			<QuizCards />
 
+			<SurveyCards />
 
 			<AdminCards />
 		</div>
