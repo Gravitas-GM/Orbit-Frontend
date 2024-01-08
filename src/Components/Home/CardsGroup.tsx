@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {H4} from '@blueprintjs/core';
 import {Spacing} from '../../Styles/variables';
-import './Home.scss';
+
 
 interface IProps {
 	children: React.ReactNode;
