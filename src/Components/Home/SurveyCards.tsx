@@ -6,7 +6,7 @@ import {CardsGroup} from './CardsGroup';
 export const SurveyCards: React.FC = () => {
 	return (
 		<CardsGroup title="Survey">
-			<Link to="/survey/current">
+			<Link to="/survey">
 				<Card interactive={true}>
 					<Icon icon="third-party" size={35} />
 					<div>
@@ -16,7 +16,7 @@ export const SurveyCards: React.FC = () => {
 				</Card>
 			</Link>
 
-			<Link to="/survei/results">
+			<Link to="/survey/results">
 				<Card interactive={true}>
 					<Icon icon="grouped-bar-chart" size={35} />
 					<div>
