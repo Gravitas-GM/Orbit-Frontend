@@ -11,7 +11,8 @@ export const SurveyCards: React.FC = () => {
 					<Icon icon="third-party" size={35} />
 					<div>
 						<H4>Take the Survey</H4>
-						<p>Take the current week survey.</p>
+
+						<p>Take this week's survey.</p>
 					</div>
 				</Card>
 			</Link>
@@ -21,7 +22,8 @@ export const SurveyCards: React.FC = () => {
 					<Icon icon="grouped-bar-chart" size={35} />
 					<div>
 						<H4>Survey Results</H4>
-						<p>View current survey results.</p>
+
+						<p>View last week's survey results.</p>
 					</div>
 				</Card>
 			</Link>
