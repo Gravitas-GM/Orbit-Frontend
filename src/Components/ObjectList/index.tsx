@@ -10,7 +10,7 @@ import {NonIdealState} from '../NonIdealState';
 interface Props<T> {
 	title: string;
 	items: T[];
-	onItemFilter: (a: T, searchText: string) => boolean;
+	onItemFilter?: (a: T, searchText: string) => boolean;
 	children: (items: T[]) => React.ReactNode;
 	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
@@ -18,6 +18,7 @@ interface Props<T> {
 	onBulkDeleteClick?: () => void;
 	bulkDeleteDisabled?: boolean;
 	itemsPerPage?: number;
+	customControl?: JSX.Element;
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
@@ -48,7 +49,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		let items: T[] = props.items;
 
 		if (searchText.length > 0) {
-			items = items.filter(item => props.onItemFilter(item, searchText));
+			items = items.filter(item => props.onItemFilter!(item, searchText));
 			setFilteredItems(items);
 		} else
 			setFilteredItems(null);
@@ -114,22 +115,26 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
 			<PageHeader title={props.title}>
 				<div className="header-controls">
-					<InputGroup
-						type="search"
-						leftIcon="search"
-						rightElement={(
-							<Button
-								icon="cross"
-								minimal={true}
-								small={true}
-								style={{borderRadius: 30}}
-								onClick={onSearchClearClick}
-							/>
-						)}
-						placeholder={props.searchPlaceholder ?? 'Search'}
-						onChange={onSearchChange}
-						value={searchText}
-					/>
+					{props.onItemFilter && (
+						<InputGroup
+							type="search"
+							leftIcon="search"
+							rightElement={(
+								<Button
+									icon="cross"
+									minimal={true}
+									small={true}
+									style={{borderRadius: 30}}
+									onClick={onSearchClearClick}
+								/>
+							)}
+							placeholder={props.searchPlaceholder ?? 'Search'}
+							onChange={onSearchChange}
+							value={searchText}
+						/>
+					)}
+
+					{props.customControl?? null}
 
 					<div className="header-buttons">
 						{deleteButton}
