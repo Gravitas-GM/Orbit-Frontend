@@ -61,7 +61,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return null;
 		}
 
-		return submissions;
+		return submissions.sort((a, b) => b.endTimestamp.getTime() - a.endTimestamp.getTime());
 	}
 
 	private async fetchHistoryData(): Promise<void> {
@@ -90,11 +90,11 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 			const submissionUsers = submissions.map(submission => submission.user.id);
 
-			this.setState(state => ({
+			this.setState({
 				users: users.filter(user => submissionUsers.includes(user.id)),
 				submissions,
 				loading: false,
-			}));
+			});
 		} else {
 			// here, since the user isn't an admin we aren't filtering other users' submissions
 			// assuming the submissions endpoint return only the current user's submissions.
