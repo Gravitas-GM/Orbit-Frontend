@@ -61,7 +61,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			return null;
 		}
 
-		return submissions;
+		return submissions.sort((a, b) => b.endTimestamp.getTime() - a.endTimestamp.getTime());
 	}
 
 	private async fetchHistoryData(): Promise<void> {
