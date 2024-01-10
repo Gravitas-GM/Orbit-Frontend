@@ -1,16 +1,16 @@
 import * as React from 'react';
+import {Prompt, Redirect} from 'react-router';
+import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
+import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
 import {Answer, isQuizNotReadyError, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
+import {QuizSubmission} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
-import {Redirect} from 'react-router';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {PageHeader} from '../../../PageHeader';
-import {Classes} from '../../../../classes';
 import './index.scss';
-import {Timer} from './Timer';
 import {Questions, QuizItem} from './Questions';
-import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {QuizSubmission} from '../../../../Api/Quiz/Models/QuizSubmissions';
-import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
+import {Timer} from './Timer';
 
 interface State {
 	quiz: Quiz | null,
@@ -61,6 +61,11 @@ export class QuizPage extends React.PureComponent<{}, State> {
 						onSubmit={this.onSubmit}
 					/>
 				</div>
+
+				<Prompt
+					when={this.state.redirectTo === null}
+					message="Are you sure you want to leave? You have unsaved changes."
+				/>
 			</>
 		);
 	}
