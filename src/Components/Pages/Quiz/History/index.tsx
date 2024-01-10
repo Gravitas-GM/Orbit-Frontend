@@ -9,6 +9,7 @@ import {NonIdealState} from '../../../NonIdealState';
 import {history} from '../../../../history';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
+import {UserSelect} from './UserSelect';
 import {formatDateTime, formatDuration} from '../../../Utility/date';
 import {toaster} from '../../../../toaster';
 import {renderScore} from '../Results';
@@ -19,6 +20,7 @@ interface IState {
 	processing: boolean;
 	users: User[];
 	submissions: QuizSubmission[];
+	filteredSubmissions: QuizSubmission[] | null;
 }
 
 export class QuizHistoryPage extends React.PureComponent<{}, IState> {
@@ -30,6 +32,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		processing: false,
 		users: [],
 		submissions: [],
+		filteredSubmissions: null,
 	};
 
 	public async componentDidMount(): Promise<void> {
@@ -129,8 +132,15 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Quiz History"
-					items={this.state.submissions}
-					onItemFilter={this.onItemFilter}
+					items={this.state.filteredSubmissions ?? this.state.submissions}
+					customControl={
+						<UserSelect
+							users={this.state.users}
+							onUserSelect={this.onUserSelect}
+							onUserClear={this.onUserClear}
+							filteredSubmissions={this.state.filteredSubmissions}
+						/>
+					}
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -180,6 +190,16 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (item: QuizSubmission, searchText: string) =>
-		item.user.name.toLocaleLowerCase().includes(searchText);
+
+	private onUserClear = () => {
+		this.setState({
+			filteredSubmissions: null,
+		});
+	};
+
+	private onUserSelect = (user: User) => {
+		this.setState(state => ({
+			filteredSubmissions: state.submissions.filter((submission) => submission.user.id === user.id),
+		}));
+	};
 }
