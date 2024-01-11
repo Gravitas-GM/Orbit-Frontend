@@ -9,11 +9,13 @@ import {history} from './history';
 import {isGranted, Permission, PermissionCheckCallback, PermissionContext} from './Permission';
 import {PrivateRoute} from './PrivateRoute';
 import {UserContext} from './Session';
+import {RoleContext, Role, RoleCheckCallback, hasRole} from './Role';
 
 interface IState {
 	loading: boolean;
 	user: User | null;
 	permissions: Set<Permission>;
+	roles: Set<Role>;
 }
 
 export class App extends React.PureComponent<{}, IState> {
@@ -21,6 +23,7 @@ export class App extends React.PureComponent<{}, IState> {
 		loading: true,
 		user: null,
 		permissions: new Set<Permission>(),
+		roles: new Set<Role>(),
 	};
 
 	public componentDidMount() {
@@ -41,6 +44,7 @@ export class App extends React.PureComponent<{}, IState> {
 			});
 
 			this.initPermissions(response.data);
+			this.initRoles();
 		});
 	}
 
@@ -49,21 +53,23 @@ export class App extends React.PureComponent<{}, IState> {
 			<div id="app-root">
 				<UserContext.Provider value={this.state.user}>
 					<PermissionContext.Provider value={[this.isPermissionGranted, this.state.permissions]}>
-						<Router history={history}>
-							<Switch>
-								<Route path="/login">
-									<Login onLoginSuccess={this.onUserChange} />
-								</Route>
+						<RoleContext.Provider value={[this.hasRole, this.state.roles]}>
+							<Router history={history}>
+								<Switch>
+									<Route path="/login">
+										<Login onLoginSuccess={this.onUserChange} />
+									</Route>
 
-								<Route path="/activate">
-									<Activate />
-								</Route>
+									<Route path="/activate">
+										<Activate />
+									</Route>
 
-								<PrivateRoute path="/">
-									<Layout loading={this.state.loading} />
-								</PrivateRoute>
-							</Switch>
-						</Router>
+									<PrivateRoute path="/">
+										<Layout loading={this.state.loading} />
+									</PrivateRoute>
+								</Switch>
+							</Router>
+						</RoleContext.Provider>
 					</PermissionContext.Provider>
 				</UserContext.Provider>
 			</div>
@@ -100,4 +106,20 @@ export class App extends React.PureComponent<{}, IState> {
 			loading: false,
 		});
 	};
+
+	private hasRole: RoleCheckCallback = (match) => hasRole(this.state.roles, match);
+
+	private initRoles = () => {
+		const userRoles = tokenStorage.getToken()?.body.roles ?? [];
+		const roles = new Set<Role>();
+
+		for (const role of userRoles) {
+			roles.add(role);
+		}
+
+		this.setState({
+			roles,
+			loading: false,
+		});
+	}
 }
