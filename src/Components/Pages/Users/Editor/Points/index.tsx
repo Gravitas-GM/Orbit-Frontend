@@ -72,7 +72,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		}
 
 		this.setState({
-			pointItems: userPoints?.points ?? [],
+			pointItems: userPoints?.points.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()) ?? [],
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
@@ -235,7 +235,8 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 		this.setState(state => (
 			{
-				pointItems: [...state.pointItems, ...newItems],
+				pointItems: [...state.pointItems, ...newItems]
+					.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()),
 			}
 		));
 
