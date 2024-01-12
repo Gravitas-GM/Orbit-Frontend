@@ -1,4 +1,5 @@
 import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} from './index';
+import {Role} from '../Role';
 
 export class TokenStorage {
 	protected storageKey: string;
@@ -74,7 +75,7 @@ export class TokenStorage {
 interface JWTBody {
 	exp: number;
 	iat: number;
-	roles: string[];
+	roles: Role[];
 	userIdentifier: string;
 	id: number;
 	accountId: number;

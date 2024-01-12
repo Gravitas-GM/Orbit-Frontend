@@ -1,0 +1,32 @@
+import * as React from 'react';
+import {Card, Icon, H4} from '@blueprintjs/core';
+import {Link} from 'react-router-dom';
+import {CardsGroup} from './CardsGroup';
+
+export const SurveyCards: React.FC = () => {
+	return (
+		<CardsGroup title="Survey">
+			<Link to="/survey">
+				<Card interactive={true}>
+					<Icon icon="third-party" size={35} />
+					<div>
+						<H4>Take the Survey</H4>
+
+						<p>Take this week's survey.</p>
+					</div>
+				</Card>
+			</Link>
+
+			<Link to="/survey/results">
+				<Card interactive={true}>
+					<Icon icon="grouped-bar-chart" size={35} />
+					<div>
+						<H4>Survey Results</H4>
+
+						<p>View last week's survey results.</p>
+					</div>
+				</Card>
+			</Link>
+		</CardsGroup>
+	);
+};
