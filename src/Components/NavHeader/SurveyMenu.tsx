@@ -2,9 +2,11 @@ import * as React from 'react';
 import {Menu, MenuDivider} from '@blueprintjs/core';
 import {LinkedMenuItem} from './LinkedMenuItem';
 import {Permission, PermissionContext} from '../../Permission';
+import {Role, RoleContext} from '../../Role';
 
 export const SurveyMenu: React.FC = () => {
 	const [isGranted] = React.useContext(PermissionContext);
+	const [hasRole] = React.useContext(RoleContext);
 
 	return (
 		<Menu>
@@ -15,7 +17,8 @@ export const SurveyMenu: React.FC = () => {
 				<>
 					<MenuDivider />
 
-					<LinkedMenuItem to="/survey/bank" icon="projects" text="Bank" />
+					{hasRole(Role.ADMIN) && <LinkedMenuItem to="/survey/bank" icon="projects" text="Bank" />}
+
 					<LinkedMenuItem to="/survey/next" icon="th-derived" text="Next Survey" />
 					<LinkedMenuItem to="/survey/history" icon="history" text="History" />
 					<LinkedMenuItem to="/survey/settings" icon="cog" text="Settings" />
