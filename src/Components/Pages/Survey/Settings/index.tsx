@@ -1,3 +1,4 @@
+import {FormEvent} from 'react';
 import * as React from 'react';
 import {Button, Intent, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
@@ -20,6 +21,7 @@ interface IState {
 	processing: boolean;
 	failures: ValidationFailures | null;
 	surveyRefreshDay: DayOfWeek;
+	userSurveyReminder: boolean;
 	dirty: boolean;
 }
 
@@ -32,6 +34,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		processing: false,
 		failures: null,
 		surveyRefreshDay: DayOfWeek.MONDAY,
+		userSurveyReminder: false,
 		dirty: false,
 	};
 
@@ -50,6 +53,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		this.setState({
 			loading: false,
 			surveyRefreshDay: settings.surveyRefreshDay,
+			userSurveyReminder: settings.userSurveyReminder,
 		});
 	}
 
@@ -88,6 +92,22 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						</Select>
 					</ValidationAwareFormGroup>
 
+					<ValidationAwareFormGroup
+						label="Notify Users on New Surveys"
+						labelFor="userSurveyReminder"
+						failures={this.state.failures}
+					>
+						<div className={Classes.FORM_GROUP_SUB_LABEL}>
+							When enabled, Users will receive notificaion emails when a new survey is available.
+						</div>
+
+						<Switch
+							checked={this.state.userSurveyReminder}
+							onChange={this.onUserSurveyReminderChange}
+							large={true}
+						/>
+					</ValidationAwareFormGroup>
+
 					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
 				</form>
 
@@ -98,6 +118,11 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 
 	private onRefreshDayChange = (surveyRefreshDay: DayOfWeek) => this.setState({
 		surveyRefreshDay,
+		dirty: true,
+	});
+
+	private onUserSurveyReminderChange = (event: FormEvent<HTMLInputElement>) => this.setState({
+		userSurveyReminder: event.currentTarget.checked,
 		dirty: true,
 	});
 
@@ -115,6 +140,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		try {
 			await SettingsModel.update(this.context!.account.id, {
 				surveyRefreshDay: this.state.surveyRefreshDay,
+				userSurveyReminder: this.state.userSurveyReminder,
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
