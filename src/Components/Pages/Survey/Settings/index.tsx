@@ -72,7 +72,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						failures={this.state.failures}
 					>
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
-							Sets what day of the week the survey will reset on.
+							Sets which day of the week the survey will reset on.
 						</div>
 
 						<Select
