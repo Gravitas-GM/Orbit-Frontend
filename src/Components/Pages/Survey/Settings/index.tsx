@@ -1,5 +1,5 @@
-import {FormEvent} from 'react';
 import * as React from 'react';
+import {FormEvent} from 'react';
 import {Button, Intent, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
@@ -93,19 +93,25 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
-						label="Notify Users on New Surveys"
 						labelFor="userSurveyReminder"
 						failures={this.state.failures}
 					>
+						<div className="settings-switch-container">
+							<span>
+								Notify Users On New Surveys
+							</span>
+
+							<Switch
+								checked={this.state.userSurveyReminder}
+								onChange={this.onUserSurveyReminderChange}
+								large={true}
+								inline={true}
+							/>
+						</div>
+
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
 							When enabled, Users will receive notificaion emails when a new survey is available.
 						</div>
-
-						<Switch
-							checked={this.state.userSurveyReminder}
-							onChange={this.onUserSurveyReminderChange}
-							large={true}
-						/>
 					</ValidationAwareFormGroup>
 
 					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
