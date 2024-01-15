@@ -32,7 +32,7 @@ export const UserSelect: React.FC<IProps> = ({users, onUserSelect, onUserClear, 
 				onItemSelect={onUserSelect}
 			>
 				<Button>
-					{filteredSubmissions && filteredSubmissions.length === 1
+					{filteredSubmissions && filteredSubmissions.length >= 1
 						? `${filteredSubmissions[0].user.name}`
 						: 'All Users'}
 				</Button>
