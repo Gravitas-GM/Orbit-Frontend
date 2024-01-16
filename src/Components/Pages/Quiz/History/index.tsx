@@ -21,6 +21,7 @@ interface IState {
 	users: User[];
 	submissions: QuizSubmission[];
 	filteredSubmissions: QuizSubmission[] | null;
+	selectedUser: User | null;
 }
 
 export class QuizHistoryPage extends React.PureComponent<{}, IState> {
@@ -33,6 +34,7 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		users: [],
 		submissions: [],
 		filteredSubmissions: null,
+		selectedUser: null,
 	};
 
 	public async componentDidMount(): Promise<void> {
@@ -133,12 +135,12 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 				<ObjectList
 					title="Quiz History"
 					items={this.state.filteredSubmissions ?? this.state.submissions}
-					customControl={
+					controls={
 						<UserSelect
 							users={this.state.users}
 							onUserSelect={this.onUserSelect}
 							onUserClear={this.onUserClear}
-							filteredSubmissions={this.state.filteredSubmissions}
+							selectedUser={this.state.selectedUser}
 						/>
 					}
 				>
@@ -194,12 +196,14 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 	private onUserClear = () => {
 		this.setState({
 			filteredSubmissions: null,
+			selectedUser: null,
 		});
 	};
 
 	private onUserSelect = (user: User) => {
 		this.setState(state => ({
 			filteredSubmissions: state.submissions.filter((submission) => submission.user.id === user.id),
+			selectedUser: user,
 		}));
 	};
 }
