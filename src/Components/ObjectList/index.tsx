@@ -18,7 +18,7 @@ interface Props<T> {
 	onBulkDeleteClick?: () => void;
 	bulkDeleteDisabled?: boolean;
 	itemsPerPage?: number;
-	customControl?: JSX.Element;
+	controls?: React.ReactNode;
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
@@ -48,8 +48,9 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
 
-		if (searchText.length > 0) {
+		if (props.onItemFilter && searchText.length > 0) {
 			items = items.filter(item => props.onItemFilter!(item, searchText));
+
 			setFilteredItems(items);
 		} else
 			setFilteredItems(null);
@@ -115,7 +116,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
 			<PageHeader title={props.title}>
 				<div className="header-controls">
-					{props.onItemFilter && (
+					{props.controls ?? (props.onItemFilter && (
 						<InputGroup
 							type="search"
 							leftIcon="search"
@@ -132,9 +133,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 							onChange={onSearchChange}
 							value={searchText}
 						/>
-					)}
-
-					{props.customControl?? null}
+					))}
 
 					<div className="header-buttons">
 						{deleteButton}
