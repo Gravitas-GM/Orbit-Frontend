@@ -1,11 +1,11 @@
-import * as React from "react";
-import {Button} from "@blueprintjs/core";
-import {ItemRenderer} from "@blueprintjs/select";
-import {User} from "../../../../Api/Hub/Models/Users";
-import {PermissionContext, Permission} from "../../../../Permission";
-import {Select} from "../../../Select/Select";
-import {MenuItem2 as MenuItem} from "@blueprintjs/popover2";
-import {ucwords} from "../../../Utility/string";
+import * as React from 'react';
+import {Button} from '@blueprintjs/core';
+import {ItemRenderer} from '@blueprintjs/select';
+import {User} from '../../../../Api/Hub/Models/Users';
+import {PermissionContext, Permission} from '../../../../Permission';
+import {Select} from '../../../Select/Select';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {ucwords} from '../../../Utility/string';
 
 interface IProps {
 	users: User[];
@@ -20,7 +20,7 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 
 	public render() {
 		const [isGranted] = this.context;
-		const { users, onUserClear, onUserSelect, selectedUser } = this.props;
+		const {users, onUserClear, onUserSelect, selectedUser} = this.props;
 
 		if (!isGranted(Permission.ADMIN))
 			return;
@@ -29,15 +29,19 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 			<div className="user-select">
 				<Select<User>
 					fill={true}
-					filterable={false}
 					items={users}
 					itemRenderer={this.renderUserOption}
+					itemListPredicate={this.userListPredicate}
 					onItemSelect={onUserSelect}
 					onClear={onUserClear}
 					noResults={<MenuItem disabled={true} text="No results." roleStructure="listoption" />}
 				>
 					<Button
-						text={selectedUser ? `Show only ${selectedUser.firstName} ${selectedUser.lastName}` : "Show All Users"}
+						text={
+							selectedUser
+								? `Show only ${selectedUser.firstName} ${selectedUser.lastName}`
+								: 'Show All Users'
+						}
 						rightIcon="caret-down"
 						alignText="left"
 						fill={true}
@@ -47,7 +51,19 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 		);
 	}
 
-	private renderUserOption: ItemRenderer<User> = (user, { handleClick, handleFocus, modifiers }) => {
+	private userListPredicate = (query: string) => {
+		return this.props.users.filter(user => {
+			if (!user.firstName || !user.lastName)
+				return false;
+
+			return (
+				user.firstName.toLowerCase().includes(query.toLowerCase()) ||
+				user.lastName.toLowerCase().includes(query.toLowerCase())
+			);
+		});
+	};
+
+	private renderUserOption: ItemRenderer<User> = (user, {handleClick, handleFocus, modifiers}) => {
 		if (!modifiers.matchesPredicate)
 			return null;
 
