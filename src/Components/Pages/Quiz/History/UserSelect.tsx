@@ -26,7 +26,7 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 			return;
 
 		return (
-			<div className="history-filter">
+			<div className="user-select">
 				<Select<User>
 					fill={true}
 					filterable={false}
