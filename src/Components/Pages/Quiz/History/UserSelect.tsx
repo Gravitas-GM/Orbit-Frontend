@@ -28,6 +28,8 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 		return (
 			<div className="history-filter">
 				<Select<User>
+					fill={true}
+					filterable={false}
 					items={users}
 					itemRenderer={this.renderUserOption}
 					onItemSelect={onUserSelect}
