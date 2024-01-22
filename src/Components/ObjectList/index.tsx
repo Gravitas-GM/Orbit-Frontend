@@ -10,7 +10,7 @@ import {NonIdealState} from '../NonIdealState';
 interface Props<T> {
 	title: string;
 	items: T[];
-	onItemFilter: (a: T, searchText: string) => boolean;
+	onItemFilter?: (a: T, searchText: string) => boolean;
 	children: (items: T[]) => React.ReactNode;
 	editorUrlPrefix?: string;
 	searchPlaceholder?: string;
@@ -18,6 +18,7 @@ interface Props<T> {
 	onBulkDeleteClick?: () => void;
 	bulkDeleteDisabled?: boolean;
 	itemsPerPage?: number;
+	controls?: React.ReactNode;
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
@@ -46,9 +47,10 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
+		const {onItemFilter} = props;
 
-		if (searchText.length > 0) {
-			items = items.filter(item => props.onItemFilter(item, searchText));
+		if (onItemFilter && searchText.length > 0) {
+			items = items.filter(item => onItemFilter(item, searchText));
 			setFilteredItems(items);
 		} else
 			setFilteredItems(null);
@@ -92,9 +94,8 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	if (props.editorUrlPrefix)
 		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="plus" text="Add New" intent="primary" />;
-	else if (props.onAddNewClick) {
+	else if (props.onAddNewClick)
 		newButton = <Button icon="plus" text="Add New" intent="primary" onClick={props.onAddNewClick} />;
-	}
 
 	let deleteButton: React.ReactNode = null;
 
@@ -114,22 +115,24 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
 			<PageHeader title={props.title}>
 				<div className="header-controls">
-					<InputGroup
-						type="search"
-						leftIcon="search"
-						rightElement={(
-							<Button
-								icon="cross"
-								minimal={true}
-								small={true}
-								style={{borderRadius: 30}}
-								onClick={onSearchClearClick}
-							/>
-						)}
-						placeholder={props.searchPlaceholder ?? 'Search'}
-						onChange={onSearchChange}
-						value={searchText}
-					/>
+					{props.controls ?? (props.onItemFilter && (
+						<InputGroup
+							type="search"
+							leftIcon="search"
+							rightElement={(
+								<Button
+									icon="cross"
+									minimal={true}
+									small={true}
+									style={{borderRadius: 30}}
+									onClick={onSearchClearClick}
+								/>
+							)}
+							placeholder={props.searchPlaceholder ?? 'Search'}
+							onChange={onSearchChange}
+							value={searchText}
+						/>
+					))}
 
 					<div className="header-buttons">
 						{deleteButton}

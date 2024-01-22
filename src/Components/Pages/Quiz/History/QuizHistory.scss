@@ -1,11 +1,15 @@
 @import '../../../../variables';
 
-.history-filter {
+.user-select {
 	display: flex;
 	gap: $spacing-large;
 	justify-content: flex-end;
 	margin-bottom: $spacing-large;
 	align-items: center;
+
+	.#{$ns}-control-group {
+		min-width: 300px;
+	}
 }
 
 .questions-container {
