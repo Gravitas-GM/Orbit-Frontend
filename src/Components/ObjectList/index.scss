@@ -1,0 +1,15 @@
+@import '../../variables';
+
+#object-list {
+	.header-controls {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-large;
+
+		.header-buttons {
+			display: flex;
+			justify-content: right;
+			gap: $spacing-large;
+		}
+	}
+}

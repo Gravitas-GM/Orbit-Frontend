@@ -5,6 +5,7 @@
       <option name="HTML_ATTRIBUTE_WRAP" value="4" />
       <option name="HTML_KEEP_BLANK_LINES" value="1" />
       <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
+      <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html,body" />
       <option name="HTML_ENFORCE_QUOTES" value="true" />
       <option name="HTML_NEWLINE_BEFORE_FIRST_ATTRIBUTE" value="When multiline" />
       <option name="HTML_NEWLINE_AFTER_LAST_ATTRIBUTE" value="When multiline" />
@@ -15,6 +16,12 @@
     <Markdown>
       <option name="MAX_LINES_AROUND_HEADER" value="0" />
     </Markdown>
+    <ScssCodeStyleSettings>
+      <option name="HEX_COLOR_UPPER_CASE" value="true" />
+      <option name="HEX_COLOR_LONG_FORMAT" value="true" />
+      <option name="USE_DOUBLE_QUOTES" value="false" />
+      <option name="ENFORCE_QUOTES_ON_FORMAT" value="true" />
+    </ScssCodeStyleSettings>
     <TypeScriptCodeStyleSettings version="0">
       <option name="FORCE_SEMICOLON_STYLE" value="true" />
       <option name="USE_DOUBLE_QUOTES" value="false" />
@@ -42,6 +49,15 @@
         <option name="USE_TAB_CHARACTER" value="true" />
       </indentOptions>
     </codeStyleSettings>
+    <codeStyleSettings language="SCSS">
+      <option name="LINE_COMMENT_ADD_SPACE" value="true" />
+      <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+      <indentOptions>
+        <option name="INDENT_SIZE" value="4" />
+        <option name="CONTINUATION_INDENT_SIZE" value="4" />
+        <option name="USE_TAB_CHARACTER" value="true" />
+      </indentOptions>
+    </codeStyleSettings>
     <codeStyleSettings language="TypeScript">
       <option name="BLOCK_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
@@ -58,6 +74,7 @@
       <option name="PARENTHESES_EXPRESSION_LPAREN_WRAP" value="true" />
       <option name="PARENTHESES_EXPRESSION_RPAREN_WRAP" value="true" />
       <option name="BINARY_OPERATION_WRAP" value="5" />
+      <option name="TERNARY_OPERATION_WRAP" value="5" />
       <option name="FOR_STATEMENT_WRAP" value="5" />
       <option name="FOR_STATEMENT_LPAREN_ON_NEXT_LINE" value="true" />
       <option name="FOR_STATEMENT_RPAREN_ON_NEXT_LINE" value="true" />

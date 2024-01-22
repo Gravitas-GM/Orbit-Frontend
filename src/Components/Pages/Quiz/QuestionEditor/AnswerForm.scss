@@ -1,0 +1,72 @@
+@import "../../../../variables";
+
+#question-editor-fields {
+	> .#{$ns}-control-group > .#{$ns}-form-group {
+		margin-right: 10px;
+
+		&:last-of-type {
+			margin-right: 0;
+		}
+	}
+
+	textarea {
+		resize: vertical;
+
+		// Magic numbers suck.
+		//
+		// 33px is the amount of space taken up by:
+		//   - The bottom padding of ONE FormGroup element (15px each), since we want to line up with the bottom of the
+		//     second input, NOT the bottom of the entire FormGroup element
+		//   - The line height (18px) plus the bottom padding (5px) of ONE FormGroup label (since the textarea's label
+		//     in line with the first label)
+		min-height: $pt-input-height * 2 + 38px;
+	}
+}
+
+.answer-form-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: $spacing-xlarge;
+}
+
+.answer-form-label {
+	margin-bottom: $spacing-medium;
+	display: block;
+}
+
+.answer-form-separator {
+	margin: $spacing-xlarge 0;
+	opacity: 0.3;
+}
+
+.boolean-container {
+	display: flex;
+	gap: $spacing-medium;
+	flex-direction: column;
+}
+
+.boolean-answer {
+	display: flex;
+	gap: $spacing-medium;
+	width: 100%;
+	align-items: center;
+}
+
+.free-text-container {
+	display: flex;
+	gap: $spacing-medium;
+	width: 100%;
+	align-items: center;
+}
+
+.multiple-choice-container {
+	display: flex;
+	gap: $spacing-medium;
+}
+
+.multiple-choice {
+	display: flex;
+	gap: $spacing-medium;
+	align-items: center;
+}

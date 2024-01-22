@@ -1,39 +1,54 @@
-import {Button} from '@blueprintjs/core';
-import {useCallback, useContext, useState} from 'react';
+import React from 'react';
+import {ApiError} from '../../../Api/errors/symfony';
 import {GamesModel} from '../../../Api/Game-State/Models/Games';
+import {QuizModel} from '../../../Api/Quiz/Models/Quiz';
 import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {PageHeader} from '../../PageHeader';
+import {DebugButton} from './DebugButton';
 
-export const DebugControls = () => {
-	const User = useContext(UserContext);
-	const [processing, setIsProcessing] = useState(false);
+export const DebugControls: React.FC = () => {
+	const user = React.useContext(UserContext);
 
-	const onStopGameClick = useCallback(async () => {
-		setIsProcessing(true);
+	const onStopGameClick = React.useCallback(async () => {
+		if (!user)
+			return;
 
 		try {
-			await GamesModel.deleteGameState(User!.account.id);
-
-			toaster.success('Current Game has been stopped');
+			await GamesModel.deleteGameState(user.account.id);
 		} catch {
 			toaster.error('There was an error while trying to cancel the current game.');
+			return;
 		}
 
-		setIsProcessing(false);
-	}, []);
+		toaster.success('Current Game has been stopped');
+	}, [user]);
+
+	const onResetQuizClick = React.useCallback(async () => {
+		if (!user)
+			return;
+
+		try {
+			await QuizModel.reset(user.id);
+		} catch (error) {
+			if (error instanceof ApiError)
+				toaster.error('Could not reset active quiz: ' + error.message);
+			else
+				toaster.showUnhandledErrorMessage();
+
+			return;
+		}
+
+		toaster.success('Active quiz has been reset.');
+	}, [user]);
 
 	return (
 		<div className={Classes.PAGE_WRAPPER}>
-			<PageHeader title="Debug Controls" />
+			<PageHeader title="Debug" />
 
-			<Button
-				loading={processing}
-				onClick={onStopGameClick}
-			>
-				Stop Current Game
-			</Button>
+			<DebugButton onClick={onStopGameClick} text="Stop Current Game" />
+			<DebugButton onClick={onResetQuizClick} text="Reset Active Quiz" />
 		</div>
 	);
 };

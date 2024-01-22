@@ -95,7 +95,7 @@ export class Token {
 	}
 
 	public getTimeToLive() {
-		return this.body.exp - Math.floor(Date.now() / 1000);
+		return this.body.exp - Math.ceil(Date.now() / 1000);
 	}
 
 	public static DEBUG_fromObject(token: JWTBody) {

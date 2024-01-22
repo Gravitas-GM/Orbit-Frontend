@@ -26,7 +26,7 @@ interface ErrorResponse<Context extends object = {}> {
 	};
 }
 
-interface ValidationFailure {
+export interface ValidationFailure {
 	code: string;
 	path: string;
 	message: string;
@@ -43,6 +43,7 @@ interface ValidationFailureContext {
 export const ErrorCodes = {
 	Validation: 'validation_failed',
 	AccessDenied: 'access_denied',
+	QuizNotReady: 'quiz.not_ready',
 };
 
 export class ApiError<Context extends {} = {}> extends Error {

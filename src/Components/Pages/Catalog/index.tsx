@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Classes} from '../../../classes';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
-import * as toaster from '../../../Toaster';
+import {toaster} from '../../../toaster';
 import {Button, InputGroup} from '@blueprintjs/core';
 import {NonIdealState} from '../../NonIdealState';
 import {classNames} from '../../Utility/dom';

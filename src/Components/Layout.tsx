@@ -12,9 +12,17 @@ import {CatalogListPage} from './Pages/Catalog';
 import {GameInfo} from './Pages/Catalog/GameInfo';
 import {GameBoardPage} from './Pages/Game';
 import {Leaderboard} from './Pages/Leaderboard';
+import {QuizHistoryPage} from './Pages/Quiz/History';
+import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
+import {QuestionListPage} from './Pages/Quiz/QuestionList';
+import {QuizPage} from './Pages/Quiz/Quiz';
+import {QuizResultsPage} from './Pages/Quiz/Results';
+import {QuizSettings} from './Pages/Quiz/Settings';
+import {TagListPage} from './Pages/Quiz/Tags';
+import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
-import {UsersList} from './Pages/Users';
-import {UserEditor} from './Pages/Users/UserEditor';
+import {UserEditor} from './Pages/Users/Editor';
+import {UsersList} from './Pages/Users/List';
 
 interface IProps {
 	loading: boolean;
@@ -30,41 +38,42 @@ export const Layout: React.FC<IProps> = props => (
 				height: '100%',
 			}}
 		>
-			<NavHeader loading={props.loading} />
+			<NavHeader />
 
 			<div className="main-frame">
 				<PermissionContext.Consumer>
 					{([isGranted]) => (
-						<Switch>
+						<Switch key={0}>
 							<Route path="/" component={Home} exact={true} />
 
 							<Route path="/leaderboard" component={Leaderboard} exact={true} />
 
 							<Route path="/game" component={GameBoardPage} />
 
+							<Route path="/catalog" component={CatalogListPage} exact={true} />
+
+							<Route path="/quiz" component={QuizPage} exact={true} />
+							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
+							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
+
+							{/* @formatter:off */}
 							{isGranted(Permission.ADMIN) && (
 								<>
-									<Route path="/users" key="/users" component={UsersList} exact={true} />
-
-									<Route
-										path="/users/:user(\d+)"
-										key="/users/:user"
-										component={UserEditor}
-										exact={true}
-									/>
-
-									<Route path="/sources" key="/sources" component={SourcesList} exact={true} />
-
+									<Route path="/users" component={UsersList} exact={true} />
+									<Route path="/users/:user(\d+)" component={UserEditor} />
+									<Route path="/sources" component={SourcesList} exact={true} />
 									<Route path="/catalog" component={CatalogListPage} exact={true} />
-
-									<Route
-										path="/catalog/:game(\d+)"
-										key="/catalog/:game"
-										component={GameInfo}
-										exact={true}
-									/>
+									<Route path="/catalog/:game(\d+)" component={GameInfo} exact={true} />
+									<Route path="/quiz/tags" component={TagListPage} exact={true} />
+									<Route path="/quiz/settings" component={QuizSettings} exact={true} />
+									<Route path="/quiz/questions" component={QuestionListPage} exact={true} />
+									<Route path="/quiz/questions/:question(\d+)" component={QuestionEditorPage} exact={true} />
+									<Route path="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
+									<Route path="/quiz/tags/:tag(\d+)" component={TagEditor} exact={true} />
+									<Route path="/quiz/tags/new" component={TagEditor} exact={true} />
 								</>
 							)}
+							{/* @formatter:on */}
 
 							{Config.isDev && isGranted(Permission.ADMIN) && [
 								<Route

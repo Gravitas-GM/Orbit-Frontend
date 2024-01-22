@@ -1,0 +1,182 @@
+import {QuestionKind} from '../Api/Quiz/Models/Questions';
+import {QuizSubmission} from '../Api/Quiz/Models/QuizSubmissions';
+
+export const quizSubmissionsMock: QuizSubmission[] = [
+	{
+		// should it reference only the ID of the user?
+		user: {assignedTags: [], id: 0, name: 'John Doe', nextQuizTimestamp: new Date()},
+		correctCount: 4,
+		questionCount: 7,
+		account: {id: 0},
+		id: 91,
+		startTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		endTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		questions: [
+			{
+				answers: ['Paris'],
+				prompt: 'What is the capital of France?',
+				kind: QuestionKind.FreeText,
+				correct: true,
+				response: 'Paris',
+			},
+			{
+				answers: ['Sheriff', 'Popo'],
+				prompt: 'What is Eduardo`s dog called??',
+				kind: QuestionKind.FreeText,
+				correct: false,
+				response: 'Rex',
+			},
+			{
+				prompt: 'Is this question a valid question?',
+				kind: QuestionKind.MultipleChoice,
+				response: 0,
+				answerIndex: 0,
+				choices: ['Yes', 'No', 'Maybe'],
+				correct: true,
+			},
+			{
+				kind: QuestionKind.MultipleChoice,
+				answerIndex: 1, // no
+				choices: ['Yes', 'No', 'Maybe'],
+				correct: false,
+				prompt: 'Are dinossaurs friendly?',
+				response: 2, // maybe
+			},
+			{
+				prompt: 'Is this a million dollar question?',
+				kind: QuestionKind.Boolean,
+				response: true,
+				answer: false,
+				correct: false,
+				trueLabel: 'Sure',
+				falseLabel: 'Nope',
+			},
+			{
+				prompt: 'Do you want to believe in aliens?',
+				kind: QuestionKind.Boolean,
+				response: true,
+				answer: true,
+				correct: true,
+				trueLabel: 'Sure',
+				falseLabel: 'Nope',
+			},
+			{
+				prompt: 'Do you mind if I sleep on the floor?',
+				kind: QuestionKind.Boolean,
+				response: false,
+				answer: false,
+				correct: true,
+				trueLabel: 'Yes, I rather you sleep on the bed',
+				falseLabel: 'No, go on',
+			},
+		],
+	},
+	{
+		// should it reference only the ID of the user?
+		user: {assignedTags: [], id: 0, name: 'John Doe', nextQuizTimestamp: new Date()},
+		correctCount: 3,
+		questionCount: 7,
+		account: {id: 0},
+		id: 92,
+		startTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		endTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		questions: [
+			{
+				answers: ['Paris', 'France'],
+
+				prompt: 'Where is the Eiffel Tower?',
+				kind: QuestionKind.FreeText,
+				correct: true,
+				response: 'Paris',
+			},
+			{
+				prompt: 'Is this question a valid question?',
+				kind: QuestionKind.MultipleChoice,
+				response: 0,
+				answerIndex: 0,
+				choices: ['Yes', 'No', 'Maybe'],
+				correct: true,
+			},
+			{
+				prompt: 'Is this a mocked-up question?',
+				kind: QuestionKind.Boolean,
+				response: true,
+				answer: true,
+				correct: true,
+				trueLabel: 'True',
+				falseLabel: 'False',
+			},
+		],
+	},
+	{
+		user: {id: 22, name: 'Jane Doe', nextQuizTimestamp: new Date(), assignedTags: []},
+		correctCount: 0,
+		questionCount: 3,
+		account: {id: 22},
+		startTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		endTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		id: 93,
+		questions: [
+			{
+				answers: ['Paris', 'France'],
+				prompt: 'Where is the Eiffel Tower?',
+				kind: QuestionKind.FreeText,
+				correct: false,
+				response:
+					"Bagdad Or maybe Somewhere I don't know I'm just typing random stuff to make this text longer",
+			},
+			{
+				prompt: 'Is this question a valid question?',
+				kind: QuestionKind.MultipleChoice,
+				response: 1,
+				answerIndex: 0,
+				choices: ['Yes', 'No', 'Maybe'],
+				correct: false,
+			},
+			{
+				prompt: 'Is this a mocked-up question?',
+				kind: QuestionKind.Boolean,
+				response: false,
+				answer: true,
+				correct: false,
+				trueLabel: 'Right',
+				falseLabel: 'Wrong',
+			},
+		],
+	},
+	{
+		user: {id: 22, name: 'Jane Doe', nextQuizTimestamp: new Date(), assignedTags: []},
+		correctCount: 1,
+		questionCount: 3,
+		account: {id: 22},
+		startTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		endTimestamp: new Date(new Date().valueOf() - Math.random() * 1e12),
+		id: 94,
+		questions: [
+			{
+				answers: ['Paris', 'France'],
+				prompt: 'Where is the Eiffel Tower?',
+				kind: QuestionKind.FreeText,
+				correct: true,
+				response: 'Paris',
+			},
+			{
+				prompt: 'Is this question a valid question?',
+				kind: QuestionKind.MultipleChoice,
+				response: 1,
+				answerIndex: 0,
+				choices: ['Yes', 'No', 'Maybe'],
+				correct: false,
+			},
+			{
+				prompt: 'Is this a million dollar question?',
+				kind: QuestionKind.Boolean,
+				response: false,
+				answer: true,
+				correct: false,
+				trueLabel: 'Yay',
+				falseLabel: 'Nay',
+			},
+		],
+	},
+];

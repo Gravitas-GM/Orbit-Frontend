@@ -1,0 +1,10 @@
+@import "../../../../variables";
+
+.no-tags-callout-wrapper {
+	margin-top: $spacing-medium;
+}
+
+.no-tags-callout {
+	display: flex;
+	justify-content: space-between;
+}

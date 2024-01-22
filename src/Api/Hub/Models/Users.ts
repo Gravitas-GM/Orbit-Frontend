@@ -1,4 +1,4 @@
-import {hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument} from '../..';
+import {Create, Entity, hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument, Stub, Update} from '../..';
 import {Permission} from '../../../Permission';
 import {Account} from './Accounts';
 
@@ -35,23 +35,21 @@ export interface UserEndpoints {
 	};
 }
 
-export interface User {
-	id: number;
-	account: Pick<Account, 'id'>;
+export interface User extends Entity {
+	account: Stub<Account>;
 	emailAddress: string;
 	permissions: Permission[];
 	firstName?: string | null;
 	lastName?: string | null;
 }
 
-export type UserCreatePayload = Omit<User, 'id' | 'account' | 'permissions'> & {
-	account: number;
+export type UserCreatePayload = Create<User, 'account' | 'emailAddress', 'permissions'> & {
 	admin?: boolean;
 };
 
-export type UserUpdatePayload = Partial<Omit<User, 'id' | 'account' | 'permissions'> & {
+export type UserUpdatePayload = Update<User, 'account' | 'permissions'> & {
 	admin?: boolean;
-}>;
+};
 
 export class UserModel {
 	public static list(projection?: Projection, query?: QueryDocument) {

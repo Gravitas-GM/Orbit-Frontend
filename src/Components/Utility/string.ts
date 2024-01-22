@@ -1,6 +1,7 @@
 import GraphemeSplitter from 'grapheme-splitter';
 import {PlayerState} from '../../Api/Game-State/Models/Games';
 import {User} from '../../Api/Hub/Models/Users';
+import {QuestionKind} from '../../Api/Quiz/Models/Questions';
 
 export function ucfirst(value: string) {
 	if (!value.length)
@@ -49,4 +50,23 @@ export function renderPlayerInitials(player: PlayerState) {
 	}
 
 	return initials;
+}
+
+export function leftPad(input: string|number, length: number, character: string = ' '): string {
+	input = input.toString();
+
+	if (input.length >= length)
+		return input;
+
+	if (character.length === 0)
+		throw new Error('Padding character must not be empty');
+
+	return character.charAt(0).repeat(length - input.length) + input;
+}
+
+export function renderKindLabel(kind: QuestionKind): string {
+	if (kind === QuestionKind.Boolean)
+		return 'True / False';
+
+	return ucwords(kind);
 }

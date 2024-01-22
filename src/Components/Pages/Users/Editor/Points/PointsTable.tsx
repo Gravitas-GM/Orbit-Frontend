@@ -1,9 +1,10 @@
-import {Button, HTMLTable, Intent, Checkbox} from '@blueprintjs/core';
 import * as React from 'react';
-import {PointItem} from '../../../Api/Point-Tracking/Models/Points';
-import {Spacing} from '../../../Styles/variables';
-import {NonIdealState} from '../../NonIdealState';
-import {formatNumber, ucwords} from '../../Utility/string';
+import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
+import {PointItem} from '../../../../../Api/Point-Tracking/Models/Points';
+import {Spacing} from '../../../../../Styles/variables';
+import {NonIdealState} from '../../../../NonIdealState';
+import {formatDateTime} from '../../../../Utility/date';
+import {formatNumber, ucwords} from '../../../../Utility/string';
 
 interface ITableProps {
 	onAddPointsClick: () => void;
@@ -56,14 +57,20 @@ export const PointsTable: React.FC<ITableProps> = props => {
 
 interface IRowProps {
 	item: PointItem;
-	onDelete: (items: PointItem[]) => void;
+	onDelete: (items: PointItem) => void;
 	isChecked: boolean;
 	onSelect: (item: PointItem) => void;
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, onDelete, onSelect}) => {
-	const onDeleteClick = React.useCallback(() => onDelete([item]), [onDelete, item]);
+export const PointsTableRow: React.FC<IRowProps> = ({
+	item,
+	loading,
+	isChecked,
+	onDelete,
+	onSelect,
+}) => {
+	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (
@@ -71,7 +78,7 @@ export const PointsTableRow: React.FC<IRowProps> = ({item, loading, isChecked, o
 			<td><Checkbox checked={isChecked} onClick={onCheckboxClick} /></td>
 			<td>{ucwords(item.source)}</td>
 			<td>{formatNumber(item.point_value)}</td>
-			<td>{new Date(item.timestamp).toLocaleString()}</td>
+			<td>{formatDateTime(item.timestamp)}</td>
 			<td>{item.description ?? <>—</>}</td>
 			<td style={{textAlign: 'center'}}>
 				<Button

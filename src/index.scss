@@ -16,11 +16,6 @@ body {
 		background-color: $pt-dark-app-background-color;
 	}
 }
-// Reset default margin and padding for text elements
-h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
-	margin: 0;
-	padding: 0;
-}
 
 #app-root {
 	font-family: 'Roboto', sans-serif;
@@ -47,7 +42,8 @@ h1, h2, h3, h4, h5, h6, p, span, em, i, a, li, pre, caption {
 	.gm-page-wrapper {
 		padding: $spacing-medium $spacing-large;
 		width: 75vw;
-		margin: 0 auto;
+		margin-left: auto;
+		margin-right: auto;
 
 		header {
 			margin: $spacing-large 0;
@@ -111,4 +107,16 @@ a.plain-link {
 
 .full-width {
 	width: 100%;
+}
+
+.gm-sub-label {
+	color: $gray1;
+	font-size: $pt-font-size-small;
+	margin-bottom: 5px;
+}
+
+// Fix for alignment of form controls rendered inside of table cells. BP adds a small bottom margin on controls, which
+// pushes the rest of the row's content down and leaves the control slightly above everything else.
+td > .#{$bp-ns}-control {
+	margin-bottom: 0;
 }
