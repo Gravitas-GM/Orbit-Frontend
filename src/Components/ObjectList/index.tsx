@@ -47,10 +47,10 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
+		const {onItemFilter} = props;
 
-		if (props.onItemFilter && searchText.length > 0) {
-			items = items.filter(item => props.onItemFilter!(item, searchText));
-
+		if (onItemFilter && searchText.length > 0) {
+			items = items.filter(item => onItemFilter(item, searchText));
 			setFilteredItems(items);
 		} else
 			setFilteredItems(null);
@@ -94,9 +94,8 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	if (props.editorUrlPrefix)
 		newButton = <LinkButton to={`${props.editorUrlPrefix}/new`} icon="plus" text="Add New" intent="primary" />;
-	else if (props.onAddNewClick) {
+	else if (props.onAddNewClick)
 		newButton = <Button icon="plus" text="Add New" intent="primary" onClick={props.onAddNewClick} />;
-	}
 
 	let deleteButton: React.ReactNode = null;
 

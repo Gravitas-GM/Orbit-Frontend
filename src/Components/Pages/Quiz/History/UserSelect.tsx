@@ -1,11 +1,10 @@
-import * as React from 'react';
 import {Button} from '@blueprintjs/core';
-import {ItemRenderer} from '@blueprintjs/select';
-import {User} from '../../../../Api/Hub/Models/Users';
-import {PermissionContext, Permission} from '../../../../Permission';
-import {Select} from '../../../Select/Select';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {ucwords} from '../../../Utility/string';
+import {ItemRenderer} from '@blueprintjs/select';
+import * as React from 'react';
+import {User} from '../../../../Api/Hub/Models/Users';
+import {Permission, PermissionContext} from '../../../../Permission';
+import {Select} from '../../../Select/Select';
 
 interface IProps {
 	users: User[];
@@ -14,13 +13,18 @@ interface IProps {
 	selectedUser: User | null;
 }
 
-export class UserSelect extends React.PureComponent<IProps, {}> {
+export class UserSelect extends React.PureComponent<IProps> {
 	public static contextType = PermissionContext;
 	declare context: React.ContextType<typeof PermissionContext>;
 
 	public render() {
 		const [isGranted] = this.context;
-		const {users, onUserClear, onUserSelect, selectedUser} = this.props;
+		const {
+			users,
+			onUserClear,
+			onUserSelect,
+			selectedUser,
+		} = this.props;
 
 		if (!isGranted(Permission.ADMIN))
 			return;
@@ -52,18 +56,22 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 	}
 
 	private userListPredicate = (query: string) => {
-		return this.props.users.filter(user => {
-			if (!user.firstName || !user.lastName)
-				return false;
+		query = query.toLocaleLowerCase();
 
-			return (
-				user.firstName.toLowerCase().includes(query.toLowerCase()) ||
-				user.lastName.toLowerCase().includes(query.toLowerCase())
-			);
+		return this.props.users.filter(user => {
+			const name = `${user.firstName} ${user.lastName}`.trim().toLocaleLowerCase();
+			return name.includes(query);
 		});
 	};
 
-	private renderUserOption: ItemRenderer<User> = (user, {handleClick, handleFocus, modifiers}) => {
+	private renderUserOption: ItemRenderer<User> = (
+		user,
+		{
+			handleClick,
+			handleFocus,
+			modifiers,
+		},
+	) => {
 		if (!modifiers.matchesPredicate)
 			return null;
 
@@ -76,7 +84,7 @@ export class UserSelect extends React.PureComponent<IProps, {}> {
 				onClick={handleClick}
 				onFocus={handleFocus}
 				roleStructure="listoption"
-				text={ucwords(`${user.firstName} ${user.lastName}`)}
+				text={`${user.firstName} ${user.lastName}`}
 			/>
 		);
 	};
