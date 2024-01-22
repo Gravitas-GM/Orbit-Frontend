@@ -1,3 +1,4 @@
+import React from 'react';
 import {H2} from '@blueprintjs/core';
 import {useEffect} from 'react';
 import './PageHeader.scss';

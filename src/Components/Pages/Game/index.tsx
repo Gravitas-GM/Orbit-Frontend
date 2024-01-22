@@ -431,11 +431,13 @@ class PlayerMovementSet {
 	protected readonly players: PlayerAnnouncement[];
 
 	public constructor(players: PlayerAnnouncement[]) {
+		// Initially sort player movement by points in descending order. That way, when we `Array.pop()` announcements
+		// out of the array during play, we'll get the announcement with the lowest point value first.
 		this.players = [...players].sort((a, b) => {
 			const aPoints = getNewPointsFromPlayerUpdate(a);
 			const bPoints = getNewPointsFromPlayerUpdate(b);
 
-			return aPoints - bPoints;
+			return bPoints - aPoints;
 		});
 	}
 
