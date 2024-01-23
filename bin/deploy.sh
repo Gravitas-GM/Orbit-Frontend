@@ -104,6 +104,7 @@ if [[ -z "${distribution}" ]]; then
     echo
     echo -e "\e[33m"'!!'" You did not provide a CloudFlare distribution ID to invalidate.\e[0m"
 else
+	echo "aws ${aws_options} cloudfront get-distribution --id "${distribution}" | jq -r '.Distribution.DistributionConfig.Origins.Items[0].DomainName'"
 	origin=`aws ${aws_options} cloudfront get-distribution --id "${distribution}" | jq -r '.Distribution.DistributionConfig.Origins.Items[0].DomainName'`
 
 	echo -e "\u2714 Verify that the CloudFront distribution ID '${distribution}' is correct (origin = ${origin})"
