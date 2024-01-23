@@ -37,11 +37,15 @@ function usage() {
 	echo "        Sets the CloudFront distribution that should be invalidated after pushing the application"
 	echo "        to S3 (default: ${distribution})"
 	echo
+	echo "    --profile, -p"
+	echo "        If set, tells aws-cli to use the provided profile instead of the default."
+	echo
 
     exit
 }
 
 minimalInteraction=""
+profile=""
 
 while [[ $# > 0 ]]; do
     value="${1}"
@@ -65,6 +69,12 @@ while [[ $# > 0 ]]; do
 
 			;;
 
+		--profile|-p)
+			profile="$1"
+			shift
+
+			;;
+
         --help|-h)
             usage
 
@@ -80,6 +90,12 @@ if [[ -z "${bucket}" ]]; then
     usage
 fi
 
+aws_options=""
+
+if [[ -z "${profile}" ]]; then
+	aws_options="--profile ${profile}"
+fi
+
 echo
 echo -e "\e[4m\e[1mPre-Build Checklist\e[0m"
 echo -e "\u2714 Verify that the target bucket name should be '${bucket}'"
@@ -88,7 +104,9 @@ if [[ -z "${distribution}" ]]; then
     echo
     echo -e "\e[33m"'!!'" You did not provide a CloudFlare distribution ID to invalidate.\e[0m"
 else
-    echo -e "\u2714 Verify that the CloudFront distribution ID '${distribution}' is correct"
+	origin=`aws ${aws_options} cloudfront get-distribution --id "${distribution}" | jq -r '.Distribution.DistributionConfig.Origins.Items[0].DomainName'`
+
+	echo -e "\u2714 Verify that the CloudFront distribution ID '${distribution}' is correct (origin = ${origin})"
 fi
 
 branch=`git rev-parse --abbrev-ref HEAD`
@@ -116,15 +134,15 @@ bucketUrl="s3://${bucket}"
 
 echo
 echo "Deploying files to ${bucketUrl}..."
-echo -e "\e[2m$ aws s3 sync --delete --quiet --content-encoding utf-8 dist/ ${bucketUrl}\e[0m"
-aws s3 sync --delete --quiet --content-encoding utf-8 dist/ "${bucketUrl}"
+echo -e "\e[2m$ aws ${aws_options} s3 sync --delete --quiet --content-encoding utf-8 dist/ ${bucketUrl}\e[0m"
+aws ${aws_options} s3 sync --delete --quiet --content-encoding utf-8 dist/ "${bucketUrl}"
 
 if [[ -n "${distribution}" ]]; then
     echo
     echo "Invalidating CloudFlare distribution with ID ${distribution}..."
-    echo -e "\e[2m$ aws cloudfront create-invalidation --distribution-id ${distribution} --paths /* > /dev/null\e[0m"
+    echo -e "\e[2m$ aws ${aws_options} cloudfront create-invalidation --distribution-id ${distribution} --paths /* > /dev/null\e[0m"
 
-    aws cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" > /dev/null
+    aws ${aws_options} cloudfront create-invalidation --distribution-id "${distribution}" --paths "/*" > /dev/null
 fi
 
 echo
