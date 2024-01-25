@@ -1,4 +1,16 @@
-import {Create, Entity, hubApiClient, Id, Projectable, Projection, Queryable, QueryDocument, Update} from '../../index';
+import {
+	Create,
+	Entity,
+	hubApiClient,
+	Id,
+	Projectable,
+	Projection,
+	Queryable,
+	QueryDocument,
+	Stub,
+	Update,
+} from '../../index';
+import {User} from './Users';
 
 export interface DepartmentEndpoints {
 	'/departments': {
@@ -37,10 +49,16 @@ export interface DepartmentEndpoints {
 export interface Department extends Entity {
 	name: string;
 	allowSplitReporting: boolean;
+	members: Stub<User, 'id' | 'firstName' | 'lastName'>[];
 }
 
-export type DepartmentCreatePayload = Create<Department>;
-export type DepartmentUpdatePayload = Update<Department>;
+export type DepartmentCreatePayload = Create<Department, 'members'> & {
+	members: Stub<User>;
+};
+
+export type DepartmentUpdatePayload = Update<Department, 'members'> & {
+	members: Stub<User>;
+};
 
 export class DepartmentModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
