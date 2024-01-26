@@ -17,11 +17,17 @@ export const SurveyMenu: React.FC = () => {
 				<>
 					<MenuDivider />
 
-					{hasRole(Role.ADMIN) && <LinkedMenuItem to="/survey/bank" icon="projects" text="Bank" />}
-
 					<LinkedMenuItem to="/survey/next" icon="th-derived" text="Next Survey" />
 					<LinkedMenuItem to="/survey/history" icon="history" text="History" />
 					<LinkedMenuItem to="/survey/settings" icon="cog" text="Settings" />
+
+					{hasRole(Role.ADMIN) &&  (
+						<>
+							<MenuDivider />
+
+							<LinkedMenuItem to="/survey/bank" icon="projects" text="Bank" />
+						</>
+					)}
 				</>
 			)}
 		</Menu>

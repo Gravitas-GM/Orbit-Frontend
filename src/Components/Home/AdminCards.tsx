@@ -81,19 +81,6 @@ export const AdminCards: React.FC = () => {
 				</Card>
 			</Link>
 
-			{hasRole(Role.ADMIN) && (
-				<Link to="/survey/bank">
-					<Card interactive={true}>
-						<Icon icon="projects" size={35} />
-						<div>
-							<H4>Survey Bank</H4>
-
-							<p>Manage bank of weekly surveys.</p>
-						</div>
-					</Card>
-				</Link>
-			)}
-
 			<Link to="/survey/next">
 				<Card interactive={true}>
 					<Icon icon="th-derived" size={35} />
@@ -126,6 +113,19 @@ export const AdminCards: React.FC = () => {
 					</div>
 				</Card>
 			</Link>
+
+			{hasRole(Role.ADMIN) && (
+				<Link to="/survey/bank">
+					<Card interactive={true}>
+						<Icon icon="projects" size={35} />
+						<div>
+							<H4>Survey Bank</H4>
+
+							<p>Manage bank of weekly surveys.</p>
+						</div>
+					</Card>
+				</Link>
+			)}
 		</CardsGroup>
 	);
 };
