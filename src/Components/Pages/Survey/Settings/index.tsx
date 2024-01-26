@@ -71,10 +71,6 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						labelFor="surveyRefreshDay"
 						failures={this.state.failures}
 					>
-						<div className={Classes.FORM_GROUP_SUB_LABEL}>
-							Sets which day of the week the survey will reset on.
-						</div>
-
 						<Select
 							items={Object.values(DayOfWeek)}
 							onItemSelect={this.onRefreshDayChange}
@@ -110,7 +106,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						</div>
 
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
-							When enabled, Users will receive notificaion emails when a new survey is available.
+							When enabled, users will receive notificaion emails when a new survey is available.
 						</div>
 					</ValidationAwareFormGroup>
 
