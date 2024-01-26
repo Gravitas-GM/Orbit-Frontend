@@ -46,7 +46,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 		};
 	}
 
-	public async componentDidMount(): Promise<void> {
+	public async componentDidMount() {
 		let departments: Department[] = [];
 
 		try {
@@ -109,7 +109,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 							<Button
 								alignText="left"
 								fill={true}
-								text={this.state.selectedDepartment ? this.state.selectedDepartment.name : 'Select a department'}
+								text={this.state.selectedDepartment?.name ?? 'Select a department'}
 								rightIcon="double-caret-vertical"
 								placeholder="Select a department"
 							/>
@@ -198,11 +198,8 @@ export class UserTab extends React.PureComponent<Props, State> {
 		dirty: state.selectedDepartment !== null,
 	}));
 
-	private onDepartmentSelect = (department: Department) => this.setState({
-		selectedDepartment: {
-			id: department.id,
-			name: department.name
-		},
+	private onDepartmentSelect = (selectedDepartment: Department) => this.setState({
+		selectedDepartment,
 		dirty: true,
 	});
 
