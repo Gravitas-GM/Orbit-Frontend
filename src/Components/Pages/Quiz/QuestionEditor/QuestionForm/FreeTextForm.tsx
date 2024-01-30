@@ -111,6 +111,7 @@ export const AnswerItem: React.FC<AnswerItemProps> = ({
 	return (
 		<ValidationAwareFormGroup
 			label={index === 0 ? 'Accepted Answers' : ''}
+			subLabel={index === 0 ? 'Answers are not case-sensitive.' : ''}
 			labelFor={inputName}
 			failures={validationFailures}
 		>
