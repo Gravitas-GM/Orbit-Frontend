@@ -2,61 +2,43 @@ import * as React from 'react';
 import {Prompt, Redirect} from 'react-router';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
-import {Answer, isQuizNotReadyError, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
+import {Answer, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
 import {QuizSubmission} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {PageHeader} from '../../../PageHeader';
 import './index.scss';
 import {Questions, QuizItem} from './Questions';
 import {Timer} from './Timer';
 
+interface Props {
+	quiz: Quiz,
+}
+
 interface State {
-	quiz: Quiz | null,
 	redirectTo: string | null,
 	validationFailures: ValidationFailures | null,
 }
 
-export class QuizPage extends React.PureComponent<{}, State> {
+export class QuizPage extends React.PureComponent<Props, State> {
 	public state: Readonly<State> = {
-		quiz: null,
 		redirectTo: null,
 		validationFailures: null,
 	};
 
-	public async componentDidMount() {
-		try {
-			this.setState({
-				quiz: await QuizModel.start().then(r => r.data),
-			});
-		} catch (error) {
-			if (isQuizNotReadyError(error))
-				toaster.warning(error.message);
-			else
-				toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirectTo: '/',
-			});
-		}
-	}
-
 	public render() {
 		if (this.state.redirectTo)
 			return <Redirect to={this.state.redirectTo} />;
-		else if (this.state.quiz === null)
-			return <FrameLoadingSpinner />;
 
 		return (
 			<>
-				<Timer startTime={this.state.quiz.startTimestamp} endTime={this.state.quiz.endTimestamp} />
+				<Timer startTime={this.props.quiz.startTimestamp} endTime={this.props.quiz.endTimestamp} />
 
 				<div className={Classes.PAGE_WRAPPER} id="quiz-form">
 					<PageHeader title="Quiz" />
 
 					<Questions
-						questions={this.state.quiz.questions}
+						questions={this.props.quiz.questions}
 						validationFailures={this.state.validationFailures}
 						onSubmit={this.onSubmit}
 					/>

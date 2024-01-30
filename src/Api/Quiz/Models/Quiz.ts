@@ -5,6 +5,12 @@ import {QuestionKind} from './Questions';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';
 
 export interface QuizEndpoints {
+	'/quiz': {
+		GET: {
+			response: Quiz,
+		};
+	};
+
 	'/quiz/start': {
 		POST: {
 			response: Quiz;
@@ -81,6 +87,13 @@ export interface QuizFinishPayload {
 }
 
 export class QuizModel {
+	public static async getActive() {
+		const response = await quizClient.get('/quiz');
+		response.data = QuizModel.denormalize(response.data);
+
+		return response;
+	}
+
 	public static async start() {
 		const response = await quizClient.post('/quiz/start');
 		response.data = QuizModel.denormalize(response.data);

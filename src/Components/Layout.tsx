@@ -16,6 +16,7 @@ import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
 import {QuizPage} from './Pages/Quiz/Quiz';
+import {Interstitial as QuizInterstitial} from './Pages/Quiz/Quiz/Interstitial';
 import {QuizResultsPage} from './Pages/Quiz/Results';
 import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
@@ -52,7 +53,7 @@ export const Layout: React.FC<IProps> = props => (
 
 							<Route path="/catalog" component={CatalogListPage} exact={true} />
 
-							<Route path="/quiz" component={QuizPage} exact={true} />
+							<Route path="/quiz" component={QuizInterstitial} exact={true} />
 							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
