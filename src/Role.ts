@@ -20,7 +20,7 @@ export function hasRole(roles: Set<Role>, match: MatchQuery) {
 	return false;
 }
 
-export type RoleCheckCallback = (match: Role | Role[]) => boolean;
+export type RoleCheckCallback = (match: MatchQuery) => boolean;
 
 export const RoleContext = React.createContext<[RoleCheckCallback, Set<Role>]>([() => false, new Set<Role>()]);
 
