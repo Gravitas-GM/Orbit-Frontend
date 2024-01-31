@@ -136,7 +136,6 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 
 		this.setState({
 			processing: true,
-			failures: null,
 		});
 
 		try {
@@ -161,6 +160,10 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 				dirty: false,
 			});
 		}
+
+		this.setState({
+			failures: null,
+		});
 
 		toaster.success('Survey settings saved.');
 	};
