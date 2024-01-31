@@ -164,11 +164,11 @@ export class UserTab extends React.PureComponent<Props, State> {
 
 		try {
 			await UserModel.update(this.props.user.id, {
-					firstName: this.state.firstName,
-					lastName: this.state.lastName,
-					admin: this.state.admin,
-					department: this.state.selectedDepartment?.id ?? null,
-				});
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
+				admin: this.state.admin,
+				department: this.state.selectedDepartment?.id ?? null,
+			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
