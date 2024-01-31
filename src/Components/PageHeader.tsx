@@ -9,7 +9,7 @@ interface IProps {
 }
 
 export const PageHeader: React.FC<IProps> = ({title, children}) => {
-	useTitle(`Happy Orbit - ${title}`);
+	useTitle(`Happy Orbit | ${title}`);
 
 	return (
 		<header className="header-container">
