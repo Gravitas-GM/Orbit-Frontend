@@ -98,5 +98,4 @@ export const Layout: React.FC<IProps> = props => {
 	));
 }
 
-
 Layout.displayName = 'Layout';
