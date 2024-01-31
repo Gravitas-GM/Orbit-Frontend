@@ -47,19 +47,15 @@ export class UserTab extends React.PureComponent<Props, State> {
 	}
 
 	public async componentDidMount() {
-		let departments: Department[] = [];
-
 		try {
-			departments = await DepartmentModel.list().then(res => res.data);
+			this.setState({
+				departments: await DepartmentModel.list().then(r => r.data),
+			});
 		} catch (error) {
 			toaster.error("Failed to load departments.");
 
 			return;
 		}
-
-		this.setState({
-			departments,
-		});
 	}
 
 	public componentDidUpdate(prevProps: Readonly<Props>): void {
