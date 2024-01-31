@@ -34,64 +34,68 @@ interface IProps {
 	loading: boolean;
 }
 
-export const Layout: React.FC<IProps> = props => (
-	props.loading ? (
-		<FrameLoadingSpinner />
-	) : (
-		<div style={{flex: 12, height: '100%'}}>
-			<NavHeader />
+export const Layout: React.FC<IProps> = props => {
+	const [isGranted] = React.useContext(PermissionContext);
+	const [hasRole] = React.useContext(RoleContext);
 
-			<div className="main-frame">
-				<PermissionContext.Consumer>
-					{([isGranted]) => (
-						<Switch key={0}>
-							<Route path="/" component={Home} exact={true} />
+	return (
+		props.loading ? (
+			<FrameLoadingSpinner />
+		) : (
+			<div style={{flex: 12, height: '100%'}}>
+				<NavHeader />
 
-							<Route path="/leaderboard" component={Leaderboard} exact={true} />
+				<div className="main-frame">
+					<Switch key={0}>
+						<Route path="/" component={Home} exact={true} />
 
-							<Route path="/game" component={GameBoardPage} />
+						<Route path="/leaderboard" component={Leaderboard} exact={true} />
 
-							<Route path="/catalog" component={CatalogListPage} exact={true} />
+						<Route path="/game" component={GameBoardPage} />
 
-							<Route path="/quiz" component={QuizPage} exact={true} />
-							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
+						<Route path="/catalog" component={CatalogListPage} exact={true} />
 
-							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
+						<Route path="/quiz" component={QuizPage} exact={true} />
+						<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 
-							<Route path="/survey" key="/survey" component={SurveyPage} exact={true} />
-							<Route path="/survey/results" component={SurveyResults} exact={true} />,
+						<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
-							{isGranted(Permission.ADMIN) && [
-								<Route path="/users" key="/users" component={UsersList} exact={true} />,
-								<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} />,
-								<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
-								<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
-								<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
-								<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
-								<Route path="/quiz/settings" key="/quiz/settings" component={QuizSettings} exact={true} />,
-								<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
-								<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
-								<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
-								<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditor} exact={true} />,
-								<Route path="/survey/bank" key="/survey/bank" component={SurveyBank} exact={true} />,
-								<Route path="/survey/bank/:id(\d+)" key="/survey/bank/:id" component={SurveyBank} exact={true} />,
-								<Route path="/survey/next" key="/survey/next" component={NextSurvey} exact={true} />,
-								<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
-								<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
-								<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
-							]}
+						<Route path="/survey" key="/survey" component={SurveyPage} exact={true} />
+						<Route path="/survey/results" component={SurveyResults} exact={true} />,
 
-							{Config.isDev && isGranted(Permission.ADMIN) && [
-								<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
-							]}
+						{isGranted(Permission.ADMIN) && [
+							<Route path="/users" key="/users" component={UsersList} exact={true} />,
+							<Route path="/users/:user(\d+)" key="/users/:user" component={UserEditor} />,
+							<Route path="/sources" key="/sources" component={SourcesList} exact={true} />,
+							<Route path="/catalog" key="/catalog" component={CatalogListPage} exact={true} />,
+							<Route path="/catalog/:game(\d+)" key="/catalog/:game" component={GameInfo} exact={true} />,
+							<Route path="/quiz/tags" key="/tags" component={TagListPage} exact={true} />,
+							<Route path="/quiz/settings" key="/quiz/settings" component={QuizSettings} exact={true} />,
+							<Route path="/quiz/questions" key="/quiz/questions" component={QuestionListPage} exact={true} />,
+							<Route path="/quiz/questions/:question(\d+)" key="/quiz/questions/:question" component={QuestionEditorPage} exact={true} />,
+							<Route path="/quiz/questions/new" key="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
+							<Route path="/quiz/tags/:tag(\d+)" key="/quiz/tags/:tag" component={TagEditor} exact={true} />,
+							<Route path="/survey/next" key="/survey/next" component={NextSurvey} exact={true} />,
+							<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
+							<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
+							<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
+						]}
 
-							<Route component={PageNotFound} />
-						</Switch>
-					)}
-				</PermissionContext.Consumer>
+						{hasRole(Role.ADMIN) && [
+							<Route path="/survey/bank" key="/survey/bank" component={SurveyBank} exact={true} />,
+							<Route path="/survey/bank/:id(\d+)" key="/survey/bank/:id" component={SurveyBank} exact={true} />,
+						]}
+
+						{Config.isDev && isGranted(Permission.ADMIN) && [
+							<Route path="/debug-controls" key="/debug-controls" component={DebugControls} exact={true} />
+						]}
+
+						<Route component={PageNotFound} />
+					</Switch>
+				</div>
 			</div>
-		</div>
-	)
-);
+	));
+}
+
 
 Layout.displayName = 'Layout';
