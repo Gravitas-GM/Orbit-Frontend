@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Route, Switch} from 'react-router';
 import {Permission, PermissionContext} from '../Permission';
+import {Role, RoleContext} from '../Role';
 import {FrameLoadingSpinner} from './FrameLoadingSpinner';
 import {Home} from './Home';
 import {NavHeader} from './NavHeader';
