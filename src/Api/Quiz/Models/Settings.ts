@@ -19,7 +19,7 @@ export interface Settings extends Entity {
 	quizFrequency: Frequency,
 	questionCount: number,
 	completedRewardPointSourceId: string | null,
-	quizDurationSeconds: number,
+	quizDurationSeconds: number | null,
 }
 
 export enum Frequency {
