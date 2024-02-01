@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
+import {Button, InputGroup, Intent, NumericInput, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {PageHeader} from '../../../PageHeader';
@@ -26,7 +26,7 @@ interface IState {
 	frequency: Frequency;
 	questionCount: string;
 	completedRewardSource: PointSourceItem | null;
-	quizDurationMinutes: number;
+	quizDurationMinutes: number | null;
 	dirty: boolean;
 }
 
@@ -42,7 +42,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		frequency: Frequency.Weekly,
 		questionCount: '',
 		completedRewardSource: null,
-		quizDurationMinutes: defaultQuizDurationMinutes,
+		quizDurationMinutes: null,
 		dirty: false,
 	};
 
@@ -69,7 +69,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 			frequency: settings.quizFrequency,
 			questionCount: settings.questionCount.toString(10),
 			completedRewardSource: sources.find(item => item.id.$oid === settings.completedRewardPointSourceId) ?? null,
-			quizDurationMinutes: settings.quizDurationSeconds / 60,
+			quizDurationMinutes: settings.quizDurationSeconds ? settings.quizDurationSeconds / 60 : null,
 		});
 	}
 
@@ -109,21 +109,37 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
-						label="Quiz Duration"
 						labelFor="quizDurationSeconds"
 						failures={this.state.failures}
 					>
-						<div className={Classes.FORM_GROUP_SUB_LABEL}>
-							The duration of the quiz (in minutes).
+						<div className="settings-switch-container">
+							<span>
+								Quiz Timer
+							</span>
+
+							<Switch
+								checked={this.state.quizDurationMinutes !== null}
+								onChange={this.onUseDurationChange}
+								large={true}
+								inline={true}
+							/>
 						</div>
 
-						<NumericInput
-							min={1}
-							fill={true}
-							name="quizDurationSeconds"
-							onValueChange={this.onQuizDurationMinutesChange}
-							value={this.state.quizDurationMinutes}
-						/>
+						{this.state.quizDurationMinutes && (
+							<>
+								<div className={Classes.FORM_GROUP_SUB_LABEL}>
+									The duration of the quiz (in minutes).
+								</div>
+
+								<NumericInput
+									min={1}
+									fill={true}
+									name="quizDurationSeconds"
+									onValueChange={this.onQuizDurationMinutesChange}
+									value={this.state.quizDurationMinutes}
+								/>
+							</>
+						)}
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
@@ -253,7 +269,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 				quizFrequency: this.state.frequency,
 				questionCount: this.state.questionCount.length > 0 ? parseInt(this.state.questionCount, 10) : 0,
 				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid ?? null,
-				quizDurationSeconds: this.state.quizDurationMinutes * 60,
+				quizDurationSeconds: this.state.quizDurationMinutes ? this.state.quizDurationMinutes * 60 : null,
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
