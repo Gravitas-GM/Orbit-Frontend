@@ -110,7 +110,7 @@ export class App extends React.PureComponent<{}, IState> {
 	private hasRole: RoleCheckCallback = (match) => hasRole(this.state.roles, match);
 
 	private initRoles = () => {
-		const userRoles = tokenStorage.getToken()?.body.roles as Role[] ?? [];
+		const userRoles = tokenStorage.getToken()?.body.roles ?? [];
 		const roles = new Set<Role>();
 
 		for (const role of userRoles) {
