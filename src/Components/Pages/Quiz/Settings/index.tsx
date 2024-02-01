@@ -189,8 +189,12 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		completedRewardSource: null,
 	});
 
+	private onUseDurationChange = () => this.setState(state => ({
+		quizDurationMinutes: state.quizDurationMinutes ? null : defaultQuizDurationMinutes,
+	}));
+
 	private onQuizDurationMinutesChange = (quizDurationMinutes: number) => {
-		if (isNaN(quizDurationMinutes))
+		if (isNaN(quizDurationMinutes) || quizDurationMinutes < 1)
 			return;
 
 		this.setState({
