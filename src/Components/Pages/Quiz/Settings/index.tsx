@@ -42,7 +42,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		frequency: Frequency.Weekly,
 		questionCount: '',
 		completedRewardSource: null,
-		quizDurationMinutes: null,
+		quizDurationMinutes: defaultQuizDurationMinutes,
 		dirty: false,
 	};
 
