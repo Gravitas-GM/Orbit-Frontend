@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Button, InputGroup, Intent, NumericInput, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Spacing} from '../../../../Styles/variables';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {PageHeader} from '../../../PageHeader';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
@@ -125,8 +126,12 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 							/>
 						</div>
 
+						<span>
+							When enabled, a quiz will be automatically submitted when the timer expires.
+						</span>
+
 						{this.state.quizDurationMinutes && (
-							<>
+							<div style={{paddingTop: Spacing.Medium}}>
 								<div className={Classes.FORM_GROUP_SUB_LABEL}>
 									The duration of the quiz (in minutes).
 								</div>
@@ -138,7 +143,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 									onValueChange={this.onQuizDurationMinutesChange}
 									value={this.state.quizDurationMinutes}
 								/>
-							</>
+							</div>
 						)}
 					</ValidationAwareFormGroup>
 
@@ -146,6 +151,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 						label="Question Count"
 						labelFor="questionCount"
 						failures={this.state.failures}
+						style={{paddingTop: Spacing.Medium}}
 					>
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
 							The number of questions to select for each quiz.
@@ -164,6 +170,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 						label="Reward Point Source"
 						labelFor="quizRewardSource"
 						failures={this.state.failures}
+						style={{paddingTop: Spacing.Medium}}
 					>
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
 							The Point Source to grant to a user upon quiz completion.
