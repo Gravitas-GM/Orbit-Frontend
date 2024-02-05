@@ -5,7 +5,7 @@ import {tokenStorage} from '../../Api';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
 import {toaster} from '../../toaster';
-import './Activate.scss';
+import './Login.scss';
 import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
 import {Spacing} from '../../Styles/variables';
 import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
@@ -44,7 +44,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 			return <Redirect to="/login" />;
 
 		return (
-			<div id="activate">
+			<div className="orbit-home-form">
 				<div style={{textAlign: 'center', marginBottom: Spacing.Medium}}>
 					<H1>
 						Happy Orbit Activation
