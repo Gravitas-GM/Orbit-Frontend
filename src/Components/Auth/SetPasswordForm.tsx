@@ -82,16 +82,12 @@ export const SetPasswordForm: React.FC<IProps> = (props) => {
 					/>
 				</FormGroup>
 
-				<div style={{display: 'flex'}}>
-					<div style={{flex: 1}}>
-						<Button
-							type="submit"
-							text="Submit"
-							intent={Intent.PRIMARY}
-							loading={props.processing}
-						/>
-					</div>
-				</div>
+				<Button
+					type="submit"
+					text="Submit"
+					intent={Intent.PRIMARY}
+					loading={props.processing}
+				/>
 			</form>
 		</div>
 	);
