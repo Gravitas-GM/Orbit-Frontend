@@ -40,7 +40,7 @@ export class PasswordReset extends React.PureComponent<{}, IState> {
 
 		return (
 			<SetPasswordForm
-				formHeader="Set Your Password"
+				formHeader="Password Reset"
 				processing={this.state.processing}
 				validationFailures={this.state.validationFailures}
 				onSubmit={this.onSubmit}
