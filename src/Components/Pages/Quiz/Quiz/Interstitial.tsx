@@ -1,7 +1,6 @@
 import {Button, H3} from '@blueprintjs/core';
 import * as React from 'react';
 import {Redirect} from 'react-router';
-import {Link} from 'react-router-dom';
 import {ApiError} from '../../../../Api/errors/symfony';
 import {Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
 import {SettingsModel} from '../../../../Api/Quiz/Models/Settings';

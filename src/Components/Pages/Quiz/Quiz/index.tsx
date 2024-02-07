@@ -18,12 +18,14 @@ interface Props {
 interface State {
 	redirectTo: string | null,
 	validationFailures: ValidationFailures | null,
+	expired: boolean,
 }
 
 export class QuizPage extends React.PureComponent<Props, State> {
 	public state: Readonly<State> = {
 		redirectTo: null,
 		validationFailures: null,
+		expired: false,
 	};
 
 	public render() {
@@ -32,7 +34,11 @@ export class QuizPage extends React.PureComponent<Props, State> {
 
 		return (
 			<>
-				<Timer startTime={this.props.quiz.startTimestamp} endTime={this.props.quiz.endTimestamp} />
+				<Timer
+					startTime={this.props.quiz.startTimestamp}
+					endTime={this.props.quiz.endTimestamp}
+					onExpired={this.onTimerExpired}
+				/>
 
 				<div className={Classes.PAGE_WRAPPER} id="quiz-form">
 					<PageHeader title="Quiz" />
@@ -41,6 +47,7 @@ export class QuizPage extends React.PureComponent<Props, State> {
 						questions={this.props.quiz.questions}
 						validationFailures={this.state.validationFailures}
 						onSubmit={this.onSubmit}
+						expired={this.state.expired}
 					/>
 				</div>
 
@@ -52,8 +59,16 @@ export class QuizPage extends React.PureComponent<Props, State> {
 		);
 	}
 
+	private onTimerExpired = () => this.setState({
+		expired: true,
+	});
+
 	private onSubmit = async (items: QuizItem[]) => {
 		const responses: Answer[] = items.map(item => {
+			// Unanswered items should be converted to `null`s, but ONLY when submitting an expired quiz.
+			if (this.state.expired && item.answer === null)
+				return null;
+
 			switch (item.kind) {
 				case QuestionKind.Boolean:
 					return {

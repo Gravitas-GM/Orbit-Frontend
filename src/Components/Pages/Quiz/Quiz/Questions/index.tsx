@@ -37,28 +37,41 @@ interface Props {
 	questions: QuestionPrompt[],
 	validationFailures: ValidationFailures | null,
 	onSubmit: (items: QuizItem[]) => Promise<void>,
+	expired?: boolean,
 }
 
-export const Questions: React.FC<Props> = ({questions, validationFailures, onSubmit}) => {
+export const Questions: React.FC<Props> = ({
+	questions,
+	validationFailures,
+	onSubmit,
+	expired,
+}) => {
 	const [items, setItems] = React.useState<QuizItem[]>([]);
 
 	React.useEffect(() => {
-		setItems(questions.map(item => ({
-			kind: item.kind,
-			prompt: item,
-			answer: null,
-		} as QuizItem)));
+		setItems(questions.map(item => (
+			{
+				kind: item.kind,
+				prompt: item,
+				answer: null,
+			} as QuizItem
+		)));
 	}, [questions]);
 
 	const [submitting, setSubmitting] = React.useState(false);
 
 	const onSubmitClick = React.useCallback(async () => {
 		setSubmitting(true);
-
 		await onSubmit(items);
-
 		setSubmitting(false);
 	}, [items, onSubmit]);
+
+	React.useEffect(() => {
+		if (expired) {
+			// noinspection JSIgnoredPromiseFromCall
+			onSubmitClick();
+		}
+	}, [expired, onSubmitClick]);
 
 	return (
 		<div>

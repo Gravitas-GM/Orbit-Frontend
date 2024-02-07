@@ -28,6 +28,7 @@ export interface QuizSubmission extends Entity {
 	questionCount: number,
 	correctCount: number,
 	questions: QuestionResponse[],
+	expired: boolean,
 }
 
 interface QuestionResponseBase {

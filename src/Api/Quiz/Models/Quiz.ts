@@ -80,7 +80,7 @@ export interface MultipleChoiceAnswer extends AnswerBase {
 	answerIndex: number | null,
 }
 
-export type Answer = FreeTextAnswer | BooleanAnswer | MultipleChoiceAnswer;
+export type Answer = FreeTextAnswer | BooleanAnswer | MultipleChoiceAnswer | null;
 
 export interface QuizFinishPayload {
 	responses: Answer[],
