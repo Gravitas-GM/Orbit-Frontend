@@ -71,6 +71,10 @@ export class ApiError<Context extends {} = {}> extends Error {
 	public isNotFound(): boolean {
 		return this.code === ErrorCodes.NotFound;
 	}
+
+	public isQuizNotReady(): boolean {
+		return this.code === ErrorCodes.QuizNotReady;
+	}
 }
 
 export function isValidationFailureError(value: any): value is ApiError<ValidationFailureContext> {

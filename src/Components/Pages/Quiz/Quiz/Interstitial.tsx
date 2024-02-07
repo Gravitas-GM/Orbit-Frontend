@@ -25,11 +25,22 @@ export function Interstitial(): React.ReactElement {
 		QuizModel.getActive()
 			.then(r => setQuiz(r.data))
 			.catch(async e => {
-				// A 404 error indicates that the user doesn't have an active quiz, so we should proceed with loading
-				// account settings to display the interstitial.
-				if (!(e instanceof ApiError) || !e.isNotFound()) {
+				if (e instanceof ApiError && e.isQuizNotReady()) {
+					// `QuizNotReady` errors should be displayed to the user, then we should go back to the home page.
+
+					toaster.info(e.message);
+					setRedirect('/');
+
+					return;
+				} else if (!(e instanceof ApiError) || !e.isNotFound()) {
+					// An `ApiError` that is `NotFound` is returned when the user is eligible for a quiz, but doesn't
+					// currently have an active quiz. All other `ApiError` types, and any non-`ApiError` should be
+					// treated as an unexpected error, then redirect to the home page.
+
 					toaster.showUnhandledErrorMessage();
 					setRedirect('/');
+
+					return;
 				}
 
 				const settings = await SettingsModel.read(account!.id).then(r => r.data);

@@ -1,4 +1,6 @@
+import {Button, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {QuestionKind} from '../../../../../Api/Quiz/Models/Questions';
 import {
 	BooleanAnswer,
@@ -9,11 +11,9 @@ import {
 	MultipleChoiceQuestionPrompt,
 	QuestionPrompt,
 } from '../../../../../Api/Quiz/Models/Quiz';
-import {Question} from './Question';
-import './index.scss';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import {Button, Intent} from '@blueprintjs/core';
 import {QuestionNavigator} from '../QuestionNavigator';
+import './index.scss';
+import {Question} from './Question';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,
