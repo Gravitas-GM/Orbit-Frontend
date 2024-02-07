@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import {Route, Switch} from 'react-router';
 import {Config} from '../config';
 import {Permission, PermissionContext} from '../Permission';
@@ -15,7 +16,6 @@ import {Leaderboard} from './Pages/Leaderboard';
 import {QuizHistoryPage} from './Pages/Quiz/History';
 import {QuestionEditorPage} from './Pages/Quiz/QuestionEditor';
 import {QuestionListPage} from './Pages/Quiz/QuestionList';
-import {QuizPage} from './Pages/Quiz/Quiz';
 import {Interstitial as QuizInterstitial} from './Pages/Quiz/Quiz/Interstitial';
 import {QuizResultsPage} from './Pages/Quiz/Results';
 import {QuizSettings} from './Pages/Quiz/Settings';
@@ -29,10 +29,13 @@ interface IProps {
 	loading: boolean;
 }
 
-export const Layout: React.FC<IProps> = props => (
-	props.loading ? (
-		<FrameLoadingSpinner />
-	) : (
+export const Layout: React.FC<IProps> = ({loading}) => {
+	const [isGranted] = useContext(PermissionContext);
+
+	if (loading)
+		return <FrameLoadingSpinner />;
+
+	return (
 		<div
 			style={{
 				flex: 12,
@@ -42,56 +45,47 @@ export const Layout: React.FC<IProps> = props => (
 			<NavHeader />
 
 			<div className="main-frame">
-				<PermissionContext.Consumer>
-					{([isGranted]) => (
-						<Switch key={0}>
-							<Route path="/" component={Home} exact={true} />
+				<Switch key={0}>
+					<Route path="/" component={Home} exact={true} />
 
-							<Route path="/leaderboard" component={Leaderboard} exact={true} />
+					<Route path="/leaderboard" component={Leaderboard} exact={true} />
 
-							<Route path="/game" component={GameBoardPage} />
+					<Route path="/game" component={GameBoardPage} />
 
-							<Route path="/catalog" component={CatalogListPage} exact={true} />
+					<Route path="/catalog" component={CatalogListPage} exact={true} />
 
-							<Route path="/quiz" component={QuizInterstitial} exact={true} />
-							<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
-							<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
+					<Route path="/quiz" component={QuizInterstitial} exact={true} />
+					<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
+					<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
-							{/* @formatter:off */}
-							{isGranted(Permission.ADMIN) && (
-								<>
-									<Route path="/users" component={UsersList} exact={true} />
-									<Route path="/users/:user(\d+)" component={UserEditor} />
-									<Route path="/sources" component={SourcesList} exact={true} />
-									<Route path="/catalog" component={CatalogListPage} exact={true} />
-									<Route path="/catalog/:game(\d+)" component={GameInfo} exact={true} />
-									<Route path="/quiz/tags" component={TagListPage} exact={true} />
-									<Route path="/quiz/settings" component={QuizSettings} exact={true} />
-									<Route path="/quiz/questions" component={QuestionListPage} exact={true} />
-									<Route path="/quiz/questions/:question(\d+)" component={QuestionEditorPage} exact={true} />
-									<Route path="/quiz/questions/new" component={QuestionEditorPage} exact={true} />
-									<Route path="/quiz/tags/:tag(\d+)" component={TagEditor} exact={true} />
-									<Route path="/quiz/tags/new" component={TagEditor} exact={true} />
-								</>
-							)}
-							{/* @formatter:on */}
+					{/* @formatter:off */}
+					{isGranted(Permission.ADMIN) && [
+						<Route key="/users" path="/users" component={UsersList} exact={true} />,
+						<Route key="/users/:user" path="/users/:user(\d+)" component={UserEditor} />,
+						<Route key="/sources" path="/sources" component={SourcesList} exact={true} />,
+						<Route key="/catalog" path="/catalog" component={CatalogListPage} exact={true} />,
+						<Route key="/catalog/:game" path="/catalog/:game(\d+)" component={GameInfo} exact={true} />,
+						<Route key="/quiz/tags" path="/quiz/tags" component={TagListPage} exact={true} />,
+						<Route key="/quiz/settings" path="/quiz/settings" component={QuizSettings} exact={true} />,
+						<Route key="/quiz/questions" path="/quiz/questions" component={QuestionListPage} exact={true} />,
+						<Route key="/quiz/questions/:question" path="/quiz/questions/:question(\d+)" component={QuestionEditorPage} exact={true} />,
+						<Route key="/quiz/questions/new" path="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
+						<Route key="/quiz/tags/:tag" path="/quiz/tags/:tag(\d+)" component={TagEditor} exact={true} />,
+						<Route key="/quiz/tags/new" path="/quiz/tags/new" component={TagEditor} exact={true} />,
+					]}
+					{/* @formatter:on */}
 
-							{Config.isDev && isGranted(Permission.ADMIN) && [
-								<Route
-									path="/debug-controls"
-									key="/debug-controls"
-									component={DebugControls}
-									exact={true}
-								/>,
-							]}
+					{/* @formatter:off */}
+					{Config.isDev && isGranted(Permission.ADMIN) && [
+						<Route key="/debug-controls" path="/debug-controls" component={DebugControls} exact={true} />,
+					]}
+					{/* @formatter:on */}
 
-							<Route component={PageNotFound} />
-						</Switch>
-					)}
-				</PermissionContext.Consumer>
+					<Route component={PageNotFound} />
+				</Switch>
 			</div>
 		</div>
-	)
-);
+	);
+};
 
 Layout.displayName = 'Layout';

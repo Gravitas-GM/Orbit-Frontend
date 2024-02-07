@@ -36,7 +36,12 @@ export function formatRemainingTime(timeAsSeconds: number): string {
 	const minutes = Math.floor(timeAsSeconds / 60);
 	timeAsSeconds -= minutes * 60;
 
-	return `${leftPad(hours, 2, '0')}:${leftPad(minutes, 2, '0')}:${leftPad(timeAsSeconds, 2, '0')}`;
+	let output = `${leftPad(minutes, 2, '0')}:${leftPad(timeAsSeconds, 2, '0')}`;
+
+	if (hours > 0)
+		output = `${leftPad(hours, 2, '0')}:${output}`;
+
+	return output;
 }
 
 export function formatDuration(start: Date, end: Date): string {
