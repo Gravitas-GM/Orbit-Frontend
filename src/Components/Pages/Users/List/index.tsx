@@ -114,7 +114,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (user: User, searchText: string): any =>
+	private onItemFilter = (user: User, searchText: string) =>
 		renderUserName(user).toLocaleLowerCase().includes(searchText);
 
 	private onBeginDeleteButtonClick = (item: User) => this.setState({
