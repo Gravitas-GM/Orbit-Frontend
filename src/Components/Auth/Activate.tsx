@@ -36,7 +36,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to="/login" />;
+			return <Redirect to="/" />;
 
 		return (
 			<SetPasswordForm
@@ -56,30 +56,32 @@ export class Activate extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		UserActivationModel.activate({password: password})
-			.then(() => {
-				toaster.show({
-					intent: Intent.SUCCESS,
-					message: 'Your account has been activated!',
-				});
+		try {
+			await UserActivationModel.activate({password: password});
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
 
 				this.setState({
-					redirect: true,
+					validationFailures: error.context.failures,
 				});
-			})
-			.catch(error => {
-				if (isValidationFailureError(error)) {
-					toaster.showValidationFailedErrorMessage();
+			} else
+				toaster.showUnhandledErrorMessage();
 
-					this.setState({
-						validationFailures: error.context.failures,
-					});
-				} else
-					toaster.showUnhandledErrorMessage();
-
-				this.setState({
-					processing: false,
-				});
+			this.setState({
+				processing: false,
 			});
+
+			return;
+		}
+
+		toaster.show({
+			intent: Intent.SUCCESS,
+			message: 'Your account has been activated!',
+		});
+
+		this.setState({
+			redirect: true,
+		});
 	};
 }

@@ -36,7 +36,7 @@ export class PasswordReset extends React.PureComponent<{}, IState> {
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to="/login" />;
+			return <Redirect to="/" />;
 
 		return (
 			<SetPasswordForm
@@ -56,30 +56,32 @@ export class PasswordReset extends React.PureComponent<{}, IState> {
 			processing: true,
 		});
 
-		PasswordResetModel.reset({password: password})
-			.then(() => {
-				toaster.show({
-					intent: Intent.SUCCESS,
-					message: 'Your password has been reset!',
-				});
+		try {
+			await PasswordResetModel.reset({password: password});
+		} catch (error) {
+			if (isValidationFailureError(error)) {
+				toaster.showValidationFailedErrorMessage();
 
 				this.setState({
-					redirect: true,
+					validationFailures: error.context.failures,
 				});
-			})
-			.catch(error => {
-				if (isValidationFailureError(error)) {
-					toaster.showValidationFailedErrorMessage();
+			} else
+				toaster.showUnhandledErrorMessage();
 
-					this.setState({
-						validationFailures: error.context.failures,
-					});
-				} else
-					toaster.showUnhandledErrorMessage();
-
-				this.setState({
-					processing: false,
-				});
+			this.setState({
+				processing: false,
 			});
+
+			return;
+		}
+
+		toaster.show({
+			intent: Intent.SUCCESS,
+			message: 'Your password has been reset!',
+		});
+
+		this.setState({
+			redirect: true,
+		});
 	};
 }
