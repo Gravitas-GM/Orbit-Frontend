@@ -1,5 +1,8 @@
 import * as React from 'react';
 import {Classes} from '../../classes';
+import {history} from '../../history';
+import {useQuery} from '../../hooks/useQuery';
+import {useWatchedQuery} from '../../hooks/useWatchedQuery';
 import {PageHeader} from '../PageHeader';
 import {Button, InputGroup} from '@blueprintjs/core';
 import './index.scss';
@@ -23,12 +26,26 @@ interface Props<T> {
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
 
+const URL_PARAM_SEARCH = 'search';
+const URL_PARAM_PAGE = 'page';
+
 // Bugs:
 //    - Total pages does not update if props.items changes
 //    - currentPage needs to check if the page is still valid after props.items updates
 export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const [filteredItems, setFilteredItems] = React.useState<T[] | null>(null);
-	const [currentPage, setCurrentPage] = React.useState(1);
+
+	const query = useWatchedQuery();
+
+	const [currentPage, setCurrentPage] = React.useState(() => {
+		const value = query.get(URL_PARAM_PAGE);
+
+		if (value === null)
+			return 1;
+
+		const parsed = parseInt(value, 10);
+		return isNaN(parsed) ? 1 : parsed;
+	});
 
 	const itemsPerPage = props.itemsPerPage ?? DEFAULT_ITEMS_PER_PAGE;
 
@@ -38,12 +55,35 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	React.useEffect(() => {
 		setTotalPages(Math.ceil(props.items.length / itemsPerPage));
 		setCurrentPage(1);
+		query.delete(URL_PARAM_PAGE);
 	}, [itemsPerPage]);
 
-	const [searchText, setSearchText] = React.useState('');
+	const [searchText, setSearchText] = React.useState(() => query.get(URL_PARAM_SEARCH) ?? '');
 
-	const onPageBack = React.useCallback(() => setCurrentPage(page => Math.max(1, page - 1)), []);
-	const onPageNext = React.useCallback(() => setCurrentPage(page => Math.min(totalPages, page + 1)), [totalPages]);
+	const onPageBack = React.useCallback(() => setCurrentPage(page => {
+		const newPage = Math.max(1, page - 1);
+
+		if (newPage === page)
+			return page;
+
+		if (newPage > 1)
+			query.set(URL_PARAM_PAGE, newPage.toString(10));
+		else
+			query.delete(URL_PARAM_PAGE);
+
+		return newPage;
+	}), [query]);
+
+	const onPageNext = React.useCallback(() => setCurrentPage(page => {
+		const newPage = Math.min(totalPages, page + 1);
+
+		if (newPage === page)
+			return page;
+
+		query.set(URL_PARAM_PAGE, newPage.toString(10));
+
+		return newPage;
+	}), [totalPages, query]);
 
 	const applySearch = React.useCallback((searchText: string) => {
 		let items: T[] = props.items;
@@ -51,16 +91,26 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 		if (onItemFilter && searchText.length > 0) {
 			items = items.filter(item => onItemFilter(item, searchText));
+
 			setFilteredItems(items);
-		} else
+			query.set(URL_PARAM_SEARCH, searchText);
+		} else {
 			setFilteredItems(null);
+			query.delete(URL_PARAM_SEARCH);
+		}
 
 		const totalPages = Math.ceil(items.length / itemsPerPage);
 		setTotalPages(totalPages);
 
 		// Handles the case where the user is on the final page of the list, and deletes the final item on that page.
-		setCurrentPage(Math.min(currentPage, totalPages));
-	}, [props.items, props.onItemFilter, itemsPerPage]);
+		const newCurrentPage = Math.min(currentPage, totalPages);
+		setCurrentPage(newCurrentPage);
+
+		if (newCurrentPage > 1)
+			query.set(URL_PARAM_PAGE, newCurrentPage.toString(10));
+		else
+			query.delete(URL_PARAM_PAGE);
+	}, [props.items, props.onItemFilter, itemsPerPage, query]);
 
 	const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const searchText = event.currentTarget.value.toLocaleLowerCase();
@@ -80,7 +130,9 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		applySearch(searchText);
 	}, [props.items]);
 
-	const startIndex = (currentPage - 1) * itemsPerPage;
+	const startIndex = (
+		currentPage - 1
+	) * itemsPerPage;
 
 	let items: T[];
 
@@ -88,7 +140,9 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	if (props.items.length === 1)
 		items = filteredItems ?? props.items;
 	else
-		items = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
+		items = (
+			filteredItems ?? props.items
+		).slice(startIndex, startIndex + itemsPerPage);
 
 	let newButton: React.ReactNode = null;
 
@@ -115,24 +169,27 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
 			<PageHeader title={props.title}>
 				<div className="header-controls">
-					{props.controls ?? (props.onItemFilter && (
-						<InputGroup
-							type="search"
-							leftIcon="search"
-							rightElement={(
-								<Button
-									icon="cross"
-									minimal={true}
-									small={true}
-									style={{borderRadius: 30}}
-									onClick={onSearchClearClick}
+					{props.controls ??
+						(
+							props.onItemFilter && (
+								<InputGroup
+									type="search"
+									leftIcon="search"
+									rightElement={(
+										<Button
+											icon="cross"
+											minimal={true}
+											small={true}
+											style={{borderRadius: 30}}
+											onClick={onSearchClearClick}
+										/>
+									)}
+									placeholder={props.searchPlaceholder ?? 'Search'}
+									onChange={onSearchChange}
+									value={searchText}
 								/>
-							)}
-							placeholder={props.searchPlaceholder ?? 'Search'}
-							onChange={onSearchChange}
-							value={searchText}
-						/>
-					))}
+							)
+						)}
 
 					<div className="header-buttons">
 						{deleteButton}
