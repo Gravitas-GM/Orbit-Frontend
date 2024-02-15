@@ -52,11 +52,11 @@ export interface Department extends Entity {
 	members: Stub<User, 'id' | 'firstName' | 'lastName'>[];
 }
 
-export type DepartmentCreatePayload = Create<Department, 'members'> & {
+export type DepartmentCreatePayload = Create<Department, 'members' | 'allowSplitReporting'> & {
 	members: Stub<User>;
 };
 
-export type DepartmentUpdatePayload = Update<Department, 'members'> & {
+export type DepartmentUpdatePayload = Update<Department, 'members' | 'allowSplitReporting'> & {
 	members: Stub<User>;
 };
 
