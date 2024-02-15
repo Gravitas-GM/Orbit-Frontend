@@ -35,6 +35,10 @@ interface IState {
 	showDeleteDialog: boolean;
 }
 
+function sortPointsByDate (a: PointItem, b: PointItem) {
+	return b.timestamp.getTime() - a.timestamp.getTime();
+}
+
 export class PointsTab extends React.PureComponent<IProps, IState> {
 	public static contextType = UserContext;
 	declare context: React.ContextType<typeof UserContext>;
@@ -72,7 +76,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		}
 
 		this.setState({
-			pointItems: userPoints?.points ?? [],
+			pointItems: userPoints?.points.sort(sortPointsByDate) ?? [],
 			sources: sources.sort((a, b) => a.name.localeCompare(b.name)),
 			loading: false,
 		});
@@ -235,7 +239,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 		this.setState(state => (
 			{
-				pointItems: [...state.pointItems, ...newItems],
+				pointItems: [...state.pointItems, ...newItems].sort(sortPointsByDate),
 			}
 		));
 

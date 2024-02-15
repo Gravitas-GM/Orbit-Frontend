@@ -1,3 +1,4 @@
+import React from 'react';
 import {H2} from '@blueprintjs/core';
 import {useEffect} from 'react';
 import './PageHeader.scss';
@@ -8,7 +9,7 @@ interface IProps {
 }
 
 export const PageHeader: React.FC<IProps> = ({title, children}) => {
-	useTitle(`Happy Orbit - ${title}`);
+	useTitle(`Happy Orbit | ${title}`);
 
 	return (
 		<header className="header-container">

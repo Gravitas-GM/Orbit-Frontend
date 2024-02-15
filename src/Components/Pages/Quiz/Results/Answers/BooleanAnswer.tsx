@@ -10,10 +10,8 @@ interface OptionProps extends Props {
 const Option: React.FC<OptionProps> = ({item, value, ...props}) => {
 	let icon: React.ReactNode = <Icon icon="blank" />;
 
-	if (item.correct && item.answer === value)
+	if (item.answer === value)
 		icon = <Icon intent={Intent.PRIMARY} icon="tick" />;
-	else if (!item.correct && item.response === value)
-		icon = <Icon intent={Intent.DANGER} icon="cross" />;
 
 	return (
 		<div className="option">

@@ -1,72 +1,74 @@
 import * as React from 'react';
-import {Answer, isQuizNotReadyError, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
-import {toaster} from '../../../../toaster';
-import {Redirect} from 'react-router';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {PageHeader} from '../../../PageHeader';
-import {Classes} from '../../../../classes';
-import './index.scss';
-import {Timer} from './Timer';
-import {Questions, QuizItem} from './Questions';
+import {Prompt, Redirect} from 'react-router';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {QuizSubmission} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
+import {Answer, Quiz, QuizModel} from '../../../../Api/Quiz/Models/Quiz';
+import {QuizSubmission} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {Classes} from '../../../../classes';
+import {toaster} from '../../../../toaster';
+import {PageHeader} from '../../../PageHeader';
+import './index.scss';
+import {Questions, QuizItem} from './Questions';
+import {Timer} from './Timer';
 
-interface State {
-	quiz: Quiz | null,
-	redirectTo: string | null,
-	validationFailures: ValidationFailures | null,
+interface Props {
+	quiz: Quiz,
 }
 
-export class QuizPage extends React.PureComponent<{}, State> {
+interface State {
+	redirectTo: string | null,
+	validationFailures: ValidationFailures | null,
+	expired: boolean,
+}
+
+export class QuizPage extends React.PureComponent<Props, State> {
 	public state: Readonly<State> = {
-		quiz: null,
 		redirectTo: null,
 		validationFailures: null,
+		expired: false,
 	};
-
-	public async componentDidMount() {
-		try {
-			this.setState({
-				quiz: await QuizModel.start().then(r => r.data),
-			});
-		} catch (error) {
-			if (isQuizNotReadyError(error))
-				toaster.warning(error.message);
-			else
-				toaster.showUnhandledErrorMessage();
-
-			this.setState({
-				redirectTo: '/',
-			});
-		}
-	}
 
 	public render() {
 		if (this.state.redirectTo)
 			return <Redirect to={this.state.redirectTo} />;
-		else if (this.state.quiz === null)
-			return <FrameLoadingSpinner />;
 
 		return (
 			<>
-				<Timer startTime={this.state.quiz.startTimestamp} endTime={this.state.quiz.endTimestamp} />
+				<Timer
+					startTime={this.props.quiz.startTimestamp}
+					endTime={this.props.quiz.endTimestamp}
+					onExpired={this.onTimerExpired}
+				/>
 
 				<div className={Classes.PAGE_WRAPPER} id="quiz-form">
 					<PageHeader title="Quiz" />
 
 					<Questions
-						questions={this.state.quiz.questions}
+						questions={this.props.quiz.questions}
 						validationFailures={this.state.validationFailures}
 						onSubmit={this.onSubmit}
+						expired={this.state.expired}
 					/>
 				</div>
+
+				<Prompt
+					when={this.state.redirectTo === null}
+					message="Are you sure you want to leave? You have unsaved changes."
+				/>
 			</>
 		);
 	}
 
+	private onTimerExpired = () => this.setState({
+		expired: true,
+	});
+
 	private onSubmit = async (items: QuizItem[]) => {
 		const responses: Answer[] = items.map(item => {
+			// Unanswered items should be converted to `null`s, but ONLY when submitting an expired quiz.
+			if (this.state.expired && item.answer === null)
+				return null;
+
 			switch (item.kind) {
 				case QuestionKind.Boolean:
 					return {
