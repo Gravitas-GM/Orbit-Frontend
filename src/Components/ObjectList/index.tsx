@@ -1,14 +1,12 @@
+import {Button, InputGroup} from '@blueprintjs/core';
 import * as React from 'react';
 import {Classes} from '../../classes';
-import {history} from '../../history';
-import {useQuery} from '../../hooks/useQuery';
 import {useWatchedQuery} from '../../hooks/useWatchedQuery';
-import {PageHeader} from '../PageHeader';
-import {Button, InputGroup} from '@blueprintjs/core';
-import './index.scss';
 import {LinkButton} from '../LinkButton';
-import {Pagination} from '../Pagination';
 import {NonIdealState} from '../NonIdealState';
+import {PageHeader} from '../PageHeader';
+import {Pagination} from '../Pagination';
+import './index.scss';
 
 interface Props<T> {
 	title: string;
@@ -99,7 +97,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 			query.delete(URL_PARAM_SEARCH);
 		}
 
-		const totalPages = Math.ceil(items.length / itemsPerPage);
+		const totalPages = Math.max(Math.ceil(items.length / itemsPerPage), 1);
 		setTotalPages(totalPages);
 
 		// Handles the case where the user is on the final page of the list, and deletes the final item on that page.
@@ -130,19 +128,8 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 		applySearch(searchText);
 	}, [props.items]);
 
-	const startIndex = (
-		currentPage - 1
-	) * itemsPerPage;
-
-	let items: T[];
-
-	// Handles an item being added to an empty list page
-	if (props.items.length === 1)
-		items = filteredItems ?? props.items;
-	else
-		items = (
-			filteredItems ?? props.items
-		).slice(startIndex, startIndex + itemsPerPage);
+	const startIndex = (currentPage - 1) * itemsPerPage;
+	let items: T[] = (filteredItems ?? props.items).slice(startIndex, startIndex + itemsPerPage);
 
 	let newButton: React.ReactNode = null;
 
