@@ -2,7 +2,7 @@ import {useMemo, useState} from 'react';
 import {history} from '../history';
 import {useQuery} from './useQuery';
 
-type WrapFn = <T extends (...args: any[]) => any>(context: any, fn: T) => (...args: Parameters<T>) => ReturnType<T>;
+type WrapFn = <T extends (...args: any[]) => any>(fn: T) => (...args: Parameters<T>) => ReturnType<T>;
 
 interface WatchedQuery {
 	append: (name: string, value: string) => void,
@@ -21,17 +21,17 @@ export function useWatchedQuery(): WatchedQuery {
 	}
 
 	const wrap: WrapFn = useMemo(() => {
-		return (context, fn) => (...args) => {
+		return fn => (...args) => {
 			setDirty(true);
-			return fn.call(context, ...args);
+			return fn.call(query, ...args);
 		};
-	}, []);
+	}, [query]);
 
 	return useMemo(() => (
 		{
-			append: wrap(query, query.append),
-			set: wrap(query, query.set),
-			delete: wrap(query, query.delete),
+			append: wrap(query.append),
+			set: wrap(query.set),
+			delete: wrap(query.delete),
 			get: name => query.get(name),
 		}
 	), [query]);
