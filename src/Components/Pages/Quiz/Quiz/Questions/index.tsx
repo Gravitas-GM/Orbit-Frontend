@@ -1,4 +1,6 @@
+import {Button, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {QuestionKind} from '../../../../../Api/Quiz/Models/Questions';
 import {
 	BooleanAnswer,
@@ -9,11 +11,9 @@ import {
 	MultipleChoiceQuestionPrompt,
 	QuestionPrompt,
 } from '../../../../../Api/Quiz/Models/Quiz';
-import {Question} from './Question';
-import './index.scss';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import {Button, Intent} from '@blueprintjs/core';
 import {QuestionNavigator} from '../QuestionNavigator';
+import './index.scss';
+import {Question} from './Question';
 
 interface Item<Kind extends QuestionKind> {
 	kind: Kind,
@@ -37,28 +37,41 @@ interface Props {
 	questions: QuestionPrompt[],
 	validationFailures: ValidationFailures | null,
 	onSubmit: (items: QuizItem[]) => Promise<void>,
+	expired?: boolean,
 }
 
-export const Questions: React.FC<Props> = ({questions, validationFailures, onSubmit}) => {
+export const Questions: React.FC<Props> = ({
+	questions,
+	validationFailures,
+	onSubmit,
+	expired,
+}) => {
 	const [items, setItems] = React.useState<QuizItem[]>([]);
 
 	React.useEffect(() => {
-		setItems(questions.map(item => ({
-			kind: item.kind,
-			prompt: item,
-			answer: null,
-		} as QuizItem)));
+		setItems(questions.map(item => (
+			{
+				kind: item.kind,
+				prompt: item,
+				answer: null,
+			} as QuizItem
+		)));
 	}, [questions]);
 
 	const [submitting, setSubmitting] = React.useState(false);
 
 	const onSubmitClick = React.useCallback(async () => {
 		setSubmitting(true);
-
 		await onSubmit(items);
-
 		setSubmitting(false);
 	}, [items, onSubmit]);
+
+	React.useEffect(() => {
+		if (expired) {
+			// noinspection JSIgnoredPromiseFromCall
+			onSubmitClick();
+		}
+	}, [expired, onSubmitClick]);
 
 	return (
 		<div>

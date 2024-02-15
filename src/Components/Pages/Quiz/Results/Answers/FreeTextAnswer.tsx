@@ -14,7 +14,7 @@ export const FreeTextAnswer: React.FC<Props> = ({item, name}) => {
 				<Icon intent={item.correct ? Intent.PRIMARY : Intent.DANGER} icon={item.correct ? 'tick' : 'cross'} />
 
 				<div style={{flexGrow: 1}}>
-					<InputGroup disabled={true} value={item.response} />
+					<InputGroup disabled={true} value={item.response ?? 'No answer given'} />
 				</div>
 			</div>
 

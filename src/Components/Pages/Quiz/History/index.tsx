@@ -155,7 +155,10 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 										<td>{formatDateTime(submission.endTimestamp)}</td>
 
-										<td>{formatDuration(submission.startTimestamp, submission.endTimestamp)}</td>
+										<td>
+											{formatDuration(submission.startTimestamp, submission.endTimestamp)}
+											{submission.expired ? ' (timed out)' : ''}
+										</td>
 
 										<td>{renderScore(submission)}</td>
 
