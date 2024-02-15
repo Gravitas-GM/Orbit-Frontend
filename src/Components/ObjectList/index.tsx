@@ -108,7 +108,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 			query.set(URL_PARAM_PAGE, newCurrentPage.toString(10));
 		else
 			query.delete(URL_PARAM_PAGE);
-	}, [props.items, props.onItemFilter, itemsPerPage, query]);
+	}, [props.items, props.onItemFilter, itemsPerPage, query, currentPage]);
 
 	const onSearchChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const searchText = event.currentTarget.value.toLocaleLowerCase();
@@ -120,7 +120,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 	const onSearchClearClick = React.useCallback(() => {
 		setSearchText('');
 		applySearch('');
-	}, []);
+	}, [applySearch]);
 
 	// Re-apply our search function any time `props.items` changes. As a side effect, `applySearch()` should also
 	// recalculate total pages and current page.
