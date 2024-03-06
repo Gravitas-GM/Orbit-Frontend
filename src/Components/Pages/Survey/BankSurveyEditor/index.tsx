@@ -81,7 +81,9 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 
 		return (
 			<section className={Classes.PAGE_WRAPPER}>
-				<PageHeader title={`Survey for Week ${this.state.survey?.week}`} />
+				<PageHeader title={(
+					this.state.survey?.week === 0 ? 'Recurring Survey' : `Survey for Week ${this.state.survey?.week}`
+				)} />
 
 				<ObjectList
 					title="Questions"
