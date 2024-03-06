@@ -55,7 +55,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 							fill={true}
 							growVertically={true}
 							name="prompt"
-							placeholder="How do you feel valued?"
+							placeholder="How do you feel valued in this organization?"
 							value={this.state.prompt}
 							onChange={this.onPromptChange}
 						/>
