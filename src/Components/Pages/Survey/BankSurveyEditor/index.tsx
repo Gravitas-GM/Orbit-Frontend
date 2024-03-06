@@ -23,7 +23,6 @@ interface IState {
 	redirect: boolean;
 	survey: BankSurvey | null;
 	questions: BankQuestion[];
-	protected: boolean;
 	deleteTargets: BankQuestion[];
 	deleteSubject: string | undefined;
 	selectedItems: BankQuestion[];
@@ -42,7 +41,6 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 		redirect: false,
 		survey: null,
 		questions: [],
-		protected: false,
 		deleteTargets: [],
 		deleteSubject: undefined,
 		selectedItems: [],
@@ -58,7 +56,6 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 				await BankSurveyModel.read(idParam).then(r => this.setState({
 					survey: r.data,
 					questions: r.data.questions,
-					protected: r.data.protected,
 				}));
 			} catch (error) {
 				toaster.showUnhandledErrorMessage();
@@ -84,36 +81,7 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 
 		return (
 			<section className={Classes.PAGE_WRAPPER}>
-				<PageHeader title={this.props.match.params.survey ? `Edit Bank Survey` : `New Bank Survey`} />
-
-				<form onSubmit={this.onSaveClick} style={{display: 'flex', flexDirection: 'column'}}>
-					<div style={{display: 'flex', justifyContent: 'right'}}>
-						<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
-					</div>
-
-					<ValidationAwareFormGroup
-						labelFor="protected"
-						failures={this.state.failures}
-						style={{maxWidth: 800}}
-					>
-						<div className="settings-switch-container">
-							<span>
-								Protected
-							</span>
-
-							<Switch
-								checked={this.state.protected}
-								onChange={this.onProtectedChange}
-								large={true}
-								inline={true}
-							/>
-						</div>
-
-						<span>
-							When enabled, this survey won't be editable by an account admin.
-						</span>
-					</ValidationAwareFormGroup>
-				</form>
+				<PageHeader title={`Survey for Week ${this.state.survey?.week}`} />
 
 				<ObjectList
 					title="Questions"
@@ -157,6 +125,10 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 					)}
 				</ObjectList>
 
+				<div style={{display: 'flex', justifyContent: 'right'}}>
+					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
+				</div>
+
 				<DeleteDialog
 					isOpen={this.state.deleteTargets.length > 0}
 					subject={this.state.deleteSubject}
@@ -188,11 +160,6 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 			</section>
 		);
 	}
-
-	private onProtectedChange = (event: FormEvent<HTMLInputElement>) => this.setState({
-		protected: event.currentTarget.checked,
-		dirty: true,
-	});
 
 	private onItemFilter = (item: BankQuestion, searchText: string) =>
 		item.prompt.toLocaleLowerCase().includes(searchText);
@@ -284,14 +251,7 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 		});
 
 		try {
-			if (this.state.survey)
-				await BankSurveyModel.update(this.state.survey.id, {
-					protected: this.state.protected,
-				});
-			else
-				await BankSurveyModel.create({
-					protected: this.state.protected,
-				});
+			// TODO: send week order update
 		} catch (error) {
 			throw error;
 		} finally {
@@ -300,8 +260,7 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 			});
 		}
 
-		const action = this.state.survey ? 'updated' : 'created';
-		toaster.success(`Bank Survey ${action} successfullly.`);
+		toaster.success(`Bank Survey order updated.`);
 
 		this.setState({
 			dirty: false,

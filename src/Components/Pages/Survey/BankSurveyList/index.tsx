@@ -48,7 +48,7 @@ export class BankSurveyList extends React.PureComponent<{}, IState> {
 		return (
 			<section className="gm-page-wrapper">
 				<ObjectList
-					title="Bank Surveys"
+					title="Survey Bank"
 					editorUrlPrefix="/survey-bank"
 					items={this.state.surveys}
 					onItemFilter={this.onItemFilter}
