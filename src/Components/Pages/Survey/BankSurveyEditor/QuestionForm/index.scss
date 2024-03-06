@@ -1,0 +1,13 @@
+@import '../../../../../variables';
+
+#question-editor-fields {
+	.question-form {
+		> .#{$bp-ns}-control-group > .#{$bp-ns}-form-group {
+			margin-right: 10px;
+
+			&:last-of-type {
+				margin-right: 0;
+			}
+		}
+	}
+}
