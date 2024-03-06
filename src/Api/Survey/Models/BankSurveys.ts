@@ -6,11 +6,10 @@ import {
 	Projection,
 	Queryable,
 	QueryDocument,
-	Stub,
 	surveyClient,
 	Update,
 } from '../../index';
-import {Survey, SurveyQuestionKind} from './Survey';
+import {BankQuestion} from './BankQuestions';
 
 export interface SurveyBankEndpoints {
 	'/survey-bank': {
@@ -46,44 +45,16 @@ export interface SurveyBankEndpoints {
 	};
 }
 
-interface BankQuestionBase extends Entity {
-	survey: Stub<Survey>;
-	kind: SurveyQuestionKind;
-	prompt: string;
-}
-
-export interface BankFreeTextQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.FreeText;
-}
-
-export interface BankScaleQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.Scale;
-	minValue: number;
-	maxValue: number;
-}
-
-export interface BankMultipleChoiceQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice;
-	choices: string[];
-}
-
-export type BankQuestion = BankFreeTextQuestion | BankScaleQuestion | BankMultipleChoiceQuestion;
-
 export interface BankSurvey extends Entity {
-	sort: number;
+	week: number;
 	protected: boolean;
 	questions: BankQuestion[];
 }
 
-export type BankSurveyCreatePayload = Create<BankSurvey, 'questions'> & {
-	questions: Create<BankQuestion>[];
-};
+export type BankSurveyCreatePayload = Create<BankSurvey, 'protected'>;
+export type BankSurveyUpdatePayload = Update<BankSurvey, 'questions' | 'week'>;
 
-export type BankSurveyUpdatePayload = Update<BankSurvey, 'questions'> & {
-	questions: Update<BankQuestion>[];
-};
-
-export class SurveyBankModel {
+export class BankSurveyModel {
 	public static list(projection?: Projection, query?: QueryDocument) {
 		return surveyClient.get('/survey-bank', {
 			params: {

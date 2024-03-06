@@ -1,10 +1,12 @@
 import {Create, Entity, Id, Projectable, Projection, QueryDocument, Stub, surveyClient, Update} from '../../index';
+import {SurveyQuestionKind} from './BankQuestions';
 import {Settings} from './Settings';
+import {SurveyQuestion} from './SurveyQuestions';
 
 export interface SurveyEndpoints {
 	'/surveys': {
 		GET: {
-			response: Survey[];
+			response: Surveys[];
 		};
 
 		PUT: {
@@ -18,66 +20,37 @@ export interface SurveyEndpoints {
 		POST: {
 			params: Id;
 			body: SurveySubmissionFilter;
-			response: Survey;
+			response: Surveys;
 		}
 	}
 
 	'/surveys/current': {
 		GET: {
-			response: Survey;
+			response: Surveys;
 		}
 	}
 
 	'/surveys/next': {
 		GET: {
-			response: Survey;
+			response: Surveys;
 		}
 
 		PATCH: {
 			params: Id;
 			body: SurveyUpdatePayload;
-			response: Survey;
+			response: Surveys;
 		}
 	}
 }
 
-export enum SurveyQuestionKind {
-	FreeText = 'free text',
-	MultipleChoice = 'multiple choice',
-	Scale = 'scale',
-}
-
-interface QuestionBase extends Entity {
-	survey: Stub<Survey>;
-	kind: SurveyQuestionKind;
-	prompt: string;
-}
-
-export interface FreeTextQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.FreeText;
-}
-
-export interface ScaleQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.Scale;
-	minValue: number;
-	maxValue: number;
-}
-
-export interface MultipleChoiceQuestion extends QuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice;
-	choices: string[];
-}
-
-export type Question = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion;
-
-export interface Survey extends Entity {
+export interface Surveys extends Entity {
 	account: Stub<Settings>;
 	startedDate: Date;
-	questions: Question[];
+	questions: SurveyQuestion[];
 }
 
 interface SurveyResponseBase extends Entity {
-	question: Stub<Question>;
+	question: Stub<SurveyQuestion>;
 	kind: SurveyQuestionKind;
 }
 
@@ -99,7 +72,7 @@ export interface MultipleChoiceResponse extends SurveyResponseBase {
 export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceResponse;
 
 export interface SurveySubmission extends Entity {
-	survey: Stub<Survey>;
+	survey: Stub<Surveys>;
 	submittedDate: Date;
 	responses: SurveyResponse[];
 }
@@ -108,9 +81,7 @@ export interface SurveySubmissionFilter {
 	drillDown: boolean;
 }
 
-export type SurveyUpdatePayload = Update<Survey, 'questions'> & {
-	questions: Update<Question>[];
-};
+export type SurveyUpdatePayload = Update<Surveys>;
 
 export type SurveySubmissionPayload = Create<SurveySubmission, 'responses'> & {
 	responses: Create<SurveyResponse>[];
