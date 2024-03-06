@@ -35,7 +35,7 @@ interface RouteProps {
 	survey?: string;
 }
 
-export class SurveyEditor extends React.PureComponent<RouteComponentProps<RouteProps>, IState> {
+export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<RouteProps>, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		processing: false,

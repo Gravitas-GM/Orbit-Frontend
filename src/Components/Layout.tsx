@@ -22,8 +22,9 @@ import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
-import {SurveyEditor} from './Pages/Survey/BankSurveyEditor';
+import {BankSurveyEditor} from './Pages/Survey/BankSurveyEditor';
 import {BankQuestionEditor} from './Pages/Survey/BankSurveyEditor/BankQuestionEditor';
+import {BankSurveyList} from './Pages/Survey/BankSurveyList';
 import {UserEditor} from './Pages/Users/Editor';
 import {UsersList} from './Pages/Users/List';
 
@@ -82,8 +83,9 @@ export const Layout: React.FC<IProps> = ({loading}) => {
 						<Route key="/debug-controls" path="/debug-controls" component={DebugControls} exact={true} />,
 
 						// TODO: move these to site admin permission
-						<Route key="/survey-bank/:survey" path="/survey-bank/:survey(\d+)" component={SurveyEditor} exact={true} />,
-						<Route key="/survey-bank/new" path="/survey-bank/new" component={SurveyEditor} exact={true} />,
+						<Route key="/survey-bank" path="/survey-bank" component={BankSurveyList} exact={true} />,
+						<Route key="/survey-bank/:survey" path="/survey-bank/:survey(\d+)" component={BankSurveyEditor} exact={true} />,
+						<Route key="/survey-bank/new" path="/survey-bank/new" component={BankSurveyEditor} exact={true} />,
 						<Route key="/survey-bank/:survey/questions/:question" path="/survey-bank/:survey(\d+)/questions/:question(\d+)" component={BankQuestionEditor} exact={true} />,
 						<Route key="/survey-bank/:survey/questions/new" path="/survey-bank/:survey(\d+)/questions/new" component={BankQuestionEditor} exact={true} />,
 					]}
