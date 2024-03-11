@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Button, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
+import {Button, InputGroup, Intent, NumericInput, Switch} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Spacing} from '../../../../Styles/variables';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {PageHeader} from '../../../PageHeader';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
@@ -26,7 +27,7 @@ interface IState {
 	frequency: Frequency;
 	questionCount: string;
 	completedRewardSource: PointSourceItem | null;
-	quizDurationMinutes: number;
+	quizDurationMinutes: number | null;
 	dirty: boolean;
 }
 
@@ -69,7 +70,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 			frequency: settings.quizFrequency,
 			questionCount: settings.questionCount.toString(10),
 			completedRewardSource: sources.find(item => item.id.$oid === settings.completedRewardPointSourceId) ?? null,
-			quizDurationMinutes: settings.quizDurationSeconds / 60,
+			quizDurationMinutes: settings.quizDurationSeconds ? settings.quizDurationSeconds / 60 : null,
 		});
 	}
 
@@ -109,27 +110,48 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
-						label="Quiz Duration"
 						labelFor="quizDurationSeconds"
 						failures={this.state.failures}
 					>
-						<div className={Classes.FORM_GROUP_SUB_LABEL}>
-							The duration of the quiz (in minutes).
+						<div className="settings-switch-container">
+							<span>
+								Quiz Timer
+							</span>
+
+							<Switch
+								checked={this.state.quizDurationMinutes !== null}
+								onChange={this.onUseDurationChange}
+								large={true}
+								inline={true}
+							/>
 						</div>
 
-						<NumericInput
-							min={1}
-							fill={true}
-							name="quizDurationSeconds"
-							onValueChange={this.onQuizDurationMinutesChange}
-							value={this.state.quizDurationMinutes}
-						/>
+						<span>
+							When enabled, a quiz will be automatically submitted when the timer expires.
+						</span>
+
+						{this.state.quizDurationMinutes && (
+							<div style={{paddingTop: Spacing.Medium}}>
+								<div className={Classes.FORM_GROUP_SUB_LABEL}>
+									The duration of the quiz (in minutes).
+								</div>
+
+								<NumericInput
+									min={1}
+									fill={true}
+									name="quizDurationSeconds"
+									onValueChange={this.onQuizDurationMinutesChange}
+									value={this.state.quizDurationMinutes}
+								/>
+							</div>
+						)}
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
 						label="Question Count"
 						labelFor="questionCount"
 						failures={this.state.failures}
+						style={{paddingTop: Spacing.Medium}}
 					>
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
 							The number of questions to select for each quiz.
@@ -148,6 +170,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 						label="Reward Point Source"
 						labelFor="quizRewardSource"
 						failures={this.state.failures}
+						style={{paddingTop: Spacing.Medium}}
 					>
 						<div className={Classes.FORM_GROUP_SUB_LABEL}>
 							The Point Source to grant to a user upon quiz completion.
@@ -189,8 +212,12 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 		completedRewardSource: null,
 	});
 
+	private onUseDurationChange = () => this.setState(state => ({
+		quizDurationMinutes: state.quizDurationMinutes ? null : defaultQuizDurationMinutes,
+	}));
+
 	private onQuizDurationMinutesChange = (quizDurationMinutes: number) => {
-		if (isNaN(quizDurationMinutes))
+		if (isNaN(quizDurationMinutes) || quizDurationMinutes < 1)
 			return;
 
 		this.setState({
@@ -249,7 +276,7 @@ export class QuizSettings extends React.PureComponent<{}, IState> {
 				quizFrequency: this.state.frequency,
 				questionCount: this.state.questionCount.length > 0 ? parseInt(this.state.questionCount, 10) : 0,
 				completedRewardPointSourceId: this.state.completedRewardSource?.id.$oid ?? null,
-				quizDurationSeconds: this.state.quizDurationMinutes * 60,
+				quizDurationSeconds: this.state.quizDurationMinutes ? this.state.quizDurationMinutes * 60 : null,
 			});
 		} catch (error) {
 			if (isValidationFailureError(error)) {

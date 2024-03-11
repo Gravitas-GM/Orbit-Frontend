@@ -199,7 +199,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 			<MenuItem
 				active={modifiers.active}
 				key={item.id.$oid}
-				text={ucwords(item.name)}
+				text={`${ucwords(item.name)} (${item.point_value} points)`}
 				onClick={handleClick}
 			/>
 		);

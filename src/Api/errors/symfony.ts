@@ -43,6 +43,7 @@ interface ValidationFailureContext {
 export const ErrorCodes = {
 	Validation: 'validation_failed',
 	AccessDenied: 'access_denied',
+	NotFound: 'not_found',
 	QuizNotReady: 'quiz.not_ready',
 };
 
@@ -65,6 +66,14 @@ export class ApiError<Context extends {} = {}> extends Error {
 
 	public isAccessDenied(): boolean {
 		return this.code === ErrorCodes.AccessDenied;
+	}
+
+	public isNotFound(): boolean {
+		return this.code === ErrorCodes.NotFound;
+	}
+
+	public isQuizNotReady(): boolean {
+		return this.code === ErrorCodes.QuizNotReady;
 	}
 }
 

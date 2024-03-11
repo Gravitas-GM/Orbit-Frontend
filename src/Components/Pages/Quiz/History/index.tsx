@@ -1,142 +1,131 @@
+import {HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {UserContext} from '../../../../Session';
-import {Button, HTMLTable, Intent} from '@blueprintjs/core';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {Redirect} from 'react-router';
 import {User, UserModel} from '../../../../Api/Hub/Models/Users';
-import {Permission} from '../../../../Permission';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
-import {NonIdealState} from '../../../NonIdealState';
-import {history} from '../../../../history';
+import {Permission, PermissionContext} from '../../../../Permission';
+import {toaster} from '../../../../toaster';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {LinkButton} from '../../../LinkButton';
+import {NonIdealState} from '../../../NonIdealState';
 import {ObjectList} from '../../../ObjectList';
 import {formatDateTime, formatDuration} from '../../../Utility/date';
-import {toaster} from '../../../../toaster';
 import {renderScore} from '../Results';
 import './QuizHistory.scss';
+import {UserSelect} from './UserSelect';
 
 interface IState {
 	loading: boolean;
 	processing: boolean;
 	users: User[];
 	submissions: QuizSubmission[];
+	filteredSubmissions: QuizSubmission[] | null;
+	selectedUser: User | null;
+	redirect: string | null;
 }
 
 export class QuizHistoryPage extends React.PureComponent<{}, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
+	public static contextType = PermissionContext;
+	declare context: React.ContextType<typeof PermissionContext>;
 
 	public state: Readonly<IState> = {
 		loading: false,
 		processing: false,
 		users: [],
 		submissions: [],
+		filteredSubmissions: null,
+		selectedUser: null,
+		redirect: null,
 	};
 
 	public async componentDidMount(): Promise<void> {
-		await this.fetchHistoryData();
-	}
-
-	private async fetchUserData(): Promise<User[] | null> {
-		let users: User[] = [];
-
-		try {
-			users = await UserModel.list().then(response => response.data);
-		} catch (err) {
-			toaster.showUnhandledErrorMessage();
-
-			return null;
-		}
-
-		return users;
-	}
-
-	private async fetchQuizSubmissions(): Promise<QuizSubmission[] | null> {
-		let submissions: QuizSubmission[] = [];
-
-		try {
-			submissions = await QuizSubmissionModel.list().then(response => response.data);
-		} catch (e) {
-			toaster.showUnhandledErrorMessage();
-
-			return null;
-		}
-
-		return submissions;
-	}
-
-	private async fetchHistoryData(): Promise<void> {
 		this.setState({
 			loading: true,
 		});
 
-		const submissions = await this.fetchQuizSubmissions();
+		const promises: [Promise<QuizSubmission[]>, Promise<User[]> | undefined] = [
+			QuizSubmissionModel.list().then(r => r.data),
+			undefined,
+		];
 
-		if (!submissions) {
-			this.setState({loading: false});
+		const [isGranted] = this.context!;
+
+		if (isGranted(Permission.ADMIN))
+			promises[1] = UserModel.list().then(r => r.data);
+
+		let submissions: QuizSubmission[];
+		let users: User[] | undefined = undefined;
+
+		try {
+			[submissions, users] = await Promise.all(promises);
+		} catch (e) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				redirect: '/',
+			});
 
 			return;
 		}
 
-		if (this.context?.permissions.includes(Permission.ADMIN)) {
-			const users = await this.fetchUserData();
+		this.setState({
+			submissions: submissions.sort((a, b) => b.endTimestamp.getTime() - a.endTimestamp.getTime()),
+		});
 
-			if (!users) {
-				this.setState({
-					loading: false,
-				});
-
-				return;
-			}
-
-			const submissionUsers = submissions.map(submission => submission.user.id);
-
-			this.setState(state => ({
-				users: users.filter(user => submissionUsers.includes(user.id)),
-				submissions,
-				loading: false,
-			}));
-		} else {
-			// here, since the user isn't an admin we aren't filtering other users' submissions
-			// assuming the submissions endpoint return only the current user's submissions.
-			// or do we need to filter them here as well?
+		if (users) {
+			const ids = submissions.map(item => item.user.id);
 
 			this.setState({
-				submissions,
-				loading: false,
+				users: users.filter(user => ids.includes(user.id)),
 			});
 		}
+
+		this.setState({
+			loading: false,
+		});
 	}
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
+		else if (this.state.redirect)
+			return <Redirect to={this.state.redirect} />;
 
 		if (this.state.submissions.length === 0) {
 			return (
 				<NonIdealState
 					icon="wind"
 					action={(
-						<Button intent={Intent.PRIMARY} onClick={() => history.push('/')}>
+						<LinkButton to="/" intent={Intent.PRIMARY}>
 							Back to the home page
-						</Button>
+						</LinkButton>
 					)}
 					title="No quiz history data found."
 				/>
 			);
 		}
 
+		const [isGranted] = this.context!;
+
 		return (
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Quiz History"
-					items={this.state.submissions}
-					onItemFilter={this.onItemFilter}
+					items={this.state.filteredSubmissions ?? this.state.submissions}
+					controls={
+						<UserSelect
+							users={this.state.users}
+							onUserSelect={this.onUserSelect}
+							onUserClear={this.onUserClear}
+							selectedUser={this.state.selectedUser}
+						/>
+					}
 				>
 					{items => (
 						<HTMLTable striped={true}>
 							<thead>
 								<tr>
-									{this.context?.permissions.includes(Permission.ADMIN) && (
+									{isGranted(Permission.ADMIN) && (
 										<th style={{width: 220}}>Name</th>
 									)}
 
@@ -146,20 +135,30 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 
 									<th>Score</th>
 
-									<th style={{width: 100, textAlign: 'center'}}>View</th>
+									<th
+										style={{
+											width: 100,
+											textAlign: 'center',
+										}}
+									>
+										View
+									</th>
 								</tr>
 							</thead>
 
 							<tbody>
 								{items.map(submission => (
 									<tr key={submission.id}>
-										{this.context?.permissions.includes(Permission.ADMIN) && (
+										{isGranted(Permission.ADMIN) && (
 											<td>{submission.user.name}</td>
 										)}
 
 										<td>{formatDateTime(submission.endTimestamp)}</td>
 
-										<td>{formatDuration(submission.startTimestamp, submission.endTimestamp)}</td>
+										<td>
+											{formatDuration(submission.startTimestamp, submission.endTimestamp)}
+											{submission.expired ? ' (timed out)' : ''}
+										</td>
 
 										<td>{renderScore(submission)}</td>
 
@@ -180,6 +179,15 @@ export class QuizHistoryPage extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (item: QuizSubmission, searchText: string) =>
-		item.user.name.toLocaleLowerCase().includes(searchText);
+	private onUserClear = () => this.setState({
+		filteredSubmissions: null,
+		selectedUser: null,
+	});
+
+	private onUserSelect = (user: User) => this.setState(state => (
+		{
+			filteredSubmissions: state.submissions.filter(item => item.user.id === user.id),
+			selectedUser: user,
+		}
+	));
 }

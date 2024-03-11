@@ -21,7 +21,7 @@ export interface DepartmentEndpoints {
 
 		PUT: {
 			query: Projectable;
-			body: DepartmentUpdatePayload;
+			body: DepartmentCreatePayload;
 			response: Department;
 		};
 	};
@@ -52,12 +52,12 @@ export interface Department extends Entity {
 	members: Stub<User, 'id' | 'firstName' | 'lastName'>[];
 }
 
-export type DepartmentCreatePayload = Create<Department, 'members'> & {
-	members: Stub<User>;
+export type DepartmentCreatePayload = Create<Department, 'name' | 'members'> & {
+	members?: number[];
 };
 
 export type DepartmentUpdatePayload = Update<Department, 'members'> & {
-	members: Stub<User>;
+	members?: number[];
 };
 
 export class DepartmentModel {
