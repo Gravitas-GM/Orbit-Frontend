@@ -32,7 +32,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 		super(props);
 
 		this.state = {
-			kind: props.question?.kind ?? SurveyQuestionKind.MultipleChoice,
+			kind: props.question?.kind ?? SurveyQuestionKind.Choice,
 			prompt: props.question?.prompt ?? '',
 			validationFailures: null,
 			dirty: false,

@@ -6,7 +6,7 @@ import {SurveyQuestion} from './SurveyQuestions';
 export interface SurveyEndpoints {
 	'/surveys': {
 		GET: {
-			response: Surveys[];
+			response: SurveySubmission[];
 		};
 
 		PUT: {
@@ -20,30 +20,24 @@ export interface SurveyEndpoints {
 		POST: {
 			params: Id;
 			body: SurveySubmissionFilter;
-			response: Surveys;
+			response: Survey;
 		}
 	}
 
 	'/surveys/current': {
 		GET: {
-			response: Surveys;
+			response: Survey;
 		}
 	}
 
 	'/surveys/next': {
 		GET: {
-			response: Surveys;
-		}
-
-		PATCH: {
-			params: Id;
-			body: SurveyUpdatePayload;
-			response: Surveys;
+			response: Survey;
 		}
 	}
 }
 
-export interface Surveys extends Entity {
+export interface Survey extends Entity {
 	account: Stub<Settings>;
 	startedDate: Date;
 	questions: SurveyQuestion[];
@@ -65,14 +59,14 @@ export interface ScaleResponse extends SurveyResponseBase {
 }
 
 export interface MultipleChoiceResponse extends SurveyResponseBase {
-	kind: SurveyQuestionKind.MultipleChoice;
+	kind: SurveyQuestionKind.Choice;
 	responseIndex: number;
 }
 
 export type SurveyResponse = FreeTextResponse | ScaleResponse | MultipleChoiceResponse;
 
 export interface SurveySubmission extends Entity {
-	survey: Stub<Surveys>;
+	survey: Stub<Survey>;
 	submittedDate: Date;
 	responses: SurveyResponse[];
 }
@@ -80,8 +74,6 @@ export interface SurveySubmission extends Entity {
 export interface SurveySubmissionFilter {
 	drillDown: boolean;
 }
-
-export type SurveyUpdatePayload = Update<Surveys>;
 
 export type SurveySubmissionPayload = Create<SurveySubmission, 'responses'> & {
 	responses: Create<SurveyResponse>[];
@@ -119,14 +111,6 @@ export class SurveyModel {
 
 	public static readNext(projection?: Projection) {
 		return surveyClient.get('/surveys/next', {
-			params: {
-				p: projection,
-			},
-		});
-	}
-
-	public static updateNext(payload: SurveyUpdatePayload, projection?: Projection) {
-		return surveyClient.patch('/surveys/next', payload, {
 			params: {
 				p: projection,
 			},

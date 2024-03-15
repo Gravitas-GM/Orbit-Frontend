@@ -3,11 +3,11 @@ import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import './index.scss';
 import {
 	BankQuestion,
-	FreeTextQuestion, MultipleChoiceQuestion,
+	FreeTextQuestion, ChoiceQuestion,
 	ScaleQuestion,
 	SurveyQuestionKind,
 } from '../../../../../Api/Survey/Models/BankQuestions';
-import {MultipleChoiceForm} from './MultipleChoiceForm';
+import {ChoiceForm} from './ChoiceForm';
 import {FreeTextForm} from './FreeTextForm';
 import {ScaleForm} from './ScaleForm';
 
@@ -29,7 +29,7 @@ interface BaseProps {
 
 type SaveHandler<T, K extends keyof T> = (data: Pick<T, K>) => Promise<void>;
 
-export type ScaleSaveHandler = SaveHandler<ScaleQuestion, 'minValue' | 'maxValue'>;
+export type ScaleSaveHandler = SaveHandler<ScaleQuestion, 'startValue' | 'endValue'>;
 
 interface ScaleProps extends BaseProps {
 	kind: SurveyQuestionKind.Scale;
@@ -43,14 +43,14 @@ interface FreeTextProps extends BaseProps {
 	onSave: FreeTextSaveHandler;
 }
 
-export type MultipleChoiceSaveHandler = SaveHandler<MultipleChoiceQuestion, 'choices'>;
+export type ChoiceSaveHandler = SaveHandler<ChoiceQuestion, 'choices'>;
 
-interface MultipleChoiceProps extends BaseProps {
-	kind: SurveyQuestionKind.MultipleChoice;
-	onSave: MultipleChoiceSaveHandler;
+interface ChoiceProps extends BaseProps {
+	kind: SurveyQuestionKind.Choice;
+	onSave: ChoiceSaveHandler;
 }
 
-type Props = ScaleProps | FreeTextProps | MultipleChoiceProps;
+type Props = ScaleProps | FreeTextProps | ChoiceProps;
 
 export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
 	// TODO: update redirect path to redirect to the survey's editor
@@ -58,8 +58,8 @@ export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formPr
 		case SurveyQuestionKind.Scale:
 			return <ScaleForm onSave={onSave} question={question as ScaleQuestion | null} {...formProps} />;
 
-		case SurveyQuestionKind.MultipleChoice:
-			return <MultipleChoiceForm onSave={onSave} question={question as MultipleChoiceQuestion} {...formProps} />;
+		case SurveyQuestionKind.Choice:
+			return <ChoiceForm onSave={onSave} question={question as ChoiceQuestion} {...formProps} />;
 
 		case SurveyQuestionKind.FreeText:
 			return <FreeTextForm onSave={onSave} question={question as FreeTextQuestion} {...formProps} />;

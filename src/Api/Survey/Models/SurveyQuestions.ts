@@ -9,10 +9,10 @@ import {
 	Update,
 } from '../../index';
 import {SurveyQuestionKind} from './BankQuestions';
-import {Surveys} from './Surveys';
+import {Survey} from './Surveys';
 
 export interface SurveyQuestionEndpoints {
-	'/survey-questions': {
+	'/surveys/next/questions': {
 		PUT: {
 			query: Projectable;
 			body: SurveyQuestionCreate;
@@ -20,7 +20,7 @@ export interface SurveyQuestionEndpoints {
 		};
 	};
 
-	'/survey-questions/:question': {
+	'/surveys/next/questions/:question': {
 		GET: {
 			params: Id;
 			response: SurveyQuestion;
@@ -40,7 +40,7 @@ export interface SurveyQuestionEndpoints {
 }
 
 interface SurveyQuestionBase extends Entity {
-	survey: Stub<Surveys>;
+	survey: Stub<Survey>;
 	kind: SurveyQuestionKind;
 	prompt: string;
 }
@@ -56,7 +56,7 @@ export interface ScaleQuestion extends SurveyQuestionBase {
 }
 
 export interface MultipleChoiceQuestion extends SurveyQuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice;
+	kind: SurveyQuestionKind.Choice;
 	choices: string[];
 }
 
@@ -70,7 +70,7 @@ export type SurveyQuestionUpdate =
 
 export class SurveyQuestionModel {
 	public static create(payload: SurveyQuestionCreate, projection?: Projection) {
-		return surveyClient.put('/survey-questions', payload, {
+		return surveyClient.put('/surveys/next/questions', payload, {
 			params: {
 				p: projection,
 			},
@@ -78,7 +78,7 @@ export class SurveyQuestionModel {
 	}
 
 	public static read(question: Id, projection?: Projection) {
-		return surveyClient.get<'/survey-questions/:question'>(`/survey-questions/${question}`, {
+		return surveyClient.get<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`, {
 			params: {
 				p: projection,
 			},
@@ -86,7 +86,7 @@ export class SurveyQuestionModel {
 	}
 
 	public static update(question: Id, payload: SurveyQuestionUpdate, projection?: Projection) {
-		return surveyClient.patch<'/survey-questions/:question'>(`/survey-questions/${question}`, payload, {
+		return surveyClient.patch<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`, payload, {
 			params: {
 				p: projection,
 			},
@@ -94,6 +94,6 @@ export class SurveyQuestionModel {
 	}
 
 	public static delete(question: Id) {
-		return surveyClient.delete<'/survey-questions/:question'>(`/survey-questions/${question}`);
+		return surveyClient.delete<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`);
 	}
 }

@@ -11,7 +11,7 @@ import {
 import {BankSurvey} from './BankSurveys';
 
 export interface BankQuestionEndpoints {
-	'/bank-questions': {
+	'/survey-bank/questions': {
 		PUT: {
 			query: Projectable;
 			body: BankQuestionCreate;
@@ -19,7 +19,7 @@ export interface BankQuestionEndpoints {
 		};
 	};
 
-	'/bank-questions/:question': {
+	'/survey-bank/questions/:question': {
 		GET: {
 			params: Id;
 			response: BankQuestion;
@@ -40,7 +40,7 @@ export interface BankQuestionEndpoints {
 
 export enum SurveyQuestionKind {
 	FreeText = 'free text',
-	MultipleChoice = 'multiple choice',
+	Choice = 'choice',
 	Scale = 'scale',
 }
 
@@ -56,25 +56,26 @@ export interface FreeTextQuestion extends BankQuestionBase {
 
 export interface ScaleQuestion extends BankQuestionBase {
 	kind: SurveyQuestionKind.Scale;
-	minValue: number;
-	maxValue: number;
+	startValue: number;
+	endValue: number;
+	stepAmount: number;
 }
 
-export interface MultipleChoiceQuestion extends BankQuestionBase {
-	kind: SurveyQuestionKind.MultipleChoice;
+export interface ChoiceQuestion extends BankQuestionBase {
+	kind: SurveyQuestionKind.Choice;
 	choices: string[];
 }
 
-export type BankQuestion = FreeTextQuestion | ScaleQuestion | MultipleChoiceQuestion;
+export type BankQuestion = FreeTextQuestion | ScaleQuestion | ChoiceQuestion;
 
-export type BankQuestionCreate = Create<FreeTextQuestion> | Create<ScaleQuestion> | Create<MultipleChoiceQuestion>;
-export type BankQuestionUpdate = (Update<FreeTextQuestion> | Update<ScaleQuestion> | Update<MultipleChoiceQuestion>) & {
+export type BankQuestionCreate = Create<FreeTextQuestion> | Create<ScaleQuestion> | Create<ChoiceQuestion>;
+export type BankQuestionUpdate = (Update<FreeTextQuestion> | Update<ScaleQuestion> | Update<ChoiceQuestion>) & {
 	kind: SurveyQuestionKind,
 };
 
 export class BankQuestionModel {
 	public static create(payload: BankQuestionCreate, projection?: Projection) {
-		return surveyClient.put('/bank-questions', payload, {
+		return surveyClient.put('/survey-bank/questions', payload, {
 			params: {
 				p: projection,
 			},
@@ -82,7 +83,7 @@ export class BankQuestionModel {
 	}
 
 	public static read(question: Id, projection?: Projection) {
-		return surveyClient.get<'/bank-questions/:question'>(`/bank-questions/${question}`, {
+		return surveyClient.get<'/survey-bank/questions/:question'>(`/survey-bank/questions/${question}`, {
 			params: {
 				p: projection,
 			},
@@ -90,7 +91,7 @@ export class BankQuestionModel {
 	}
 
 	public static update(question: Id, payload: BankQuestionUpdate, projection?: Projection) {
-		return surveyClient.patch<'/bank-questions/:question'>(`/bank-questions/${question}`, payload, {
+		return surveyClient.patch<'/survey-bank/questions/:question'>(`/survey-bank/questions/${question}`, payload, {
 			params: {
 				p: projection,
 			},
@@ -98,6 +99,6 @@ export class BankQuestionModel {
 	}
 
 	public static delete(question: Id) {
-		return surveyClient.delete<'/bank-questions/:question'>(`/bank-questions/${question}`);
+		return surveyClient.delete<'/survey-bank/questions/:question'>(`/survey-bank/questions/${question}`);
 	}
 }

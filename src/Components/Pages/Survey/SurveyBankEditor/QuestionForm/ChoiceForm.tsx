@@ -1,20 +1,20 @@
 import * as React from 'react';
-import {MultipleChoiceQuestion} from '../../../../../Api/Survey/Models/BankQuestions';
-import {FormProps, MultipleChoiceSaveHandler} from './index';
+import {ChoiceQuestion} from '../../../../../Api/Survey/Models/BankQuestions';
+import {FormProps, ChoiceSaveHandler} from './index';
 import {Button, ControlGroup, H3, InputGroup} from '@blueprintjs/core';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import {replaceByIndex} from '../../../../Utility/array';
 import {FormControls} from '../../../../FormControls';
 
-type Props = FormProps<MultipleChoiceQuestion, MultipleChoiceSaveHandler>;
+type Props = FormProps<ChoiceQuestion, ChoiceSaveHandler>;
 
 interface State {
 	choices: string[];
 	dirty: boolean;
 }
 
-export class MultipleChoiceForm extends React.PureComponent<Props, State> {
+export class ChoiceForm extends React.PureComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 		this.state = this.copyFromProps();

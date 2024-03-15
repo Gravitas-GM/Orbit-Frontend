@@ -47,11 +47,10 @@ export interface SurveyBankEndpoints {
 
 export interface BankSurvey extends Entity {
 	week: number;
-	protected: boolean;
 	questions: BankQuestion[];
 }
 
-export type BankSurveyCreatePayload = Create<BankSurvey, keyof BankSurvey, 'week' | 'protected' | 'questions'>;
+export type BankSurveyCreatePayload = Create<BankSurvey, keyof BankSurvey, 'week' | 'questions'>;
 export type BankSurveyUpdatePayload = Update<BankSurvey, 'questions' | 'week'>;
 
 export class BankSurveyModel {

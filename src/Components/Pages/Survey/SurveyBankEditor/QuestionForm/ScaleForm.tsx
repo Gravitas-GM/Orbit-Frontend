@@ -8,8 +8,8 @@ import {FormProps, ScaleSaveHandler} from './index';
 type Props = FormProps<ScaleQuestion, ScaleSaveHandler>;
 
 interface State {
-	minValue: number;
-	maxValue: number;
+	startValue: number;
+	endValue: number;
 	dirty: boolean;
 }
 
@@ -34,29 +34,29 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 
 				<ControlGroup fill={true}>
 					<ValidationAwareFormGroup
-						label="Minimum Value"
-						labelFor="minValue"
+						label="Start Value"
+						labelFor="startValue"
 						failures={this.props.validationFailures}
 					>
 						<NumericInput
 							min={0}
-							name="minValue"
-							onValueChange={this.onMinValueChange}
-							value={this.state.minValue}
+							name="startValue"
+							onValueChange={this.onStartValueChange}
+							value={this.state.startValue}
 							fill={true}
 						/>
 					</ValidationAwareFormGroup>
 
 					<ValidationAwareFormGroup
-						label="Maximum Value"
-						labelFor="maxValue"
+						label="End Value"
+						labelFor="endValue"
 						failures={this.props.validationFailures}
 					>
 						<NumericInput
 							min={0}
-							name="maxValue"
-							onValueChange={this.onMaxValueChange}
-							value={this.state.maxValue}
+							name="endValue"
+							onValueChange={this.onEndValueChange}
+							value={this.state.endValue}
 							fill={true}
 						/>
 					</ValidationAwareFormGroup>
@@ -74,34 +74,34 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 
 	private isDirty = () => this.state.dirty || this.props.dirty;
 
-	private onMinValueChange = (minValue: number) => {
+	private onStartValueChange = (minValue: number) => {
 		if (isNaN(minValue) || minValue < 0)
 			return;
 
 		this.setState({
-			minValue,
+			startValue: minValue,
 			dirty: true,
 		});
 	}
 
-	private onMaxValueChange = (maxValue: number) => {
+	private onEndValueChange = (maxValue: number) => {
 		if (isNaN(maxValue) || maxValue < 0)
 			return;
 
 		this.setState({
-			maxValue,
+			endValue: maxValue,
 			dirty: true,
 		});
 	}
 
 	private onSaveClick = () => this.props.onSave({
-		minValue: this.state.minValue,
-		maxValue: this.state.maxValue,
+		startValue: this.state.startValue,
+		endValue: this.state.endValue,
 	});
 
 	private copyFromProps = (): State => ({
-		minValue: this.props.question?.minValue ?? 1,
-		maxValue: this.props.question?.maxValue ?? 5,
+		startValue: this.props.question?.startValue ?? 1,
+		endValue: this.props.question?.endValue ?? 5,
 		dirty: false,
 	});
 }
