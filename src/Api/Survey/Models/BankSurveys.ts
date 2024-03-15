@@ -51,7 +51,7 @@ export interface BankSurvey extends Entity {
 	questions: BankQuestion[];
 }
 
-export type BankSurveyCreatePayload = Create<BankSurvey, 'protected'>;
+export type BankSurveyCreatePayload = Create<BankSurvey, keyof BankSurvey, 'week' | 'protected' | 'questions'>;
 export type BankSurveyUpdatePayload = Update<BankSurvey, 'questions' | 'week'>;
 
 export class BankSurveyModel {

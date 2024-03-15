@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSurveys';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {history} from '../../../../history';
 import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
@@ -31,13 +30,15 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 		try {
 			this.setState({
 				surveys: await BankSurveyModel.list().then(response => response.data),
-				loading: false,
 			});
 		} catch (error) {
 			toaster.error('Failed to fetch surveys');
-			history.push('/');
 
 			return;
+		} finally {
+			this.setState({
+				loading: false,
+			});
 		}
 	}
 
@@ -49,7 +50,7 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 			<section className="gm-page-wrapper">
 				<ObjectList
 					title="Survey Bank"
-					editorUrlPrefix="/survey-bank"
+					editorUrlPrefix="/survey/bank"
 					items={this.state.surveys}
 					onItemFilter={this.onItemFilter}
 					itemsPerPage={20}
@@ -228,7 +229,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 			<td>{item.questions[0]?.prompt ?? '—'}</td>
 
 			<td style={{textAlign: 'center'}}>
-				<LinkButton to={`/survey-bank/${item.id}`} icon="edit" minimal={true} />
+				<LinkButton to={`/survey/bank/${item.id}`} icon="edit" minimal={true} />
 			</td>
 
 			<td style={{textAlign: 'center'}}>

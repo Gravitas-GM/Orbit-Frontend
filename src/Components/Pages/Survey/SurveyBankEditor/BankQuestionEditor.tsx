@@ -54,7 +54,7 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 		else if (this.state.redirect)
-			return <Redirect to="/survey-bank" />;
+			return <Redirect to="/survey/bank" />;
 
 		return (
 			<section className={Classes.PAGE_WRAPPER}>

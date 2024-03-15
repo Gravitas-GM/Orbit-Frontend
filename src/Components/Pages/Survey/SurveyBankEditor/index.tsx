@@ -64,6 +64,22 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 
 				return;
 			}
+		} else {
+			try {
+				await BankSurveyModel.create({}).then(r => this.setState({
+					survey: r.data,
+				}));
+
+				toaster.success('Survey created.');
+			} catch (error) {
+				toaster.showUnhandledErrorMessage();
+
+				this.setState({
+					redirect: true,
+				});
+
+				return;
+			}
 		}
 
 		this.setState({
@@ -75,7 +91,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 		else if (this.state.redirect)
-			return <Redirect to="/survey-bank" />;
+			return <Redirect to="/survey/bank" />;
 
 		return (
 			<section className={Classes.PAGE_WRAPPER}>
@@ -85,7 +101,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 
 				<ObjectList
 					title="Questions"
-					editorUrlPrefix={`/survey-bank/${this.state.survey?.id ?? 'new'}/questions`}
+					editorUrlPrefix={`/survey/bank/${this.state.survey!.id}/questions`}
 					items={this.state.questions}
 					onItemFilter={this.onItemFilter}
 					itemsPerPage={20}
