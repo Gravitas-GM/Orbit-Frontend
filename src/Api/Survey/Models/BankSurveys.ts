@@ -25,7 +25,7 @@ export interface SurveyBankEndpoints {
 		};
 	};
 
-	'/survey-bank/:bankSurvey': {
+	'/survey-bank/:survey': {
 		GET: {
 			query: Projectable;
 			response: BankSurvey;
@@ -43,11 +43,32 @@ export interface SurveyBankEndpoints {
 			response: void;
 		}
 	};
+
+	'/survey-bank/update-order': {
+		PATCH: {
+			query: Projectable & Queryable;
+			body: UpdateOrderPayload;
+			response: BankSurvey[];
+		}
+	}
+
+	'/survey-bank/:survey/update-order': {
+		PATCH: {
+			params: Id;
+			query: Projectable & Queryable;
+			body: UpdateOrderPayload;
+			response: BankSurvey[];
+		}
+	}
 }
 
 export interface BankSurvey extends Entity {
 	week: number;
 	questions: BankQuestion[];
+}
+
+export type UpdateOrderPayload = {
+	order: number[];
 }
 
 export type BankSurveyCreatePayload = Create<BankSurvey, keyof BankSurvey, 'week' | 'questions'>;
@@ -71,23 +92,42 @@ export class BankSurveyModel {
 		});
 	}
 
-	public static read(bankSurvey: Id, projection?: Projection) {
-		return surveyClient.get<'/survey-bank/:bankSurvey'>(`/survey-bank/${bankSurvey}`, {
+	public static updateOrder(payload: UpdateOrderPayload, projection?: Projection, query?: QueryDocument) {
+		return surveyClient.patch('/survey-bank/update-order', payload, {
+			params: {
+				p: projection,
+				q: query,
+			},
+		});
+	}
+
+	public static updateQuestionOrder(survey: Id, payload: UpdateOrderPayload, projection?: Projection, query?: QueryDocument) {
+		return surveyClient.patch<'/survey-bank/:survey/update-order'>(`/survey-bank/${survey}/update-order`, payload, {
+			params: {
+				p: projection,
+				q: query,
+			},
+		});
+	}
+
+
+	public static read(survey: Id, projection?: Projection) {
+		return surveyClient.get<'/survey-bank/:survey'>(`/survey-bank/${survey}`, {
 			params: {
 				p: projection,
 			},
 		});
 	}
 
-	public static update(bankSurvey: Id, payload: BankSurveyUpdatePayload, projection?: Projection) {
-		return surveyClient.patch<'/survey-bank/:bankSurvey'>(`/survey-bank/${bankSurvey}`, payload, {
+	public static update(survey: Id, payload: BankSurveyUpdatePayload, projection?: Projection) {
+		return surveyClient.patch<'/survey-bank/:survey'>(`/survey-bank/${survey}`, payload, {
 			params: {
 				p: projection,
 			},
 		});
 	}
 
-	public static delete(bankSurvey: Id) {
-		return surveyClient.delete<'/survey-bank/:bankSurvey'>(`/survey-bank/${bankSurvey}`);
+	public static delete(survey: Id) {
+		return surveyClient.delete<'/survey-bank/:survey'>(`/survey-bank/${survey}`);
 	}
 }
