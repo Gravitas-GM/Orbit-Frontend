@@ -1,94 +1,56 @@
-import {FormEvent} from 'react';
 import * as React from 'react';
-import {Blockquote, Button, Checkbox, HTMLTable, Intent, Switch} from '@blueprintjs/core';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {BankQuestion, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
 import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSurveys';
-import {Classes} from '../../../../classes';
-import {Spacing} from '../../../../Styles/variables';
-import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
-import {LinkButton} from '../../../LinkButton';
-import {ObjectList} from '../../../ObjectList';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {Redirect, RouteComponentProps} from 'react-router';
+import {history} from '../../../../history';
 import {toaster} from '../../../../toaster';
-import {PageHeader} from '../../../PageHeader';
+import {ObjectList} from '../../../ObjectList';
+import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
+import {LinkButton} from '../../../LinkButton';
+import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {renderKindLabel} from '../../../Utility/string';
-import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {Spacing} from '../../../../Styles/variables';
 
 interface IState {
+	surveys: BankSurvey[];
 	loading: boolean;
-	processing: boolean;
-	redirect: boolean;
-	survey: BankSurvey | null;
-	questions: BankQuestion[];
-	deleteTargets: BankQuestion[];
+	deleteTargets: BankSurvey[];
 	deleteSubject: string | undefined;
-	selectedItems: BankQuestion[];
-	failures: ValidationFailures | null;
-	dirty: boolean;
+	selectedItems: BankSurvey[];
 }
 
-interface RouteProps {
-	survey?: string;
-}
-
-export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<RouteProps>, IState> {
+export class SurveyBankList extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
-		processing: false,
-		redirect: false,
-		survey: null,
-		questions: [],
+		surveys: [],
 		deleteTargets: [],
 		deleteSubject: undefined,
 		selectedItems: [],
-		failures: null,
-		dirty: false,
 	};
 
 	public async componentDidMount() {
-		const idParam = this.props.match.params.survey;
+		try {
+			this.setState({
+				surveys: await BankSurveyModel.list().then(response => response.data),
+				loading: false,
+			});
+		} catch (error) {
+			toaster.error('Failed to fetch surveys');
+			history.push('/');
 
-		if (idParam) {
-			try {
-				await BankSurveyModel.read(idParam).then(r => this.setState({
-					survey: r.data,
-					questions: r.data.questions,
-				}));
-			} catch (error) {
-				toaster.showUnhandledErrorMessage();
-
-				this.setState({
-					redirect: true,
-				});
-
-				return;
-			}
+			return;
 		}
-
-		this.setState({
-			loading: false,
-		});
 	}
 
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
-		else if (this.state.redirect)
-			return <Redirect to="/survey-bank" />;
 
 		return (
-			<section className={Classes.PAGE_WRAPPER}>
-				<PageHeader title={(
-					this.state.survey?.week === 0 ? 'Recurring Survey' : `Survey for Week ${this.state.survey?.week}`
-				)} />
-
+			<section className="gm-page-wrapper">
 				<ObjectList
-					title="Questions"
-					editorUrlPrefix={`/survey-bank/${this.state.survey?.id ?? 'new'}/questions`}
-					items={this.state.questions}
+					title="Survey Bank"
+					editorUrlPrefix="/survey-bank"
+					items={this.state.surveys}
 					onItemFilter={this.onItemFilter}
 					itemsPerPage={20}
 					onBulkDeleteClick={this.onBulkDeleteClick}
@@ -105,8 +67,8 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 										/>
 									</th>
 
+									<th>Week</th>
 									<th>Prompt</th>
-									<th>Type</th>
 									<th style={{textAlign: 'center', width: 100}}>Edit</th>
 									<th style={{textAlign: 'center', width: 100}}>Delete</th>
 								</tr>
@@ -127,10 +89,6 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 					)}
 				</ObjectList>
 
-				<div style={{display: 'flex', justifyContent: 'right'}}>
-					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
-				</div>
-
 				<DeleteDialog
 					isOpen={this.state.deleteTargets.length > 0}
 					subject={this.state.deleteSubject}
@@ -141,15 +99,15 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 					<p>
 						You are about to delete
 						{this.state.deleteTargets.length > 1
-							? ' multiple questions'
-							: ' a question with the following prompt'}
+							? ' multiple surveys'
+							: ' a survey with the following question prompt'}
 						:
 					</p>
 
 					{
 						this.state.deleteTargets.length === 1 &&
 						<Blockquote>
-							{this.state.deleteTargets[0]?.prompt}
+							{this.state.deleteTargets[0]?.questions[0]?.prompt}
 						</Blockquote>
 					}
 
@@ -163,12 +121,11 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 		);
 	}
 
-	private onItemFilter = (item: BankQuestion, searchText: string) =>
-		item.prompt.toLocaleLowerCase().includes(searchText);
+	private onItemFilter = (item: BankSurvey, searchText: string) => item.questions[0]?.prompt.toLocaleLowerCase().includes(searchText);
 
-	private isChecked = (item: BankQuestion) => this.state.selectedItems.includes(item);
+	private isChecked = (item: BankSurvey) => this.state.selectedItems.includes(item);
 
-	private isAllChecked = () => this.state.selectedItems.length === this.state.questions.length;
+	private isAllChecked = () => this.state.selectedItems.length === this.state.surveys.length;
 
 	private onSelectAllClick = () => {
 		if (this.isAllChecked()) {
@@ -177,12 +134,12 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 			});
 		} else {
 			this.setState(state => ({
-				selectedItems: [...state.questions],
+				selectedItems: [...state.surveys],
 			}));
 		}
 	};
 
-	private onSelectClick = (item: BankQuestion) => {
+	private onSelectClick = (item: BankSurvey) => {
 		if (this.state.selectedItems.includes(item))
 			this.setState(state => ({
 				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
@@ -193,7 +150,7 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 			}));
 	};
 
-	private onDeleteClick = (target: BankQuestion) => this.setState({
+	private onDeleteClick = (target: BankSurvey) => this.setState({
 		deleteTargets: [target],
 		deleteSubject: DeleteSubject.DELETE,
 	});
@@ -209,14 +166,14 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 
 		const results = await allSettled(
 			this.state.deleteTargets.map(async item => {
-				await BankQuestionModel.delete(item.id);
+				await BankSurveyModel.delete(item.id);
 
 				return item;
 			})
 		);
 
 		let failureCount = 0;
-		const deletedItems: BankQuestion[] = [];
+		const deletedItems: BankSurvey[] = [];
 
 		for (const result of results) {
 			if (isRejectedResult(result)) {
@@ -230,10 +187,10 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 		if (failureCount > 0)
 			toaster.showUnhandledErrorMessage();
 
-		toaster.success(`Question${this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
+		toaster.success(`Survey${this.state.selectedItems.length > 1 ? 's' : ''} deleted successfully`);
 
 		this.setState(state => ({
-			questions: state.questions.filter(item => !deletedItems.includes(item)),
+			surveys: state.surveys.filter(item => !deletedItems.includes(item)),
 			selectedItems: state.selectedItems.filter(item => !deletedItems.includes(item)),
 			deleteTargets: [],
 		}));
@@ -243,37 +200,12 @@ export class BankSurveyEditor extends React.PureComponent<RouteComponentProps<Ro
 		deleteTargets: [],
 		deleteSubject: undefined,
 	});
-
-	private onSaveClick = async () => {
-		if (this.state.processing)
-			return;
-
-		this.setState({
-			processing: true,
-		});
-
-		try {
-			// TODO: send week order update
-		} catch (error) {
-			throw error;
-		} finally {
-			this.setState({
-				processing: false,
-			});
-		}
-
-		toaster.success(`Bank Survey order updated.`);
-
-		this.setState({
-			dirty: false,
-		});
-	}
 }
 
 interface TableItemProps {
-	item: BankQuestion;
-	onDelete: (item: BankQuestion) => void;
-	onSelect: (item: BankQuestion) => void;
+	item: BankSurvey;
+	onDelete: (item: BankSurvey) => void;
+	onSelect: (item: BankSurvey) => void;
 	isChecked: boolean;
 }
 
@@ -292,11 +224,11 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
-			<td>{item.prompt}</td>
-			<td>{renderKindLabel(item.kind)}</td>
+			<td>{item.week}</td>
+			<td>{item.questions[0]?.prompt ?? '—'}</td>
 
 			<td style={{textAlign: 'center'}}>
-				<LinkButton to={`/survey/bank/${item.id}`} icon="edit" minimal={true} />
+				<LinkButton to={`/survey-bank/${item.id}`} icon="edit" minimal={true} />
 			</td>
 
 			<td style={{textAlign: 'center'}}>

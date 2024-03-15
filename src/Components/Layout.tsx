@@ -3,6 +3,7 @@ import {useContext} from 'react';
 import {Route, Switch} from 'react-router';
 import {Config} from '../config';
 import {Permission, PermissionContext} from '../Permission';
+import {Role, RoleContext} from '../Role';
 import {FrameLoadingSpinner} from './FrameLoadingSpinner';
 import {Home} from './Home';
 import './Layout.scss';
@@ -22,9 +23,14 @@ import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
-import {BankSurveyEditor} from './Pages/Survey/BankSurveyEditor';
-import {BankQuestionEditor} from './Pages/Survey/BankSurveyEditor/BankQuestionEditor';
-import {BankSurveyList} from './Pages/Survey/BankSurveyList';
+import {SurveyBankEditor} from './Pages/Survey/SurveyBankEditor';
+import {BankQuestionEditor} from './Pages/Survey/SurveyBankEditor/BankQuestionEditor';
+import {SurveyBankList} from './Pages/Survey/SurveyBankList';
+import {NextSurvey} from './Pages/Survey/Editor/NextSurvey';
+import {SurveyHistory} from './Pages/Survey/History';
+import {SurveyResults} from './Pages/Survey/Results';
+import {SurveySettings} from './Pages/Survey/Settings';
+import {SurveyPage} from './Pages/Survey/Survey';
 import {UserEditor} from './Pages/Users/Editor';
 import {UsersList} from './Pages/Users/List';
 
@@ -34,6 +40,7 @@ interface IProps {
 
 export const Layout: React.FC<IProps> = ({loading}) => {
 	const [isGranted] = useContext(PermissionContext);
+	const [hasRole] = React.useContext(RoleContext);
 
 	if (loading)
 		return <FrameLoadingSpinner />;
@@ -61,6 +68,9 @@ export const Layout: React.FC<IProps> = ({loading}) => {
 					<Route path="/quiz/history" component={QuizHistoryPage} exact={true} />
 					<Route path="/quiz/history/:submission(\d+)" component={QuizResultsPage} exact={true} />
 
+					<Route path="/survey" key="/survey" component={SurveyPage} exact={true} />
+					<Route path="/survey/results" component={SurveyResults} exact={true} />,
+
 					{/* @formatter:off */}
 					{isGranted(Permission.ADMIN) && [
 						<Route key="/users" path="/users" component={UsersList} exact={true} />,
@@ -75,19 +85,26 @@ export const Layout: React.FC<IProps> = ({loading}) => {
 						<Route key="/quiz/questions/new" path="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
 						<Route key="/quiz/tags/:tag" path="/quiz/tags/:tag(\d+)" component={TagEditor} exact={true} />,
 						<Route key="/quiz/tags/new" path="/quiz/tags/new" component={TagEditor} exact={true} />,
+						<Route path="/survey/next" key="/survey/next" component={NextSurvey} exact={true} />,
+						<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
+						<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
+						<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
+					]}
+					{/* @formatter:on */}
+
+					{/* @formatter:off */}
+					{hasRole(Role.ADMIN) && [
+						<Route path="/survey/bank" key="/survey/bank" component={SurveyBankList} exact={true} />,
+						<Route path="/survey/bank/:survey(\d+)" key="/survey/bank/:survey" component={SurveyBankEditor} exact={true} />,
+						<Route key="/survey/bank/new" path="/survey/bank/new" component={SurveyBankEditor} exact={true} />,
+						<Route key="/survey/bank/:survey/questions/:question" path="/survey/bank/:survey(\d+)/questions/:question(\d+)" component={BankQuestionEditor} exact={true} />,
+						<Route key="/survey/bank/:survey/questions/new" path="/survey/bank/:survey(\d+)/questions/new" component={BankQuestionEditor} exact={true} />,
 					]}
 					{/* @formatter:on */}
 
 					{/* @formatter:off */}
 					{Config.isDev && isGranted(Permission.ADMIN) && [
 						<Route key="/debug-controls" path="/debug-controls" component={DebugControls} exact={true} />,
-
-						// TODO: move these to site admin permission
-						<Route key="/survey-bank" path="/survey-bank" component={BankSurveyList} exact={true} />,
-						<Route key="/survey-bank/:survey" path="/survey-bank/:survey(\d+)" component={BankSurveyEditor} exact={true} />,
-						<Route key="/survey-bank/new" path="/survey-bank/new" component={BankSurveyEditor} exact={true} />,
-						<Route key="/survey-bank/:survey/questions/:question" path="/survey-bank/:survey(\d+)/questions/:question(\d+)" component={BankQuestionEditor} exact={true} />,
-						<Route key="/survey-bank/:survey/questions/new" path="/survey-bank/:survey(\d+)/questions/new" component={BankQuestionEditor} exact={true} />,
 					]}
 					{/* @formatter:on */}
 
