@@ -29,7 +29,7 @@ interface BaseProps {
 
 type SaveHandler<T, K extends keyof T> = (data: Pick<T, K>) => Promise<void>;
 
-export type ScaleSaveHandler = SaveHandler<ScaleQuestion, 'startValue' | 'endValue'>;
+export type ScaleSaveHandler = SaveHandler<ScaleQuestion, 'startValue' | 'endValue' | 'stepAmount'>;
 
 interface ScaleProps extends BaseProps {
 	kind: SurveyQuestionKind.Scale;

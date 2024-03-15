@@ -10,6 +10,7 @@ type Props = FormProps<ScaleQuestion, ScaleSaveHandler>;
 interface State {
 	startValue: number;
 	endValue: number;
+	stepAmount: number;
 	dirty: boolean;
 }
 
@@ -60,6 +61,20 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 							fill={true}
 						/>
 					</ValidationAwareFormGroup>
+
+					<ValidationAwareFormGroup
+						label="Step Amount"
+						labelFor="stepAmount"
+						failures={this.props.validationFailures}
+					>
+						<NumericInput
+							min={0}
+							name="stepAmount"
+							onValueChange={this.onStepAmountChange}
+							value={this.state.stepAmount}
+							fill={true}
+						/>
+					</ValidationAwareFormGroup>
 				</ControlGroup>
 
 				<FormControls
@@ -94,14 +109,26 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 		});
 	}
 
+	private onStepAmountChange = (stepAmount: number) => {
+		if (isNaN(stepAmount) || stepAmount < 1)
+			return;
+
+		this.setState({
+			stepAmount: stepAmount,
+			dirty: true,
+		});
+	}
+
 	private onSaveClick = () => this.props.onSave({
 		startValue: this.state.startValue,
 		endValue: this.state.endValue,
+		stepAmount: this.state.stepAmount,
 	});
 
 	private copyFromProps = (): State => ({
 		startValue: this.props.question?.startValue ?? 1,
 		endValue: this.props.question?.endValue ?? 5,
+		stepAmount: this.props.question?.stepAmount ?? 1,
 		dirty: false,
 	});
 }

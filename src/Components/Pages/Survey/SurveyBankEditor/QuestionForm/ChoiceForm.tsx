@@ -30,7 +30,7 @@ export class ChoiceForm extends React.PureComponent<Props, State> {
 	public render() {
 		return (
 			<div className="question-form">
-				<H3>Multiple Choice Question</H3>
+				<H3>Choice Question</H3>
 
 				{this.state.choices.map((text, index) => (
 					<ChoiceItem
