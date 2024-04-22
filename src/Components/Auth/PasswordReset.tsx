@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Intent} from '@blueprintjs/core';
 import {Redirect} from 'react-router';
 import {tokenStorage} from '../../Api';
-import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
+import {PasswordResetModel} from '../../Api/Hub/Models/PasswordReset';
 import {Token} from '../../Api/jwt';
 import {toaster} from '../../toaster';
 import './Login.scss';
@@ -15,7 +15,7 @@ interface IState {
 	validationFailures: ValidationFailures | null;
 }
 
-export class Activate extends React.PureComponent<{}, IState> {
+export class PasswordReset extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		processing: false,
 		redirect: false,
@@ -40,7 +40,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 		return (
 			<SetPasswordForm
-				formHeader="Happy Orbit Activation"
+				formHeader="Password Reset"
 				processing={this.state.processing}
 				validationFailures={this.state.validationFailures}
 				onSubmit={this.onSubmit}
@@ -57,7 +57,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			await UserActivationModel.activate({password: password});
+			await PasswordResetModel.reset({password: password});
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();
@@ -77,7 +77,7 @@ export class Activate extends React.PureComponent<{}, IState> {
 
 		toaster.show({
 			intent: Intent.SUCCESS,
-			message: 'Your account has been activated!',
+			message: 'Your password has been reset!',
 		});
 
 		this.setState({

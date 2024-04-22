@@ -1,5 +1,5 @@
-import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import {Redirect, RouteComponentProps, withRouter} from 'react-router';
 import {isAuthenticated, login, tokenStorage} from '../../Api';
 import {ApiError} from '../../Api/errors/symfony';
@@ -7,8 +7,9 @@ import {User, UserModel} from '../../Api/Hub/Models/Users';
 import {Spacing} from '../../Styles/variables';
 import {toaster} from '../../toaster';
 import {getPreviousPathFromState} from '../Utility/router';
-import './Login.scss';
+import {ForgotPasswordDialog} from './ForgotPasswordDialog';
 import {StartActivationDialog} from './StartActivationDialog';
+import './Login.scss';
 
 interface IProps extends RouteComponentProps {
 	onLoginSuccess: (user: User) => void;
@@ -20,6 +21,7 @@ interface IState {
 	processing: boolean;
 	redirect: boolean;
 	showActivationDialog: boolean;
+	showForgotPasswordDialog: boolean;
 }
 
 class Login extends React.PureComponent<IProps, IState> {
@@ -29,6 +31,7 @@ class Login extends React.PureComponent<IProps, IState> {
 		processing: false,
 		redirect: false,
 		showActivationDialog: false,
+		showForgotPasswordDialog: false,
 	};
 
 	public componentDidMount() {
@@ -42,7 +45,7 @@ class Login extends React.PureComponent<IProps, IState> {
 			return <Redirect to={getPreviousPathFromState()} />;
 
 		return (
-			<div id="login">
+			<div className="orbit-home-form">
 				<div style={{textAlign: 'center', marginBottom: Spacing.Medium}}>
 					<H1>
 						Happy Orbit
@@ -72,12 +75,22 @@ class Login extends React.PureComponent<IProps, IState> {
 							/>
 						</div>
 
+						<Button
+							text="Forgot Password"
+							style={{marginRight: Spacing.Medium}}
+							onClick={this.onForgotPasswordClick}
+						/>
+
 						<Button text="Start Activation" onClick={this.onStartActivationButtonClick} />
 					</div>
 				</form>
 
 				{this.state.showActivationDialog && (
 					<StartActivationDialog onClose={this.onActivationDialogClose} />
+				)}
+
+				{this.state.showForgotPasswordDialog && (
+					<ForgotPasswordDialog onClose={this.onForgotPasswordDialogClose} />
 				)}
 			</div>
 		);
@@ -97,6 +110,14 @@ class Login extends React.PureComponent<IProps, IState> {
 
 	private onActivationDialogClose = () => this.setState({
 		showActivationDialog: false,
+	});
+
+	private onForgotPasswordClick = () => this.setState({
+		showForgotPasswordDialog: true,
+	});
+
+	private onForgotPasswordDialogClose = () => this.setState({
+		showForgotPasswordDialog: false,
 	});
 
 	private onLoginSubmit = async (event: React.SyntheticEvent<any>) => {

@@ -1,12 +1,18 @@
-import axios, { TypedAxiosInstance } from 'restyped-axios';
-import { Config } from '../../config';
-import { attachResponseHandlers } from '../errors/symfony';
-import { AccountEndpoints } from './Models/Accounts';
-import { AuthenticationEndpoints } from './Models/Authentication';
-import { UserActivationEndpoints } from './Models/UserActivation';
-import { UserEndpoints } from './Models/Users';
+import axios, {TypedAxiosInstance} from 'restyped-axios';
+import {Config} from '../../config';
+import {attachResponseHandlers} from '../errors/symfony';
+import {AccountEndpoints} from './Models/Accounts';
+import {AuthenticationEndpoints} from './Models/Authentication';
+import {PasswordResetEndpoints} from './Models/PasswordReset';
+import {UserActivationEndpoints} from './Models/UserActivation';
+import {UserEndpoints} from './Models/Users';
 
-type Endpoints = UserEndpoints & AccountEndpoints & AuthenticationEndpoints & UserActivationEndpoints;
+type Endpoints =
+	UserEndpoints
+	& AccountEndpoints
+	& AuthenticationEndpoints
+	& UserActivationEndpoints
+	& PasswordResetEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({
