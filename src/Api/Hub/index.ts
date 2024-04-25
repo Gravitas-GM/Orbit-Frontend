@@ -13,8 +13,8 @@ type Endpoints =
 	& AccountEndpoints
 	& AuthenticationEndpoints
 	& UserActivationEndpoints
-	& PasswordResetEndpoints
-	& DepartmentEndpoints;
+	& DepartmentEndpoints
+	& PasswordResetEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({
