@@ -4,6 +4,7 @@ import {tokenStorage} from './Api';
 import {User, UserModel} from './Api/Hub/Models/Users';
 import {Activate} from './Components/Auth/Activate';
 import {Login} from './Components/Auth/Login';
+import {PasswordReset} from './Components/Auth/PasswordReset';
 import {Layout} from './Components/Layout';
 import {history} from './history';
 import {isGranted, Permission, PermissionCheckCallback, PermissionContext} from './Permission';
@@ -64,12 +65,15 @@ export class App extends React.PureComponent<{}, IState> {
 										<Activate />
 									</Route>
 
-									<PrivateRoute path="/">
-										<Layout loading={this.state.loading} />
-									</PrivateRoute>
-								</Switch>
-							</Router>
-						</RoleContext.Provider>
+								<Route path="/password-reset">
+									<PasswordReset />
+								</Route>
+
+								<PrivateRoute path="/">
+									<Layout loading={this.state.loading} />
+								</PrivateRoute>
+							</Switch>
+						</Router>
 					</PermissionContext.Provider>
 				</UserContext.Provider>
 			</div>
