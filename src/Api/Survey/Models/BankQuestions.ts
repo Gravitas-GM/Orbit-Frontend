@@ -4,31 +4,29 @@ import {
 	Id,
 	Projectable,
 	Projection,
-	Stub,
 	surveyClient,
 	Update,
 } from '../../index';
-import {BankSurvey} from './BankSurveys';
 
 export interface BankQuestionEndpoints {
 	'/survey-bank/questions': {
 		PUT: {
 			query: Projectable;
-			body: BankQuestionCreate;
-			response: BankQuestion;
+			body: QuestionCreate;
+			response: Question;
 		};
 	};
 
 	'/survey-bank/questions/:question': {
 		GET: {
 			params: Id;
-			response: BankQuestion;
+			response: Question;
 		};
 
 		PATCH: {
 			params: Id;
-			body: BankQuestionUpdate;
-			response: BankQuestion;
+			body: QuestionUpdate;
+			response: Question;
 		};
 
 		DELETE: {
@@ -44,37 +42,37 @@ export enum SurveyQuestionKind {
 	Scale = 'scale',
 }
 
-interface BankQuestionBase extends Entity {
-	survey: Stub<BankSurvey>;
+interface QuestionBase extends Entity {
+	survey: number;
 	kind: SurveyQuestionKind;
 	prompt: string;
 }
 
-export interface FreeTextQuestion extends BankQuestionBase {
+export interface FreeTextQuestion extends QuestionBase {
 	kind: SurveyQuestionKind.FreeText;
 }
 
-export interface ScaleQuestion extends BankQuestionBase {
+export interface ScaleQuestion extends QuestionBase {
 	kind: SurveyQuestionKind.Scale;
 	startValue: number;
 	endValue: number;
 	stepAmount: number;
 }
 
-export interface ChoiceQuestion extends BankQuestionBase {
+export interface ChoiceQuestion extends QuestionBase {
 	kind: SurveyQuestionKind.Choice;
 	choices: string[];
 }
 
-export type BankQuestion = FreeTextQuestion | ScaleQuestion | ChoiceQuestion;
+export type Question = FreeTextQuestion | ScaleQuestion | ChoiceQuestion;
 
-export type BankQuestionCreate = Create<FreeTextQuestion> | Create<ScaleQuestion> | Create<ChoiceQuestion>;
-export type BankQuestionUpdate = (Update<FreeTextQuestion> | Update<ScaleQuestion> | Update<ChoiceQuestion>) & {
+export type QuestionCreate = Create<FreeTextQuestion> | Create<ScaleQuestion> | Create<ChoiceQuestion>;
+export type QuestionUpdate = (Update<FreeTextQuestion> | Update<ScaleQuestion> | Update<ChoiceQuestion>) & {
 	kind: SurveyQuestionKind,
 };
 
 export class BankQuestionModel {
-	public static create(payload: BankQuestionCreate, projection?: Projection) {
+	public static create(payload: QuestionCreate, projection?: Projection) {
 		return surveyClient.put('/survey-bank/questions', payload, {
 			params: {
 				p: projection,
@@ -90,7 +88,7 @@ export class BankQuestionModel {
 		});
 	}
 
-	public static update(question: Id, payload: BankQuestionUpdate, projection?: Projection) {
+	public static update(question: Id, payload: QuestionUpdate, projection?: Projection) {
 		return surveyClient.patch<'/survey-bank/questions/:question'>(`/survey-bank/questions/${question}`, payload, {
 			params: {
 				p: projection,

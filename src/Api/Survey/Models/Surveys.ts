@@ -1,12 +1,11 @@
-import {Create, Entity, Id, Projectable, Projection, QueryDocument, Stub, surveyClient, Update} from '../../index';
-import {SurveyQuestionKind} from './BankQuestions';
-import {Settings} from './Settings';
-import {SurveyQuestion} from './SurveyQuestions';
+import {Create, Entity, Id, Projectable, Projection, QueryDocument, Stub, surveyClient} from '../../index';
+import {Question, QuestionCreate, QuestionUpdate, SurveyQuestionKind} from './BankQuestions';
+import {UpdateOrderPayload} from './BankSurveys';
 
 export interface SurveyEndpoints {
 	'/surveys': {
 		GET: {
-			response: SurveySubmission[];
+			response: Survey[];
 		};
 
 		PUT: {
@@ -35,17 +34,52 @@ export interface SurveyEndpoints {
 			response: Survey;
 		}
 	}
+
+	'/surveys/next/questions': {
+		PUT: {
+			query: Projectable;
+			body: QuestionCreate;
+			response: Question[];
+		};
+	};
+
+	'/surveys/next/questions/:question': {
+		GET: {
+			params: Id;
+			response: Question;
+		};
+
+		PATCH: {
+			params: Id;
+			body: QuestionUpdate;
+			response: Question;
+		};
+
+		DELETE: {
+			params: Id;
+			response: void;
+		};
+	};
+
+	'/surveys/next/questions/update-order': {
+		POST: {
+			body: UpdateOrderPayload;
+			response: void;
+		}
+	};
 }
 
 export interface Survey extends Entity {
-	account: Stub<Settings>;
+	account: number;
 	startedDate: Date;
-	questions: SurveyQuestion[];
+	questions: Question[];
+	submissions: SurveySubmission[];
 }
 
 interface SurveyResponseBase extends Entity {
-	question: Stub<SurveyQuestion>;
 	kind: SurveyQuestionKind;
+	submission: Stub<SurveySubmission>;
+	question: Stub<Question>;
 }
 
 export interface FreeTextResponse extends SurveyResponseBase {
@@ -115,5 +149,37 @@ export class SurveyModel {
 				p: projection,
 			},
 		});
+	}
+
+	public static createNextQuestion(payload: QuestionCreate, projection?: Projection) {
+		return surveyClient.put('/surveys/next/questions', payload, {
+			params: {
+				p: projection,
+			},
+		});
+	}
+
+	public static readNextQuestion(question: Id, projection?: Projection) {
+		return surveyClient.get<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`, {
+			params: {
+				p: projection,
+			},
+		});
+	}
+
+	public static updateNextQuestion(question: Id, payload: QuestionUpdate, projection?: Projection) {
+		return surveyClient.patch<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`, payload, {
+			params: {
+				p: projection,
+			},
+		});
+	}
+
+	public static deleteNextQuestion(question: Id) {
+		return surveyClient.delete<'/surveys/next/questions/:question'>(`/surveys/next/questions/${question}`);
+	}
+
+	public static updateQuestionOrder(payload: UpdateOrderPayload) {
+		return surveyClient.patch('/surveys/next/questions/update-order', payload);
 	}
 }

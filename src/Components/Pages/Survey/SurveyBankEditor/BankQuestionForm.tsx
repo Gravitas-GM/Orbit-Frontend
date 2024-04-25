@@ -3,7 +3,7 @@ import {Button, ControlGroup, TextArea} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {BankQuestion, BankQuestionCreate, SurveyQuestionKind} from '../../../../Api/Survey/Models/BankQuestions';
+import {Question, QuestionCreate, SurveyQuestionKind} from '../../../../Api/Survey/Models/BankQuestions';
 import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
@@ -15,9 +15,10 @@ import '../../Quiz/QuestionEditor/AnswerForm.scss';
 const QuestionKindNames = Object.values(SurveyQuestionKind);
 
 interface IProps {
-	question: BankQuestion | null;
+	question: Question | null;
 	processing: boolean;
-	onSave: (question: BankQuestionCreate) => Promise<void>;
+	onSave: (question: QuestionCreate) => Promise<void>;
+	survey: string;
 }
 
 interface IState {
@@ -92,6 +93,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 				</ControlGroup>
 
 				<QuestionForm
+					survey={this.props.survey}
 					dirty={this.state.dirty}
 					kind={this.state.kind}
 					onSave={this.onSave}
@@ -113,7 +115,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 		dirty: true,
 	});
 
-	private onSave = async (data: Partial<BankQuestionCreate>) => {
+	private onSave = async (data: Partial<QuestionCreate>) => {
 		if (!this.state.kind)
 			return;
 
@@ -122,7 +124,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 				...data,
 				kind: this.state.kind,
 				prompt: this.state.prompt,
-			} as BankQuestionCreate);
+			} as QuestionCreate);
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();

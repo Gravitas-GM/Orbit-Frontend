@@ -1,0 +1,8 @@
+@import '../../../../variables';
+
+#survey-bank-list {
+	tbody tr:first-child {
+		font-weight: bold;
+		background-color: $blue1;
+	}
+}

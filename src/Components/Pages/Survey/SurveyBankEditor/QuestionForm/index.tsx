@@ -2,8 +2,9 @@ import * as React from 'react';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
 import './index.scss';
 import {
-	BankQuestion,
-	FreeTextQuestion, ChoiceQuestion,
+	Question,
+	FreeTextQuestion,
+	ChoiceQuestion,
 	ScaleQuestion,
 	SurveyQuestionKind,
 } from '../../../../../Api/Survey/Models/BankQuestions';
@@ -11,7 +12,8 @@ import {ChoiceForm} from './ChoiceForm';
 import {FreeTextForm} from './FreeTextForm';
 import {ScaleForm} from './ScaleForm';
 
-export interface FormProps<TQuestion extends BankQuestion, THandler> {
+export interface FormProps<TQuestion extends Question, THandler> {
+	survey: string;
 	onSave: THandler;
 	validationFailures: ValidationFailures | null;
 	question: TQuestion | null;
@@ -20,9 +22,10 @@ export interface FormProps<TQuestion extends BankQuestion, THandler> {
 }
 
 interface BaseProps {
+	survey: string;
 	kind: SurveyQuestionKind;
 	validationFailures: ValidationFailures | null;
-	question: BankQuestion | null;
+	question: Question | null;
 	processing: boolean;
 	dirty: boolean;
 }
@@ -53,7 +56,6 @@ interface ChoiceProps extends BaseProps {
 type Props = ScaleProps | FreeTextProps | ChoiceProps;
 
 export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
-	// TODO: update redirect path to redirect to the survey's editor
 	switch (kind) {
 		case SurveyQuestionKind.Scale:
 			return <ScaleForm onSave={onSave} question={question as ScaleQuestion | null} {...formProps} />;

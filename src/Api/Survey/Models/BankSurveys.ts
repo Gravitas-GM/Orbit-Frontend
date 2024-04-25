@@ -9,7 +9,7 @@ import {
 	surveyClient,
 	Update,
 } from '../../index';
-import {BankQuestion} from './BankQuestions';
+import {Question} from './BankQuestions';
 
 export interface SurveyBankEndpoints {
 	'/survey-bank': {
@@ -64,7 +64,7 @@ export interface SurveyBankEndpoints {
 
 export interface BankSurvey extends Entity {
 	week: number;
-	questions: BankQuestion[];
+	questions: Question[];
 }
 
 export type UpdateOrderPayload = {

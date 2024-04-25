@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {BankQuestion, BankQuestionCreate, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
+import {Question, QuestionCreate, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
 import {Classes} from '../../../../classes';
 import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
@@ -11,10 +11,11 @@ interface IState {
 	loading: boolean;
 	processing: boolean;
 	redirect: boolean;
-	question: BankQuestion | null;
+	question: Question | null;
 }
 
 interface RouteProps {
+	survey?: string;
 	question?: string;
 }
 
@@ -64,12 +65,13 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 					processing={this.state.processing}
 					question={this.state.question}
 					onSave={this.onSave}
+					survey={this.props.match.params.survey!}
 				/>
 			</section>
 		);
 	}
 
-	private onSave = async (payload: BankQuestionCreate) => {
+	private onSave = async (payload: QuestionCreate) => {
 		if (this.state.processing)
 			return;
 

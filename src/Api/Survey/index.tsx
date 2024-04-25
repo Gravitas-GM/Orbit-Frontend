@@ -5,7 +5,6 @@ import {BankQuestionEndpoints} from './Models/BankQuestions';
 import {SurveyBankEndpoints} from './Models/BankSurveys';
 import {SettingsEndpoints} from './Models/Settings';
 import {SurveyEndpoints} from './Models/Surveys';
-import {SurveyQuestionEndpoints} from './Models/SurveyQuestions';
 import {UserEndpoints} from './Models/Users';
 
 type Endpoints =
@@ -13,8 +12,7 @@ type Endpoints =
 	& SurveyEndpoints
 	& SettingsEndpoints
 	& UserEndpoints
-	& BankQuestionEndpoints
-	& SurveyQuestionEndpoints;
+	& BankQuestionEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({

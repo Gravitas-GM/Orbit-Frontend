@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {BankQuestion, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
+import {Question, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
 import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSurveys';
 import {Classes} from '../../../../classes';
 import {Spacing} from '../../../../Styles/variables';
@@ -20,10 +20,10 @@ interface IState {
 	processing: boolean;
 	redirect: boolean;
 	survey: BankSurvey | null;
-	questions: BankQuestion[];
-	deleteTargets: BankQuestion[];
+	questions: Question[];
+	deleteTargets: Question[];
 	deleteSubject: string | undefined;
-	selectedItems: BankQuestion[];
+	selectedItems: Question[];
 	failures: ValidationFailures | null;
 	dirty: boolean;
 }
@@ -177,10 +177,10 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 		);
 	}
 
-	private onItemFilter = (item: BankQuestion, searchText: string) =>
+	private onItemFilter = (item: Question, searchText: string) =>
 		item.prompt.toLocaleLowerCase().includes(searchText);
 
-	private isChecked = (item: BankQuestion) => this.state.selectedItems.includes(item);
+	private isChecked = (item: Question) => this.state.selectedItems.includes(item);
 
 	private isAllChecked = () => this.state.selectedItems.length === this.state.questions.length;
 
@@ -196,7 +196,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 		}
 	};
 
-	private onSelectClick = (item: BankQuestion) => {
+	private onSelectClick = (item: Question) => {
 		if (this.state.selectedItems.includes(item))
 			this.setState(state => ({
 				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
@@ -207,7 +207,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 			}));
 	};
 
-	private onDeleteClick = (target: BankQuestion) => this.setState({
+	private onDeleteClick = (target: Question) => this.setState({
 		deleteTargets: [target],
 		deleteSubject: DeleteSubject.DELETE,
 	});
@@ -230,7 +230,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 		);
 
 		let failureCount = 0;
-		const deletedItems: BankQuestion[] = [];
+		const deletedItems: Question[] = [];
 
 		for (const result of results) {
 			if (isRejectedResult(result)) {
@@ -285,9 +285,9 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 }
 
 interface TableItemProps {
-	item: BankQuestion;
-	onDelete: (item: BankQuestion) => void;
-	onSelect: (item: BankQuestion) => void;
+	item: Question;
+	onDelete: (item: Question) => void;
+	onSelect: (item: Question) => void;
 	isChecked: boolean;
 }
 

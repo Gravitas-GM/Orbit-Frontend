@@ -8,6 +8,7 @@ import {LinkButton} from '../../../LinkButton';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
 import {Spacing} from '../../../../Styles/variables';
+import './index.scss';
 
 interface IState {
 	surveys: BankSurvey[];
@@ -47,7 +48,7 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 			return <FrameLoadingSpinner />;
 
 		return (
-			<section className="gm-page-wrapper">
+			<section id="survey-bank-list" className="gm-page-wrapper">
 				<ObjectList
 					title="Survey Bank"
 					editorUrlPrefix="/survey/bank"
@@ -225,7 +226,7 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
-			<td>{item.week}</td>
+			<td>{item.week === 0 ? 'Recurring' : item.week}</td>
 			<td>{item.questions[0]?.prompt ?? '—'}</td>
 
 			<td style={{textAlign: 'center'}}>

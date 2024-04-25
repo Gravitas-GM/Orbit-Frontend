@@ -47,7 +47,7 @@ export class ChoiceForm extends React.PureComponent<Props, State> {
 					onSaveClick={this.onSaveClick}
 					loading={this.props.processing}
 					dirty={this.isDirty()}
-					redirectPath="/survey/bank"
+					redirectPath={`/survey/bank/${this.props.survey}`}
 				>
 					<Button icon="plus" text="Add Choice" onClick={this.onAddChoiceClick} />
 				</FormControls>
