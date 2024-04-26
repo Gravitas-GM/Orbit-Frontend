@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSurveys';
+import {FormControls} from '../../../FormControls';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {toaster} from '../../../../toaster';
 import {ObjectList} from '../../../ObjectList';
@@ -16,6 +17,8 @@ interface IState {
 	deleteTargets: BankSurvey[];
 	deleteSubject: string | undefined;
 	selectedItems: BankSurvey[];
+	processing: boolean;
+	dirty: boolean;
 }
 
 export class SurveyBankList extends React.PureComponent<{}, IState> {
@@ -25,6 +28,8 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 		deleteTargets: [],
 		deleteSubject: undefined,
 		selectedItems: [],
+		processing: false,
+		dirty: false,
 	};
 
 	public async componentDidMount() {
@@ -71,8 +76,20 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 
 									<th>Week</th>
 									<th>Prompt</th>
-									<th style={{textAlign: 'center', width: 100}}>Edit</th>
-									<th style={{textAlign: 'center', width: 100}}>Delete</th>
+									<th
+										style={{
+											textAlign: 'center',
+											width: 100,
+										}}
+									>Edit
+									</th>
+									<th
+										style={{
+											textAlign: 'center',
+											width: 100,
+										}}
+									>Delete
+									</th>
 								</tr>
 							</thead>
 
@@ -90,6 +107,13 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 						</HTMLTable>
 					)}
 				</ObjectList>
+
+				<FormControls
+					onSaveClick={this.onSaveClick}
+					loading={this.state.processing}
+					dirty={this.state.dirty}
+					redirectPath={'/'}
+				/>
 
 				<DeleteDialog
 					isOpen={this.state.deleteTargets.length > 0}
@@ -123,7 +147,8 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (item: BankSurvey, searchText: string) => item.questions[0]?.prompt.toLocaleLowerCase().includes(searchText);
+	private onItemFilter = (item: BankSurvey, searchText: string) => item.questions[0]?.prompt.toLocaleLowerCase()
+		.includes(searchText);
 
 	private isChecked = (item: BankSurvey) => this.state.selectedItems.includes(item);
 
@@ -151,6 +176,31 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 				selectedItems: [...state.selectedItems, item],
 			}));
 	};
+
+	private onSaveClick = async () => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		try {
+			// TODO: send order update
+		} catch (error) {
+			throw error;
+		} finally {
+			this.setState({
+				processing: false,
+			});
+		}
+
+		toaster.success(`Survey order updated.`);
+
+		this.setState({
+			dirty: false,
+		});
+	}
 
 	private onDeleteClick = (target: BankSurvey) => this.setState({
 		deleteTargets: [target],

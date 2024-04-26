@@ -14,7 +14,6 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {toaster} from '../../../../toaster';
 import {PageHeader} from '../../../PageHeader';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {renderKindLabel, ucwords} from '../../../Utility/string';
 
 interface IState {
 	loading: boolean;
@@ -272,7 +271,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 		});
 
 		try {
-			// TODO: send week order update
+			// TODO: send order update
 		} catch (error) {
 			throw error;
 		} finally {
@@ -281,7 +280,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 			});
 		}
 
-		toaster.success(`Bank Survey order updated.`);
+		toaster.success(`Question order updated.`);
 
 		this.setState({
 			dirty: false,
