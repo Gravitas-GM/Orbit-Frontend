@@ -5,13 +5,11 @@ import {BankQuestionEndpoints} from './Models/BankQuestions';
 import {SurveyBankEndpoints} from './Models/BankSurveys';
 import {SettingsEndpoints} from './Models/Settings';
 import {SurveyEndpoints} from './Models/Surveys';
-import {UserEndpoints} from './Models/Users';
 
 type Endpoints =
 	SurveyBankEndpoints
 	& SurveyEndpoints
 	& SettingsEndpoints
-	& UserEndpoints
 	& BankQuestionEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
