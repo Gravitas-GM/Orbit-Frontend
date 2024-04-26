@@ -6,6 +6,7 @@ import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSur
 import {Classes} from '../../../../classes';
 import {Spacing} from '../../../../Styles/variables';
 import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
+import {FormControls} from '../../../FormControls';
 import {LinkButton} from '../../../LinkButton';
 import {ObjectList} from '../../../ObjectList';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
@@ -13,7 +14,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {toaster} from '../../../../toaster';
 import {PageHeader} from '../../../PageHeader';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {renderKindLabel} from '../../../Utility/string';
+import {renderKindLabel, ucwords} from '../../../Utility/string';
 
 interface IState {
 	loading: boolean;
@@ -130,6 +131,7 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 								{items.map(item => (
 									<TableItem
 										key={item.id}
+										survey={this.state.survey!}
 										item={item}
 										onDelete={this.onDeleteClick}
 										onSelect={this.onSelectClick}
@@ -141,9 +143,12 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 					)}
 				</ObjectList>
 
-				<div style={{display: 'flex', justifyContent: 'right'}}>
-					<Button loading={this.state.processing} type="submit" intent={Intent.PRIMARY} text="Save" />
-				</div>
+				<FormControls
+					onSaveClick={this.onSaveClick}
+					loading={this.state.processing}
+					dirty={this.state.dirty}
+					redirectPath={'/survey/bank'}
+				/>
 
 				<DeleteDialog
 					isOpen={this.state.deleteTargets.length > 0}
@@ -285,13 +290,14 @@ export class SurveyBankEditor extends React.PureComponent<RouteComponentProps<Ro
 }
 
 interface TableItemProps {
+	survey: BankSurvey;
 	item: Question;
 	onDelete: (item: Question) => void;
 	onSelect: (item: Question) => void;
 	isChecked: boolean;
 }
 
-const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecked}) => {
+const TableItem: React.FC<TableItemProps> = ({survey, item, onDelete, onSelect, isChecked}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -307,10 +313,10 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 			</td>
 
 			<td>{item.prompt}</td>
-			<td>{renderKindLabel(item.kind)}</td>
+			<td>{item.kind}</td>
 
 			<td style={{textAlign: 'center'}}>
-				<LinkButton to={`/survey/bank/${item.id}`} icon="edit" minimal={true} />
+				<LinkButton to={`/survey/bank/${survey.id}/questions/${item.id}`} icon="edit" minimal={true} />
 			</td>
 
 			<td style={{textAlign: 'center'}}>

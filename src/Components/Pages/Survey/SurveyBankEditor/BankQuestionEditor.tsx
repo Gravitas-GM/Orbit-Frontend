@@ -15,7 +15,7 @@ interface IState {
 }
 
 interface RouteProps {
-	survey?: string;
+	survey: string;
 	question?: string;
 }
 
@@ -65,7 +65,7 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 					processing={this.state.processing}
 					question={this.state.question}
 					onSave={this.onSave}
-					survey={this.props.match.params.survey!}
+					survey={this.props.match.params.survey}
 				/>
 			</section>
 		);

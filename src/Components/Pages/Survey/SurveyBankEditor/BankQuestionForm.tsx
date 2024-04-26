@@ -122,6 +122,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 		try {
 			await this.props.onSave({
 				...data,
+				survey: parseInt(this.props.survey),
 				kind: this.state.kind,
 				prompt: this.state.prompt,
 			} as QuestionCreate);
