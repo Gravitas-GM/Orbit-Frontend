@@ -21,6 +21,7 @@ interface IState {
 	validationFailures: ValidationFailures | null;
 	processing: boolean;
 	name: string;
+	users: User[];
 	members: User[];
 	dirty: boolean;
 	deleteTargets: User[];
@@ -43,6 +44,7 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 		loading: true,
 		redirect: false,
 		name: '',
+		users: [],
 		members: [],
 		validationFailures: null,
 		processing: false,
@@ -103,6 +105,7 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 
 		this.setState({
 			members,
+			users,
 			name: department.name,
 			loading: false,
 		});
@@ -193,6 +196,7 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 
 					{this.state.showAddUsersDialog && (
 						<AddUsersDialog
+							users={this.state.users.filter(user => !this.state.members.includes(user))}
 							members={this.state.members}
 							onClose={this.onAddUsersDialogClose}
 							onSave={this.onAddUsersDialogSave}

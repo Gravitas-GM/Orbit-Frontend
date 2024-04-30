@@ -2,23 +2,19 @@ import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {User} from '../../../Api/Hub/Models/Users';
 import {UserContext} from '../../../Session';
-import {toaster} from '../../../toaster';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {MultiSelect} from '../../Select/MultiSelect';
 
 interface IProps {
 	members: User[];
+	users: User[];
 	onClose: () => void;
 	onSave: (selectedUsers: User[]) => void;
 }
 
 interface IState {
-	users: User[];
 	selectedUsers: User[];
-	loading: boolean;
-	processing: boolean;
 }
 
 export class AddUsersDialog extends React.PureComponent<IProps, IState> {
@@ -29,30 +25,8 @@ export class AddUsersDialog extends React.PureComponent<IProps, IState> {
 		super(props);
 
 		this.state = {
-			users: [],
 			selectedUsers: [],
-			loading: true,
-			processing: false,
 		};
-	}
-
-	public async componentDidMount() {
-		let users: User[];
-
-		try {
-			users = await UserModel.list().then(response => response.data);
-		} catch (error) {
-			toaster.error('Could not load Users.');
-
-			this.props.onClose();
-
-			return;
-		}
-
-		this.setState({
-			users: users.filter(user => !this.props.members.includes(user)),
-			loading: false,
-		});
 	}
 
 	public render() {
@@ -64,44 +38,41 @@ export class AddUsersDialog extends React.PureComponent<IProps, IState> {
 				canOutsideClickClose={false}
 			>
 				<div className={Classes.DIALOG_BODY}>
-					{this.state.loading ? <FrameLoadingSpinner /> : (
-						<form onSubmit={this.onSubmit}>
-							<FormGroup
-								label="Select users to assign to the department"
-								labelFor="selectedUsers"
-								style={{display: 'flex'}}
-							>
-								<MultiSelect
-									tagInputProps={{
-										inputProps: {
-											name: 'members',
-										},
-									}}
-									fill={true}
-									items={this.state.users}
-									selectedItems={this.state.selectedUsers}
-									onItemSelect={this.onUserSelectionChange}
-									onRemove={this.onUserRemove}
-									onSelectAll={this.onSelectAllClick}
-									onSelectNone={this.onSelectNoneClick}
-									itemRenderer={this.userRenderer}
-									tagRenderer={tagRenderer}
-									noResults={<div>No results</div>}
-								/>
-							</FormGroup>
-						</form>
-					)}
+					<form onSubmit={this.onSubmit}>
+						<FormGroup
+							label="Select users to assign to the department"
+							labelFor="selectedUsers"
+							style={{display: 'flex'}}
+						>
+							<MultiSelect
+								tagInputProps={{
+									inputProps: {
+										name: 'members',
+									},
+								}}
+								fill={true}
+								items={this.props.users}
+								selectedItems={this.state.selectedUsers}
+								onItemSelect={this.onUserSelectionChange}
+								onRemove={this.onUserRemove}
+								onSelectAll={this.onSelectAllClick}
+								onSelectNone={this.onSelectNoneClick}
+								itemRenderer={this.userRenderer}
+								tagRenderer={tagRenderer}
+								noResults={<div>No results</div>}
+							/>
+						</FormGroup>
+					</form>
 				</div>
 
 				<div className={Classes.DIALOG_FOOTER}>
 					<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-						<Button text="Cancel" onClick={this.props.onClose} disabled={this.state.processing} />
+						<Button text="Cancel" onClick={this.props.onClose} />
 
 						<Button
 							intent={Intent.PRIMARY}
 							text="Submit"
 							onClick={this.onSubmit}
-							loading={this.state.processing}
 							disabled={this.state.selectedUsers.length === 0}
 						/>
 					</div>
@@ -127,7 +98,7 @@ export class AddUsersDialog extends React.PureComponent<IProps, IState> {
 	}));
 
 	private onSelectAllClick = () => this.setState({
-		selectedUsers: this.state.users,
+		selectedUsers: this.props.users,
 	});
 
 	private onSelectNoneClick = () => this.setState({
