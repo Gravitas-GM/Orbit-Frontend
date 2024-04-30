@@ -3,7 +3,6 @@ import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {User} from '../../../Api/Hub/Models/Users';
-import {UserContext} from '../../../Session';
 import {MultiSelect} from '../../Select/MultiSelect';
 
 interface IProps {
@@ -18,9 +17,6 @@ interface IState {
 }
 
 export class AddUsersDialog extends React.PureComponent<IProps, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
-
 	public constructor(props: IProps) {
 		super(props);
 
