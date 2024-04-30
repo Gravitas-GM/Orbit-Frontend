@@ -13,6 +13,7 @@ import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect} from 'react-router';
 import {toaster} from '../../../../toaster';
 import {PageHeader} from '../../../PageHeader';
+import {formatDate} from '../../../Utility/date';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
 
 interface IState {
@@ -71,7 +72,7 @@ export class NextSurveyEditor extends React.PureComponent<{}, IState> {
 
 		return (
 			<section className={Classes.PAGE_WRAPPER}>
-				<PageHeader title="Next Survey" />
+				<PageHeader title={`Next Survey starting on ${formatDate(this.state.survey!.startedDate)}`} />
 
 				<ObjectList
 					title="Questions"

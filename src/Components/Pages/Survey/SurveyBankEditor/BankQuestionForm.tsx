@@ -7,7 +7,7 @@ import {Question, QuestionCreate, SurveyQuestionKind} from '../../../../Api/Surv
 import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
-import {renderKindLabel, ucwords} from '../../../Utility/string';
+import {ucwords} from '../../../Utility/string';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {QuestionForm} from './QuestionForm';
 import '../../Quiz/QuestionEditor/AnswerForm.scss';
