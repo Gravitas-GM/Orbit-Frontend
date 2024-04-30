@@ -12,6 +12,8 @@ import {PageNotFound} from './PageNotFound';
 import {DebugControls} from './Pages/Admin/DebugControls';
 import {CatalogListPage} from './Pages/Catalog';
 import {GameInfo} from './Pages/Catalog/GameInfo';
+import {DepartmentsListPage} from './Pages/Departments';
+import {DepartmentEditor} from './Pages/Departments/DepartmentEditor';
 import {GameBoardPage} from './Pages/Game';
 import {Leaderboard} from './Pages/Leaderboard';
 import {QuizHistoryPage} from './Pages/Quiz/History';
@@ -87,6 +89,9 @@ export const Layout: React.FC<IProps> = ({loading}) => {
 						<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
 						<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
 						<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
+						<Route key="/departments" path="/departments" component={DepartmentsListPage} exact={true} />,
+						<Route key="/departments/:department" path="/departments/:department(\d+)" component={DepartmentEditor} exact={true} />,
+						<Route key="/departments/new" path="/departments/new" component={DepartmentEditor} exact={true} />,
 					]}
 					{/* @formatter:on */}
 
