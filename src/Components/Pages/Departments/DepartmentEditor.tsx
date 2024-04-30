@@ -1,29 +1,32 @@
 import * as React from 'react';
-import {ControlGroup, InputGroup} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2'
-import {ItemRenderer} from '@blueprintjs/select';
+import {Button, Checkbox, ControlGroup, HTMLTable, InputGroup, Intent} from '@blueprintjs/core';
 import {isValidationFailureError, ValidationFailures} from '../../../Api/errors/symfony';
 import {Department, DepartmentCreatePayload, DepartmentModel} from '../../../Api/Hub/Models/Departments';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Spacing} from '../../../Styles/variables';
+import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
+import {ObjectList} from '../../ObjectList';
 import {PageHeader} from '../../PageHeader';
 import {toaster} from '../../../toaster';
 import {Redirect, RouteComponentProps} from 'react-router';
-import {MultiSelect} from '../../Select/MultiSelect';
+import {renderUserName} from '../../Utility/string';
 import {ValidationAwareFormGroup} from '../../ValidationAwareFormGroup';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {FormControls} from '../../FormControls';
+import {AddUsersDialog} from './AddUsersDialog';
 
 interface IState {
 	loading: boolean;
-	users: User[];
 	redirect: boolean;
 	validationFailures: ValidationFailures | null;
 	processing: boolean;
 	name: string;
-	autoAssign: boolean;
 	members: User[];
 	dirty: boolean;
+	deleteTargets: User[];
+	deleteSubject: string | undefined;
+	selectedItems: User[];
+	showAddUsersDialog: boolean;
 }
 
 interface IRouteProps {
@@ -38,14 +41,16 @@ enum DeptEditorTitle {
 export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IRouteProps>, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
-		users: [],
 		redirect: false,
 		name: '',
 		members: [],
-		autoAssign: false,
 		validationFailures: null,
 		processing: false,
 		dirty: false,
+		deleteTargets: [],
+		deleteSubject: undefined,
+		selectedItems: [],
+		showAddUsersDialog: false,
 	};
 
 	public async componentDidMount() {
@@ -67,7 +72,6 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 
 		if (!idParam) {
 			this.setState({
-				users,
 				loading: false,
 			});
 
@@ -98,7 +102,6 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 		}
 
 		this.setState({
-			users,
 			members,
 			name: department.name,
 			loading: false,
@@ -133,29 +136,45 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 						</ValidationAwareFormGroup>
 					</ControlGroup>
 
-					<ValidationAwareFormGroup
-						labelFor="members"
-						label="Select Users"
-						failures={this.state.validationFailures}
+					<ObjectList
+						title="Members"
+						items={this.state.members}
+						onItemFilter={this.onItemFilter}
+						itemsPerPage={20}
+						onAddNewClick={this.onAddNewClick}
+						onBulkDeleteClick={this.onBulkDeleteClick}
+						bulkDeleteDisabled={this.state.selectedItems.length === 0}
 					>
-						<MultiSelect
-							tagInputProps={{
-								inputProps: {
-									name: 'members',
-								},
-							}}
-							fill={true}
-							items={this.state.users}
-							selectedItems={this.state.members}
-							onItemSelect={this.onMemberSelectionChange}
-							onRemove={this.onMemberRemove}
-							onSelectAll={this.onSelectAllClick}
-							onSelectNone={this.onSelectNoneClick}
-							itemRenderer={this.userRenderer}
-							tagRenderer={tagRenderer}
-							noResults={<div>No results</div>}
-						/>
-					</ValidationAwareFormGroup>
+						{items => (
+							<HTMLTable striped={true}>
+								<thead>
+									<tr>
+										<th style={{width: Spacing.XLarge}}>
+											<Checkbox
+												checked={this.isAllChecked()}
+												onClick={this.onSelectAllClick}
+											/>
+										</th>
+
+										<th>Name</th>
+										<th style={{textAlign: 'center', width: 100}}>Delete</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									{items.map(item => (
+										<TableItem
+											key={item.id}
+											item={item}
+											onDelete={this.onDeleteClick}
+											onSelect={this.onSelectClick}
+											isChecked={this.isChecked(item)}
+										/>
+									))}
+								</tbody>
+							</HTMLTable>
+						)}
+					</ObjectList>
 
 					<FormControls
 						onSaveClick={this.onSaveClick}
@@ -163,6 +182,22 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 						dirty={this.state.dirty}
 						redirectPath="/departments"
 					/>
+
+					<DeleteDialog
+						isOpen={this.state.deleteTargets.length > 0}
+						multiple={this.state.deleteTargets.length > 1}
+						onConfirm={this.onDeleteConfirm}
+						onCancel={this.onDeleteCancel}
+						subject={this.state.deleteSubject}
+					/>
+
+					{this.state.showAddUsersDialog && (
+						<AddUsersDialog
+							members={this.state.members}
+							onClose={this.onAddUsersDialogClose}
+							onSave={this.onAddUsersDialogSave}
+						/>
+					)}
 				</form>
 			</section>
 		);
@@ -170,35 +205,6 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 
 	private onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({
 		name: event.currentTarget.value,
-		dirty: true,
-	});
-
-	private onMemberSelectionChange = (user: User) => {
-		if (this.state.members.includes(user)) {
-			this.setState(state => ({
-				members: state.members.filter(item => item !== user),
-				dirty: true,
-			}));
-		} else {
-			this.setState(state => ({
-				members: [...state.members, user],
-				dirty: true,
-			}));
-		}
-	};
-
-	private onMemberRemove = (target: User) => this.setState(state => ({
-		members: state.members.filter(item => item.id !== target.id),
-		dirty: true,
-	}));
-
-	private onSelectAllClick = () => this.setState({
-		members: this.state.users,
-		dirty: true,
-	});
-
-	private onSelectNoneClick = () => this.setState({
-		members: [],
 		dirty: true,
 	});
 
@@ -247,27 +253,108 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 		}
 	};
 
-	private userRenderer: ItemRenderer<User> = (user, state) => {
-		if (!state.modifiers.matchesPredicate)
-			return null;
+	private onItemFilter = (user: User, searchText: string) =>
+		renderUserName(user).toLocaleLowerCase().includes(searchText);
 
-		const selected = this.state.members.includes(user);
+	private isChecked = (item: User) => this.state.selectedItems.includes(item);
 
-		return (
-			<MenuItem
-				roleStructure="listoption"
-				key={user.id}
-				active={state.modifiers.active}
-				disabled={state.modifiers.disabled}
-				text={`${user.firstName} ${user.lastName}`}
-				onClick={state.handleClick}
-				onFocus={state.handleFocus}
-				icon={selected ? 'small-tick' : 'blank'}
-			/>
-		);
+	private isAllChecked = () => this.state.selectedItems.length === this.state.members.length;
+
+	private onSelectAllClick = () => {
+		if (this.isAllChecked()) {
+			this.setState({
+				selectedItems: [],
+			});
+		} else {
+			this.setState(state => ({
+				selectedItems: [...state.members],
+			}));
+		}
 	};
+
+	private onSelectClick = (item: User) => {
+		if (this.state.selectedItems.includes(item))
+			this.setState(state => ({
+				selectedItems: state.selectedItems.filter(selectedItem => selectedItem !== item),
+			}));
+		else
+			this.setState(state => ({
+				selectedItems: [...state.selectedItems, item],
+			}));
+	};
+
+	private onAddNewClick = () => this.setState({
+		showAddUsersDialog: true,
+	});
+
+	private onAddUsersDialogClose = () => this.setState({
+		showAddUsersDialog: false,
+	});
+
+	private onAddUsersDialogSave = (selectedUsers: User[]) => this.setState(state => ({
+		members: [...state.members, ...selectedUsers],
+		showAddUsersDialog: false,
+	}));
+
+	private onDeleteClick = (target: User) => this.setState({
+		deleteTargets: [target],
+		deleteSubject: DeleteSubject.DELETE,
+	});
+
+	private onBulkDeleteClick = () => this.setState(state => ({
+		deleteTargets: state.selectedItems,
+		deleteSubject: DeleteSubject.DELETE,
+	}));
+
+	private onDeleteConfirm = async () => {
+		if (this.state.deleteTargets.length === 0)
+			return;
+
+		this.setState(state => ({
+			members: state.members.filter(item => !state.deleteTargets.includes(item)),
+			selectedItems: state.selectedItems.filter(item => !state.deleteTargets.includes(item)),
+			deleteTargets: [],
+		}));
+	};
+
+	private onDeleteCancel = () => this.setState({
+		deleteTargets: [],
+		deleteSubject: undefined,
+	});
 }
 
-const tagRenderer = (user: User) => {
-	return `${user.firstName} ${user.lastName}`;
+interface TableItemProps {
+	item: User;
+	onDelete: (item: User) => void;
+	onSelect: (item: User) => void;
+	isChecked: boolean;
+}
+
+const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecked}) => {
+	const onDeleteButtonClick = React.useCallback(() => {
+		onDelete(item);
+	}, [item, onDelete]);
+
+	const onSelectButtonClick = React.useCallback(() => {
+		onSelect(item);
+	}, [item, onSelect]);
+
+	return (
+		<tr>
+			<td>
+				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
+			</td>
+
+			<td>{renderUserName(item)}</td>
+
+			<td style={{textAlign: 'center'}}>
+				<Button
+					icon="delete"
+					intent={Intent.DANGER}
+					onClick={onDeleteButtonClick}
+					minimal={true}
+				/>
+			</td>
+		</tr>
+	);
 };
