@@ -294,6 +294,7 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 	private onAddUsersDialogSave = (selectedUsers: User[]) => this.setState(state => ({
 		members: [...state.members, ...selectedUsers],
 		showAddUsersDialog: false,
+		dirty: true,
 	}));
 
 	private onDeleteClick = (target: User) => this.setState({
