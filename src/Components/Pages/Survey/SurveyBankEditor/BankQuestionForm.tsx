@@ -7,7 +7,7 @@ import {Question, QuestionCreate, SurveyQuestionKind} from '../../../../Api/Surv
 import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
-import {renderKindLabel} from '../../../Utility/string';
+import {renderKindLabel, ucwords} from '../../../Utility/string';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {QuestionForm} from './QuestionForm';
 import '../../Quiz/QuestionEditor/AnswerForm.scss';
@@ -83,7 +83,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 									disabled={isKindSelectDisabled}
 									fill={true}
 									alignText="left"
-									text={this.state.kind ? renderKindLabel(this.state.kind) : 'Select question kind'}
+									text={this.state.kind ? ucwords(this.state.kind) : 'Select question kind'}
 									rightIcon="double-caret-vertical"
 									placeholder="Select question kind"
 								/>
@@ -151,7 +151,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 				onClick={props.handleClick}
 				onFocus={props.handleFocus}
 				roleStructure="listoption"
-				text={renderKindLabel(kind)}
+				text={ucwords(kind)}
 			/>
 		);
 	};

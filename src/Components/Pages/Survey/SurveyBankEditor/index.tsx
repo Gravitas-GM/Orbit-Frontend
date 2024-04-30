@@ -14,6 +14,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {toaster} from '../../../../toaster';
 import {PageHeader} from '../../../PageHeader';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {ucwords} from '../../../Utility/string';
 
 interface IState {
 	loading: boolean;
@@ -312,7 +313,7 @@ const TableItem: React.FC<TableItemProps> = ({survey, item, onDelete, onSelect, 
 			</td>
 
 			<td>{item.prompt}</td>
-			<td>{item.kind}</td>
+			<td>{ucwords(item.kind)}</td>
 
 			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/survey/bank/${survey.id}/questions/${item.id}`} icon="edit" minimal={true} />
