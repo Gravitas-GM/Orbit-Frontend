@@ -31,7 +31,7 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 					onSaveClick={this.onSave}
 					loading={this.props.processing}
 					dirty={this.isDirty()}
-					redirectPath={`/survey/bank/${this.props.survey}`}
+					redirectPath={this.props.survey === 'next' ? '/survey/next' : `/survey/bank/${this.props.survey}`}
 				/>
 			</div>
 		);
