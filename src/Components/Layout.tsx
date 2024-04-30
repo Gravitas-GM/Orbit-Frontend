@@ -23,7 +23,8 @@ import {QuizSettings} from './Pages/Quiz/Settings';
 import {TagListPage} from './Pages/Quiz/Tags';
 import {TagEditor} from './Pages/Quiz/Tags/TagEditor';
 import {SourcesList} from './Pages/Sources';
-import {NextSurvey} from './Pages/Survey/NextSurveyEditor';
+import {NextSurveyEditor} from './Pages/Survey/NextSurveyEditor';
+import {NextSurveyQuestionEditor} from './Pages/Survey/NextSurveyEditor/NextSurveyQuestionEditor';
 import {SurveyBankEditor} from './Pages/Survey/SurveyBankEditor';
 import {BankQuestionEditor} from './Pages/Survey/SurveyBankEditor/BankQuestionEditor';
 import {SurveyBankList} from './Pages/Survey/SurveyBankList';
@@ -85,7 +86,9 @@ export const Layout: React.FC<IProps> = ({loading}) => {
 						<Route key="/quiz/questions/new" path="/quiz/questions/new" component={QuestionEditorPage} exact={true} />,
 						<Route key="/quiz/tags/:tag" path="/quiz/tags/:tag(\d+)" component={TagEditor} exact={true} />,
 						<Route key="/quiz/tags/new" path="/quiz/tags/new" component={TagEditor} exact={true} />,
-						<Route path="/survey/next" key="/survey/next" component={NextSurvey} exact={true} />,
+						<Route path="/survey/next" key="/survey/next" component={NextSurveyEditor} exact={true} />,
+						<Route key="/survey/next/questions/:question" path="/survey/next/questions/:question(\d+)" component={NextSurveyQuestionEditor} exact={true} />,
+						<Route key="/survey/next/questions/new" path="/survey/next/questions/new" component={NextSurveyQuestionEditor} exact={true} />,
 						<Route path="/survey/settings" key="/survey/settings" component={SurveySettings} exact={true} />,
 						<Route path="/survey/history" key="/survey/history" component={SurveyHistory} exact={true} />,
 						<Route path="/survey/results/:survey(\d+)" key="/survey/results/(\d+)" component={SurveyResults} exact={true} />,
