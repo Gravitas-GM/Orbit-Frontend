@@ -57,6 +57,13 @@ export const NavHeader: React.FC = () => {
 								minimal={true}
 							/>
 						</Link>
+
+						<Link to="/departments">
+							<Button
+								text="Departments"
+								minimal={true}
+							/>
+						</Link>
 					</>
 				)}
 			</Navbar.Group>
