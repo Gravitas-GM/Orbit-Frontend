@@ -17,7 +17,7 @@ export interface SettingsEndpoints {
 	};
 }
 
-export enum DayOfWeek {
+export enum WeekDay {
 	SUNDAY = 'sunday',
 	MONDAY = 'monday',
 	TUESDAY = 'tuesday',
@@ -28,7 +28,7 @@ export enum DayOfWeek {
 }
 
 export interface Settings extends Entity {
-	surveyRefreshDay: DayOfWeek;
+	surveyRefreshDay: WeekDay;
 	userSurveyReminder: boolean;
 }
 

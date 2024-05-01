@@ -5,7 +5,7 @@ import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Prompt} from 'react-router';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {DayOfWeek, Settings, SettingsModel} from '../../../../Api/Survey/Models/Settings';
+import {WeekDay, Settings, SettingsModel} from '../../../../Api/Survey/Models/Settings';
 import {Classes} from '../../../../classes';
 import {history} from '../../../../history';
 import {UserContext} from '../../../../Session';
@@ -20,7 +20,7 @@ interface IState {
 	loading: boolean;
 	processing: boolean;
 	failures: ValidationFailures | null;
-	surveyRefreshDay: DayOfWeek;
+	surveyRefreshDay: WeekDay;
 	userSurveyReminder: boolean;
 	dirty: boolean;
 }
@@ -33,7 +33,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		loading: true,
 		processing: false,
 		failures: null,
-		surveyRefreshDay: DayOfWeek.MONDAY,
+		surveyRefreshDay: WeekDay.SUNDAY,
 		userSurveyReminder: false,
 		dirty: false,
 	};
@@ -72,7 +72,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						failures={this.state.failures}
 					>
 						<Select
-							items={Object.values(DayOfWeek)}
+							items={Object.values(WeekDay)}
 							onItemSelect={this.onRefreshDayChange}
 							filterable={false}
 							itemRenderer={this.renderDayOfWeekItem}
@@ -118,7 +118,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onRefreshDayChange = (surveyRefreshDay: DayOfWeek) => this.setState({
+	private onRefreshDayChange = (surveyRefreshDay: WeekDay) => this.setState({
 		surveyRefreshDay,
 		dirty: true,
 	});
@@ -168,7 +168,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 		toaster.success('Survey settings saved.');
 	};
 
-	private renderDayOfWeekItem: ItemRenderer<DayOfWeek> = (item, {handleClick, handleFocus, modifiers}) => (
+	private renderDayOfWeekItem: ItemRenderer<WeekDay> = (item, {handleClick, handleFocus, modifiers}) => (
 		<MenuItem
 			key={item}
 			text={ucwords(item)}
