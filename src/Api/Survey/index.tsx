@@ -1,12 +1,16 @@
 import axios, {TypedAxiosInstance} from 'restyped-axios';
 import {Config} from '../../config';
 import {attachResponseHandlers} from '../errors/symfony';
+import {BankQuestionEndpoints} from './Models/BankQuestions';
+import {SurveyBankEndpoints} from './Models/BankSurveys';
 import {SettingsEndpoints} from './Models/Settings';
-import {SurveyEndpoints} from './Models/Survey';
-import {SurveyBankEndpoints} from './Models/SurveyBank';
-import {UserEndpoints} from './Models/Users';
+import {SurveyEndpoints} from './Models/Surveys';
 
-type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SettingsEndpoints & UserEndpoints;
+type Endpoints =
+	SurveyBankEndpoints
+	& SurveyEndpoints
+	& SettingsEndpoints
+	& BankQuestionEndpoints;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({
