@@ -36,6 +36,17 @@ export const AdminCards: React.FC = () => {
 				</Card>
 			</Link>
 
+			<Link to="/departments">
+				<Card interactive={true}>
+					<Icon icon="shop" size={35} />
+					<div>
+						<H4>Departments</H4>
+
+						<p>Manage Departments and assign users.</p>
+					</div>
+				</Card>
+			</Link>
+
 			<Link to="/sources">
 				<Card interactive={true}>
 					<Icon icon="bank-account" size={35} />
