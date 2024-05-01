@@ -18,14 +18,34 @@ export interface SettingsEndpoints {
 }
 
 export enum WeekDay {
-	SUNDAY = 'sunday',
-	MONDAY = 'monday',
-	TUESDAY = 'tuesday',
-	WEDNESDAY = 'wednesday',
-	THURSDAY = 'thursday',
-	FRIDAY = 'friday',
-	SATURDAY = 'saturday',
+	SUNDAY,
+	MONDAY,
+	TUESDAY,
+	WEDNESDAY,
+	THURSDAY,
+	FRIDAY,
+	SATURDAY,
 }
+
+export const WEEKDAY_VALUES = [
+	WeekDay.SUNDAY,
+	WeekDay.MONDAY,
+	WeekDay.TUESDAY,
+	WeekDay.WEDNESDAY,
+	WeekDay.THURSDAY,
+	WeekDay.FRIDAY,
+	WeekDay.SATURDAY,
+];
+
+export const WEEKDAY_DISPLAY_NAMES = {
+	[WeekDay.SUNDAY]: 'Sunday',
+	[WeekDay.MONDAY]: 'Monday',
+	[WeekDay.TUESDAY]: 'Tuesday',
+	[WeekDay.WEDNESDAY]: 'Wednesday',
+	[WeekDay.THURSDAY]: 'Thursday',
+	[WeekDay.FRIDAY]: 'Friday',
+	[WeekDay.SATURDAY]: 'Saturday',
+};
 
 export interface Settings extends Entity {
 	surveyRefreshDay: WeekDay;

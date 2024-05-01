@@ -5,7 +5,13 @@ import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Prompt} from 'react-router';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {WeekDay, Settings, SettingsModel} from '../../../../Api/Survey/Models/Settings';
+import {
+	WeekDay,
+	Settings,
+	SettingsModel,
+	WEEKDAY_VALUES,
+	WEEKDAY_DISPLAY_NAMES,
+} from '../../../../Api/Survey/Models/Settings';
 import {Classes} from '../../../../classes';
 import {history} from '../../../../history';
 import {UserContext} from '../../../../Session';
@@ -13,7 +19,6 @@ import {toaster} from '../../../../toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {PageHeader} from '../../../PageHeader';
 import {Select} from '../../../Select/Select';
-import {ucwords} from '../../../Utility/string';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 
 interface IState {
@@ -72,7 +77,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						failures={this.state.failures}
 					>
 						<Select
-							items={Object.values(WeekDay)}
+							items={Object.values(WEEKDAY_VALUES)}
 							onItemSelect={this.onRefreshDayChange}
 							filterable={false}
 							itemRenderer={this.renderDayOfWeekItem}
@@ -80,7 +85,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 						>
 							<Button
 								fill={true}
-								text={ucwords(this.state.surveyRefreshDay)}
+								text={WEEKDAY_DISPLAY_NAMES[this.state.surveyRefreshDay]}
 								rightIcon="caret-down"
 								placeholder="Select survey refresh day"
 								alignText="left"
@@ -171,7 +176,7 @@ export class SurveySettings extends React.PureComponent<{}, IState> {
 	private renderDayOfWeekItem: ItemRenderer<WeekDay> = (item, {handleClick, handleFocus, modifiers}) => (
 		<MenuItem
 			key={item}
-			text={ucwords(item)}
+			text={WEEKDAY_DISPLAY_NAMES[item]}
 			selected={item === this.state.surveyRefreshDay}
 			active={modifiers.active}
 			disabled={modifiers.disabled}
