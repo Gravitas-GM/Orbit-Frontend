@@ -1,3 +1,4 @@
+import {parseApiTimestamp} from '../../../Components/Utility/date';
 import {Create, Entity, Id, Projectable, Projection, QueryDocument, Stub, surveyClient} from '../../index';
 import {Question, QuestionCreate, QuestionUpdate, SurveyQuestionKind} from './BankQuestions';
 import {UpdateOrderPayload} from './BankSurveys';
@@ -120,6 +121,10 @@ export class SurveyModel {
 				p: projection,
 				q: query,
 			},
+		}).then(response => {
+			response.data = response.data.map(SurveyModel.denormalizeSurvey);
+
+			return response;
 		});
 	}
 
@@ -136,6 +141,10 @@ export class SurveyModel {
 			params: {
 				p: projection,
 			},
+		}).then(response => {
+			response.data = SurveyModel.denormalizeSurvey(response.data);
+
+			return response;
 		});
 	}
 
@@ -148,6 +157,10 @@ export class SurveyModel {
 			params: {
 				p: projection,
 			},
+		}).then(response => {
+			response.data = SurveyModel.denormalizeSurvey(response.data);
+
+			return response;
 		});
 	}
 
@@ -181,5 +194,11 @@ export class SurveyModel {
 
 	public static updateQuestionOrder(payload: UpdateOrderPayload) {
 		return surveyClient.patch('/surveys/next/questions/update-order', payload);
+	}
+
+	private static denormalizeSurvey(survey: Survey) {
+		survey.startedDate = parseApiTimestamp(survey.startedDate);
+
+		return survey;
 	}
 }
