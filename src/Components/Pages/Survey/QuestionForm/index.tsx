@@ -9,10 +9,15 @@ import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
 import {ucwords} from '../../../Utility/string';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
-import {QuestionForm} from './QuestionForm';
 import '../../Quiz/QuestionEditor/AnswerForm.scss';
+import {QuestionTypeForm} from './QuestionTypeForm';
 
 const QuestionKindNames = Object.values(SurveyQuestionKind);
+
+export enum SurveyEditorType {
+	NEXT = 'next',
+	BANK = 'bank',
+}
 
 interface IProps {
 	question: Question | null;
@@ -28,7 +33,7 @@ interface IState {
 	dirty: boolean;
 }
 
-export class BankQuestionForm extends React.PureComponent<IProps, IState> {
+export class QuestionForm extends React.PureComponent<IProps, IState> {
 	public constructor(props: IProps) {
 		super(props);
 
@@ -92,7 +97,7 @@ export class BankQuestionForm extends React.PureComponent<IProps, IState> {
 					</div>
 				</ControlGroup>
 
-				<QuestionForm
+				<QuestionTypeForm
 					survey={this.props.survey}
 					dirty={this.state.dirty}
 					kind={this.state.kind}

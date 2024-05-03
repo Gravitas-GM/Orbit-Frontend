@@ -6,7 +6,7 @@ import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {toaster} from '../../../../toaster';
-import {BankQuestionForm} from '../SurveyBankEditor/BankQuestionForm';
+import {QuestionForm, SurveyEditorType} from '../QuestionForm';
 
 interface IState {
 	loading: boolean;
@@ -61,11 +61,11 @@ export class NextSurveyQuestionEditor extends React.PureComponent<RouteComponent
 			<section className={Classes.PAGE_WRAPPER}>
 				<PageHeader title={this.props.match.params.question ? `Edit Survey Question` : `New Survey Question`} />
 
-				<BankQuestionForm
+				<QuestionForm
 					processing={this.state.processing}
 					question={this.state.question}
 					onSave={this.onSave}
-					survey="next"
+					survey={SurveyEditorType.NEXT}
 				/>
 			</section>
 		);

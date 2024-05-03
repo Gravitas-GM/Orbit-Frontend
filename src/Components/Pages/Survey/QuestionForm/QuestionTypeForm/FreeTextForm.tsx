@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {FreeTextQuestion} from '../../../../../Api/Survey/Models/BankQuestions';
+import {SurveyEditorType} from '../index';
 import {FormProps, FreeTextSaveHandler} from './index';
 import {FormControls} from '../../../../FormControls';
 
@@ -26,12 +27,16 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 
 	public render() {
 		return (
-			<div className="question-form">
+			<div className="question-type-form">
 				<FormControls
 					onSaveClick={this.onSave}
 					loading={this.props.processing}
 					dirty={this.isDirty()}
-					redirectPath={this.props.survey === 'next' ? '/survey/next' : `/survey/bank/${this.props.survey}`}
+					redirectPath={(
+						this.props.survey === SurveyEditorType.NEXT
+							? '/survey/next'
+							: `/survey/bank/${this.props.survey}`
+					)}
 				/>
 			</div>
 		);

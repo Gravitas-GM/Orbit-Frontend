@@ -55,7 +55,7 @@ interface ChoiceProps extends BaseProps {
 
 type Props = ScaleProps | FreeTextProps | ChoiceProps;
 
-export const QuestionForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
+export const QuestionTypeForm: React.FC<Props> = ({kind, onSave, question, ...formProps}) => {
 	switch (kind) {
 		case SurveyQuestionKind.Scale:
 			return <ScaleForm onSave={onSave} question={question as ScaleQuestion | null} {...formProps} />;

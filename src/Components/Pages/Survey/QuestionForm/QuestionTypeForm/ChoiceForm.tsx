@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {ChoiceQuestion} from '../../../../../Api/Survey/Models/BankQuestions';
+import {SurveyEditorType} from '../index';
 import {FormProps, ChoiceSaveHandler} from './index';
 import {Button, ControlGroup, H3, InputGroup} from '@blueprintjs/core';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
@@ -29,7 +30,7 @@ export class ChoiceForm extends React.PureComponent<Props, State> {
 
 	public render() {
 		return (
-			<div className="question-form">
+			<div className="question-type-form">
 				<H3>Choice Question</H3>
 
 				{this.state.choices.map((text, index) => (
@@ -47,7 +48,11 @@ export class ChoiceForm extends React.PureComponent<Props, State> {
 					onSaveClick={this.onSaveClick}
 					loading={this.props.processing}
 					dirty={this.isDirty()}
-					redirectPath={this.props.survey === 'next' ? '/survey/next' : `/survey/bank/${this.props.survey}`}
+					redirectPath={(
+						this.props.survey === SurveyEditorType.NEXT
+							? '/survey/next'
+							: `/survey/bank/${this.props.survey}`
+					)}
 				>
 					<Button icon="plus" text="Add Choice" onClick={this.onAddChoiceClick} />
 				</FormControls>

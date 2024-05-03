@@ -5,7 +5,7 @@ import {PageHeader} from '../../../PageHeader';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect, RouteComponentProps} from 'react-router';
 import {toaster} from '../../../../toaster';
-import {BankQuestionForm} from './BankQuestionForm';
+import {QuestionForm} from '../QuestionForm';
 
 interface IState {
 	loading: boolean;
@@ -61,7 +61,7 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 			<section className={Classes.PAGE_WRAPPER}>
 				<PageHeader title={this.props.match.params.question ? `Edit Bank Question` : `New Bank Question`} />
 
-				<BankQuestionForm
+				<QuestionForm
 					processing={this.state.processing}
 					question={this.state.question}
 					onSave={this.onSave}

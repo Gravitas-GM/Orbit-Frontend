@@ -3,6 +3,7 @@ import {ControlGroup, H3, NumericInput} from '@blueprintjs/core';
 import {ScaleQuestion} from '../../../../../Api/Survey/Models/BankQuestions';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {FormControls} from '../../../../FormControls';
+import {SurveyEditorType} from '../index';
 import {FormProps, ScaleSaveHandler} from './index';
 
 type Props = FormProps<ScaleQuestion, ScaleSaveHandler>;
@@ -30,7 +31,7 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 
 	public render() {
 		return (
-			<div className="question-form">
+			<div className="question-type-form">
 				<H3>Scale Question</H3>
 
 				<ControlGroup fill={true}>
@@ -81,7 +82,11 @@ export class ScaleForm extends React.PureComponent<Props, State> {
 					onSaveClick={this.onSaveClick}
 					loading={this.props.processing}
 					dirty={this.isDirty()}
-					redirectPath={this.props.survey === 'next' ? '/survey/next' : `/survey/bank/${this.props.survey}`}
+					redirectPath={(
+						this.props.survey === SurveyEditorType.NEXT
+							? '/survey/next'
+							: `/survey/bank/${this.props.survey}`
+					)}
 				/>
 			</div>
 		);
