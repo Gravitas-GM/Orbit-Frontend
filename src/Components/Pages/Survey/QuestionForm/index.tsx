@@ -3,7 +3,12 @@ import {Button, ControlGroup, TextArea} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {Question, QuestionCreate, SurveyQuestionKind} from '../../../../Api/Survey/Models/BankQuestions';
+import {
+	Question,
+	QuestionCreate,
+	QuestionUpdate,
+	SurveyQuestionKind,
+} from '../../../../Api/Survey/Models/BankQuestions';
 import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
@@ -22,8 +27,9 @@ export enum SurveyEditorType {
 interface IProps {
 	question: Question | null;
 	processing: boolean;
-	onSave: (question: QuestionCreate) => Promise<void>;
+	onSave: (question: QuestionCreate | QuestionUpdate) => Promise<void>;
 	survey: string;
+	surveyEditorType: SurveyEditorType;
 }
 
 interface IState {
@@ -105,6 +111,7 @@ export class QuestionForm extends React.PureComponent<IProps, IState> {
 					validationFailures={this.state.validationFailures}
 					question={this.props.question}
 					processing={this.props.processing}
+					surveyEditorType={this.props.surveyEditorType}
 				/>
 			</form>
 		);
@@ -120,17 +127,29 @@ export class QuestionForm extends React.PureComponent<IProps, IState> {
 		dirty: true,
 	});
 
-	private onSave = async (data: Partial<QuestionCreate>) => {
+	private onSave = async (data: Partial<QuestionCreate> | Partial<QuestionUpdate>) => {
 		if (!this.state.kind)
 			return;
 
-		try {
-			await this.props.onSave({
+		let payload: QuestionCreate | QuestionUpdate;
+
+		if (this.props.question) {
+			payload = {
+				...data,
+				kind: this.state.kind,
+				prompt: this.state.prompt,
+			} as QuestionUpdate;
+		} else {
+			payload = {
 				...data,
 				survey: parseInt(this.props.survey),
 				kind: this.state.kind,
 				prompt: this.state.prompt,
-			} as QuestionCreate);
+			} as QuestionCreate;
+		}
+
+		try {
+			await this.props.onSave(payload)
 		} catch (error) {
 			if (isValidationFailureError(error)) {
 				toaster.showValidationFailedErrorMessage();

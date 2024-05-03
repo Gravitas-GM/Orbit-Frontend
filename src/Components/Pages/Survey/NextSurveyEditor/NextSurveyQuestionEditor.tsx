@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Question, QuestionCreate} from '../../../../Api/Survey/Models/BankQuestions';
-import {SurveyModel} from '../../../../Api/Survey/Models/Surveys';
-import {Classes} from '../../../../classes';
-import {PageHeader} from '../../../PageHeader';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {Question, QuestionCreate, QuestionUpdate} from '../../../../Api/Survey/Models/BankQuestions';
+import {Survey, SurveyModel} from '../../../../Api/Survey/Models/Surveys';
+import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {PageHeader} from '../../../PageHeader';
 import {QuestionForm, SurveyEditorType} from '../QuestionForm';
 
 interface IState {
@@ -13,6 +13,7 @@ interface IState {
 	processing: boolean;
 	redirect: boolean;
 	question: Question | null;
+	survey: Survey | null;
 }
 
 interface RouteProps {
@@ -25,6 +26,7 @@ export class NextSurveyQuestionEditor extends React.PureComponent<RouteComponent
 		processing: false,
 		redirect: false,
 		question: null,
+		survey: null,
 	};
 
 	public async componentDidMount() {
@@ -46,6 +48,20 @@ export class NextSurveyQuestionEditor extends React.PureComponent<RouteComponent
 			}
 		}
 
+		try {
+			await SurveyModel.readNext().then(r => this.setState({
+				survey: r.data,
+			}));
+		} catch (error) {
+			toaster.showUnhandledErrorMessage();
+
+			this.setState({
+				redirect: true,
+			});
+
+			return;
+		}
+
 		this.setState({
 			loading: false,
 		});
@@ -65,13 +81,14 @@ export class NextSurveyQuestionEditor extends React.PureComponent<RouteComponent
 					processing={this.state.processing}
 					question={this.state.question}
 					onSave={this.onSave}
-					survey={SurveyEditorType.NEXT}
+					survey={this.state.survey!.id.toString()}
+					surveyEditorType={SurveyEditorType.NEXT}
 				/>
 			</section>
 		);
 	}
 
-	private onSave = async (payload: QuestionCreate) => {
+	private onSave = async (payload: QuestionCreate | QuestionUpdate) => {
 		if (this.state.processing)
 			return;
 
@@ -83,7 +100,7 @@ export class NextSurveyQuestionEditor extends React.PureComponent<RouteComponent
 			if (this.state.question)
 				await SurveyModel.updateNextQuestion(this.state.question.id, payload);
 			else
-				await SurveyModel.createNextQuestion(payload);
+				await SurveyModel.createNextQuestion(payload as QuestionCreate);
 		} catch (error) {
 			throw error;
 		} finally {

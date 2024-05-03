@@ -49,7 +49,7 @@ export class ChoiceForm extends React.PureComponent<Props, State> {
 					loading={this.props.processing}
 					dirty={this.isDirty()}
 					redirectPath={(
-						this.props.survey === SurveyEditorType.NEXT
+						this.props.surveyEditorType === SurveyEditorType.NEXT
 							? '/survey/next'
 							: `/survey/bank/${this.props.survey}`
 					)}

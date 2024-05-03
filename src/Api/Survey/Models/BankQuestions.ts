@@ -67,9 +67,7 @@ export interface ChoiceQuestion extends QuestionBase {
 export type Question = FreeTextQuestion | ScaleQuestion | ChoiceQuestion;
 
 export type QuestionCreate = Create<FreeTextQuestion> | Create<ScaleQuestion> | Create<ChoiceQuestion>;
-export type QuestionUpdate = (Update<FreeTextQuestion> | Update<ScaleQuestion> | Update<ChoiceQuestion>) & {
-	kind: SurveyQuestionKind,
-};
+export type QuestionUpdate = (Update<FreeTextQuestion, 'survey'> | Update<ScaleQuestion, 'survey'> | Update<ChoiceQuestion, 'survey'>);
 
 export class BankQuestionModel {
 	public static create(payload: QuestionCreate, projection?: Projection) {

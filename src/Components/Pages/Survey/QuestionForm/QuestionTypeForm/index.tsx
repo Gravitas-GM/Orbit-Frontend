@@ -8,12 +8,14 @@ import {
 	ScaleQuestion,
 	SurveyQuestionKind,
 } from '../../../../../Api/Survey/Models/BankQuestions';
+import {SurveyEditorType} from '../index';
 import {ChoiceForm} from './ChoiceForm';
 import {FreeTextForm} from './FreeTextForm';
 import {ScaleForm} from './ScaleForm';
 
 export interface FormProps<TQuestion extends Question, THandler> {
 	survey: string;
+	surveyEditorType: SurveyEditorType;
 	onSave: THandler;
 	validationFailures: ValidationFailures | null;
 	question: TQuestion | null;
@@ -23,6 +25,7 @@ export interface FormProps<TQuestion extends Question, THandler> {
 
 interface BaseProps {
 	survey: string;
+	surveyEditorType: SurveyEditorType;
 	kind: SurveyQuestionKind;
 	validationFailures: ValidationFailures | null;
 	question: Question | null;

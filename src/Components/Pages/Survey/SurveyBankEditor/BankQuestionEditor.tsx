@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {Question, QuestionCreate, BankQuestionModel} from '../../../../Api/Survey/Models/BankQuestions';
-import {Classes} from '../../../../classes';
-import {PageHeader} from '../../../PageHeader';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {Redirect, RouteComponentProps} from 'react-router';
+import {BankQuestionModel, Question, QuestionCreate, QuestionUpdate} from '../../../../Api/Survey/Models/BankQuestions';
+import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
-import {QuestionForm} from '../QuestionForm';
+import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
+import {PageHeader} from '../../../PageHeader';
+import {QuestionForm, SurveyEditorType} from '../QuestionForm';
 
 interface IState {
 	loading: boolean;
@@ -66,12 +66,13 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 					question={this.state.question}
 					onSave={this.onSave}
 					survey={this.props.match.params.survey}
+					surveyEditorType={SurveyEditorType.BANK}
 				/>
 			</section>
 		);
 	}
 
-	private onSave = async (payload: QuestionCreate) => {
+	private onSave = async (payload: QuestionCreate | QuestionUpdate) => {
 		if (this.state.processing)
 			return;
 
@@ -83,7 +84,7 @@ export class BankQuestionEditor extends React.PureComponent<RouteComponentProps<
 			if (this.state.question)
 				await BankQuestionModel.update(this.state.question.id, payload);
 			else
-				await BankQuestionModel.create(payload);
+				await BankQuestionModel.create(payload as QuestionCreate);
 		} catch (error) {
 			throw error;
 		} finally {
