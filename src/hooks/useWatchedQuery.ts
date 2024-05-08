@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {history} from '../history';
 import {useQuery} from './useQuery';
 
@@ -15,10 +15,10 @@ export function useWatchedQuery(): WatchedQuery {
 	const [dirty, setDirty] = useState(false);
 	const query = useQuery();
 
-	if (dirty) {
+	useEffect(() => {
 		setDirty(false);
 		history.replace({search: query.toString()});
-	}
+	}, [dirty, query]);
 
 	const wrap: WrapFn = useMemo(() => {
 		return fn => (...args) => {
