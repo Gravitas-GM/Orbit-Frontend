@@ -16,6 +16,9 @@ export function useWatchedQuery(): WatchedQuery {
 	const query = useQuery();
 
 	useEffect(() => {
+		if (!dirty)
+			return;
+
 		setDirty(false);
 		history.replace({search: query.toString()});
 	}, [dirty, query]);

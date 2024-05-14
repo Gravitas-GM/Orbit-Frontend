@@ -103,7 +103,6 @@ export class AddUsersDialog extends React.PureComponent<IProps, IState> {
 
 	private onSubmit = async (event: React.SyntheticEvent) => {
 		event.preventDefault();
-
 		this.props.onSave(this.state.selectedUsers);
 	};
 

@@ -4,7 +4,7 @@ import {isValidationFailureError, ValidationFailures} from '../../../Api/errors/
 import {Department, DepartmentCreatePayload, DepartmentModel} from '../../../Api/Hub/Models/Departments';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {Spacing} from '../../../Styles/variables';
-import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
+import {DeleteDialog} from '../../DeleteDialog';
 import {ObjectList} from '../../ObjectList';
 import {PageHeader} from '../../PageHeader';
 import {toaster} from '../../../toaster';
@@ -185,24 +185,24 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 						dirty={this.state.dirty}
 						redirectPath="/departments"
 					/>
-
-					<DeleteDialog
-						isOpen={this.state.deleteTargets.length > 0}
-						multiple={this.state.deleteTargets.length > 1}
-						onConfirm={this.onDeleteConfirm}
-						onCancel={this.onDeleteCancel}
-						subject={this.state.deleteSubject}
-					/>
-
-					{this.state.showAddUsersDialog && (
-						<AddUsersDialog
-							users={this.state.users.filter(user => !this.state.members.includes(user))}
-							members={this.state.members}
-							onClose={this.onAddUsersDialogClose}
-							onSave={this.onAddUsersDialogSave}
-						/>
-					)}
 				</form>
+
+				<DeleteDialog
+					isOpen={this.state.deleteTargets.length > 0}
+					multiple={this.state.deleteTargets.length > 1}
+					onConfirm={this.onDeleteConfirm}
+					onCancel={this.onDeleteCancel}
+					subject={this.state.deleteSubject}
+				/>
+
+				{this.state.showAddUsersDialog && (
+					<AddUsersDialog
+						users={this.state.users.filter(user => !this.state.members.includes(user))}
+						members={this.state.members}
+						onClose={this.onAddUsersDialogClose}
+						onSave={this.onAddUsersDialogSave}
+					/>
+				)}
 			</section>
 		);
 	}
@@ -303,13 +303,18 @@ export class DepartmentEditor extends React.PureComponent<RouteComponentProps<IR
 
 	private onDeleteClick = (target: User) => this.setState({
 		deleteTargets: [target],
-		deleteSubject: DeleteSubject.DELETE,
+		deleteSubject: renderUserName(target),
 	});
 
-	private onBulkDeleteClick = () => this.setState(state => ({
-		deleteTargets: state.selectedItems,
-		deleteSubject: DeleteSubject.DELETE,
-	}));
+	private onBulkDeleteClick = () => this.setState(state => {
+		const targets = [...state.selectedItems];
+		const subject = targets.length > 1 ? undefined : renderUserName(targets[0]);
+
+		return {
+			deleteTargets: targets,
+			deleteSubject: subject,
+		};
+	});
 
 	private onDeleteConfirm = async () => {
 		if (this.state.deleteTargets.length === 0)

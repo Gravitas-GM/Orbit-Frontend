@@ -56,9 +56,12 @@ export class TokenStorage {
 		this.clearRefreshTask();
 
 		window.setTimeout(async () => {
-			const response = await hubApiClient.get('/auth/refresh');
-
-			this.setToken(new Token(response.data.token));
+			try {
+				const response = await hubApiClient.get('/auth/refresh');
+				this.setToken(new Token(response.data.token));
+			} catch (_) {
+				this.setToken(null);
+			}
 		}, Math.max((token.getTimeToLive() - 60) * 1000, 1));
 	}
 

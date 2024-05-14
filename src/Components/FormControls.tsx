@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {Prompt, Redirect} from 'react-router';
+import {Redirect} from 'react-router';
 import {Button, Intent} from '@blueprintjs/core';
 import {ConfirmDialog} from './ConfirmDialog';
 import './FormControls.scss';
+import Prompt from './Prompt';
 
 interface Props {
 	onSaveClick: () => void;
