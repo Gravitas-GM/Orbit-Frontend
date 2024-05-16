@@ -1,14 +1,14 @@
+import {Blockquote, Button, Checkbox, Classes, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {BankSurvey, BankSurveyModel} from '../../../../Api/Survey/Models/BankSurveys';
+import {Spacing} from '../../../../Styles/variables';
+import {toaster} from '../../../../toaster';
+import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {FormControls} from '../../../FormControls';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {toaster} from '../../../../toaster';
-import {ObjectList} from '../../../ObjectList';
-import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
-import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
+import {ObjectList} from '../../../ObjectList';
 import {allSettled, isRejectedResult} from '../../../Utility/promise';
-import {Spacing} from '../../../../Styles/variables';
 import './index.scss';
 
 interface IState {
@@ -112,7 +112,7 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 					onSaveClick={this.onSaveClick}
 					loading={this.state.processing}
 					dirty={this.state.dirty}
-					redirectPath={'/'}
+					redirectPath="/"
 				/>
 
 				<DeleteDialog
@@ -122,24 +122,21 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 					onConfirm={this.onDeleteConfirm}
 					onCancel={this.onDeleteCancel}
 				>
-					<p>
-						You are about to delete
-						{this.state.deleteTargets.length > 1
-							? ' multiple surveys'
-							: ' a survey with the following question prompt'}
-						:
-					</p>
+					{this.state.deleteTargets.length === 1 ? (
+						<>
+							<p>You are about to delete a survey with the following prompt(s):</p>
 
-					{
-						this.state.deleteTargets.length === 1 &&
-						<Blockquote>
-							{this.state.deleteTargets[0]?.questions[0]?.prompt}
-						</Blockquote>
-					}
+							{this.state.deleteTargets[0].questions.map(q => (
+								<Blockquote>{q.prompt}</Blockquote>
+							))}
+						</>
+					) : (
+						<p>You are about to delete multiple surveys.</p>
+					)}
 
 					<p>
 						This action cannot be undone.
-						To confirm, please type "{DeleteSubject.DELETE}" in the box below,
+						To confirm, please type "{DeleteSubject.DELETE.toLocaleUpperCase()}" in the box below,
 						then click "Confirm".
 					</p>
 				</DeleteDialog>
@@ -147,8 +144,9 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 		);
 	}
 
-	private onItemFilter = (item: BankSurvey, searchText: string) => item.questions[0]?.prompt.toLocaleLowerCase()
-		.includes(searchText);
+	private onItemFilter = (item: BankSurvey, searchText: string) => item.questions.some(
+		q => q.prompt.toLocaleLowerCase().includes(searchText),
+	);
 
 	private isChecked = (item: BankSurvey) => this.state.selectedItems.includes(item);
 
@@ -200,7 +198,7 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 		this.setState({
 			dirty: false,
 		});
-	}
+	};
 
 	private onDeleteClick = (target: BankSurvey) => this.setState({
 		deleteTargets: [target],
@@ -221,7 +219,7 @@ export class SurveyBankList extends React.PureComponent<{}, IState> {
 				await BankSurveyModel.delete(item.id);
 
 				return item;
-			})
+			}),
 		);
 
 		let failureCount = 0;
@@ -261,7 +259,12 @@ interface TableItemProps {
 	isChecked: boolean;
 }
 
-const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecked}) => {
+const TableItem: React.FC<TableItemProps> = ({
+	item,
+	onDelete,
+	onSelect,
+	isChecked,
+}) => {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -270,14 +273,47 @@ const TableItem: React.FC<TableItemProps> = ({item, onDelete, onSelect, isChecke
 		onSelect(item);
 	}, [item, onSelect]);
 
+	let promptText: string;
+	let moreText: string | null = null;
+
+	if (item.questions.length === 0)
+		promptText = '—';
+	else {
+		promptText = item.questions[0].prompt;
+
+		if (item.questions.length > 1)
+			moreText = ` (+${item.questions.length - 1} more)`;
+	}
+
 	return (
 		<tr>
 			<td>
 				<Checkbox checked={isChecked} onClick={onSelectButtonClick} />
 			</td>
 
-			<td>{item.week === 0 ? 'Recurring' : item.week}</td>
-			<td>{item.questions[0]?.prompt ?? '—'}</td>
+			<td style={{width: 200}}>{item.week === 0 ? 'Recurring' : `Week ${item.week}`}</td>
+			<td>
+				<div style={{display: 'flex'}}>
+					<div
+						style={{
+							maxWidth: '75%',
+							flexShrink: 1,
+						}} className={Classes.TEXT_OVERFLOW_ELLIPSIS}
+					>
+						{promptText}
+					</div>
+
+					<div
+						style={{
+							fontWeight: 'normal',
+							fontStyle: 'italic',
+							marginLeft: 5,
+						}}
+					>
+						{moreText}
+					</div>
+				</div>
+			</td>
 
 			<td style={{textAlign: 'center'}}>
 				<LinkButton to={`/survey/bank/${item.id}`} icon="edit" minimal={true} />
