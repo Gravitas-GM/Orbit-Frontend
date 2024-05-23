@@ -7,6 +7,7 @@ import {UserContext} from '../../Session';
 import {renderUserName} from '../Utility/string';
 import {GameMenu} from './GameMenu';
 import {QuizMenu} from './QuizMenu';
+import {SurveyMenu} from './SurveyMenu';
 import {UserMenu} from './UserMenu';
 import './index.scss';
 
@@ -41,6 +42,10 @@ export const NavHeader: React.FC = () => {
 
 					<Popover content={<QuizMenu />}>
 						<Button text="Quiz" minimal={true} rightIcon="caret-down" />
+					</Popover>
+
+					<Popover content={<SurveyMenu />}>
+						<Button text="Survey" minimal={true} rightIcon="caret-down" />
 					</Popover>
 
 					{isGranted(Permission.ADMIN) && (

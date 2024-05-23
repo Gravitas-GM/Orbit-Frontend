@@ -9,19 +9,22 @@ import {Layout} from './Components/Layout';
 import {history} from './history';
 import {isGranted, Permission, PermissionCheckCallback, PermissionContext} from './Permission';
 import {PrivateRoute} from './PrivateRoute';
+import {isRoleGranted, Role, RoleCheckCallback, RoleContext} from './Role';
 import {UserContext} from './Session';
 
 interface IState {
-	loading: boolean;
-	user: User | null;
-	permissions: Set<Permission>;
+	loading: boolean,
+	user: User | null,
+	permissions: Set<Permission>,
+	roles: Set<Role>,
 }
 
 export class App extends React.PureComponent<{}, IState> {
 	public state: Readonly<IState> = {
 		loading: true,
 		user: null,
-		permissions: new Set<Permission>(),
+		permissions: new Set(),
+		roles: new Set(),
 	};
 
 	public componentDidMount() {
@@ -41,7 +44,7 @@ export class App extends React.PureComponent<{}, IState> {
 				loading: false,
 			});
 
-			this.initPermissions(response.data);
+			this.initUserData(response.data);
 		});
 	}
 
@@ -49,27 +52,29 @@ export class App extends React.PureComponent<{}, IState> {
 		return (
 			<div id="app-root">
 				<UserContext.Provider value={this.state.user}>
-					<PermissionContext.Provider value={[this.isPermissionGranted, this.state.permissions]}>
-						<Router history={history}>
-							<Switch>
-								<Route path="/login">
-									<Login onLoginSuccess={this.onUserChange} />
-								</Route>
+					<RoleContext.Provider value={[this.isRoleGranted, this.state.roles]}>
+						<PermissionContext.Provider value={[this.isPermissionGranted, this.state.permissions]}>
+							<Router history={history}>
+								<Switch>
+									<Route path="/login">
+										<Login onLoginSuccess={this.onUserChange} />
+									</Route>
 
-								<Route path="/activate">
-									<Activate />
-								</Route>
+									<Route path="/activate">
+										<Activate />
+									</Route>
 
-								<Route path="/password-reset">
-									<PasswordReset />
-								</Route>
+									<Route path="/password-reset">
+										<PasswordReset />
+									</Route>
 
-								<PrivateRoute path="/">
-									<Layout loading={this.state.loading} />
-								</PrivateRoute>
-							</Switch>
-						</Router>
-					</PermissionContext.Provider>
+									<PrivateRoute path="/">
+										<Layout loading={this.state.loading} />
+									</PrivateRoute>
+								</Switch>
+							</Router>
+						</PermissionContext.Provider>
+					</RoleContext.Provider>
 				</UserContext.Provider>
 			</div>
 		);
@@ -81,12 +86,14 @@ export class App extends React.PureComponent<{}, IState> {
 			loading: true,
 		});
 
-		this.initPermissions(user);
+		this.initUserData(user);
 	};
 
 	private isPermissionGranted: PermissionCheckCallback = (match) => isGranted(this.state.permissions, match);
 
-	private initPermissions = (user: User) => {
+	private isRoleGranted: RoleCheckCallback = role => isRoleGranted(this.state.roles, role);
+
+	private initUserData = (user: User) => {
 		const permissions = new Set<Permission>();
 
 		for (const permission of (user.permissions)) {
@@ -102,6 +109,7 @@ export class App extends React.PureComponent<{}, IState> {
 
 		this.setState({
 			permissions,
+			roles: new Set(tokenStorage.getToken()?.body.roles ?? []),
 			loading: false,
 		});
 	};
