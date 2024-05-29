@@ -4,7 +4,7 @@ import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
 import {PointSourceItem} from '../../../../../Api/Point-Tracking/Models/Sources';
 import {MultiSelect} from '../../../../Select/MultiSelect';
-import {ucwords} from '../../../../Utility/string';
+import {ucwords} from '../../../../../utility/string';
 import {toaster} from '../../../../../toaster';
 import {Spacing} from '../../../../../Styles/variables';
 import {DialogPointItem} from './index';

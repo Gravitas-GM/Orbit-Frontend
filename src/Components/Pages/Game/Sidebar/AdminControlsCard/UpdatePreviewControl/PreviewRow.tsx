@@ -7,7 +7,7 @@ import {
 	UpdateResultType,
 } from '../../../../../../Api/Game-State/Models/Games';
 import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
-import {formatNumber, ucwords} from '../../../../../Utility/string';
+import {formatNumber, ucwords} from '../../../../../../utility/string';
 import * as React from 'react';
 
 interface IProps {

@@ -1,4 +1,4 @@
-import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {parseApiTimestamp} from '../../../utility/date';
 import {Entity, Id, quizClient} from '../../index';
 import {QuestionTag} from './QuestionTags';
 import {QuizSubmission, QuizSubmissionModel} from './QuizSubmissions';

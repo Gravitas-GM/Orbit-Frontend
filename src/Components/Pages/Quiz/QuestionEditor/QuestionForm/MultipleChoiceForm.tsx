@@ -4,7 +4,7 @@ import {MultipleChoiceQuestion} from '../../../../../Api/Quiz/Models/Questions';
 import {Button, ControlGroup, FormGroup, H3, InputGroup, Radio} from '@blueprintjs/core';
 import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
 import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import {replaceByIndex} from '../../../../Utility/array';
+import {replaceByIndex} from '../../../../../utility/array';
 import {FormControls} from '../../../../FormControls';
 
 type Props = FormProps<MultipleChoiceQuestion, MultipleChoiceSaveHandler>;

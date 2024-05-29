@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Icon, Intent, ProgressBar} from '@blueprintjs/core';
-import {formatRemainingTime} from '../../../Utility/date';
+import {formatRemainingTime} from '../../../../utility/date';
 import './Timer.scss';
 
 type ExpirationFn = () => void;

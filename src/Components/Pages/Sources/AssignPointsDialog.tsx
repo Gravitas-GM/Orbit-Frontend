@@ -7,8 +7,8 @@ import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
 import {toaster} from '../../../toaster';
-import {allSettled} from '../../Utility/promise';
-import {compareStrings, renderUserName, ucwords} from '../../Utility/string';
+import {allSettled} from '../../../utility/promise';
+import {compareStrings, renderUserName, ucwords} from '../../../utility/string';
 
 interface IProps {
 	source: PointSourceItem;

@@ -9,7 +9,7 @@ import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {LinkButton} from '../../../LinkButton';
 import {NonIdealState} from '../../../NonIdealState';
 import {ObjectList} from '../../../ObjectList';
-import {formatDateTime, formatDuration} from '../../../Utility/date';
+import {formatDateTime, formatDuration} from '../../../../utility/date';
 import {renderScore} from '../Results';
 import './QuizHistory.scss';
 import {UserSelect} from './UserSelect';

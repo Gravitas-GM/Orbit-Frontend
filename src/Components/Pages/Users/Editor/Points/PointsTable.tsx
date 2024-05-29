@@ -3,8 +3,8 @@ import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {PointItem} from '../../../../../Api/Point-Tracking/Models/Points';
 import {Spacing} from '../../../../../Styles/variables';
 import {NonIdealState} from '../../../../NonIdealState';
-import {formatDateTime} from '../../../../Utility/date';
-import {formatNumber, ucwords} from '../../../../Utility/string';
+import {formatDateTime} from '../../../../../utility/date';
+import {formatNumber, ucwords} from '../../../../../utility/string';
 
 interface ITableProps {
 	onAddPointsClick: () => void;

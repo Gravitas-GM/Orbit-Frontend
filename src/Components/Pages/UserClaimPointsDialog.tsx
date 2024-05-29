@@ -8,8 +8,8 @@ import {UserContext} from '../../Session';
 import {toaster} from '../../toaster';
 import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
 import {MultiSelect} from '../Select/MultiSelect';
-import {allSettled} from '../Utility/promise';
-import {ucwords} from '../Utility/string';
+import {allSettled} from '../../utility/promise';
+import {ucwords} from '../../utility/string';
 
 interface IProps {
 	onClose: () => void;

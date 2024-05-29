@@ -5,7 +5,7 @@ import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
 import {toaster} from '../../../toaster';
 import {Button, InputGroup} from '@blueprintjs/core';
 import {NonIdealState} from '../../NonIdealState';
-import {classNames} from '../../Utility/dom';
+import {classNames} from '../../../utility/dom';
 import {GameInfoCard} from './GameInfoCard';
 import {PageHeader} from '../../PageHeader';
 

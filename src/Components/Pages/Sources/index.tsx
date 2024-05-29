@@ -15,12 +15,12 @@ import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
 import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {replace} from '../../Utility/array';
+import {replace} from '../../../utility/array';
 import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
 import {ObjectList} from '../../ObjectList';
 import {TableItem} from './TableItem';
-import {allSettled, isRejectedResult} from '../../Utility/promise';
+import {allSettled, isRejectedResult} from '../../../utility/promise';
 import {Spacing} from '../../../Styles/variables';
 
 interface IState {

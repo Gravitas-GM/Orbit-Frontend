@@ -1,4 +1,6 @@
 import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} from './index';
+import {Permission} from './permissions';
+import {Role} from './roles';
 
 export class TokenStorage {
 	protected storageKey: string;
@@ -74,11 +76,11 @@ export class TokenStorage {
 interface JWTBody {
 	exp: number;
 	iat: number;
-	roles: string[];
+	roles: Role[];
 	userIdentifier: string;
 	id: number;
 	accountId: number;
-	permissions: string[];
+	permissions: Permission[];
 }
 
 export class Token {
@@ -96,9 +98,5 @@ export class Token {
 
 	public getTimeToLive() {
 		return this.body.exp - Math.ceil(Date.now() / 1000);
-	}
-
-	public static DEBUG_fromObject(token: JWTBody) {
-		return new Token('.' + btoa(JSON.stringify(token)) + '.');
 	}
 }

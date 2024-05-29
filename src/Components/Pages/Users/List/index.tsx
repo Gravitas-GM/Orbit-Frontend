@@ -8,7 +8,7 @@ import {toaster} from '../../../../toaster';
 import {DeleteDialog} from '../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
 import {ObjectList} from '../../../ObjectList';
-import {compareStrings, renderUserName} from '../../../Utility/string';
+import {compareStrings, renderUserName} from '../../../../utility/string';
 import {LinkButton} from '../../../LinkButton';
 
 interface IState {

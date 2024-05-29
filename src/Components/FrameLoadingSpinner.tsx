@@ -1,7 +1,7 @@
 import {Intent, ISpinnerProps, Spinner} from '@blueprintjs/core';
 import * as React from 'react';
 import './FrameLoadingSpinner.scss';
-import {classNames} from './Utility/dom';
+import {classNames} from '../utility/dom';
 
 export const FrameLoadingSpinner: React.FC<ISpinnerProps> = ({intent, className, ...props}) => (
 	<Spinner

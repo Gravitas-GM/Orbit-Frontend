@@ -1,7 +1,5 @@
-import * as React from 'react';
-
 export enum Permission {
-	ADMIN = 'admin',
+	Admin = 'admin',
 }
 
 export interface PermissionMatch {
@@ -11,8 +9,8 @@ export interface PermissionMatch {
 
 export type MatchQuery = PermissionMatch | Permission | Permission[];
 
-export function isGranted(permissions: Set<Permission>, match: MatchQuery) {
-	if (permissions.has(Permission.ADMIN))
+export function isPermissionGranted(permissions: ReadonlySet<Permission>, match: MatchQuery) {
+	if (permissions.has(Permission.Admin))
 		return true;
 
 	if (typeof match === 'string')
@@ -26,7 +24,7 @@ export function isGranted(permissions: Set<Permission>, match: MatchQuery) {
 		return isAllGranted(permissions, match.items);
 }
 
-function isAnyGranted(permissions: Set<Permission>, items: Permission[]) {
+function isAnyGranted(permissions: ReadonlySet<Permission>, items: Permission[]) {
 	for (const item of items) {
 		if (permissions.has(item))
 			return true;
@@ -35,7 +33,7 @@ function isAnyGranted(permissions: Set<Permission>, items: Permission[]) {
 	return false;
 }
 
-function isAllGranted(permissions: Set<Permission>, items: Permission[]) {
+function isAllGranted(permissions: ReadonlySet<Permission>, items: Permission[]) {
 	for (const item of items) {
 		if (!permissions.has(item))
 			return false;
@@ -43,12 +41,3 @@ function isAllGranted(permissions: Set<Permission>, items: Permission[]) {
 
 	return true;
 }
-
-export type PermissionCheckCallback = (match: PermissionMatch | Permission | Permission[]) => boolean;
-
-export const PermissionContext = React.createContext<[PermissionCheckCallback, Set<Permission>]>([
-	() => false,
-	new Set<Permission>(),
-]);
-
-PermissionContext.displayName = 'PermissionContext';

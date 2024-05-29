@@ -9,7 +9,7 @@ import {toaster} from '../../../../../toaster';
 import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
 import {ObjectList} from '../../../../ObjectList';
-import {allSettled, isRejectedResult} from '../../../../Utility/promise';
+import {allSettled, isRejectedResult} from '../../../../../utility/promise';
 import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './PointsTable';
 

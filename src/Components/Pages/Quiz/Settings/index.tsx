@@ -7,7 +7,7 @@ import {PageHeader} from '../../../PageHeader';
 import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Select} from '../../../Select/Select';
-import {ucwords} from '../../../Utility/string';
+import {ucwords} from '../../../../utility/string';
 import {Frequency, Settings, SettingsModel} from '../../../../Api/Quiz/Models/Settings';
 import {UserContext} from '../../../../Session';
 import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';

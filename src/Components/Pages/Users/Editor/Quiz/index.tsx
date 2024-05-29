@@ -7,8 +7,8 @@ import {toaster} from '../../../../../toaster';
 import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
 import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
 import {ObjectList} from '../../../../ObjectList';
-import {allSettled, isRejectedResult} from '../../../../Utility/promise';
-import {ucwords} from '../../../../Utility/string';
+import {allSettled, isRejectedResult} from '../../../../../utility/promise';
+import {ucwords} from '../../../../../utility/string';
 import {AddTagDialog} from './AddTagDialog';
 import {TagsTable, TagsTableRow} from './TagsTable';
 

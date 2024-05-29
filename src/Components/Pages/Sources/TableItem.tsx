@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Button, Checkbox} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
-import {ucwords, formatNumber} from '../../Utility/string';
+import {ucwords, formatNumber} from '../../../utility/string';
 import {EditCommands} from './EditCommands';
 
 interface IProps {

@@ -9,7 +9,7 @@ import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
 import {Spacing} from '../../../../Styles/variables';
 import {toaster} from '../../../../toaster';
 import {Select} from '../../../Select/Select';
-import {renderKindLabel, ucwords} from '../../../Utility/string';
+import {renderKindLabel, ucwords} from '../../../../utility/string';
 import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
 import {QuestionForm} from './QuestionForm';
 import './AnswerForm.scss';

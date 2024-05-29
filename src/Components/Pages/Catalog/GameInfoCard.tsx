@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Card, H2, Icon} from '@blueprintjs/core';
 import {Game} from '../../../Api/Game-Catalog/Models/Games';
 import {Images} from '../../../Images';
-import {ucwords} from '../../Utility/string';
+import {ucwords} from '../../../utility/string';
 import './Catalog.scss';
 import {Link} from 'react-router-dom';
 

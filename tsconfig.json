@@ -22,10 +22,11 @@
   },
   "include": [
     "src",
-  	"src/declaration.d.ts",
+    "src/declaration.d.ts"
   ],
   "exclude": [
-	"*.stories.ts",
-	"*.stories.tsx"
+    "*.stories.ts",
+    "*.stories.tsx",
+    "src/Components/Pages"
   ]
 }

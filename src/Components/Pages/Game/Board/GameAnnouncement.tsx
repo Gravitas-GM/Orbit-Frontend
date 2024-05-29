@@ -1,7 +1,7 @@
 import {H1, H3} from '@blueprintjs/core';
 import * as React from 'react';
-import {classNames} from '../../../Utility/dom';
-import {ucwords} from '../../../Utility/string';
+import {classNames} from '../../../../utility/dom';
+import {ucwords} from '../../../../utility/string';
 import './GameAnnouncement.scss';
 import {getPlayerStage, PlayerAnnouncement} from '../index';
 

@@ -1,10 +1,5 @@
 @import '../../variables';
 
-.home-page-container {
-	display: flex;
-	flex-direction: column;
-}
-
 .cards-container {
 	display: grid;
 	grid-template-columns: repeat(3,1fr);

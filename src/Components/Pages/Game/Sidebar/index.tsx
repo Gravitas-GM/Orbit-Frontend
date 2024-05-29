@@ -3,7 +3,7 @@ import {Button, Icon, IconSize, Intent} from '@blueprintjs/core';
 import {useContext} from 'react';
 import SimpleBar from 'simplebar-react';
 import {Permission, PermissionContext} from '../../../../Permission';
-import {classNames} from '../../../Utility/dom';
+import {classNames} from '../../../../utility/dom';
 import './Sidebar.scss';
 
 interface IProps {

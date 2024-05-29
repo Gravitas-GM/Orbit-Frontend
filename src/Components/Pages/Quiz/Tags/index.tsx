@@ -8,7 +8,7 @@ import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
 import {ObjectList} from '../../../ObjectList';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {LinkButton} from '../../../LinkButton';
-import {allSettled, isRejectedResult} from '../../../Utility/promise';
+import {allSettled, isRejectedResult} from '../../../../utility/promise';
 import {Spacing} from '../../../../Styles/variables';
 
 interface IState {

@@ -1,13 +1,25 @@
-import * as React from 'react';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
-import {Config} from '../../config';
-import {Permission, PermissionContext} from '../../Permission';
 import {Menu, MenuDivider} from '@blueprintjs/core';
-import {logout} from '../../Api';
+import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
+import * as React from 'react';
+import {Navigate} from 'react-router-dom';
+import {Permission} from '../../Api/permissions';
+import {Config} from '../../config';
+import {usePermissions} from '../../contexts/SessionContext';
+import {useToken} from '../../contexts/TokenContext';
 import {LinkedMenuItem} from './LinkedMenuItem';
 
 export const UserMenu: React.FC = () => {
-	const [isGranted] = React.useContext(PermissionContext);
+	const [redirect, setRedirect] = React.useState<string | null>(null);
+	const {setToken} = useToken();
+	const isPermissionGranted = usePermissions();
+
+	const logout = React.useCallback(() => {
+		setToken(null);
+		setRedirect('/login');
+	}, []);
+
+	if (redirect)
+		return <Navigate to={redirect} />;
 
 	return (
 		<Menu>
@@ -16,9 +28,9 @@ export const UserMenu: React.FC = () => {
 				icon="person"
 			/>
 
-			{Config.isDev && isGranted(Permission.ADMIN) &&
+			{Config.isDev && isPermissionGranted(Permission.Admin) && (
 				<LinkedMenuItem to="/debug-controls" icon="console" text="Debug Controls" />
-			}
+			)}
 
 			<MenuDivider />
 

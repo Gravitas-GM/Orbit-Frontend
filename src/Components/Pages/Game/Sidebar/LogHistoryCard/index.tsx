@@ -3,7 +3,7 @@ import {Button, Icon} from '@blueprintjs/core';
 import SimpleBar from 'simplebar-react';
 import {NonIdealState} from '../../../../NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
-import {formatDate} from '../../../../Utility/date';
+import {formatDate} from '../../../../../utility/date';
 import {IconSize} from '../../../../../IconSize';
 import {HistoryItem} from '../../../../../Api/Game-State/Models/History';
 import './LogHistoryCard.scss';

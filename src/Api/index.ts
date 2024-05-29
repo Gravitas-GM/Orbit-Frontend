@@ -85,13 +85,7 @@ export async function login(username: string, password: string) {
 		password,
 	}).then(response => response.data);
 
-	tokenStorage.setToken(new Token(response.token));
-}
-
-export function logout() {
-	tokenStorage.setToken(null);
-
-	history.push(history.location.pathname);
+	return new Token(response.token);
 }
 
 export function isAuthenticated() {

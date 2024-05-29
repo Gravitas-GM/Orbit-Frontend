@@ -6,7 +6,7 @@ import {User, UserModel} from '../../../../Api/Hub/Models/Users';
 import {Classes} from '../../../../classes';
 import {toaster} from '../../../../toaster';
 import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {renderUserName} from '../../../Utility/string';
+import {renderUserName} from '../../../../utility/string';
 import {PointsTab} from './Points';
 import {QuizTab} from './Quiz';
 import {UserTab} from './UserTab';

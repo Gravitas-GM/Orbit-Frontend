@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react';
 import {Icon, IconName} from '@blueprintjs/core';
 import './GameCard.scss';
-import {classNames} from '../../../../Utility/dom';
+import {classNames} from '../../../../../utility/dom';
 import {Classes} from '../../../../../classes';
 import {Spacing} from '../../../../../Styles/variables';
 

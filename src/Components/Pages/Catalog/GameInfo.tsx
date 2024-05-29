@@ -8,7 +8,7 @@ import {Images} from '../../../Images';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {ucwords} from '../../Utility/string';
+import {ucwords} from '../../../utility/string';
 import {BoardInfoCard} from './BoardInfoCard';
 import {StartGameDialog} from './StartGameDialog';
 import {Link} from 'react-router-dom';

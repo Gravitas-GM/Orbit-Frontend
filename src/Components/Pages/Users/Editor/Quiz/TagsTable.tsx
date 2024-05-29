@@ -3,7 +3,7 @@ import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import {QuestionTag} from '../../../../../Api/Quiz/Models/QuestionTags';
 import {Spacing} from '../../../../../Styles/variables';
 import {NonIdealState} from '../../../../NonIdealState';
-import {ucwords} from '../../../../Utility/string';
+import {ucwords} from '../../../../../utility/string';
 
 interface ITableProps {
 	onAddTagClick: () => void;

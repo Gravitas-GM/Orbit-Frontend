@@ -6,7 +6,7 @@ import {Redirect, RouteComponentProps} from 'react-router';
 import {QuizSubmission, QuizSubmissionModel} from '../../../../Api/Quiz/Models/QuizSubmissions';
 import {toaster} from '../../../../toaster';
 import './QuizResultsPage.scss';
-import {formatDate, formatRemainingTime} from '../../../Utility/date';
+import {formatDate, formatRemainingTime} from '../../../../utility/date';
 import {LinkButton} from '../../../LinkButton';
 import {Answers} from './Answers';
 

@@ -9,7 +9,7 @@ import {Classes} from '../../../classes';
 import {UserContext} from '../../../Session';
 import {toaster} from '../../../toaster';
 import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {formatNumber, ucwords} from '../../Utility/string';
+import {formatNumber, ucwords} from '../../../utility/string';
 import {NonIdealState} from '../../NonIdealState';
 import {PageHeader} from '../../PageHeader';
 import './index.scss';

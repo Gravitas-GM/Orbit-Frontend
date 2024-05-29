@@ -1,5 +1,5 @@
 import {gameStateClient, Id} from '../..';
-import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {parseApiTimestamp} from '../../../utility/date';
 import {ObjectId} from '../../Point-Tracking';
 
 export interface HistoryEndpoints {
