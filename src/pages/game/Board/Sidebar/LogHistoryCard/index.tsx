@@ -1,14 +1,14 @@
-import React, {useMemo} from 'react';
 import {Button, Icon} from '@blueprintjs/core';
+import React, {useMemo} from 'react';
 import SimpleBar from 'simplebar-react';
-import {NonIdealState} from '../../../../NonIdealState';
-import {GameCard} from '../GameCard/GameCard';
-import {formatDate} from '../../../../../utility/date';
-import {IconSize} from '../../../../../IconSize';
 import {HistoryItem} from '../../../../../Api/Game-State/Models/History';
+import {NonIdealState} from '../../../../../Components/NonIdealState';
+import {IconSize} from '../../../../../IconSize';
+import {formatDate} from '../../../../../utility/date';
+import {GameCard} from '../GameCard/GameCard';
 import './LogHistoryCard.scss';
 
-interface IProps {
+interface Props {
 	history: HistoryItem[] | null;
 	processing: boolean;
 	onLoadClick: () => void;
@@ -18,7 +18,7 @@ type DateGroup = {
 	[key: string]: HistoryItem[];
 };
 
-export const LogHistoryCard: React.FC<IProps> = ({history, processing, onLoadClick}) => {
+export function LogHistoryCard({history, processing, onLoadClick}: Props): React.ReactElement {
 	if (history === null || history.length === 0) {
 		return (
 			<GameCard title="Log" icon="history">
@@ -77,9 +77,9 @@ export const LogHistoryCard: React.FC<IProps> = ({history, processing, onLoadCli
 			</SimpleBar>
 		</GameCard>
 	);
-};
+}
 
-const LogItem: React.FC<{ children: React.ReactNode }> = ({children}) => {
+function LogItem({children}: { children: React.ReactNode }): React.ReactElement {
 	return (
 		<li>
 			<Icon icon="direction-right" size={IconSize.SMALL} />
@@ -87,4 +87,4 @@ const LogItem: React.FC<{ children: React.ReactNode }> = ({children}) => {
 			<span className="item-content">{children}</span>
 		</li>
 	);
-};
+}

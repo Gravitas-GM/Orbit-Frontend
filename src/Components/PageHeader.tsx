@@ -9,7 +9,7 @@ interface IProps {
 }
 
 export const PageHeader: React.FC<IProps> = ({title, children}) => {
-	useTitle(`Happy Orbit | ${title}`);
+	useTitle(title);
 
 	return (
 		<header className="header-container">
@@ -20,8 +20,12 @@ export const PageHeader: React.FC<IProps> = ({title, children}) => {
 	);
 };
 
-export function useTitle(title: string) {
+export function useTitle(title: string, skipPrefix = false) {
+	const titleValue = React.useMemo(() => {
+		return (skipPrefix ? '' : 'Happy Orbit | ') + title;
+	}, [title, skipPrefix]);
+
 	useEffect(() => {
-		document.title = title;
-	}, []);
+		document.title = titleValue;
+	}, [titleValue]);
 }

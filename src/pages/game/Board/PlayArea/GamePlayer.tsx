@@ -1,16 +1,16 @@
-import * as React from 'react';
 import {Button, H5, H6} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
+import * as React from 'react';
 import {PlayerState} from '../../../../Api/Game-State/Models/Games';
+import {Spacing} from '../../../../Styles/variables';
 import {formatNumber, renderPlayerInitials, ucwords} from '../../../../utility/string';
 import './GamePlayer.scss';
-import {Spacing} from '../../../../Styles/variables';
 
-interface IProps {
+interface Props {
 	player: PlayerState;
 }
 
-export const GamePlayer: React.FC<IProps> = ({player}) => {
+export function GamePlayer({player}: Props): React.ReactElement {
 	return (
 		<Popover
 			content={
@@ -29,6 +29,4 @@ export const GamePlayer: React.FC<IProps> = ({player}) => {
 			/>
 		</Popover>
 	);
-};
-
-GamePlayer.displayName = 'GamePlayer';
+}

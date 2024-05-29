@@ -5,11 +5,11 @@ import {ucwords} from '../../../../utility/string';
 import './GameAnnouncement.scss';
 import {getPlayerStage, PlayerAnnouncement} from '../index';
 
-interface IProps {
+interface Props {
 	player: PlayerAnnouncement | null;
 }
 
-export const GameAnnouncement: React.FC<IProps> = ({player}) => {
+export function GameAnnouncement({player}: Props): React.ReactElement | null {
 	if (!player)
 		return null;
 
@@ -27,6 +27,4 @@ export const GameAnnouncement: React.FC<IProps> = ({player}) => {
 			</div>
 		</div>
 	);
-};
-
-GameAnnouncement.displayName = 'GameAnnouncement';
+}

@@ -1,20 +1,19 @@
 import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
-import {Select2 as Select, ItemRenderer} from '@blueprintjs/select';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {useState, useCallback, useEffect} from 'react';
+import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Game, GameModel} from '../../../../../../Api/Game-Catalog/Models/Games';
 import {GameStartPayload} from '../../../../../../Api/Game-State/Models/Games';
-import {toaster} from '../../../../../../toaster';
-import {FrameLoadingSpinner} from '../../../../../FrameLoadingSpinner';
+import {FrameLoadingSpinner} from '../../../../../../Components/FrameLoadingSpinner';
 import {Spacing} from '../../../../../../Styles/variables';
+import {toaster} from '../../../../../../toaster';
 
-interface INewGameProps {
+interface NewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameControl: React.FC<INewGameProps> = ({startNewGame}) => {
+export function NewGameControl({startNewGame}: NewGameProps): React.ReactElement {
 	const [showNewGameDialog, setShowNewGameDialog] = useState(false);
-
 	const closeNewGameDialog = useCallback(() => setShowNewGameDialog(false), []);
 
 	const onNewGameClick = useCallback(() => {
@@ -39,14 +38,14 @@ export const NewGameControl: React.FC<INewGameProps> = ({startNewGame}) => {
 			}
 		</>
 	);
-};
+}
 
-interface INewGameDialogProps {
+interface NewGameDialogProps {
 	onClose: () => void;
 	onConfirm: (payload: GameStartPayload) => Promise<void>;
 }
 
-export const NewGameDialog: React.FC<INewGameDialogProps> = ({onClose, onConfirm}) => {
+export function NewGameDialog({onClose, onConfirm}: NewGameDialogProps): React.ReactElement {
 	const [gamesList, setGamesList] = useState<Game[]>([]);
 	const [selectedGame, setSelectedGame] = useState<Game | undefined>();
 	const [processing, setIsProcessing] = useState(false);
@@ -122,7 +121,7 @@ export const NewGameDialog: React.FC<INewGameDialogProps> = ({onClose, onConfirm
 			)}
 		</Dialog>
 	);
-};
+}
 
 const renderGameOption: ItemRenderer<Game> = (game, {handleClick, handleFocus, modifiers}) => {
 	if (!modifiers.matchesPredicate)

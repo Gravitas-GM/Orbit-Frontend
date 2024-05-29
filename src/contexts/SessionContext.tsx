@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {User, UserModel} from '../Api/Hub/Models/Users';
 import {Token} from '../Api/jwt';
-import {isPermissionGranted, Permission, MatchQuery} from '../Api/permissions';
+import {isPermissionGranted, MatchQuery, Permission} from '../Api/permissions';
 import {isRoleGranted, Role} from '../Api/roles';
 import {toaster} from '../toaster';
 import {ManagerProps} from './index';
@@ -33,7 +33,7 @@ export function useFirewallRoles(): RoleCheckFn {
 	return isRoleGranted ?? (() => false);
 }
 
-export function useAppUser(): User|null {
+export function useAppUser(): User | null {
 	const session = useSession();
 	return session?.user ?? null;
 }
@@ -63,8 +63,9 @@ class SessionManagerInner extends React.PureComponent<Props, State> {
 		permissions: new Set(),
 	};
 
-	public componentDidMount(): void {
-		this.props.loadingState.setLoading(true);
+	public async componentDidMount(): Promise<void> {
+		if (this.props.tokenState.token)
+			await this.update(this.props.tokenState.token);
 	}
 
 	public async componentDidUpdate(prevProps: Readonly<Props>): Promise<void> {

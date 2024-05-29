@@ -3,13 +3,8 @@ import {CSSProperties} from 'react';
 import {Board} from '../../../../Api/Game-Catalog/Models/Boards';
 import {BoardRegion, Stage} from '../../../../Api/Game-Catalog/Models/Stages';
 import {GameState, PlayerState} from '../../../../Api/Game-State/Models/Games';
-import {useTitle} from '../../../PageHeader';
+import {useTitle} from '../../../../Components/PageHeader';
 import {GameStage} from './GameStage';
-
-interface IProps {
-	board: Board;
-	gameState: GameState;
-}
 
 function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
 	return players.filter(item => item.current_stage_id === stage.id);
@@ -36,11 +31,16 @@ export class Scale {
 	}
 }
 
-export const GameBoard: React.FC<IProps> = ({
+interface Props {
+	board: Board;
+	gameState: GameState;
+}
+
+export function PlayArea({
 	board,
 	gameState,
-}) => {
-	useTitle('Happy Orbit - Game Board');
+}: Props): React.ReactElement {
+	useTitle('Game Board');
 
 	const [scale, setScale] = React.useState<Scale | null>(null);
 
@@ -76,6 +76,4 @@ export const GameBoard: React.FC<IProps> = ({
 			)}
 		</div>
 	);
-};
-
-GameBoard.displayName = 'GameBoard';
+}

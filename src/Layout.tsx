@@ -5,6 +5,7 @@ import {NavHeader} from './Components/NavHeader';
 import {PrivateRoutes} from './Components/PrivateRoutes';
 import {useGlobalLoading} from './contexts/LoadingContext';
 import './Layout.scss';
+import {GameRoutes} from './pages/game';
 import {Home} from './pages/home';
 
 export const Layout: React.FC = () => {
@@ -25,6 +26,7 @@ export const Layout: React.FC = () => {
 			<div className="main-frame">
 				<PrivateRoutes>
 					<Route index={true} element={<Home />} />
+					<Route path="/game/*" element={<GameRoutes />} />
 				</PrivateRoutes>
 			</div>
 		</div>

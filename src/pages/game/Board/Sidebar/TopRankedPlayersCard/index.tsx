@@ -1,15 +1,15 @@
-import {useMemo} from 'react';
 import {Icon, IconSize} from '@blueprintjs/core';
+import React, {useMemo} from 'react';
 import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
+import {NonIdealState} from '../../../../../Components/NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 import './TopRankedPlayersCard.scss';
-import {NonIdealState} from '../../../../NonIdealState';
 
-interface IProps {
+interface Props {
 	players: PlayerState[] | null;
 }
 
-export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
+export function TopRankedPlayersCard({players}: Props): React.ReactElement {
 	const topPlayers = useMemo(() => {
 		if (!players)
 			return [];
@@ -40,4 +40,4 @@ export const TopRankedPlayersCard: React.FC<IProps> = ({players}) => {
 			</ul>
 		</GameCard>
 	);
-};
+}

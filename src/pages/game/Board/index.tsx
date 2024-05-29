@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Redirect} from 'react-router';
+import {Navigate} from 'react-router-dom';
 import {isNotFoundError} from '../../../Api/errors';
 import {ApiError} from '../../../Api/errors/rocket';
 import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
@@ -17,14 +17,14 @@ import {
 	UpdateResultType,
 } from '../../../Api/Game-State/Models/Games';
 import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
-import {Permission} from '../../../Permission';
-import {UserContext} from '../../../Session';
+import {Permission} from '../../../Api/permissions';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {IsGranted} from '../../../Components/Security/IsGranted';
+import {SessionContext} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {IsGranted} from '../../Security/IsGranted';
 import {replace} from '../../../utility/array';
-import {GameAnnouncement} from './Board/GameAnnouncement';
-import {GameBoard} from './Board/GameBoard';
+import {PlayArea} from './PlayArea';
+import {GameAnnouncement} from './PlayArea/GameAnnouncement';
 import {Sidebar} from './Sidebar';
 import {AdminControlsCard} from './Sidebar/AdminControlsCard';
 import {LogHistoryCard} from './Sidebar/LogHistoryCard';
@@ -57,9 +57,9 @@ interface IState {
 	disablePlayButton: boolean;
 }
 
-export class GameBoardPage extends React.PureComponent<{}, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
+export class GameBoard extends React.PureComponent<{}, IState> {
+	public static contextType = SessionContext;
+	declare context: React.ContextType<typeof SessionContext>;
 
 	public state: Readonly<IState> = {
 		board: null,
@@ -81,16 +81,34 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 	public render() {
 		if (this.state.redirect)
-			return <Redirect to="/" />;
+			return <Navigate to="/" />;
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 
 		return (
-			<div style={{display: 'grid', gridTemplateColumns: '10fr 2fr'}}>
-				<div style={{display: 'flex', position: 'relative', width: '100%'}}>
-					<GameBoard board={this.state.board!} gameState={this.state.gameState!} />
+			<div
+				style={{
+					display: 'grid',
+					gridTemplateColumns: '10fr 2fr',
+				}}
+			>
+				<div
+					style={{
+						display: 'flex',
+						position: 'relative',
+						width: '100%',
+					}}
+				>
+					<PlayArea board={this.state.board!} gameState={this.state.gameState!} />
 
-					<div style={{display: 'flex', justifyContent: 'center', width: 'inherit', position: 'absolute'}}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							width: 'inherit',
+							position: 'absolute',
+						}}
+					>
 						<GameAnnouncement player={this.state.movingPlayer} />
 					</div>
 				</div>
@@ -116,7 +134,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 
 						<PlayerStatsCard player={this.state.currentPlayer} />
 
-						<IsGranted match={Permission.ADMIN}>
+						<IsGranted match={Permission.Admin}>
 							<AdminControlsCard
 								board={this.state.board!}
 								goToNextBoard={this.goToNextBoard}
@@ -134,7 +152,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 			return;
 
 		this.setState({
-			loadingHistory: true
+			loadingHistory: true,
 		});
 
 		const items = await this.fetchNextHistory();
@@ -154,7 +172,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	};
 
 	private async fetchNextHistory() {
-		const accountId = this.context!.account.id;
+		const accountId = this.context!.user.account.id;
 
 		try {
 			if (this.state.history && this.state.history.length > 0) {
@@ -171,7 +189,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 	}
 
 	private getCurrentPlayer(players: PlayerState[]): PlayerState | null {
-		return players.find(player => player.hub_id === this.context!.id) || null;
+		return players.find(player => player.hub_id === this.context!.user.id) || null;
 	}
 
 	private fetchGameState = async (redirect: boolean) => {
@@ -182,7 +200,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let gameState: GameState;
 
 		try {
-			gameState = await GamesModel.gameInfo(this.context!.account.id).then(r => r.data);
+			gameState = await GamesModel.gameInfo(this.context!.user.account.id).then(r => r.data);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('There are currently no active games for your account.');
@@ -263,7 +281,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		});
 
 		try {
-			await GamesModel.deleteGameState(this.context!.account.id);
+			await GamesModel.deleteGameState(this.context!.user.account.id);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('There are currently no active games for your account.');
@@ -280,8 +298,8 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let gameState;
 
 		try {
-			gameState = await GamesModel.startGame(this.context!.account.id, payload).then(
-				async () => await GamesModel.gameInfo(this.context!.account.id).then(r => r.data),
+			gameState = await GamesModel.startGame(this.context!.user.account.id, payload).then(
+				async () => await GamesModel.gameInfo(this.context!.user.account.id).then(r => r.data),
 			);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
@@ -340,7 +358,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		let playerAnnouncements: PlayerAnnouncement[];
 
 		try {
-			playerAnnouncements = await GamesModel.update(this.context!.account.id).then(
+			playerAnnouncements = await GamesModel.update(this.context!.user.account.id).then(
 				response => response.data.filter(player =>
 					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED,
 				) as PlayerAnnouncement[],
@@ -378,7 +396,7 @@ export class GameBoardPage extends React.PureComponent<{}, IState> {
 		const movingPlayerStage = getPlayerStage(movingPlayer);
 
 		if (!movingPlayerStage) {
-			toaster.error('Could not find Player\'s stage');
+			toaster.error('Could not find player\'s stage');
 
 			return;
 		}

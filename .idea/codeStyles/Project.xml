@@ -29,7 +29,7 @@
       <option name="PREFER_EXPLICIT_TYPES_FUNCTION_RETURNS" value="true" />
       <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline" />
       <option name="VAR_DECLARATION_WRAP" value="5" />
-      <option name="OBJECT_LITERAL_WRAP" value="2" />
+      <option name="OBJECT_LITERAL_WRAP" value="1" />
       <option name="USE_CHAINED_CALLS_GROUP_INDENTS" value="true" />
       <option name="IMPORT_SORT_MODULE_NAME" value="true" />
     </TypeScriptCodeStyleSettings>

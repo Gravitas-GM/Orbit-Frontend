@@ -1,12 +1,11 @@
 import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
-import {useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
-interface INextBoardProps {
+interface ConfirmNextBoardProps {
 	goToNextBoard: () => Promise<void>;
 }
 
-export const ConfirmNextBoardControl: React.FC<INextBoardProps> = ({goToNextBoard}) => {
-
+export function ConfirmNextBoardControl({goToNextBoard}: ConfirmNextBoardProps): React.ReactElement {
 	const [showConfirmNextBoardDialog, setShowConfirmNextBoardDialog] = useState(false);
 	const closeNextBoardDialog = useCallback(() => setShowConfirmNextBoardDialog(false), []);
 
@@ -32,14 +31,14 @@ export const ConfirmNextBoardControl: React.FC<INextBoardProps> = ({goToNextBoar
 			)}
 		</>
 	);
-};
+}
 
-interface INextBoardDialogProps {
+interface NextBoardDialogProps {
 	onClose: () => void;
 	onConfirm: () => Promise<void>;
 }
 
-export const ConfirmNextBoardDialog: React.FC<INextBoardDialogProps> = ({onClose, onConfirm}) => {
+export function ConfirmNextBoardDialog({onClose, onConfirm}: NextBoardDialogProps): React.ReactElement {
 	const [processing, setIsProcessing] = useState(false);
 
 	const onConfirmCallback = useCallback(async () => {
@@ -72,4 +71,4 @@ export const ConfirmNextBoardDialog: React.FC<INextBoardDialogProps> = ({onClose
 			</div>
 		</Dialog>
 	);
-};
+}

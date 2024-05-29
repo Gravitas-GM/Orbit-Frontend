@@ -1,48 +1,58 @@
-import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import {PointsModel} from '../../Api/Point-Tracking/Models/Points';
-import {PointSourceItem, PointSourceModel} from '../../Api/Point-Tracking/Models/Sources';
-import {UserContext} from '../../Session';
-import {toaster} from '../../toaster';
-import {FrameLoadingSpinner} from '../FrameLoadingSpinner';
-import {MultiSelect} from '../Select/MultiSelect';
-import {allSettled} from '../../utility/promise';
-import {ucwords} from '../../utility/string';
+import * as React from 'react';
+import {User} from '../Api/Hub/Models/Users';
+import {PointsModel} from '../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../Api/Point-Tracking/Models/Sources';
+import {SessionContext, useAppUser} from '../contexts/SessionContext';
+import {toaster} from '../toaster';
+import {allSettled} from '../utility/promise';
+import {ucwords} from '../utility/string';
+import {FrameLoadingSpinner} from './FrameLoadingSpinner';
+import {MultiSelect} from './Select/MultiSelect';
 
-interface IProps {
-	onClose: () => void;
-	isOpen: boolean;
+interface Props {
+	onClose: () => void,
+	isOpen: boolean,
 }
 
-interface IState {
+export function UserClaimPointsDialog(props: Props): React.ReactElement | null {
+	const user = useAppUser();
+
+	if (!user)
+		return null;
+
+	return <UserClaimPointsDialogInner user={user} {...props} />;
+}
+
+interface InnerProps extends Props {
+	user: User,
+}
+
+interface State {
 	sources: PointSourceItem[];
 	selectedSources: PointSourceItem[];
 	loading: boolean;
 	processing: boolean;
 }
 
-export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
+export class UserClaimPointsDialogInner extends React.PureComponent<InnerProps, State> {
+	public static contextType = SessionContext;
+	declare context: React.ContextType<typeof SessionContext>;
 
-	public constructor(props: IProps) {
-		super(props);
-
-		this.state = {
-			selectedSources: [],
-			sources: [],
-			loading: true,
-			processing: false,
-		};
-	}
+	public state: Readonly<State> = {
+		selectedSources: [],
+		sources: [],
+		loading: true,
+		processing: false,
+	};
 
 	public async componentDidMount() {
 		let sources: PointSourceItem[] = [];
 
 		try {
-			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+			sources = await PointSourceModel.list(this.props.user.account.id).then(r => r.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 		}
@@ -142,7 +152,7 @@ export class UserClaimPointsDialog extends React.PureComponent<IProps, IState> {
 		try {
 			await allSettled(this.state.selectedSources.map(async source => {
 				try {
-					await PointsModel.create(this.context!.id, {
+					await PointsModel.create(this.props.user.id, {
 						timestamp: new Date(),
 						point_value: source.point_value,
 						source: source.name,

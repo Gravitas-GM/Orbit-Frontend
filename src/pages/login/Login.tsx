@@ -165,6 +165,10 @@ class Login extends React.PureComponent<IProps, IState> {
 		}
 
 		this.context.setToken(token);
+
+		this.setState({
+			redirect: true,
+		});
 	};
 }
 

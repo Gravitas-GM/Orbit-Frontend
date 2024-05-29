@@ -1,14 +1,15 @@
 import {Icon} from '@blueprintjs/core';
+import * as React from 'react';
 import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
+import {NonIdealState} from '../../../../../Components/NonIdealState';
 import {Spacing} from '../../../../../Styles/variables';
-import {NonIdealState} from '../../../../NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 
-interface IProps {
+interface Props {
 	player: PlayerState | null;
 }
 
-export const PlayerStatsCard: React.FC<IProps> = ({player}) => {
+export function PlayerStatsCard({player}: Props): React.ReactElement {
 	if (!player) {
 		return (
 			<GameCard title="Player Stats" icon="user">
@@ -30,4 +31,4 @@ export const PlayerStatsCard: React.FC<IProps> = ({player}) => {
 			</div>
 		</GameCard>
 	);
-};
+}
