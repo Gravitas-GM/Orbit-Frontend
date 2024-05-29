@@ -14,8 +14,8 @@ import {NonIdealState} from '../../../../../../Components/NonIdealState';
 import {useAppUser} from '../../../../../../contexts/SessionContext';
 import {Spacing} from '../../../../../../Styles/variables';
 import {toaster} from '../../../../../../toaster';
-import './UpdatePreviewDialog.scss';
 import {PreviewRow} from './PreviewRow';
+import './UpdatePreviewDialog.scss';
 
 interface Props {
 	onClose: () => void;
@@ -29,12 +29,9 @@ export function UpdatePreviewDialog({board, onClose}: Props): React.ReactElement
 	const [processing, setProcessing] = useState(false);
 
 	useEffect(() => {
-		if (!user)
-			return;
-
 		setProcessing(true);
 
-		GamesModel.updatePreview(user!.account.id)
+		GamesModel.updatePreview(user.account.id)
 			.then(r => setUpdateData(sortUpdateData(r.data)))
 			.then(() => setProcessing(false))
 			.catch(() => {
@@ -44,7 +41,7 @@ export function UpdatePreviewDialog({board, onClose}: Props): React.ReactElement
 			});
 	}, [user]);
 
-	let content: React.ReactNode = null;
+	let content: React.ReactNode;
 
 	if (processing) {
 		content = (

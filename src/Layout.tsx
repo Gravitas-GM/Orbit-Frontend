@@ -3,15 +3,23 @@ import {Route} from 'react-router';
 import {FrameLoadingSpinner} from './Components/FrameLoadingSpinner';
 import {NavHeader} from './Components/NavHeader';
 import {PrivateRoutes} from './Components/PrivateRoutes';
-import {useGlobalLoading} from './contexts/LoadingContext';
 import './Layout.scss';
+import {useSession} from './contexts/SessionContext';
+import {useToken} from './contexts/TokenContext';
 import {GameRoutes} from './pages/game';
 import {Home} from './pages/home';
 
 export const Layout: React.FC = () => {
-	const {loading} = useGlobalLoading();
+	const {token} = useToken();
+	const session = useSession();
 
-	if (loading)
+	// Our global loading state is derived from the app's current token and session contexts. We are globally loading
+	// only when a valid token is set and the session is still `null` (indicating it hasn't been fully initialized yet).
+	// Otherwise, each component that depends on the session would need to take steps to ensure that the session has
+	// been fully loaded before rendering. This way, we don't even try to mount our routing until the session has been
+	// loaded (or we don't have a session), so there's no chance for a component to accidentally render before the
+	// session has been loaded.
+	if (token && !session)
 		return <FrameLoadingSpinner />;
 
 	return (

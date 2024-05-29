@@ -1,4 +1,4 @@
-import {Alignment, Button, Classes, Icon, IconSize, Intent, Navbar, Spinner} from '@blueprintjs/core';
+import {Alignment, Button, Classes, Icon, IconSize, Navbar} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
@@ -59,17 +59,15 @@ export const NavHeader: React.FC = () => {
 				</Navbar.Group>
 
 				<Navbar.Group align={Alignment.RIGHT}>
-					{user ? (
-						<Popover content={<UserMenu />}>
-							<Button
-								large
-								icon={<Icon icon="user" size={IconSize.LARGE} />}
-								rightIcon="caret-down"
-								minimal={true}
-								text={renderUserName(user)}
-							/>
-						</Popover>
-					) : <Spinner size={20} intent={Intent.PRIMARY} />}
+					<Popover content={<UserMenu />}>
+						<Button
+							large
+							icon={<Icon icon="user" size={IconSize.LARGE} />}
+							rightIcon="caret-down"
+							minimal={true}
+							text={renderUserName(user)}
+						/>
+					</Popover>
 				</Navbar.Group>
 			</Navbar>
 		</>

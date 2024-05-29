@@ -5,7 +5,6 @@ import {isPermissionGranted, MatchQuery, Permission} from '../Api/permissions';
 import {isRoleGranted, Role} from '../Api/roles';
 import {toaster} from '../toaster';
 import {ManagerProps} from './index';
-import {LoadingContextValue, useGlobalLoading} from './LoadingContext';
 import {State as TokenState, useToken} from './TokenContext';
 
 type RoleCheckFn = (role: Role) => boolean;
@@ -33,21 +32,31 @@ export function useFirewallRoles(): RoleCheckFn {
 	return isRoleGranted ?? (() => false);
 }
 
-export function useAppUser(): User | null {
+export function useMaybeAppUser(): User | null {
 	const session = useSession();
 	return session?.user ?? null;
 }
 
+export function useAppUser(): User {
+	const user = useMaybeAppUser();
+
+	if (!user) {
+		throw new Error(
+			'userAppUser() can only be used after the session has been loaded; did you mean useMaybeAppUser()?',
+		);
+	}
+
+	return user;
+}
+
 export function SessionManager({children}: ManagerProps): React.ReactElement {
 	const tokenState = useToken();
-	const loadingState = useGlobalLoading();
 
-	return <SessionManagerInner tokenState={tokenState} loadingState={loadingState} children={children} />;
+	return <SessionManagerInner tokenState={tokenState} children={children} />;
 }
 
 interface Props extends ManagerProps {
 	tokenState: TokenState,
-	loadingState: LoadingContextValue,
 }
 
 interface State {
@@ -87,11 +96,6 @@ class SessionManagerInner extends React.PureComponent<Props, State> {
 	}
 
 	private update = async (token: Token) => {
-		if (this.props.loadingState.loading)
-			return;
-
-		this.props.loadingState.setLoading(true);
-
 		this.setState({
 			roles: new Set(token.body.roles),
 		});
@@ -105,8 +109,6 @@ class SessionManagerInner extends React.PureComponent<Props, State> {
 			this.clearSession();
 
 			throw error;
-		} finally {
-			this.props.loadingState.setLoading(false);
 		}
 
 		this.setState({

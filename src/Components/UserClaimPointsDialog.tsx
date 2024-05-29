@@ -5,7 +5,7 @@ import * as React from 'react';
 import {User} from '../Api/Hub/Models/Users';
 import {PointsModel} from '../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../Api/Point-Tracking/Models/Sources';
-import {SessionContext, useAppUser} from '../contexts/SessionContext';
+import {useAppUser} from '../contexts/SessionContext';
 import {toaster} from '../toaster';
 import {allSettled} from '../utility/promise';
 import {ucwords} from '../utility/string';
@@ -18,12 +18,7 @@ interface Props {
 }
 
 export function UserClaimPointsDialog(props: Props): React.ReactElement | null {
-	const user = useAppUser();
-
-	if (!user)
-		return null;
-
-	return <UserClaimPointsDialogInner user={user} {...props} />;
+	return <UserClaimPointsDialogInner user={useAppUser()} {...props} />;
 }
 
 interface InnerProps extends Props {
@@ -38,9 +33,6 @@ interface State {
 }
 
 export class UserClaimPointsDialogInner extends React.PureComponent<InnerProps, State> {
-	public static contextType = SessionContext;
-	declare context: React.ContextType<typeof SessionContext>;
-
 	public state: Readonly<State> = {
 		selectedSources: [],
 		sources: [],

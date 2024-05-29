@@ -43,7 +43,7 @@ export function getPlayerStage(player: PlayerAnnouncement): Stage {
 	}
 }
 
-interface IState {
+interface State {
 	board: Board | null;
 	gameState: GameState | null;
 	history: HistoryItem[] | null;
@@ -57,11 +57,11 @@ interface IState {
 	disablePlayButton: boolean;
 }
 
-export class GameBoard extends React.PureComponent<{}, IState> {
+export class GameBoard extends React.PureComponent<{}, State> {
 	public static contextType = SessionContext;
 	declare context: React.ContextType<typeof SessionContext>;
 
-	public state: Readonly<IState> = {
+	public state: Readonly<State> = {
 		board: null,
 		gameState: null,
 		playerAnnouncements: PlayerMovementSet.empty(),
