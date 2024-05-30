@@ -1,5 +1,6 @@
 export enum Permission {
 	Admin = 'admin',
+	DebugNeverGranted = '__never_granted',
 }
 
 export interface PermissionMatch {
@@ -10,6 +11,9 @@ export interface PermissionMatch {
 export type MatchQuery = PermissionMatch | Permission | Permission[];
 
 export function isPermissionGranted(permissions: ReadonlySet<Permission>, match: MatchQuery) {
+	if (typeof match === 'string' && match === Permission.DebugNeverGranted)
+		return false;
+
 	if (permissions.has(Permission.Admin))
 		return true;
 

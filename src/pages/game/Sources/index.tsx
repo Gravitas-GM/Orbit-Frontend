@@ -11,19 +11,19 @@ import {
 	NumericInput,
 } from '@blueprintjs/core';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
-import {UserContext} from '../../../Session';
+import {withAppUser, WithAppUserProps} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
-import {DeleteDialog, DeleteSubject} from '../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
+import {DeleteDialog, DeleteSubject} from '../../../Components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
 import {replace} from '../../../utility/array';
 import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
-import {ObjectList} from '../../ObjectList';
+import {ObjectList} from '../../../Components/ObjectList';
 import {TableItem} from './TableItem';
 import {allSettled, isRejectedResult} from '../../../utility/promise';
 import {Spacing} from '../../../Styles/variables';
 
-interface IState {
+interface State {
 	deleteTargets: PointSourceItem[];
 	isEditSource: boolean;
 	selectedSource: PointSourceItem | null;
@@ -38,11 +38,8 @@ interface IState {
 	processing: boolean;
 }
 
-export class SourcesList extends React.PureComponent<{}, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
-
-	public state: Readonly<IState> = {
+class SourcesList extends React.PureComponent<WithAppUserProps, State> {
+	public state: Readonly<State> = {
 		selectedItems: [],
 		deleteTargets: [],
 		deleteSubject: undefined,
@@ -61,7 +58,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		let sources: PointSourceItem[] = [];
 
 		try {
-			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+			sources = await PointSourceModel.list(this.props.user.account.id).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 		}
@@ -276,7 +273,7 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		let source: PointSourceItem;
 
 		try {
-			source = await PointSourceModel.set(this.context!.account.id, {
+			source = await PointSourceModel.set(this.props.user.account.id, {
 				name: this.state.sourceName,
 				point_value: this.state.pointValue,
 			}).then(response => response.data);
@@ -367,3 +364,6 @@ export class SourcesList extends React.PureComponent<{}, IState> {
 		}));
 	};
 }
+
+const Wrapped = withAppUser(SourcesList);
+export {Wrapped as SourcesList};

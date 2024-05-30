@@ -1,5 +1,5 @@
 import {useMemo, useState} from 'react';
-import {history} from '../history';
+import {useNavigate} from 'react-router-dom';
 import {useQuery} from './useQuery';
 
 type WrapFn = <T extends (...args: any[]) => any>(fn: T) => (...args: Parameters<T>) => ReturnType<T>;
@@ -13,11 +13,17 @@ interface WatchedQuery {
 
 export function useWatchedQuery(): WatchedQuery {
 	const [dirty, setDirty] = useState(false);
+	const navigate = useNavigate();
 	const query = useQuery();
 
 	if (dirty) {
 		setDirty(false);
-		history.replace({search: query.toString()});
+
+		navigate({
+			search: query.toString(),
+		}, {
+			replace: true,
+		});
 	}
 
 	const wrap: WrapFn = useMemo(() => {

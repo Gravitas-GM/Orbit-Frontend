@@ -1,11 +1,11 @@
-import * as React from 'react';
 import {Button, Checkbox} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
+import * as React from 'react';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
-import {ucwords, formatNumber} from '../../../utility/string';
+import {formatNumber, ucwords} from '../../../utility/string';
 import {EditCommands} from './EditCommands';
 
-interface IProps {
+interface Props {
 	processing: boolean;
 	item: PointSourceItem;
 	onDelete: (item: PointSourceItem) => void;
@@ -15,7 +15,7 @@ interface IProps {
 	isChecked: boolean;
 }
 
-export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoints, onSelect, isChecked, processing}) => {
+export function TableItem({item, onDelete, onEdit, onAssignPoints, onSelect, isChecked, processing}: Props) {
 	const onDeleteButtonClick = React.useCallback(() => {
 		onDelete(item);
 	}, [item, onDelete]);
@@ -61,4 +61,4 @@ export const TableItem: React.FC<IProps> = ({item, onDelete, onEdit, onAssignPoi
 			</td>
 		</tr>
 	);
-};
+}

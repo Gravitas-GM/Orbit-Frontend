@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import {MultiSelect} from '../../Select/MultiSelect';
+import {MultiSelect} from '../../../Components/Select/MultiSelect';
 import {User, UserModel} from '../../../Api/Hub/Models/Users';
 import {PointsModel} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../Api/Point-Tracking/Models/Sources';
@@ -10,12 +10,12 @@ import {toaster} from '../../../toaster';
 import {allSettled} from '../../../utility/promise';
 import {compareStrings, renderUserName, ucwords} from '../../../utility/string';
 
-interface IProps {
+interface Props {
 	source: PointSourceItem;
 	onClose: () => void;
 }
 
-interface IState {
+interface State {
 	loading: boolean;
 	processing: boolean;
 	users: User[];
@@ -31,8 +31,8 @@ function sortUsers(a: User, b: User) {
 	return compareStrings(a.firstName ?? '', b.firstName ?? '');
 }
 
-export class AssignPointsDialog extends React.PureComponent<IProps, IState> {
-	public constructor(props: IProps) {
+export class AssignPointsDialog extends React.PureComponent<Props, State> {
+	public constructor(props: Props) {
 		super(props);
 
 		this.state = {

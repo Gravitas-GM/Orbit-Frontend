@@ -50,7 +50,11 @@ export function useAppUser(): User {
 	return user;
 }
 
-export function withAppUser<P>(Component: React.ComponentType<P>) {
+export interface WithAppUserProps {
+	user: User,
+}
+
+export function withAppUser<P extends WithAppUserProps>(Component: React.ComponentType<P>) {
 	return wrap('withAppUser', Component, () => ({
 		user: useAppUser(),
 	}));

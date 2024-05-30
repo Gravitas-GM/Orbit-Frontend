@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useLocation} from 'react-router';
 import {Navigate, Routes} from 'react-router-dom';
-import {useToken} from '../contexts/TokenContext';
+import {useToken} from '../../contexts/TokenContext';
 
 interface Props {
 	children: React.ReactNode,

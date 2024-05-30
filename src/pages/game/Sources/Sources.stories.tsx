@@ -1,5 +1,5 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {SourcesList} from '.';
+import {SourcesList} from './index';
 import {pointSourceItemsMock} from '../../../mocks/PointSourceItem';
 import {userMock} from '../../../mocks/User';
 

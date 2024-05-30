@@ -39,7 +39,7 @@ export function AdminCards(): React.ReactElement | null {
 					</Card>
 				</Link>
 
-				<Link to="/sources">
+				<Link to="/game/sources">
 					<Card interactive={true}>
 						<Icon icon="bank-account" size={35} />
 						<div>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {Route} from 'react-router';
 import {FrameLoadingSpinner} from './Components/FrameLoadingSpinner';
 import {NavHeader} from './Components/NavHeader';
-import {PrivateRoutes} from './Components/PrivateRoutes';
+import {PrivateRoutes} from './Components/Router/PrivateRoutes';
 import './Layout.scss';
 import {useSession} from './contexts/SessionContext';
 import {useToken} from './contexts/TokenContext';
