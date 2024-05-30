@@ -10,14 +10,14 @@ export const GameMenu: React.FC = () => {
 	return (
 		<Menu>
 			<LinkedMenuItem to="/game" icon="star" text="Game Board" />
-			<LinkedMenuItem to="/leaderboard" icon="properties" text="Leaderboard" />
+			<LinkedMenuItem to="/game/leaderboard" icon="properties" text="Leaderboard" />
 
 			{isPermissionGranted(Permission.Admin) && (
 				<>
 					<MenuDivider />
 
-					<LinkedMenuItem to="/catalog" icon="layers" text="Game Catalog" />
-					<LinkedMenuItem to="/sources" icon="bank-account" text="Sources" />
+					<LinkedMenuItem to="/game/catalog" icon="layers" text="Game Catalog" />
+					<LinkedMenuItem to="/game/sources" icon="bank-account" text="Sources" />
 				</>
 			)}
 		</Menu>

@@ -6,6 +6,7 @@ import {isRoleGranted, Role} from '../Api/roles';
 import {toaster} from '../toaster';
 import {ManagerProps} from './index';
 import {State as TokenState, useToken} from './TokenContext';
+import {wrap} from "../utility/component";
 
 type RoleCheckFn = (role: Role) => boolean;
 type PermissionCheckFn = (match: MatchQuery) => boolean;
@@ -42,16 +43,21 @@ export function useAppUser(): User {
 
 	if (!user) {
 		throw new Error(
-			'userAppUser() can only be used after the session has been loaded; did you mean useMaybeAppUser()?',
+			'useAppUser() can only be used after the session has been loaded; did you mean useMaybeAppUser()?',
 		);
 	}
 
 	return user;
 }
 
+export function withAppUser<P>(Component: React.ComponentType<P>) {
+	return wrap('withAppUser', Component, () => ({
+		user: useAppUser(),
+	}));
+}
+
 export function SessionManager({children}: ManagerProps): React.ReactElement {
 	const tokenState = useToken();
-
 	return <SessionManagerInner tokenState={tokenState} children={children} />;
 }
 
@@ -73,7 +79,7 @@ class SessionManagerInner extends React.PureComponent<Props, State> {
 	};
 
 	public async componentDidMount(): Promise<void> {
-		if (this.props.tokenState.token)
+		if (this.props.tokenState.token?.isValid())
 			await this.update(this.props.tokenState.token);
 	}
 
@@ -81,10 +87,10 @@ class SessionManagerInner extends React.PureComponent<Props, State> {
 		if (this.props.tokenState === prevProps.tokenState)
 			return;
 
-		if (this.props.tokenState.token === null)
-			this.clearSession();
-		else
+		if (this.props.tokenState.token?.isValid())
 			await this.update(this.props.tokenState.token);
+		else
+			this.clearSession();
 	}
 
 	public render(): React.ReactElement {

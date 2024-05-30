@@ -6,17 +6,14 @@ import {ApiError} from '../../Api/errors/symfony';
 import {Token} from '../../Api/jwt';
 import {ForgotPasswordDialog} from '../../Components/Auth/ForgotPasswordDialog';
 import {StartActivationDialog} from '../../Components/Auth/StartActivationDialog';
-import {withLocation, WithLocationProps} from '../../Components/WithLocation';
+import {withLocation, WithLocationProps} from '../../Components/Router/withLocation';
 import {TokenContext} from '../../contexts/TokenContext';
 import {Spacing} from '../../Styles/variables';
 import {toaster} from '../../toaster';
 import {getPreviousPathFromState} from '../../utility/router';
 import './Login.scss';
 
-interface IProps extends WithLocationProps {
-}
-
-interface IState {
+interface State {
 	emailAddress: string;
 	password: string;
 	processing: boolean;
@@ -25,11 +22,11 @@ interface IState {
 	showForgotPasswordDialog: boolean;
 }
 
-class Login extends React.PureComponent<IProps, IState> {
+class Login extends React.PureComponent<WithLocationProps, State> {
 	static contextType = TokenContext;
 	declare context: React.ContextType<typeof TokenContext>;
 
-	public state: Readonly<IState> = {
+	public state: Readonly<State> = {
 		emailAddress: '',
 		password: '',
 		processing: false,

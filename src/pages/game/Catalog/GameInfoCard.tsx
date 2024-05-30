@@ -6,13 +6,13 @@ import {ucwords} from '../../../utility/string';
 import './Catalog.scss';
 import {Link} from 'react-router-dom';
 
-interface IProps {
+interface Props {
 	game: Game;
 }
 
-export const GameInfoCard: React.FC<IProps> = ({game}) => {
+export function GameInfoCard({game}: Props) {
 	return (
-		<Link to={`/catalog/${game.id}`} className="catalog-card-link">
+		<Link to={`/game/catalog/${game.id}`} className="catalog-card-link">
 			<Card
 				className="catalog-info-card fixed-height"
 				key={game.id}
@@ -42,6 +42,4 @@ export const GameInfoCard: React.FC<IProps> = ({game}) => {
 			</Card>
 		</Link>
 	);
-};
-
-GameInfoCard.displayName = 'GameInfoCard';
+}

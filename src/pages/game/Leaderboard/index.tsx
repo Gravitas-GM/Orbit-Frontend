@@ -3,29 +3,35 @@ import * as React from 'react';
 import {tokenStorage} from '../../../Api';
 import {ApiError} from '../../../Api/errors/rocket';
 import {GamesModel, PlayerState} from '../../../Api/Game-State/Models/Games';
+import {User} from '../../../Api/Hub/Models/Users';
 import {PointsModel, UserPointsSummary} from '../../../Api/Point-Tracking/Models/Points';
 import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
 import {Classes} from '../../../classes';
-import {UserContext} from '../../../Session';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {NonIdealState} from '../../../Components/NonIdealState';
+import {PageHeader} from '../../../Components/PageHeader';
+import {useAppUser} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
 import {formatNumber, ucwords} from '../../../utility/string';
-import {NonIdealState} from '../../NonIdealState';
-import {PageHeader} from '../../PageHeader';
 import './index.scss';
 
-interface IState {
+export function Leaderboard(): React.ReactElement {
+	return <LeaderboardInner user={useAppUser()} />;
+}
+
+interface Props {
+	user: User,
+}
+
+interface State {
 	players: PlayerState[];
 	sources: PointSourceItem[];
 	userPoints: UserPointsSummary[];
 	loading: boolean;
 }
 
-export class Leaderboard extends React.PureComponent<{}, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
-
-	public state: Readonly<IState> = {
+class LeaderboardInner extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
 		players: [],
 		sources: [],
 		userPoints: [],
@@ -43,7 +49,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		if (this.state.userPoints.length === 0)
 			return <NoData />;
 
-		const downloadUrl = PointsModel.getSummaryCsvUrl(this.context!.account.id, tokenStorage.getToken()!.jwt);
+		const downloadUrl = PointsModel.getSummaryCsvUrl(this.props.user.account.id, tokenStorage.getToken()!.jwt);
 
 		return (
 			<div className="leaderboard-container">
@@ -80,9 +86,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 						{this.state.userPoints.map(item => (
 							<tr key={`point-summary-${item.id}`}>
 								<td>{ucwords(item.user_name)}</td>
-
 								<td>{formatNumber(item.total_points)}</td>
-
 								<td>{this.renderStageCell(item)}</td>
 
 								{this.state.sources.map(source => this.renderSummaryCell(item, source))}
@@ -132,7 +136,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		//		rejected promises. /tyler
 
 		try {
-			userPoints = await PointsModel.getAllSummary(this.context!.account.id).then(response => response.data);
+			userPoints = await PointsModel.getAllSummary(this.props.user.account.id).then(response => response.data);
 		} catch (_) {
 			hasError = true;
 		}
@@ -140,7 +144,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		let sources: PointSourceItem[] = [];
 
 		try {
-			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+			sources = await PointSourceModel.list(this.props.user.account.id).then(response => response.data);
 		} catch (_) {
 			hasError = true;
 		}
@@ -148,7 +152,7 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 		let players: PlayerState[] = [];
 
 		try {
-			players = await GamesModel.gameInfo(this.context!.account.id).then(response => response.data.players);
+			players = await GamesModel.gameInfo(this.props.user.account.id).then(response => response.data.players);
 		} catch (error) {
 			// The GameState API can return a response with a 404 status code if a game does not exist for the
 			// account. In those cases, just silently ignore the error.
@@ -168,14 +172,14 @@ export class Leaderboard extends React.PureComponent<{}, IState> {
 	};
 }
 
-const NoData: React.FC = () => {
+function NoData(): React.ReactElement {
 	return (
 		<div className={Classes.PAGE_WRAPPER}>
 			<PageHeader title="Leaderboard" />
 
 			<div>
-				<NonIdealState title="This game doesn't have any points yet" />
+				<NonIdealState title="This game doesn't have any points yet." />
 			</div>
 		</div>
 	);
-};
+}

@@ -3,16 +3,19 @@ import {Popover2 as Popover} from '@blueprintjs/popover2';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {Permission} from '../../Api/permissions';
-import {useAppUser, usePermissions} from '../../contexts/SessionContext';
+import {useMaybeAppUser, usePermissions} from '../../contexts/SessionContext';
 import {renderUserName} from '../../utility/string';
 import {GameMenu} from './GameMenu';
 import './index.scss';
 import {QuizMenu} from './QuizMenu';
 import {UserMenu} from './UserMenu';
 
-export const NavHeader: React.FC = () => {
-	const user = useAppUser();
+export function NavHeader(): React.ReactElement | null {
+	const user = useMaybeAppUser();
 	const isPermissionGranted = usePermissions();
+
+	if (!user)
+		return null;
 
 	return (
 		<>

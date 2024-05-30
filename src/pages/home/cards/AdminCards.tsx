@@ -18,7 +18,7 @@ export function AdminCards(): React.ReactElement | null {
 			<H4 style={{marginTop: Spacing.XLarge}}>Admin</H4>
 
 			<Cards>
-				<Link to="/catalog">
+				<Link to="/game/catalog">
 					<Card interactive={true}>
 						<Icon icon="layers" size={IconSize.XLARGE} />
 						<div>

@@ -1,5 +1,5 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {CatalogListPage} from './';
+import {CatalogListPage} from './index';
 import {gameCatalogMock} from '../../../mocks/GameCatalog';
 
 export default {

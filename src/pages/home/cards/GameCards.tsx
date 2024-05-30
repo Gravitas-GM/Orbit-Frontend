@@ -12,7 +12,7 @@ export function GameCards(): React.ReactElement {
 			/>
 
 			<NavCard
-				href="/leaderboard"
+				href="/game/leaderboard"
 				icon="properties"
 				title="Leaderboard"
 				body={<p>See how users rank against each other.</p>}

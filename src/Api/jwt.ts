@@ -2,6 +2,8 @@ import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} f
 import {Permission} from './permissions';
 import {Role} from './roles';
 
+export type TokenRefreshedFn = (token: Token | null) => void;
+
 export class TokenStorage {
 	protected storageKey: string;
 	protected token: Token | null = null;
@@ -22,7 +24,7 @@ export class TokenStorage {
 		return this.token;
 	}
 
-	public setToken(token: Token | null) {
+	public setToken(token: Token | null, refreshCallback?: TokenRefreshedFn) {
 		if (token && (!token.isValid() || token.getTimeToLive() < 5))
 			token = null;
 
@@ -44,11 +46,11 @@ export class TokenStorage {
 			gameCatalogClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 
 			window.localStorage.setItem(this.storageKey, token.jwt);
-			this.scheduleRefreshTask();
+			this.scheduleRefreshTask(refreshCallback);
 		}
 	}
 
-	protected scheduleRefreshTask() {
+	protected scheduleRefreshTask(callback?: TokenRefreshedFn) {
 		const token = this.getToken();
 
 		if (!token)
@@ -60,6 +62,7 @@ export class TokenStorage {
 			const response = await hubApiClient.get('/auth/refresh');
 
 			this.setToken(new Token(response.data.token));
+			callback?.(this.token);
 		}, Math.max((token.getTimeToLive() - 60) * 1000, 1));
 	}
 

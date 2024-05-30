@@ -1,13 +1,13 @@
-import * as React from 'react';
-import {Classes} from '../../../classes';
-import {FrameLoadingSpinner} from '../../FrameLoadingSpinner';
-import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
-import {toaster} from '../../../toaster';
 import {Button, InputGroup} from '@blueprintjs/core';
-import {NonIdealState} from '../../NonIdealState';
+import * as React from 'react';
+import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
+import {Classes} from '../../../classes';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {NonIdealState} from '../../../Components/NonIdealState';
+import {PageHeader} from '../../../Components/PageHeader';
+import {toaster} from '../../../toaster';
 import {classNames} from '../../../utility/dom';
 import {GameInfoCard} from './GameInfoCard';
-import {PageHeader} from '../../PageHeader';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -167,7 +167,7 @@ export class CatalogListPage extends React.PureComponent<{}, IState> {
 	};
 }
 
-const RenderPageItems: React.FC<{ items: Game[] }> = ({items}) => {
+function RenderPageItems({items}: { items: Game[] }) {
 	if (items.length === 0)
 		return <NonIdealState title="No results" />;
 
@@ -178,4 +178,4 @@ const RenderPageItems: React.FC<{ items: Game[] }> = ({items}) => {
 			))}
 		</div>
 	);
-};
+}

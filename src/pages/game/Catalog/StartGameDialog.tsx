@@ -2,7 +2,7 @@ import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Game} from '../../../Api/Game-Catalog/Models/Games';
 
-interface IProps {
+interface Props {
 	isOpen: boolean;
 	processing: boolean;
 	onConfirm: () => Promise<void>;
@@ -10,7 +10,7 @@ interface IProps {
 	game: Game;
 }
 
-export const StartGameDialog: React.FC<IProps> = ({isOpen, game, processing, onConfirm, onCancel}) => {
+export function StartGameDialog({isOpen, game, processing, onConfirm, onCancel}: Props) {
 	return (
 		<Dialog
 			isOpen={isOpen}
@@ -42,4 +42,4 @@ export const StartGameDialog: React.FC<IProps> = ({isOpen, game, processing, onC
 			</div>
 		</Dialog>
 	);
-};
+}

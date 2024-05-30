@@ -1,4 +1,4 @@
-import {history} from '../history';
+import {debug} from '../utility/debug';
 import * as gameCatalogApi from './Game-Catalog';
 import * as gameStateApi from './Game-State';
 import * as hubApi from './Hub';

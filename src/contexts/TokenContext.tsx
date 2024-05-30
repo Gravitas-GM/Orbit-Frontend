@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {tokenStorage} from '../Api';
-import {Token} from '../Api/jwt';
+import {Token, TokenRefreshedFn} from '../Api/jwt';
 import {ManagerProps} from './index';
 
 export type SetTokenFn = (token: Token | null) => void;
@@ -23,19 +23,23 @@ export function useToken(): State {
 export function TokenManager({children}: ManagerProps): React.ReactElement {
 	const [token, setToken] = React.useState<Token | null>(() => tokenStorage.getToken());
 
-	const setTokenFn = React.useCallback<SetTokenFn>(token => {
-		tokenStorage.setToken(token);
+	const onTokenRefreshed = React.useCallback<TokenRefreshedFn>(token => {
 		setToken(token);
 	}, []);
+
+	const setTokenFn = React.useCallback<SetTokenFn>(token => {
+		tokenStorage.setToken(token, onTokenRefreshed);
+		setToken(token);
+	}, [onTokenRefreshed]);
 
 	const state = React.useMemo<State>(() => ({
 		token,
 		setToken: setTokenFn,
-	}), [token])
+	}), [token]);
 
 	return (
 		<TokenContext.Provider value={state}>
 			{children}
 		</TokenContext.Provider>
-	)
+	);
 }

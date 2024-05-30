@@ -7,11 +7,11 @@ import './Catalog.scss';
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
-interface IProps {
+interface Props {
 	board: Board;
 }
 
-export const BoardInfoCard: React.FC<IProps> = ({board}) => {
+export function BoardInfoCard({board}: Props) {
 	return (
 		<Card
 			className="catalog-info-card"
@@ -52,6 +52,4 @@ export const BoardInfoCard: React.FC<IProps> = ({board}) => {
 			</div>
 		</Card>
 	);
-};
-
-BoardInfoCard.displayName = 'BoardInfoCard';
+}
