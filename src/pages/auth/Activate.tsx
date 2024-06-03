@@ -1,46 +1,52 @@
-import * as React from 'react';
 import {Intent} from '@blueprintjs/core';
-import {Redirect} from 'react-router';
-import {tokenStorage} from '../../Api';
+import * as React from 'react';
+import {Navigate} from 'react-router-dom';
+import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
 import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {Token} from '../../Api/jwt';
+import {withToken, WithTokenProps} from '../../contexts/TokenContext';
+import {withUrlQuery, WithUrlQueryProps} from '../../hooks/useQuery';
 import {toaster} from '../../toaster';
-import './Login.scss';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
 import {SetPasswordForm} from './SetPasswordForm';
 
-interface IState {
+type Props = WithTokenProps & WithUrlQueryProps;
+
+interface State {
 	processing: boolean;
-	redirect: boolean;
+	redirect: string | null;
 	validationFailures: ValidationFailures | null;
 }
 
-export class Activate extends React.PureComponent<{}, IState> {
-	public state: Readonly<IState> = {
+class Activate extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
 		processing: false,
-		redirect: false,
+		redirect: null,
 		validationFailures: null,
 	};
 
 	public componentDidMount() {
-		if (!window.location.search)
+		const rawToken = this.props.query.get('token');
+
+		if (!rawToken) {
+			toaster.error('Invalid activation request.');
+
+			this.setState({
+				redirect: '/login',
+			});
+
 			return;
+		}
 
-		const urlParams = new URLSearchParams(window.location.search);
-
-		if (!urlParams.has('token'))
-			return;
-
-		tokenStorage.setToken(new Token(urlParams.get('token')!));
+		this.props.setToken(new Token(rawToken));
 	}
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to="/" />;
+			return <Navigate to={this.state.redirect} />;
 
 		return (
 			<SetPasswordForm
-				formHeader="Happy Orbit Activation"
+				formHeader="Activate Your Account"
 				processing={this.state.processing}
 				validationFailures={this.state.validationFailures}
 				onSubmit={this.onSubmit}
@@ -81,7 +87,10 @@ export class Activate extends React.PureComponent<{}, IState> {
 		});
 
 		this.setState({
-			redirect: true,
+			redirect: '/',
 		});
 	};
 }
+
+const Wrapped = withUrlQuery(withToken(Activate));
+export {Wrapped as Activate};

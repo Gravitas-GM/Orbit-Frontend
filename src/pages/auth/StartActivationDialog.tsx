@@ -1,9 +1,9 @@
-import * as React from 'react';
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
+import * as React from 'react';
 import {ApiError, ValidationFailures} from '../../Api/errors/symfony';
-import {PasswordResetModel} from '../../Api/Hub/Models/PasswordReset';
+import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
 import {toaster} from '../../toaster';
-import {ValidationAwareFormGroup} from '../ValidationAwareFormGroup';
+import {ValidationAwareFormGroup} from '../../Components/ValidationAwareFormGroup';
 
 interface IProps {
 	onClose: () => void;
@@ -15,7 +15,7 @@ interface IState {
 	validationFailures: ValidationFailures | null;
 }
 
-export class ForgotPasswordDialog extends React.PureComponent<IProps, IState> {
+export class StartActivationDialog extends React.PureComponent<IProps, IState> {
 	public constructor(props: IProps) {
 		super(props);
 
@@ -28,17 +28,17 @@ export class ForgotPasswordDialog extends React.PureComponent<IProps, IState> {
 
 	public render(): JSX.Element {
 		return (
-			<Dialog onClose={this.props.onClose} isOpen={true} title="Forgot Password">
+			<Dialog onClose={this.props.onClose} isOpen={true} title="Start Activation">
 				<div className={Classes.DIALOG_BODY}>
 					<p className={Classes.RUNNING_TEXT}>
-						To request a password reset, enter your email address in the form below. A reset link will be
+						To start the activation, enter your email address in the form below. An activation link will be
 						sent to you within a few minutes.
 					</p>
 
 					<form onSubmit={this.onSubmit}>
 						<ValidationAwareFormGroup
 							label="Email Address"
-							labelFor="userEmailAddress"
+							labelFor="emailAddress"
 							failures={this.state.validationFailures}
 						>
 							<InputGroup
@@ -81,10 +81,10 @@ export class ForgotPasswordDialog extends React.PureComponent<IProps, IState> {
 		});
 
 		try {
-			await PasswordResetModel.requestReset(
+			await UserActivationModel.startActivation(
 				{
 					userEmailAddress: this.state.emailAddress,
-					resetUrlTemplate: 'https://app.happyorbit.com/password-reset?token=:code',
+					activationUrlTemplate: 'https://app.happyorbit.com/activate?token=:code',
 				});
 		} catch (error) {
 			if (error instanceof ApiError && error.isValidationFailure()) {
@@ -104,7 +104,7 @@ export class ForgotPasswordDialog extends React.PureComponent<IProps, IState> {
 		}
 
 		toaster.success(
-			'Your password reset request has been received. Please follow the instructions sent to your email.',
+			'Your activation request has been received. Please follow the instructions sent to your email.',
 		);
 
 		this.setState({

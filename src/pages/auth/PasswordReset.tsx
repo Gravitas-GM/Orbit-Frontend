@@ -1,42 +1,49 @@
-import * as React from 'react';
 import {Intent} from '@blueprintjs/core';
-import {Redirect} from 'react-router';
+import * as React from 'react';
+import {Navigate} from 'react-router-dom';
 import {tokenStorage} from '../../Api';
+import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
 import {PasswordResetModel} from '../../Api/Hub/Models/PasswordReset';
 import {Token} from '../../Api/jwt';
+import {withToken, WithTokenProps} from '../../contexts/TokenContext';
+import {withUrlQuery, WithUrlQueryProps} from '../../hooks/useQuery';
 import {toaster} from '../../toaster';
-import './Login.scss';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
+import '../../Components/Auth/Login.scss';
 import {SetPasswordForm} from './SetPasswordForm';
 
-interface IState {
+type Props = WithUrlQueryProps & WithTokenProps;
+
+interface State {
 	processing: boolean;
-	redirect: boolean;
+	redirect: string | null;
 	validationFailures: ValidationFailures | null;
 }
 
-export class PasswordReset extends React.PureComponent<{}, IState> {
-	public state: Readonly<IState> = {
+class PasswordReset extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
 		processing: false,
-		redirect: false,
+		redirect: null,
 		validationFailures: null,
 	};
 
 	public componentDidMount() {
-		if (!window.location.search)
+		const rawToken = this.props.query.get('token');
+
+		if (!rawToken) {
+			toaster.error('Invalid password reset request.');
+			this.setState({
+				redirect: '/login',
+			});
+
 			return;
+		}
 
-		const urlParams = new URLSearchParams(window.location.search);
-
-		if (!urlParams.has('token'))
-			return;
-
-		tokenStorage.setToken(new Token(urlParams.get('token')!));
+		tokenStorage.setToken(new Token(rawToken));
 	}
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to="/" />;
+			return <Navigate to={this.state.redirect} />;
 
 		return (
 			<SetPasswordForm
@@ -81,7 +88,10 @@ export class PasswordReset extends React.PureComponent<{}, IState> {
 		});
 
 		this.setState({
-			redirect: true,
+			redirect: '/',
 		});
 	};
 }
+
+const Wrapped = withUrlQuery(withToken(PasswordReset));
+export {Wrapped as PasswordReset};

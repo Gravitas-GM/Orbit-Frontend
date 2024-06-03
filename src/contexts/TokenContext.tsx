@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {tokenStorage} from '../Api';
 import {Token, TokenRefreshedFn} from '../Api/jwt';
+import {wrap} from '../utility/component';
 import {ManagerProps} from './index';
 
 export type SetTokenFn = (token: Token | null) => void;
@@ -18,6 +19,15 @@ export const TokenContext = React.createContext<State>({
 
 export function useToken(): State {
 	return React.useContext(TokenContext);
+}
+
+export interface WithTokenProps {
+	token: Token | null,
+	setToken: SetTokenFn,
+}
+
+export function withToken<P extends WithTokenProps>(component: React.ComponentType<P>) {
+	return wrap('withToken', component, () => useToken());
 }
 
 export function TokenManager({children}: ManagerProps): React.ReactElement {

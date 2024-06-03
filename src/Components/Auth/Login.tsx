@@ -7,9 +7,9 @@ import {User, UserModel} from '../../Api/Hub/Models/Users';
 import {TokenContext} from '../../contexts/TokenContext';
 import {Spacing} from '../../Styles/variables';
 import {toaster} from '../../toaster';
-import {ForgotPasswordDialog} from './ForgotPasswordDialog';
+import {ForgotPasswordDialog} from '../../pages/auth/ForgotPasswordDialog';
 import './Login.scss';
-import {StartActivationDialog} from './StartActivationDialog';
+import {StartActivationDialog} from '../../pages/auth/StartActivationDialog';
 
 interface IProps extends RouteComponentProps {
 	onLoginSuccess: (user: User) => void;
