@@ -1,7 +1,7 @@
-import React from 'react';
 import {H2} from '@blueprintjs/core';
-import {useEffect} from 'react';
+import React from 'react';
 import './PageHeader.scss';
+import {useTitle} from '../hooks/useTitle';
 
 interface IProps {
 	title: string;
@@ -19,13 +19,3 @@ export const PageHeader: React.FC<IProps> = ({title, children}) => {
 		</header>
 	);
 };
-
-export function useTitle(title: string, skipPrefix = false) {
-	const titleValue = React.useMemo(() => {
-		return (skipPrefix ? '' : 'Happy Orbit | ') + title;
-	}, [title, skipPrefix]);
-
-	useEffect(() => {
-		document.title = titleValue;
-	}, [titleValue]);
-}

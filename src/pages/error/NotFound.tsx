@@ -1,7 +1,8 @@
 import {NonIdealState} from '@blueprintjs/core';
 import {ReactElement} from 'react';
 import {Link} from 'react-router-dom';
-import {useTitle} from '../../components/PageHeader';
+
+import {useTitle} from '../../hooks/useTitle';
 import {Spacing} from '../../Styles/variables';
 
 export function NotFound(): ReactElement {

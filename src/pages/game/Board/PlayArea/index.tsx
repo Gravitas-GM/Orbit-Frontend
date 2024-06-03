@@ -3,7 +3,8 @@ import {CSSProperties} from 'react';
 import {Board} from '../../../../api/Game-Catalog/Models/Boards';
 import {BoardRegion, Stage} from '../../../../api/Game-Catalog/Models/Stages';
 import {GameState, PlayerState} from '../../../../api/Game-State/Models/Games';
-import {useTitle} from '../../../../components/PageHeader';
+
+import {useTitle} from '../../../../hooks/useTitle';
 import {GameStage} from './GameStage';
 
 function getPlayersAtStage(stage: Stage, players: PlayerState[]) {
