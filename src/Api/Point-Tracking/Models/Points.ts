@@ -1,6 +1,6 @@
 import {ObjectId} from '..';
 import {Id, pointTrackingClient} from '../..';
-import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {parseApiTimestamp} from '../../../utility/date';
 import {Config} from '../../../config';
 
 export interface PointsEndpoints {

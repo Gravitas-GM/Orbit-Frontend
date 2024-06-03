@@ -1,4 +1,4 @@
-import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {parseApiTimestamp} from '../../../utility/date';
 import {ApiError, ErrorCodes} from '../../errors/symfony';
 import {Entity, Id, Projectable, Projection, quizClient} from '../../index';
 import {QuestionKind} from './Questions';

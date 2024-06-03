@@ -1,4 +1,4 @@
-import {parseApiTimestamp} from '../../../Components/Utility/date';
+import {parseApiTimestamp} from '../../../utility/date';
 import {Entity, Id, Projectable, Projection, Queryable, QueryDocument, quizClient, Stub} from '../../index';
 import {Settings} from './Settings';
 import {QuestionKind} from './Questions';

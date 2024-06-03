@@ -1,15 +1,22 @@
 import * as React from 'react';
-import {MatchQuery, PermissionContext} from '../../Permission';
+import {MatchQuery} from '../../Api/permissions';
+import {usePermissions} from '../../contexts/SessionContext';
 
 interface Props {
 	match: MatchQuery,
 	children: React.ReactNode,
 }
 
-export function IsGranted({match, children}: Props): React.ReactElement {
+export function IsGranted({
+	match,
+	children,
+}: Props): React.ReactElement | null {
+	const isPermissionGranted = usePermissions();
+
+	if (!isPermissionGranted(match))
+		return null;
+
 	return (
-		<PermissionContext.Consumer>
-			{([isGranted]) => isGranted(match) && children}
-		</PermissionContext.Consumer>
+		<>{children}</>
 	);
 }

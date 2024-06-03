@@ -1,0 +1,24 @@
+@import '../../variables';
+
+.cards-container {
+	display: grid;
+	grid-template-columns: repeat(3,1fr);
+	gap: $spacing-large;
+	margin-top: $spacing-large;
+
+	.#{$ns}-card {
+		min-height: 120px;
+		display: grid;
+		grid-template-columns: min-content 5fr;
+		gap: $spacing-large;
+
+	}
+
+	a:hover {
+		text-decoration: none;
+	}
+
+	p {
+		color: $blue5;
+	}
+}

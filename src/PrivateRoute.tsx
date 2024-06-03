@@ -1,20 +1,19 @@
 import * as React from 'react';
-import {Redirect, Route, RouteProps} from 'react-router';
+import {Route, RouteProps, useLocation} from 'react-router';
+import {Navigate} from 'react-router-dom';
 import {isAuthenticated} from './Api';
-import {history} from './history';
 
 export const PrivateRoute: React.FC<RouteProps> = ({...routeProps}) => {
-	if (isAuthenticated()) {
+	const location = useLocation();
+
+	if (isAuthenticated())
 		return <Route {...routeProps} />;
-	}
 
 	return (
-		<Redirect
-			to={{
-				pathname: '/login',
-				state: {
-					from: history.location.pathname,
-				},
+		<Navigate
+			to="/login"
+			state={{
+				from: location.pathname,
 			}}
 		/>
 	);
