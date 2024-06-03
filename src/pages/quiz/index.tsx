@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Route, Routes} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import {Permission} from '../../api/permissions';
+import {Routes} from '../../components/Router/Routes';
 import {withPermissionRestriction} from '../../components/Router/withPermissionRestriction';
 import {QuizHistoryPage} from './History';
 import {Interstitial} from './Quiz/Interstitial';

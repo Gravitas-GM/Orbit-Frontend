@@ -1,13 +1,14 @@
-import * as React from 'react';
+import {ReactElement, ReactNode} from 'react';
 import {useLocation} from 'react-router';
-import {Navigate, Routes} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import {useToken} from '../../contexts/TokenContext';
+import {Routes} from './Routes';
 
 interface Props {
-	children: React.ReactNode,
+	children: ReactNode,
 }
 
-export function PrivateRoutes({children}: Props): React.ReactElement {
+export function PrivateRoutes({children}: Props): ReactElement {
 	const {pathname} = useLocation();
 	const {token} = useToken();
 

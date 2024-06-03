@@ -11,14 +11,14 @@ export function SurveyMenu(): React.ReactElement {
 		<Menu>
 			{withRoleRestriction(Role.Admin, (
 				<>
-					<LinkedMenuItem to="/survey-bank" icon="projects" text="Survey Bank" />
+					<LinkedMenuItem to="/survey/bank" icon="projects" text="Survey Bank" />
 
 					<MenuDivider />
 				</>
 			))}
 
 			<LinkedMenuItem to="/survey" icon="third-party" text="Take This Week's Survey" />
-			<LinkedMenuItem to="/results" icon="grouped-bar-chart" text="Last Week's Results" />
+			<LinkedMenuItem to="/survey/results" icon="grouped-bar-chart" text="Last Week's Results" />
 
 			{withPermissionRestriction(Permission.Admin, (
 				<>

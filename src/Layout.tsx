@@ -10,6 +10,7 @@ import {DebugRoutes} from './pages/debug';
 import {GameRoutes} from './pages/game';
 import {Home} from './pages/home';
 import {QuizRoutes} from './pages/quiz';
+import {SurveyRoutes} from './pages/survey';
 import {UserRoutes} from './pages/users';
 
 export const Layout: React.FC = () => {
@@ -39,6 +40,7 @@ export const Layout: React.FC = () => {
 					<Route index={true} element={<Home />} />
 					<Route path="/game/*" element={<GameRoutes />} />
 					<Route path="/quiz/*" element={<QuizRoutes />} />
+					<Route path="/survey/*" element={<SurveyRoutes />} />
 					<Route path="/users/*" element={<UserRoutes />} />
 
 					<Route path="/debug/*" element={<DebugRoutes />} />
