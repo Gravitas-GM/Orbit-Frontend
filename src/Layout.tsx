@@ -8,6 +8,7 @@ import {useSession} from './contexts/SessionContext';
 import {useToken} from './contexts/TokenContext';
 import {GameRoutes} from './pages/game';
 import {Home} from './pages/home';
+import {QuizRoutes} from './pages/quiz';
 
 export const Layout: React.FC = () => {
 	const {token} = useToken();
@@ -19,7 +20,7 @@ export const Layout: React.FC = () => {
 	// been fully loaded before rendering. This way, we don't even try to mount our routing until the session has been
 	// loaded (or we don't have a session), so there's no chance for a component to accidentally render before the
 	// session has been loaded.
-	if (token && !session)
+	if (token?.isValid() && !session)
 		return <FrameLoadingSpinner />;
 
 	return (
@@ -35,6 +36,7 @@ export const Layout: React.FC = () => {
 				<PrivateRoutes>
 					<Route index={true} element={<Home />} />
 					<Route path="/game/*" element={<GameRoutes />} />
+					<Route path="/quiz/*" element={<QuizRoutes />} />
 				</PrivateRoutes>
 			</div>
 		</div>

@@ -4,9 +4,9 @@ import {Token} from '../Api/jwt';
 import {isPermissionGranted, MatchQuery, Permission} from '../Api/permissions';
 import {isRoleGranted, Role} from '../Api/roles';
 import {toaster} from '../toaster';
+import {wrap} from '../utility/component';
 import {ManagerProps} from './index';
 import {State as TokenState, useToken} from './TokenContext';
-import {wrap} from "../utility/component";
 
 type RoleCheckFn = (role: Role) => boolean;
 type PermissionCheckFn = (match: MatchQuery) => boolean;
@@ -26,6 +26,16 @@ export function useSession(): Session | null {
 export function usePermissions(): PermissionCheckFn {
 	const {isPermissionGranted} = useSession() ?? {};
 	return isPermissionGranted ?? (() => false);
+}
+
+export interface WithPermissionsProps {
+	isPermissionGranted: PermissionCheckFn,
+}
+
+export function withPermissions<P extends WithPermissionsProps>(component: React.ComponentType<P>) {
+	return wrap('withPermissions', component, () => ({
+		isPermissionGranted: usePermissions(),
+	}));
 }
 
 export function useFirewallRoles(): RoleCheckFn {
