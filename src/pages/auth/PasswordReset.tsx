@@ -8,7 +8,6 @@ import {Token} from '../../api/jwt';
 import {withToken, WithTokenProps} from '../../contexts/TokenContext';
 import {withUrlQuery, WithUrlQueryProps} from '../../hooks/useQuery';
 import {toaster} from '../../toaster';
-import '../../components/Auth/Login.scss';
 import {SetPasswordForm} from './SetPasswordForm';
 
 type Props = WithUrlQueryProps & WithTokenProps;
