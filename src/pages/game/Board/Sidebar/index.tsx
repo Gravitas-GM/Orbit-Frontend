@@ -1,7 +1,7 @@
 import {Button, Icon, IconSize, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import SimpleBar from 'simplebar-react';
-import {Permission} from '../../../../Api/permissions';
+import {Permission} from '../../../../api/permissions';
 import {usePermissions} from '../../../../contexts/SessionContext';
 import {classNames} from '../../../../utility/dom';
 import './index.scss';

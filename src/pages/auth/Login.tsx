@@ -1,12 +1,12 @@
 import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {isAuthenticated, login} from '../../Api';
-import {ApiError} from '../../Api/errors/symfony';
-import {Token} from '../../Api/jwt';
+import {isAuthenticated, login} from '../../api';
+import {ApiError} from '../../api/errors/symfony';
+import {Token} from '../../api/jwt';
 import {ForgotPasswordDialog} from './ForgotPasswordDialog';
 import {StartActivationDialog} from './StartActivationDialog';
-import {withLocation, WithLocationProps} from '../../Components/Router/withLocation';
+import {withLocation, WithLocationProps} from '../../components/Router/withLocation';
 import {TokenContext} from '../../contexts/TokenContext';
 import {Spacing} from '../../Styles/variables';
 import {toaster} from '../../toaster';

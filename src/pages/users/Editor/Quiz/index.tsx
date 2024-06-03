@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {User} from '../../../../Api/Hub/Models/Users';
-import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
+import {User} from '../../../../api/Hub/Models/Users';
+import {QuestionTag, QuestionTagModel} from '../../../../api/Quiz/Models/QuestionTags';
 import {Classes} from '../../../../classes';
-import {DeleteDialog, DeleteSubject} from '../../../../Components/DeleteDialog';
-import {FrameLoadingSpinner} from '../../../../Components/FrameLoadingSpinner';
-import {ObjectList} from '../../../../Components/ObjectList';
+import {DeleteDialog, DeleteSubject} from '../../../../components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../../components/FrameLoadingSpinner';
+import {ObjectList} from '../../../../components/ObjectList';
 import {toaster} from '../../../../toaster';
 import {allSettled, isRejectedResult} from '../../../../utility/promise';
 import {ucwords} from '../../../../utility/string';

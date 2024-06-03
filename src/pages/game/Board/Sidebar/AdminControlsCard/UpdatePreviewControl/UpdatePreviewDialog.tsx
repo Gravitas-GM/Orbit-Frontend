@@ -1,16 +1,16 @@
 import {Button, Dialog, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {Board} from '../../../../../../api/Game-Catalog/Models/Boards';
 import {
 	GamesModel,
 	getNewPointsFromPlayerUpdate,
 	PlayerUpdate,
 	UpdateResultType,
-} from '../../../../../../Api/Game-State/Models/Games';
+} from '../../../../../../api/Game-State/Models/Games';
 import {Classes} from '../../../../../../classes';
-import {FrameLoadingSpinner} from '../../../../../../Components/FrameLoadingSpinner';
-import {NonIdealState} from '../../../../../../Components/NonIdealState';
+import {FrameLoadingSpinner} from '../../../../../../components/FrameLoadingSpinner';
+import {NonIdealState} from '../../../../../../components/NonIdealState';
 import {useAppUser} from '../../../../../../contexts/SessionContext';
 import {Spacing} from '../../../../../../Styles/variables';
 import {toaster} from '../../../../../../toaster';

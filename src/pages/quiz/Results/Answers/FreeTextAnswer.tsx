@@ -1,6 +1,6 @@
 import {FormGroup, H3, Icon, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {FreeTextResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {FreeTextResponse} from '../../../../api/Quiz/Models/QuizSubmissions';
 
 interface Props {
 	item: FreeTextResponse,

@@ -1,6 +1,6 @@
 import {Menu, MenuDivider} from '@blueprintjs/core';
 import * as React from 'react';
-import {Permission} from '../../Api/permissions';
+import {Permission} from '../../api/permissions';
 import {usePermissions} from '../../contexts/SessionContext';
 import {LinkedMenuItem} from './LinkedMenuItem';
 

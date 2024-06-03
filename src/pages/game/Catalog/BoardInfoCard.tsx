@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Card, HTMLTable} from '@blueprintjs/core';
-import {Board} from '../../../Api/Game-Catalog/Models/Boards';
+import {Board} from '../../../api/Game-Catalog/Models/Boards';
 import {Images} from '../../../Images';
 import {formatNumber, ucwords} from '../../../utility/string';
 import './Catalog.scss';

@@ -1,6 +1,6 @@
 import {FormGroup as BPFormGroup, FormGroupProps, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {ValidationFailures} from '../Api/errors/symfony';
+import {ValidationFailures} from '../api/errors/symfony';
 import {extract} from '../utility/validation';
 
 interface IProps extends FormGroupProps {

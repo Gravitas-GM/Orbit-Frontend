@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Board} from '../../../../../Api/Game-Catalog/Models/Boards';
-import {GameStartPayload} from '../../../../../Api/Game-State/Models/Games';
+import {Board} from '../../../../../api/Game-Catalog/Models/Boards';
+import {GameStartPayload} from '../../../../../api/Game-State/Models/Games';
 import {GameCard} from '../GameCard/GameCard';
 import {ConfirmNextBoardControl} from './ConfirmNextBoardControl';
 import {NewGameControl} from './NewGameControl';

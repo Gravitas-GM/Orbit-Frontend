@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {MatchQuery} from '../../Api/permissions';
+import {MatchQuery} from '../../api/permissions';
 import {usePermissions} from '../../contexts/SessionContext';
 
 interface Props {

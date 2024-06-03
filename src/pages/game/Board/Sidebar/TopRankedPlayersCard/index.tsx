@@ -1,7 +1,7 @@
 import {Icon, IconSize} from '@blueprintjs/core';
 import React, {useMemo} from 'react';
-import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
-import {NonIdealState} from '../../../../../Components/NonIdealState';
+import {PlayerState} from '../../../../../api/Game-State/Models/Games';
+import {NonIdealState} from '../../../../../components/NonIdealState';
 import {GameCard} from '../GameCard/GameCard';
 import './TopRankedPlayersCard.scss';
 

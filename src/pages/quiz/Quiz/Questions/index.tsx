@@ -1,7 +1,7 @@
 import {Button, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
+import {ValidationFailures} from '../../../../api/errors/symfony';
+import {QuestionKind} from '../../../../api/Quiz/Models/Questions';
 import {
 	BooleanAnswer,
 	BooleanQuestionPrompt,
@@ -10,7 +10,7 @@ import {
 	MultipleChoiceAnswer,
 	MultipleChoiceQuestionPrompt,
 	QuestionPrompt,
-} from '../../../../Api/Quiz/Models/Quiz';
+} from '../../../../api/Quiz/Models/Quiz';
 import {QuestionNavigator} from '../QuestionNavigator';
 import './index.scss';
 import {Question} from './Question';

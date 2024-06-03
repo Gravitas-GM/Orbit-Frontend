@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {Permission} from '../../Api/permissions';
+import {Permission} from '../../api/permissions';
 import {usePermissions} from '../../contexts/SessionContext';
 import {UserEditor} from './Editor';
 import {UsersList} from './List';

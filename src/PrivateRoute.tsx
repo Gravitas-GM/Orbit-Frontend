@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Route, RouteProps, useLocation} from 'react-router';
 import {Navigate} from 'react-router-dom';
-import {isAuthenticated} from './Api';
+import {isAuthenticated} from './api';
 
 export const PrivateRoute: React.FC<RouteProps> = ({...routeProps}) => {
 	const location = useLocation();

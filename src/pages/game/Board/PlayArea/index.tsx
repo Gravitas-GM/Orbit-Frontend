@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {CSSProperties} from 'react';
-import {Board} from '../../../../Api/Game-Catalog/Models/Boards';
-import {BoardRegion, Stage} from '../../../../Api/Game-Catalog/Models/Stages';
-import {GameState, PlayerState} from '../../../../Api/Game-State/Models/Games';
-import {useTitle} from '../../../../Components/PageHeader';
+import {Board} from '../../../../api/Game-Catalog/Models/Boards';
+import {BoardRegion, Stage} from '../../../../api/Game-Catalog/Models/Stages';
+import {GameState, PlayerState} from '../../../../api/Game-State/Models/Games';
+import {useTitle} from '../../../../components/PageHeader';
 import {GameStage} from './GameStage';
 
 function getPlayersAtStage(stage: Stage, players: PlayerState[]) {

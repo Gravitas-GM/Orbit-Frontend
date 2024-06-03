@@ -1,8 +1,8 @@
 import {Card, H4, Icon} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
-import {Role} from '../../../Api/roles';
-import {Cards} from '../../../Components/Cards';
+import {Role} from '../../../api/roles';
+import {Cards} from '../../../components/Cards';
 import {useFirewallRoles} from '../../../contexts/SessionContext';
 import {IconSize} from '../../../IconSize';
 import {Spacing} from '../../../Styles/variables';

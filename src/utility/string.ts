@@ -1,7 +1,7 @@
 import GraphemeSplitter from 'grapheme-splitter';
-import {PlayerState} from '../Api/Game-State/Models/Games';
-import {User} from '../Api/Hub/Models/Users';
-import {QuestionKind} from '../Api/Quiz/Models/Questions';
+import {PlayerState} from '../api/Game-State/Models/Games';
+import {User} from '../api/Hub/Models/Users';
+import {QuestionKind} from '../api/Quiz/Models/Questions';
 
 export function ucfirst(value: string) {
 	if (!value.length)

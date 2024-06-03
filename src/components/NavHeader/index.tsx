@@ -2,7 +2,7 @@ import {Alignment, Button, Classes, Icon, IconSize, Navbar} from '@blueprintjs/c
 import {Popover2 as Popover} from '@blueprintjs/popover2';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
-import {Permission} from '../../Api/permissions';
+import {Permission} from '../../api/permissions';
 import {useMaybeAppUser, usePermissions} from '../../contexts/SessionContext';
 import {renderUserName} from '../../utility/string';
 import {GameMenu} from './GameMenu';

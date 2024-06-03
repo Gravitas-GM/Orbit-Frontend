@@ -1,5 +1,5 @@
 import {ReactNode} from 'react';
-import {Role} from '../../Api/roles';
+import {Role} from '../../api/roles';
 import {useFirewallRoles} from '../../contexts/SessionContext';
 
 export function withRoleRestriction(role: Role, elements: ReactNode): ReactNode {

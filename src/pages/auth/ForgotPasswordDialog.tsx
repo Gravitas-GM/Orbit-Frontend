@@ -1,8 +1,8 @@
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {ApiError, ValidationFailures} from '../../Api/errors/symfony';
-import {PasswordResetModel} from '../../Api/Hub/Models/PasswordReset';
-import {ValidationAwareFormGroup} from '../../Components/ValidationAwareFormGroup';
+import {ApiError, ValidationFailures} from '../../api/errors/symfony';
+import {PasswordResetModel} from '../../api/Hub/Models/PasswordReset';
+import {ValidationAwareFormGroup} from '../../components/ValidationAwareFormGroup';
 import {toaster} from '../../toaster';
 
 interface IProps {

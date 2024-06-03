@@ -1,7 +1,7 @@
 import {H3, InputGroup} from '@blueprintjs/core';
 import * as React from 'react';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {ValidationAwareFormGroup} from '../../../../Components/ValidationAwareFormGroup';
+import {ValidationFailures} from '../../../../api/errors/symfony';
+import {ValidationAwareFormGroup} from '../../../../components/ValidationAwareFormGroup';
 import {FreeTextItem} from './index';
 
 interface Props {

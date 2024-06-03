@@ -1,8 +1,8 @@
 import {Button, Icon} from '@blueprintjs/core';
 import React, {useMemo} from 'react';
 import SimpleBar from 'simplebar-react';
-import {HistoryItem} from '../../../../../Api/Game-State/Models/History';
-import {NonIdealState} from '../../../../../Components/NonIdealState';
+import {HistoryItem} from '../../../../../api/Game-State/Models/History';
+import {NonIdealState} from '../../../../../components/NonIdealState';
 import {IconSize} from '../../../../../IconSize';
 import {formatDate} from '../../../../../utility/date';
 import {GameCard} from '../GameCard/GameCard';

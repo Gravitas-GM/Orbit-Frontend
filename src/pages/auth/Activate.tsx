@@ -1,9 +1,9 @@
 import {Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
-import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
-import {Token} from '../../Api/jwt';
+import {isValidationFailureError, ValidationFailures} from '../../api/errors/symfony';
+import {UserActivationModel} from '../../api/Hub/Models/UserActivation';
+import {Token} from '../../api/jwt';
 import {withToken, WithTokenProps} from '../../contexts/TokenContext';
 import {withUrlQuery, WithUrlQueryProps} from '../../hooks/useQuery';
 import {toaster} from '../../toaster';

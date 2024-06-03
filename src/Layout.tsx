@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {Route} from 'react-router';
-import {FrameLoadingSpinner} from './Components/FrameLoadingSpinner';
-import {NavHeader} from './Components/NavHeader';
-import {PrivateRoutes} from './Components/Router/PrivateRoutes';
+import {FrameLoadingSpinner} from './components/FrameLoadingSpinner';
+import {NavHeader} from './components/NavHeader';
+import {PrivateRoutes} from './components/Router/PrivateRoutes';
 import './Layout.scss';
 import {useSession} from './contexts/SessionContext';
 import {useToken} from './contexts/TokenContext';

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
-import {QuestionResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {QuestionKind} from '../../../../api/Quiz/Models/Questions';
+import {QuestionResponse} from '../../../../api/Quiz/Models/QuizSubmissions';
 import {BooleanAnswer} from './BooleanAnswer';
 import {MultipleChoiceAnswer} from './MultipleChoiceAnswer';
 import {FreeTextAnswer} from './FreeTextAnswer';

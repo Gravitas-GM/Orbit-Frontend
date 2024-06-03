@@ -1,10 +1,10 @@
 import {Divider, H1, Tab, Tabs} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link, Navigate, Route, Routes} from 'react-router-dom';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {User, UserModel} from '../../../api/Hub/Models/Users';
 import {Classes} from '../../../classes';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {withRouteParams, WithRouteParamsProps} from '../../../Components/Router/withRouteParams';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {withRouteParams, WithRouteParamsProps} from '../../../components/Router/withRouteParams';
 import {toaster} from '../../../toaster';
 import {renderUserName} from '../../../utility/string';
 import {PointsTab} from './Points';

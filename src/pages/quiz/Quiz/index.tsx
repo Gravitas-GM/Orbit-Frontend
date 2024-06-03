@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {isValidationFailureError, ValidationFailures} from '../../../Api/errors/symfony';
-import {QuestionKind} from '../../../Api/Quiz/Models/Questions';
-import {Answer, Quiz, QuizModel} from '../../../Api/Quiz/Models/Quiz';
-import {QuizSubmission} from '../../../Api/Quiz/Models/QuizSubmissions';
+import {isValidationFailureError, ValidationFailures} from '../../../api/errors/symfony';
+import {QuestionKind} from '../../../api/Quiz/Models/Questions';
+import {Answer, Quiz, QuizModel} from '../../../api/Quiz/Models/Quiz';
+import {QuizSubmission} from '../../../api/Quiz/Models/QuizSubmissions';
 import {Classes} from '../../../classes';
-import {PageHeader} from '../../../Components/PageHeader';
-import {Prompt} from '../../../Components/Router/Prompt';
+import {PageHeader} from '../../../components/PageHeader';
+import {Prompt} from '../../../components/Router/Prompt';
 import {toaster} from '../../../toaster';
 import './index.scss';
 import {Questions, QuizItem} from './Questions';

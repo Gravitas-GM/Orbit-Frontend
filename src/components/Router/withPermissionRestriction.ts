@@ -1,5 +1,5 @@
 import {ReactNode} from 'react';
-import {MatchQuery} from '../../Api/permissions';
+import {MatchQuery} from '../../api/permissions';
 import {usePermissions} from '../../contexts/SessionContext';
 
 export function withPermissionRestriction(permission: MatchQuery, elements: ReactNode): ReactNode {

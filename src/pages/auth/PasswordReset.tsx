@@ -1,14 +1,14 @@
 import {Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {tokenStorage} from '../../Api';
-import {isValidationFailureError, ValidationFailures} from '../../Api/errors/symfony';
-import {PasswordResetModel} from '../../Api/Hub/Models/PasswordReset';
-import {Token} from '../../Api/jwt';
+import {tokenStorage} from '../../api';
+import {isValidationFailureError, ValidationFailures} from '../../api/errors/symfony';
+import {PasswordResetModel} from '../../api/Hub/Models/PasswordReset';
+import {Token} from '../../api/jwt';
 import {withToken, WithTokenProps} from '../../contexts/TokenContext';
 import {withUrlQuery, WithUrlQueryProps} from '../../hooks/useQuery';
 import {toaster} from '../../toaster';
-import '../../Components/Auth/Login.scss';
+import '../../components/Auth/Login.scss';
 import {SetPasswordForm} from './SetPasswordForm';
 
 type Props = WithUrlQueryProps & WithTokenProps;

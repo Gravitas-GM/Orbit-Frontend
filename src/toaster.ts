@@ -1,5 +1,5 @@
 import {Intent, IToastProps, Position, Toaster} from '@blueprintjs/core';
-import {NextBoardResult} from './Api/Game-State/Models/Games';
+import {NextBoardResult} from './api/Game-State/Models/Games';
 
 export namespace toaster {
 	const toaster = Toaster.create({

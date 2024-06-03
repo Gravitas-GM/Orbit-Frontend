@@ -2,11 +2,11 @@ import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Game, GameModel} from '../../../../../../Api/Game-Catalog/Models/Games';
-import {GameStartPayload} from '../../../../../../Api/Game-State/Models/Games';
-import {FrameLoadingSpinner} from '../../../../../../Components/FrameLoadingSpinner';
-import {Spacing} from '../../../../../../Styles/variables';
-import {toaster} from '../../../../../../toaster';
+import {Game, GameModel} from '../../../../../api/Game-Catalog/Models/Games';
+import {GameStartPayload} from '../../../../../api/Game-State/Models/Games';
+import {FrameLoadingSpinner} from '../../../../../components/FrameLoadingSpinner';
+import {Spacing} from '../../../../../Styles/variables';
+import {toaster} from '../../../../../toaster';
 
 interface NewGameProps {
 	startNewGame: (gameId: GameStartPayload) => Promise<void>;

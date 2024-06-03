@@ -1,12 +1,12 @@
 import {Button, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {Permission} from '../../../Api/permissions';
+import {User, UserModel} from '../../../api/Hub/Models/Users';
+import {Permission} from '../../../api/permissions';
 import {Classes} from '../../../classes';
-import {DeleteDialog} from '../../../Components/DeleteDialog';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {LinkButton} from '../../../Components/LinkButton';
-import {ObjectList} from '../../../Components/ObjectList';
+import {DeleteDialog} from '../../../components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {LinkButton} from '../../../components/LinkButton';
+import {ObjectList} from '../../../components/ObjectList';
 import {Spacing} from '../../../Styles/variables';
 import {toaster} from '../../../toaster';
 import {compareStrings, renderUserName} from '../../../utility/string';

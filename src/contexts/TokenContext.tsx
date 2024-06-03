@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {tokenStorage} from '../Api';
-import {Token, TokenRefreshedFn} from '../Api/jwt';
+import {tokenStorage} from '../api';
+import {Token, TokenRefreshedFn} from '../api/jwt';
 import {wrap} from '../utility/component';
 import {ManagerProps} from './index';
 

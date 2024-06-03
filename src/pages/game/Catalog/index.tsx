@@ -1,10 +1,10 @@
 import {Button, InputGroup} from '@blueprintjs/core';
 import * as React from 'react';
-import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
+import {Game, GameModel} from '../../../api/Game-Catalog/Models/Games';
 import {Classes} from '../../../classes';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {NonIdealState} from '../../../Components/NonIdealState';
-import {PageHeader} from '../../../Components/PageHeader';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {NonIdealState} from '../../../components/NonIdealState';
+import {PageHeader} from '../../../components/PageHeader';
 import {toaster} from '../../../toaster';
 import {classNames} from '../../../utility/dom';
 import {GameInfoCard} from './GameInfoCard';

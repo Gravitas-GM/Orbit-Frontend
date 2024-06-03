@@ -1,9 +1,9 @@
 import {Button, Classes, Dialog, InputGroup, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {ApiError, ValidationFailures} from '../../Api/errors/symfony';
-import {UserActivationModel} from '../../Api/Hub/Models/UserActivation';
+import {ApiError, ValidationFailures} from '../../api/errors/symfony';
+import {UserActivationModel} from '../../api/Hub/Models/UserActivation';
 import {toaster} from '../../toaster';
-import {ValidationAwareFormGroup} from '../../Components/ValidationAwareFormGroup';
+import {ValidationAwareFormGroup} from '../../components/ValidationAwareFormGroup';
 
 interface IProps {
 	onClose: () => void;

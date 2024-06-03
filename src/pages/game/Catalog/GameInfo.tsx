@@ -1,12 +1,12 @@
 import {Button, H2, Icon, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link, Navigate} from 'react-router-dom';
-import {ApiError} from '../../../Api/errors/rocket';
-import {Game, GameModel} from '../../../Api/Game-Catalog/Models/Games';
-import {GamesModel} from '../../../Api/Game-State/Models/Games';
-import {User} from '../../../Api/Hub/Models/Users';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {withRouteParams, WithRouteParamsProps} from '../../../Components/Router/withRouteParams';
+import {ApiError} from '../../../api/errors/rocket';
+import {Game, GameModel} from '../../../api/Game-Catalog/Models/Games';
+import {GamesModel} from '../../../api/Game-State/Models/Games';
+import {User} from '../../../api/Hub/Models/Users';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {withRouteParams, WithRouteParamsProps} from '../../../components/Router/withRouteParams';
 import {withAppUser} from '../../../contexts/SessionContext';
 import {Images} from '../../../Images';
 import {Spacing} from '../../../Styles/variables';

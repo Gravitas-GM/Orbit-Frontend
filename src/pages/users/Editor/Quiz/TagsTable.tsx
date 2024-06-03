@@ -1,7 +1,7 @@
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
-import {NonIdealState} from '../../../../Components/NonIdealState';
+import {QuestionTag} from '../../../../api/Quiz/Models/QuestionTags';
+import {NonIdealState} from '../../../../components/NonIdealState';
 import {Spacing} from '../../../../Styles/variables';
 import {ucwords} from '../../../../utility/string';
 

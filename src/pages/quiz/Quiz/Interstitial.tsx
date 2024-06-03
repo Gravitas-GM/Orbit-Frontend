@@ -1,11 +1,11 @@
 import {Button, H3} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate, useNavigate} from 'react-router-dom';
-import {ApiError} from '../../../Api/errors/symfony';
-import {Quiz, QuizModel} from '../../../Api/Quiz/Models/Quiz';
-import {SettingsModel} from '../../../Api/Quiz/Models/Settings';
+import {ApiError} from '../../../api/errors/symfony';
+import {Quiz, QuizModel} from '../../../api/Quiz/Models/Quiz';
+import {SettingsModel} from '../../../api/Quiz/Models/Settings';
 import {Classes} from '../../../classes';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {useAppUser} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
 import {QuizPage} from './index';

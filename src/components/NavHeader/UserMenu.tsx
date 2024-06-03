@@ -2,7 +2,7 @@ import {Menu, MenuDivider} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {Permission} from '../../Api/permissions';
+import {Permission} from '../../api/permissions';
 import {Config} from '../../config';
 import {usePermissions} from '../../contexts/SessionContext';
 import {useToken} from '../../contexts/TokenContext';

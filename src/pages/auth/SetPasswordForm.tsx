@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
 import {toaster} from '../../toaster';
-import {ValidationAwareFormGroup} from '../../Components/ValidationAwareFormGroup';
+import {ValidationAwareFormGroup} from '../../components/ValidationAwareFormGroup';
 import {Spacing} from '../../Styles/variables';
-import {ValidationFailures} from '../../Api/errors/symfony';
+import {ValidationFailures} from '../../api/errors/symfony';
 
 interface IProps {
 	formHeader: string;
