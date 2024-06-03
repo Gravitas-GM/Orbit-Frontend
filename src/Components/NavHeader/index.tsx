@@ -1,18 +1,21 @@
-import * as React from 'react';
-import {Alignment, Button, Classes, Icon, IconSize, Intent, Navbar, Spinner} from '@blueprintjs/core';
+import {Alignment, Button, Classes, Icon, IconSize, Navbar} from '@blueprintjs/core';
 import {Popover2 as Popover} from '@blueprintjs/popover2';
+import * as React from 'react';
 import {Link} from 'react-router-dom';
-import {Permission, PermissionContext} from '../../Permission';
-import {UserContext} from '../../Session';
-import {renderUserName} from '../Utility/string';
+import {Permission} from '../../Api/permissions';
+import {useMaybeAppUser, usePermissions} from '../../contexts/SessionContext';
+import {renderUserName} from '../../utility/string';
 import {GameMenu} from './GameMenu';
+import './index.scss';
 import {QuizMenu} from './QuizMenu';
 import {UserMenu} from './UserMenu';
-import './index.scss';
 
-export const NavHeader: React.FC = () => {
-	const user = React.useContext(UserContext);
-	const [isGranted] = React.useContext(PermissionContext);
+export function NavHeader(): React.ReactElement | null {
+	const user = useMaybeAppUser();
+	const isPermissionGranted = usePermissions();
+
+	if (!user)
+		return null;
 
 	return (
 		<>
@@ -43,7 +46,7 @@ export const NavHeader: React.FC = () => {
 						<Button text="Quiz" minimal={true} rightIcon="caret-down" />
 					</Popover>
 
-					{isGranted(Permission.ADMIN) && (
+					{isPermissionGranted(Permission.Admin) && (
 						<>
 							<Navbar.Divider />
 
@@ -59,17 +62,15 @@ export const NavHeader: React.FC = () => {
 				</Navbar.Group>
 
 				<Navbar.Group align={Alignment.RIGHT}>
-					{user ? (
-						<Popover content={<UserMenu />}>
-							<Button
-								large
-								icon={<Icon icon="user" size={IconSize.LARGE} />}
-								rightIcon="caret-down"
-								minimal={true}
-								text={renderUserName(user)}
-							/>
-						</Popover>
-					) : <Spinner size={20} intent={Intent.PRIMARY} />}
+					<Popover content={<UserMenu />}>
+						<Button
+							large
+							icon={<Icon icon="user" size={IconSize.LARGE} />}
+							rightIcon="caret-down"
+							minimal={true}
+							text={renderUserName(user)}
+						/>
+					</Popover>
 				</Navbar.Group>
 			</Navbar>
 		</>

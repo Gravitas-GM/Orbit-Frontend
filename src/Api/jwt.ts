@@ -1,4 +1,8 @@
 import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} from './index';
+import {Permission} from './permissions';
+import {Role} from './roles';
+
+export type TokenRefreshedFn = (token: Token | null) => void;
 
 export class TokenStorage {
 	protected storageKey: string;
@@ -20,7 +24,7 @@ export class TokenStorage {
 		return this.token;
 	}
 
-	public setToken(token: Token | null) {
+	public setToken(token: Token | null, refreshCallback?: TokenRefreshedFn) {
 		if (token && (!token.isValid() || token.getTimeToLive() < 5))
 			token = null;
 
@@ -42,11 +46,11 @@ export class TokenStorage {
 			gameCatalogClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 
 			window.localStorage.setItem(this.storageKey, token.jwt);
-			this.scheduleRefreshTask();
+			this.scheduleRefreshTask(refreshCallback);
 		}
 	}
 
-	protected scheduleRefreshTask() {
+	protected scheduleRefreshTask(callback?: TokenRefreshedFn) {
 		const token = this.getToken();
 
 		if (!token)
@@ -58,6 +62,7 @@ export class TokenStorage {
 			const response = await hubApiClient.get('/auth/refresh');
 
 			this.setToken(new Token(response.data.token));
+			callback?.(this.token);
 		}, Math.max((token.getTimeToLive() - 60) * 1000, 1));
 	}
 
@@ -74,11 +79,11 @@ export class TokenStorage {
 interface JWTBody {
 	exp: number;
 	iat: number;
-	roles: string[];
+	roles: Role[];
 	userIdentifier: string;
 	id: number;
 	accountId: number;
-	permissions: string[];
+	permissions: Permission[];
 }
 
 export class Token {
@@ -96,9 +101,5 @@ export class Token {
 
 	public getTimeToLive() {
 		return this.body.exp - Math.ceil(Date.now() / 1000);
-	}
-
-	public static DEBUG_fromObject(token: JWTBody) {
-		return new Token('.' + btoa(JSON.stringify(token)) + '.');
 	}
 }

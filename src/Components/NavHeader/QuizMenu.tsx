@@ -1,17 +1,18 @@
-import * as React from 'react';
 import {Menu, MenuDivider} from '@blueprintjs/core';
+import * as React from 'react';
+import {Permission} from '../../Api/permissions';
+import {usePermissions} from '../../contexts/SessionContext';
 import {LinkedMenuItem} from './LinkedMenuItem';
-import {Permission, PermissionContext} from '../../Permission';
 
 export const QuizMenu: React.FC = () => {
-	const [isGranted] = React.useContext(PermissionContext);
+	const isPermissionGranted = usePermissions();
 
 	return (
 		<Menu>
 			<LinkedMenuItem to="/quiz" icon="predictive-analysis" text="Take A Quiz" />
 			<LinkedMenuItem to="/quiz/history" icon="history" text="Quiz History" />
 
-			{isGranted(Permission.ADMIN) && (
+			{isPermissionGranted(Permission.Admin) && (
 				<>
 					<MenuDivider />
 

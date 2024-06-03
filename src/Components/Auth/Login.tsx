@@ -1,15 +1,15 @@
-import * as React from 'react';
 import {Button, FormGroup, H1, InputGroup, Intent} from '@blueprintjs/core';
-import {Redirect, RouteComponentProps, withRouter} from 'react-router';
+import * as React from 'react';
+import {Navigate, withRouter, RouteComponentProps} from 'react-router-dom';
 import {isAuthenticated, login, tokenStorage} from '../../Api';
 import {ApiError} from '../../Api/errors/symfony';
 import {User, UserModel} from '../../Api/Hub/Models/Users';
+import {TokenContext} from '../../contexts/TokenContext';
 import {Spacing} from '../../Styles/variables';
 import {toaster} from '../../toaster';
-import {getPreviousPathFromState} from '../Utility/router';
 import {ForgotPasswordDialog} from './ForgotPasswordDialog';
-import {StartActivationDialog} from './StartActivationDialog';
 import './Login.scss';
+import {StartActivationDialog} from './StartActivationDialog';
 
 interface IProps extends RouteComponentProps {
 	onLoginSuccess: (user: User) => void;
@@ -25,6 +25,9 @@ interface IState {
 }
 
 class Login extends React.PureComponent<IProps, IState> {
+	static contextType = TokenContext;
+	declare context: React.ContextType<typeof TokenContext>;
+
 	public state: Readonly<IState> = {
 		emailAddress: '',
 		password: '',
@@ -42,7 +45,7 @@ class Login extends React.PureComponent<IProps, IState> {
 
 	public render(): JSX.Element {
 		if (this.state.redirect)
-			return <Redirect to={getPreviousPathFromState()} />;
+			return <Navigate to={} />;
 
 		return (
 			<div className="orbit-home-form">

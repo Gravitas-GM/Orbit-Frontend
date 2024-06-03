@@ -1,0 +1,153 @@
+import * as React from 'react';
+import {User, UserModel} from '../Api/Hub/Models/Users';
+import {Token} from '../Api/jwt';
+import {isPermissionGranted, MatchQuery, Permission} from '../Api/permissions';
+import {isRoleGranted, Role} from '../Api/roles';
+import {toaster} from '../toaster';
+import {wrap} from '../utility/component';
+import {ManagerProps} from './index';
+import {State as TokenState, useToken} from './TokenContext';
+
+type RoleCheckFn = (role: Role) => boolean;
+type PermissionCheckFn = (match: MatchQuery) => boolean;
+
+export interface Session {
+	user: User,
+	isRoleGranted: RoleCheckFn,
+	isPermissionGranted: PermissionCheckFn,
+}
+
+export const SessionContext = React.createContext<Session | null>(null);
+
+export function useSession(): Session | null {
+	return React.useContext(SessionContext);
+}
+
+export function usePermissions(): PermissionCheckFn {
+	const {isPermissionGranted} = useSession() ?? {};
+	return isPermissionGranted ?? (() => false);
+}
+
+export interface WithPermissionsProps {
+	isPermissionGranted: PermissionCheckFn,
+}
+
+export function withPermissions<P extends WithPermissionsProps>(component: React.ComponentType<P>) {
+	return wrap('withPermissions', component, () => ({
+		isPermissionGranted: usePermissions(),
+	}));
+}
+
+export function useFirewallRoles(): RoleCheckFn {
+	const {isRoleGranted} = useSession() ?? {};
+	return isRoleGranted ?? (() => false);
+}
+
+export function useMaybeAppUser(): User | null {
+	const session = useSession();
+	return session?.user ?? null;
+}
+
+export function useAppUser(): User {
+	const user = useMaybeAppUser();
+
+	if (!user) {
+		throw new Error(
+			'useAppUser() can only be used after the session has been loaded; did you mean useMaybeAppUser()?',
+		);
+	}
+
+	return user;
+}
+
+export interface WithAppUserProps {
+	user: User,
+}
+
+export function withAppUser<P extends WithAppUserProps>(Component: React.ComponentType<P>) {
+	return wrap('withAppUser', Component, () => ({
+		user: useAppUser(),
+	}));
+}
+
+export function SessionManager({children}: ManagerProps): React.ReactElement {
+	const tokenState = useToken();
+	return <SessionManagerInner tokenState={tokenState} children={children} />;
+}
+
+interface Props extends ManagerProps {
+	tokenState: TokenState,
+}
+
+interface State {
+	session: Session | null,
+	roles: Set<Role>,
+	permissions: Set<Permission>,
+}
+
+class SessionManagerInner extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
+		session: null,
+		roles: new Set(),
+		permissions: new Set(),
+	};
+
+	public async componentDidMount(): Promise<void> {
+		if (this.props.tokenState.token?.isValid())
+			await this.update(this.props.tokenState.token);
+	}
+
+	public async componentDidUpdate(prevProps: Readonly<Props>): Promise<void> {
+		if (this.props.tokenState === prevProps.tokenState)
+			return;
+
+		if (this.props.tokenState.token?.isValid())
+			await this.update(this.props.tokenState.token);
+		else
+			this.clearSession();
+	}
+
+	public render(): React.ReactElement {
+		return (
+			<SessionContext.Provider value={this.state.session}>
+				{this.props.children}
+			</SessionContext.Provider>
+		);
+	}
+
+	private update = async (token: Token) => {
+		this.setState({
+			roles: new Set(token.body.roles),
+		});
+
+		let user: User;
+
+		try {
+			user = await UserModel.read(token.body.id).then(r => r.data);
+		} catch (error) {
+			toaster.error('There was a problem retrieving your account information.');
+			this.clearSession();
+
+			throw error;
+		}
+
+		this.setState({
+			permissions: new Set(user.permissions),
+			session: {
+				user,
+				isRoleGranted: this.isRoleGranted,
+				isPermissionGranted: this.isPermissionGranted,
+			},
+		});
+	};
+
+	private clearSession = () => this.setState({
+		session: null,
+		roles: new Set(),
+		permissions: new Set(),
+	});
+
+	private isRoleGranted: RoleCheckFn = role => isRoleGranted(this.state.roles, role);
+
+	private isPermissionGranted: PermissionCheckFn = match => isPermissionGranted(this.state.permissions, match);
+}

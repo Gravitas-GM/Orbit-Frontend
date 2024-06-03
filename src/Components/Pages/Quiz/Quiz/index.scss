@@ -1,7 +1,0 @@
-@import '../../../../variables';
-@import './Timer';
-
-#quiz-form {
-	// Subtract $pt-grid-size from the timer's height since we'll already have some top margin from the header element.
-	margin-top: $gm-timer-height - $pt-grid-size;
-}
