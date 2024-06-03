@@ -1,12 +1,12 @@
-import * as React from 'react';
 import {Button, Classes, Dialog, FormGroup, InputGroup, Intent, NumericInput} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
 import {ItemRenderer} from '@blueprintjs/select';
-import {PointSourceItem} from '../../../../../Api/Point-Tracking/Models/Sources';
-import {MultiSelect} from '../../../../Select/MultiSelect';
-import {ucwords} from '../../../../../utility/string';
-import {toaster} from '../../../../../toaster';
-import {Spacing} from '../../../../../Styles/variables';
+import * as React from 'react';
+import {PointSourceItem} from '../../../../Api/Point-Tracking/Models/Sources';
+import {MultiSelect} from '../../../../Components/Select/MultiSelect';
+import {Spacing} from '../../../../Styles/variables';
+import {toaster} from '../../../../toaster';
+import {ucwords} from '../../../../utility/string';
 import {DialogPointItem} from './index';
 
 interface IProps {

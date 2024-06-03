@@ -1,9 +1,9 @@
-import * as React from 'react';
-import {ItemRenderer} from '@blueprintjs/select';
 import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
 import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {QuestionTag} from '../../../../../Api/Quiz/Models/QuestionTags';
-import {Select} from '../../../../Select/Select';
+import {ItemRenderer} from '@blueprintjs/select';
+import * as React from 'react';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
+import {Select} from '../../../../Components/Select/Select';
 
 interface IProps {
 	tags: QuestionTag[];
@@ -12,7 +12,7 @@ interface IProps {
 	onSubmit: (questionTag: QuestionTag) => void;
 }
 
-export const AddTagDialog: React.FC<IProps> = props => {
+export function AddTagDialog(props: IProps): React.ReactElement {
 	const [selectedTag, setSelectedTag] = React.useState<QuestionTag | null>();
 
 	return (
@@ -71,9 +71,10 @@ export const AddTagDialog: React.FC<IProps> = props => {
 			</div>
 		</Dialog>
 	);
-};
+}
 
-const renderTag: ItemRenderer<QuestionTag> = (tag,
+const renderTag: ItemRenderer<QuestionTag> = (
+	tag,
 	{
 		handleClick,
 		handleFocus,

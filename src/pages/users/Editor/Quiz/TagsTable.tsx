@@ -1,29 +1,28 @@
-import * as React from 'react';
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
-import {PointItem} from '../../../../../Api/Point-Tracking/Models/Points';
-import {Spacing} from '../../../../../Styles/variables';
-import {NonIdealState} from '../../../../NonIdealState';
-import {formatDateTime} from '../../../../../utility/date';
-import {formatNumber, ucwords} from '../../../../../utility/string';
+import * as React from 'react';
+import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
+import {NonIdealState} from '../../../../Components/NonIdealState';
+import {Spacing} from '../../../../Styles/variables';
+import {ucwords} from '../../../../utility/string';
 
-interface ITableProps {
-	onAddPointsClick: () => void;
+interface TableProps {
+	onAddTagClick: () => void;
 	onSelectAll: () => void;
 	allSelected: boolean;
 	children?: React.ReactNode;
 }
 
-export const PointsTable: React.FC<ITableProps> = props => {
+export function TagsTable(props: TableProps): React.ReactElement {
 	if (React.Children.count(props.children) === 0) {
 		return (
 			<NonIdealState
-				title="This user doesn't have any points assigned"
-				description="You can start assigning points using the button below"
+				title="This user doesn't have any tags assigned"
+				description="You can start assigning tags using the button below"
 				action={(
 					<Button
 						icon="plus"
-						text="Add Points"
-						onClick={props.onAddPointsClick}
+						text="Add Tag"
+						onClick={props.onAddTagClick}
 						outlined={true}
 						intent={Intent.PRIMARY}
 					/>
@@ -40,10 +39,7 @@ export const PointsTable: React.FC<ITableProps> = props => {
 						<Checkbox checked={props.allSelected} onClick={props.onSelectAll} />
 					</th>
 
-					<th>Source</th>
-					<th>Point Value</th>
-					<th>Timestamp</th>
-					<th>Description</th>
+					<th>Label</th>
 					<th style={{width: 100, textAlign: 'center'}}>Delete</th>
 				</tr>
 			</thead>
@@ -53,33 +49,30 @@ export const PointsTable: React.FC<ITableProps> = props => {
 			</tbody>
 		</HTMLTable>
 	);
-};
+}
 
-interface IRowProps {
-	item: PointItem;
-	onDelete: (items: PointItem) => void;
+interface RowProps {
+	item: QuestionTag;
+	onDelete: (items: QuestionTag) => void;
 	isChecked: boolean;
-	onSelect: (item: PointItem) => void;
+	onSelect: (item: QuestionTag) => void;
 	loading?: boolean;
 }
 
-export const PointsTableRow: React.FC<IRowProps> = ({
+export function TagsTableRow({
 	item,
 	loading,
 	isChecked,
 	onDelete,
 	onSelect,
-}) => {
+}: RowProps): React.ReactElement {
 	const onDeleteClick = React.useCallback(() => onDelete(item), [onDelete, item]);
 	const onCheckboxClick = React.useCallback(() => onSelect(item), [onSelect, item]);
 
 	return (
 		<tr>
 			<td><Checkbox checked={isChecked} onClick={onCheckboxClick} /></td>
-			<td>{ucwords(item.source)}</td>
-			<td>{formatNumber(item.point_value)}</td>
-			<td>{formatDateTime(item.timestamp)}</td>
-			<td>{item.description ?? <>—</>}</td>
+			<td>{ucwords(item.label)}</td>
 			<td style={{textAlign: 'center'}}>
 				<Button
 					icon="delete"
@@ -91,4 +84,4 @@ export const PointsTableRow: React.FC<IRowProps> = ({
 			</td>
 		</tr>
 	);
-};
+}

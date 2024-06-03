@@ -1,12 +1,12 @@
-import * as React from 'react';
 import {Divider, H1, Tab, Tabs} from '@blueprintjs/core';
-import {Redirect, Route, RouteComponentProps, Switch} from 'react-router';
-import {Link} from 'react-router-dom';
-import {User, UserModel} from '../../../../Api/Hub/Models/Users';
-import {Classes} from '../../../../classes';
-import {toaster} from '../../../../toaster';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {renderUserName} from '../../../../utility/string';
+import * as React from 'react';
+import {Link, Navigate, Route, Routes} from 'react-router-dom';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Classes} from '../../../classes';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {withRouteParams, WithRouteParamsProps} from '../../../Components/Router/withRouteParams';
+import {toaster} from '../../../toaster';
+import {renderUserName} from '../../../utility/string';
 import {PointsTab} from './Points';
 import {QuizTab} from './Quiz';
 import {UserTab} from './UserTab';
@@ -17,11 +17,11 @@ const TabId = {
 	POINTS: 'points',
 };
 
-interface RouteProps {
+interface RouteParams {
 	user: string,
 }
 
-type Props = RouteComponentProps<RouteProps>;
+type Props = WithRouteParamsProps<RouteParams>;
 
 interface State {
 	user: User | null,
@@ -29,7 +29,7 @@ interface State {
 	activeTab: string,
 }
 
-export class UserEditor extends React.PureComponent<Props, State> {
+class UserEditor extends React.PureComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 
@@ -41,10 +41,14 @@ export class UserEditor extends React.PureComponent<Props, State> {
 	}
 
 	public async componentDidMount() {
+		const id = this.props.params.user;
+
+		if (!id)
+			throw new Error('Missing required route parameter `user`');
+
 		try {
 			this.setState({
-				user: await UserModel.read(this.props.match.params.user)
-					.then(r => r.data),
+				user: await UserModel.read(id).then(r => r.data),
 			});
 		} catch {
 			toaster.showUnhandledErrorMessage();
@@ -57,7 +61,7 @@ export class UserEditor extends React.PureComponent<Props, State> {
 
 	public render() {
 		if (this.state.redirectTo)
-			return <Redirect to={this.state.redirectTo} />;
+			return <Navigate to={this.state.redirectTo} />;
 		else if (this.state.user === null)
 			return <FrameLoadingSpinner />;
 
@@ -73,21 +77,11 @@ export class UserEditor extends React.PureComponent<Props, State> {
 				</Tabs>
 
 				<div style={{marginTop: 10}}>
-					<Switch>
-						<Route path="/users/:user(\d+)" children={<UserTab user={this.state.user} />} exact={true} />
-
-						<Route
-							path="/users/:user(\d+)/points"
-							children={<PointsTab user={this.state.user} />}
-							exact={true}
-						/>
-
-						<Route
-							path="/users/:user(\d+)/quiz"
-							children={<QuizTab user={this.state.user} />}
-							exact={true}
-						/>
-					</Switch>
+					<Routes>
+						<Route index={true} element={<UserTab user={this.state.user} />} />
+						<Route path="points" element={<PointsTab user={this.state.user} />} />
+						<Route path="quiz" element={<QuizTab user={this.state.user} />} />
+					</Routes>
 				</div>
 			</div>
 		);
@@ -97,6 +91,9 @@ export class UserEditor extends React.PureComponent<Props, State> {
 		activeTab: newTabId,
 	});
 }
+
+const Wrapped = withRouteParams(UserEditor);
+export {Wrapped as UserEditor};
 
 function getInitialTabId(): string {
 	const path = window.location.pathname;

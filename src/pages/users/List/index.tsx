@@ -1,22 +1,15 @@
-import * as React from 'react';
 import {Button, HTMLTable, Intent} from '@blueprintjs/core';
-import {User, UserModel} from '../../../../Api/Hub/Models/Users';
-import {Classes} from '../../../../classes';
-import {Permission} from '../../../../Permission';
-import {Spacing} from '../../../../Styles/variables';
-import {toaster} from '../../../../toaster';
-import {DeleteDialog} from '../../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {ObjectList} from '../../../ObjectList';
-import {compareStrings, renderUserName} from '../../../../utility/string';
-import {LinkButton} from '../../../LinkButton';
-
-interface IState {
-	users: User[];
-	loading: boolean;
-	processing: boolean;
-	deleteTarget: User | null;
-}
+import * as React from 'react';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Permission} from '../../../Api/permissions';
+import {Classes} from '../../../classes';
+import {DeleteDialog} from '../../../Components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {LinkButton} from '../../../Components/LinkButton';
+import {ObjectList} from '../../../Components/ObjectList';
+import {Spacing} from '../../../Styles/variables';
+import {toaster} from '../../../toaster';
+import {compareStrings, renderUserName} from '../../../utility/string';
 
 function sortUsers(a: User, b: User) {
 	const compare = compareStrings(a.lastName ?? '', b.lastName ?? '');
@@ -27,8 +20,15 @@ function sortUsers(a: User, b: User) {
 	return compareStrings(a.firstName ?? '', b.firstName ?? '');
 }
 
-export class UsersList extends React.PureComponent<{}, IState> {
-	public state: Readonly<IState> = {
+interface State {
+	users: User[],
+	loading: boolean,
+	processing: boolean,
+	deleteTarget: User | null,
+}
+
+export class UsersList extends React.PureComponent<{}, State> {
+	public state: Readonly<State> = {
 		users: [],
 		loading: true,
 		processing: false,
@@ -80,7 +80,7 @@ export class UsersList extends React.PureComponent<{}, IState> {
 									<tr key={`user-${user.id}`}>
 										<td>{renderUserName(user)}</td>
 										<td>{user.emailAddress}</td>
-										<td>{user.permissions.includes(Permission.ADMIN) ? 'Yes' : 'No'}</td>
+										<td>{user.permissions.includes(Permission.Admin) ? 'Yes' : 'No'}</td>
 										<td style={{textAlign: 'center'}}>
 											<LinkButton
 												icon="edit"

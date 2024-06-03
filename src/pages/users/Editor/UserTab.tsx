@@ -1,12 +1,13 @@
-import * as React from 'react';
 import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
-import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {User, UserModel} from '../../../../Api/Hub/Models/Users';
-import {Permission, PermissionContext} from '../../../../Permission';
-import {toaster} from '../../../../toaster';
-import {FormControls} from '../../../FormControls';
+import * as React from 'react';
+import {isValidationFailureError, ValidationFailures} from '../../../Api/errors/symfony';
+import {User, UserModel} from '../../../Api/Hub/Models/Users';
+import {Permission} from '../../../Api/permissions';
+import {FormControls} from '../../../Components/FormControls';
+import {withPermissions, WithPermissionsProps} from '../../../contexts/SessionContext';
+import {toaster} from '../../../toaster';
 
-interface Props {
+interface Props extends WithPermissionsProps {
 	user: User,
 }
 
@@ -19,10 +20,7 @@ interface State {
 	validationFailures: ValidationFailures | null;
 }
 
-export class UserTab extends React.PureComponent<Props, State> {
-	static contextType = PermissionContext;
-	declare context: React.ContextType<typeof PermissionContext>;
-
+class UserTab extends React.PureComponent<Props, State> {
 	public constructor(props: Props) {
 		super(props);
 
@@ -44,8 +42,7 @@ export class UserTab extends React.PureComponent<Props, State> {
 	}
 
 	public render() {
-		const [hasPermission] = this.context;
-		const redirectPath = hasPermission(Permission.ADMIN) ? '/users' : '/';
+		const redirectPath = this.props.isPermissionGranted(Permission.Admin) ? '/users' : '/';
 
 		return (
 			<form>
@@ -139,8 +136,11 @@ export class UserTab extends React.PureComponent<Props, State> {
 	};
 }
 
+const Wrapped = withPermissions(UserTab);
+export {Wrapped as UserTab};
+
 function getInitialPermissionProps(permissions: Permission[]): Pick<State, 'admin'> {
 	return {
-		admin: permissions.includes(Permission.ADMIN),
+		admin: permissions.includes(Permission.Admin),
 	};
 }

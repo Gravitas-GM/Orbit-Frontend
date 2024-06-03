@@ -1,15 +1,15 @@
 import React from 'react';
-import {ApiError} from '../../../Api/errors/symfony';
-import {GamesModel} from '../../../Api/Game-State/Models/Games';
-import {QuizModel} from '../../../Api/Quiz/Models/Quiz';
-import {Classes} from '../../../classes';
-import {UserContext} from '../../../Session';
-import {toaster} from '../../../toaster';
-import {PageHeader} from '../../PageHeader';
+import {ApiError} from '../../Api/errors/symfony';
+import {GamesModel} from '../../Api/Game-State/Models/Games';
+import {QuizModel} from '../../Api/Quiz/Models/Quiz';
+import {Classes} from '../../classes';
+import {PageHeader} from '../../Components/PageHeader';
+import {useAppUser} from '../../contexts/SessionContext';
+import {toaster} from '../../toaster';
 import {DebugButton} from './DebugButton';
 
 export const DebugControls: React.FC = () => {
-	const user = React.useContext(UserContext);
+	const user = useAppUser();
 
 	const onStopGameClick = React.useCallback(async () => {
 		if (!user)

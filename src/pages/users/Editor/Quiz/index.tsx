@@ -1,38 +1,34 @@
 import * as React from 'react';
-import {User} from '../../../../../Api/Hub/Models/Users';
-import {QuestionTag, QuestionTagModel} from '../../../../../Api/Quiz/Models/QuestionTags';
-import {Classes} from '../../../../../classes';
-import {UserContext} from '../../../../../Session';
-import {toaster} from '../../../../../toaster';
-import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
-import {ObjectList} from '../../../../ObjectList';
-import {allSettled, isRejectedResult} from '../../../../../utility/promise';
-import {ucwords} from '../../../../../utility/string';
+import {User} from '../../../../Api/Hub/Models/Users';
+import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
+import {Classes} from '../../../../classes';
+import {DeleteDialog, DeleteSubject} from '../../../../Components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../../Components/FrameLoadingSpinner';
+import {ObjectList} from '../../../../Components/ObjectList';
+import {toaster} from '../../../../toaster';
+import {allSettled, isRejectedResult} from '../../../../utility/promise';
+import {ucwords} from '../../../../utility/string';
 import {AddTagDialog} from './AddTagDialog';
 import {TagsTable, TagsTableRow} from './TagsTable';
 
-interface IProps {
-	user: User;
+interface Props {
+	user: User,
 }
 
-interface IState {
-	loading: boolean;
-	processing: boolean;
-	deleteSubject: string | null;
-	deleteTargets: QuestionTag[];
-	showAddTagDialog: boolean;
-	showDeleteDialog: boolean;
-	tags: QuestionTag[];
-	selectedItems: QuestionTag[];
-	assignedTags: QuestionTag[];
+interface State {
+	loading: boolean,
+	processing: boolean,
+	deleteSubject: string | null,
+	deleteTargets: QuestionTag[],
+	showAddTagDialog: boolean,
+	showDeleteDialog: boolean,
+	tags: QuestionTag[],
+	selectedItems: QuestionTag[],
+	assignedTags: QuestionTag[],
 }
 
-export class QuizTab extends React.PureComponent<IProps, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
-
-	public state: Readonly<IState> = {
+export class QuizTab extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
 		loading: true,
 		processing: false,
 		deleteSubject: null,
@@ -126,7 +122,7 @@ export class QuizTab extends React.PureComponent<IProps, IState> {
 
 	private onItemFilter = (item: QuestionTag, searchText: string) => {
 		return item.label.toLocaleLowerCase().includes(searchText);
-	}
+	};
 
 	private onAddTagClick = () => this.setState({
 		showAddTagDialog: true,

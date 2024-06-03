@@ -29,7 +29,7 @@ export const UserMenu: React.FC = () => {
 			/>
 
 			{Config.isDev && isPermissionGranted(Permission.Admin) && (
-				<LinkedMenuItem to="/debug-controls" icon="console" text="Debug Controls" />
+				<LinkedMenuItem to="/debug" icon="console" text="Debug Controls" />
 			)}
 
 			<MenuDivider />

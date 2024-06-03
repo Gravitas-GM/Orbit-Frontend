@@ -1,5 +1,5 @@
 import {Button} from '@blueprintjs/core';
-import React from 'react';
+import * as React from 'react';
 
 interface Props {
 	onClick: () => Promise<void>,
@@ -7,7 +7,7 @@ interface Props {
 	text?: React.ReactNode,
 }
 
-export const DebugButton: React.FC<Props> = ({onClick, children, text}) => {
+export function DebugButton({onClick, children, text}: Props): React.ReactElement {
 	const [processing, setProcessing] = React.useState(false);
 	const onButtonClick = React.useCallback(async () => {
 		setProcessing(true);
@@ -24,4 +24,4 @@ export const DebugButton: React.FC<Props> = ({onClick, children, text}) => {
 			<Button onClick={onButtonClick} children={children} text={text} loading={processing} />
 		</div>
 	);
-};
+}

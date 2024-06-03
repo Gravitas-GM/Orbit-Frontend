@@ -6,9 +6,11 @@ import {PrivateRoutes} from './Components/Router/PrivateRoutes';
 import './Layout.scss';
 import {useSession} from './contexts/SessionContext';
 import {useToken} from './contexts/TokenContext';
+import {DebugRoutes} from './pages/debug';
 import {GameRoutes} from './pages/game';
 import {Home} from './pages/home';
 import {QuizRoutes} from './pages/quiz';
+import {UserRoutes} from './pages/users';
 
 export const Layout: React.FC = () => {
 	const {token} = useToken();
@@ -37,6 +39,9 @@ export const Layout: React.FC = () => {
 					<Route index={true} element={<Home />} />
 					<Route path="/game/*" element={<GameRoutes />} />
 					<Route path="/quiz/*" element={<QuizRoutes />} />
+					<Route path="/users/*" element={<UserRoutes />} />
+
+					<Route path="/debug/*" element={<DebugRoutes />} />
 				</PrivateRoutes>
 			</div>
 		</div>

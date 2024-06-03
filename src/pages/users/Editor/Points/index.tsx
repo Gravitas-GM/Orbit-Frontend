@@ -1,15 +1,14 @@
 import * as React from 'react';
-import {ApiError} from '../../../../../Api/errors/rocket';
-import {User} from '../../../../../Api/Hub/Models/Users';
-import {PointItem, PointsModel, UserPoints} from '../../../../../Api/Point-Tracking/Models/Points';
-import {PointSourceItem, PointSourceModel} from '../../../../../Api/Point-Tracking/Models/Sources';
-import {Classes} from '../../../../../classes';
-import {UserContext} from '../../../../../Session';
-import {toaster} from '../../../../../toaster';
-import {DeleteDialog, DeleteSubject} from '../../../../DeleteDialog';
-import {FrameLoadingSpinner} from '../../../../FrameLoadingSpinner';
-import {ObjectList} from '../../../../ObjectList';
-import {allSettled, isRejectedResult} from '../../../../../utility/promise';
+import {ApiError} from '../../../../Api/errors/rocket';
+import {User} from '../../../../Api/Hub/Models/Users';
+import {PointItem, PointsModel, UserPoints} from '../../../../Api/Point-Tracking/Models/Points';
+import {PointSourceItem, PointSourceModel} from '../../../../Api/Point-Tracking/Models/Sources';
+import {Classes} from '../../../../classes';
+import {DeleteDialog, DeleteSubject} from '../../../../Components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../../Components/FrameLoadingSpinner';
+import {ObjectList} from '../../../../Components/ObjectList';
+import {toaster} from '../../../../toaster';
+import {allSettled, isRejectedResult} from '../../../../utility/promise';
 import {AddPointsDialog} from './AddPointsDialog';
 import {PointsTable, PointsTableRow} from './PointsTable';
 
@@ -19,11 +18,15 @@ export type DialogPointItem = {
 	description?: string;
 };
 
-interface IProps {
-	user: User;
+function sortPointsByDate(a: PointItem, b: PointItem) {
+	return b.timestamp.getTime() - a.timestamp.getTime();
 }
 
-interface IState {
+interface Props {
+	user: User,
+}
+
+interface State {
 	loading: boolean;
 	pointItems: PointItem[];
 	processing: boolean;
@@ -35,15 +38,8 @@ interface IState {
 	showDeleteDialog: boolean;
 }
 
-function sortPointsByDate (a: PointItem, b: PointItem) {
-	return b.timestamp.getTime() - a.timestamp.getTime();
-}
-
-export class PointsTab extends React.PureComponent<IProps, IState> {
-	public static contextType = UserContext;
-	declare context: React.ContextType<typeof UserContext>;
-
-	public state: Readonly<IState> = {
+export class PointsTab extends React.PureComponent<Props, State> {
+	public state: Readonly<State> = {
 		loading: true,
 		processing: false,
 		showAddPointsDialog: false,
@@ -70,7 +66,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 		let sources: PointSourceItem[] = [];
 
 		try {
-			sources = await PointSourceModel.list(this.context!.account.id).then(response => response.data);
+			sources = await PointSourceModel.list(this.props.user.account.id).then(response => response.data);
 		} catch (_) {
 			toaster.showUnhandledErrorMessage();
 		}
@@ -138,7 +134,7 @@ export class PointsTab extends React.PureComponent<IProps, IState> {
 
 	private onItemFilter = (item: PointItem, searchText: string) => {
 		return item.source.toLocaleLowerCase().includes(searchText);
-	}
+	};
 
 	private onAddPointsClick = () => this.setState({
 		showAddPointsDialog: true,
