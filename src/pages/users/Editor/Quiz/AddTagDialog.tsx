@@ -1,5 +1,4 @@
-import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {QuestionTag} from '../../../../api/Quiz/Models/QuestionTags';

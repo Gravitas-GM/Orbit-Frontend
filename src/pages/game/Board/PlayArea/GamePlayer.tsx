@@ -1,5 +1,4 @@
-import {Button, H5, H6} from '@blueprintjs/core';
-import {Popover2 as Popover} from '@blueprintjs/popover2';
+import {Button, H5, H6, Popover} from '@blueprintjs/core';
 import * as React from 'react';
 import {PlayerState} from '../../../../api/Game-State/Models/Games';
 import {Spacing} from '../../../../Styles/variables';

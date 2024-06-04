@@ -4,18 +4,18 @@ import './PageHeader.scss';
 import {useTitle} from '../hooks/useTitle';
 
 interface IProps {
-	title: string;
-	children?: React.ReactNode;
+	title?: string,
+	children?: React.ReactNode,
+	setPageTitle?: boolean,
 }
 
-export const PageHeader: React.FC<IProps> = ({title, children}) => {
-	useTitle(title);
+export function PageHeader({title, children, setPageTitle = true}: IProps): React.ReactElement {
+	useTitle(setPageTitle ? title : undefined);
 
 	return (
 		<header className="header-container">
-			<H2>{title}</H2>
-
+			{title && <H2>{title}</H2>}
 			{children}
 		</header>
 	);
-};
+}

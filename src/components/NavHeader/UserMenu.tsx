@@ -1,6 +1,5 @@
-import {Menu, MenuDivider} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2/lib/esm/menuItem2';
-import * as React from 'react';
+import {Menu, MenuDivider, MenuItem} from '@blueprintjs/core';
+import {ReactElement, useCallback, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {Permission} from '../../api/permissions';
 import {Config} from '../../config';
@@ -8,12 +7,12 @@ import {usePermissions} from '../../contexts/SessionContext';
 import {useToken} from '../../contexts/TokenContext';
 import {LinkedMenuItem} from './LinkedMenuItem';
 
-export const UserMenu: React.FC = () => {
-	const [redirect, setRedirect] = React.useState<string | null>(null);
+export function UserMenu(): ReactElement {
+	const [redirect, setRedirect] = useState<string | null>(null);
 	const {setToken} = useToken();
 	const isPermissionGranted = usePermissions();
 
-	const logout = React.useCallback(() => {
+	const logout = useCallback(() => {
 		setToken(null);
 		setRedirect('/login');
 	}, []);
@@ -41,6 +40,4 @@ export const UserMenu: React.FC = () => {
 			/>
 		</Menu>
 	);
-};
-
-UserMenu.displayName = 'UserMenu';
+}

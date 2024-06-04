@@ -1,6 +1,5 @@
-import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
-import {ItemRenderer, Select2 as Select} from '@blueprintjs/select';
+import {Button, Classes, Dialog, Intent, MenuItem} from '@blueprintjs/core';
+import {ItemRenderer, Select} from '@blueprintjs/select';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Game, GameModel} from '../../../../../api/Game-Catalog/Models/Games';
 import {GameStartPayload} from '../../../../../api/Game-State/Models/Games';

@@ -1,5 +1,4 @@
-import {Button} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, MenuItem} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {User} from '../../../api/Hub/Models/Users';

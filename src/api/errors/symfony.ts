@@ -1,5 +1,5 @@
-import { TypedAxiosInstance } from 'restyped-axios';
-import { isAxiosErrorResponse } from '.';
+import {TypedAxiosInstance} from 'restyped-axios';
+import {isAxiosErrorResponse} from '.';
 
 interface StackTraceItem {
 	namespace: string;
@@ -92,13 +92,8 @@ export function isApiErrorResponse(value: any): value is ErrorResponse {
 /**
  * Attaches response handlers appropriate for our usual Symfony API responses. Responses that contain
  * errors, regardless of the HTTP status code, will be converted into `ApiError` types and thrown.
- *
- * The use of `TypedAxiosInstance<any>` here bothers me; it _should_ be possible to accept any
- * `AxiosInstance` type, but for some reason Typescript claims that `TypedAxiosInstance<T>` doesn't
- * contain the same properties that `AxiosInstance` does. Since we're using typed clients in the project
- * anyway, I think this is fine and shouldn't cause any problems down the road. /tyler
  */
-export function attachResponseHandlers(client: TypedAxiosInstance<any>): void {
+export function attachResponseHandlers(client: TypedAxiosInstance): void {
 	client.interceptors.response.use(response => {
 		if (isApiErrorResponse(response.data)) {
 			const error = response.data.error;

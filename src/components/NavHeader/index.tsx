@@ -1,5 +1,4 @@
-import {Alignment, Button, Classes, Icon, IconSize, Navbar} from '@blueprintjs/core';
-import {Popover2 as Popover} from '@blueprintjs/popover2';
+import {Alignment, Button, Classes, Icon, IconSize, Navbar, Popover} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link} from 'react-router-dom';
 import {Permission} from '../../api/permissions';

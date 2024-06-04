@@ -6,6 +6,7 @@ import {AuthenticationModel} from './Hub/Models/Authentication';
 import {Token, TokenStorage} from './jwt';
 import * as pointTrackingApi from './Point-Tracking';
 import * as quizApi from './Quiz';
+import * as surveyApi from './Survey';
 
 export interface Entity {
 	id: number,
@@ -75,6 +76,7 @@ export const pointTrackingClient = pointTrackingApi.init();
 export const gameStateClient = gameStateApi.init();
 export const gameCatalogClient = gameCatalogApi.init();
 export const quizClient = quizApi.init();
+export const surveyClient = surveyApi.init();
 
 export const tokenStorage = new TokenStorage();
 tokenStorage.initialize();

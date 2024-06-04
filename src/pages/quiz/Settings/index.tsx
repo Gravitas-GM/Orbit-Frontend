@@ -1,5 +1,4 @@
-import {Button, InputGroup, Intent, NumericInput, Switch} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, InputGroup, Intent, MenuItem, NumericInput, Switch} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';

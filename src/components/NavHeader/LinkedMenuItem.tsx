@@ -1,6 +1,6 @@
+import {MenuItem, MenuItemProps} from '@blueprintjs/core';
 import * as React from 'react';
 import {Link, LinkProps} from 'react-router-dom';
-import {MenuItem2 as MenuItem, MenuItem2Props as MenuItemProps} from '@blueprintjs/popover2';
 
 interface Props {
 	to: LinkProps['to'];

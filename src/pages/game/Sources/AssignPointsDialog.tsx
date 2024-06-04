@@ -1,11 +1,10 @@
-import * as React from 'react';
-import {Button, Classes, Dialog, FormGroup, Intent} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, Classes, Dialog, FormGroup, Intent, MenuItem} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
-import {MultiSelect} from '../../../components/Select/MultiSelect';
+import * as React from 'react';
 import {User, UserModel} from '../../../api/Hub/Models/Users';
 import {PointsModel} from '../../../api/Point-Tracking/Models/Points';
 import {PointSourceItem} from '../../../api/Point-Tracking/Models/Sources';
+import {MultiSelect} from '../../../components/Select/MultiSelect';
 import {toaster} from '../../../toaster';
 import {allSettled} from '../../../utility/promise';
 import {compareStrings, renderUserName, ucwords} from '../../../utility/string';

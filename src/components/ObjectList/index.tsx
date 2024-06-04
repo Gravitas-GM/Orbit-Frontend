@@ -9,7 +9,7 @@ import {Pagination} from '../Pagination';
 import './index.scss';
 
 interface Props<T> {
-	title: string;
+	title?: string;
 	items: T[];
 	onItemFilter?: (a: T, searchText: string) => boolean;
 	children: (items: T[]) => React.ReactNode;
@@ -154,7 +154,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	return (
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
-			<PageHeader title={props.title}>
+			<PageHeader title={props.title} setPageTitle={false}>
 				<div className="header-controls">
 					{props.controls ??
 						(

@@ -1,5 +1,4 @@
-import {Intent, Menu} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Intent, Menu, MenuItem} from '@blueprintjs/core';
 import * as React from 'react';
 
 interface Props {
