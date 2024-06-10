@@ -3,8 +3,10 @@ import {Config} from '../../config';
 import {attachResponseHandlers} from '../errors/symfony';
 import {Entity} from '../index';
 import {SurveyBankEndpoints} from './Models/SurveyBankModel';
+import {SurveyBankQuestionEndpoints} from './Models/SurveyBankQuestionModel';
+import {SurveyEndpoints} from './Models/SurveyModel';
 
-type Endpoints = SurveyBankEndpoints;
+type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SurveyBankQuestionEndpoints;
 
 export enum QuestionKind {
 	FreeText = 'free text',

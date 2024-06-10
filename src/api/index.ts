@@ -93,3 +93,5 @@ export async function login(username: string, password: string) {
 export function isAuthenticated() {
 	return tokenStorage.getToken()?.isValid();
 }
+
+export type ListFn<T> = (projection?: Projection, query?: QueryDocument) => Promise<T[]>;

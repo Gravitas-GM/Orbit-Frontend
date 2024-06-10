@@ -20,6 +20,7 @@ interface Props<T> {
 	bulkDeleteDisabled?: boolean;
 	itemsPerPage?: number;
 	controls?: React.ReactNode;
+	setPageTitle?: boolean,
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
@@ -154,7 +155,7 @@ export function ObjectList<T>(props: Props<T>): React.ReactElement {
 
 	return (
 		<section id="object-list" className={Classes.PAGE_WRAPPER}>
-			<PageHeader title={props.title} setPageTitle={false}>
+			<PageHeader title={props.title} setPageTitle={props.setPageTitle ?? false}>
 				<div className="header-controls">
 					{props.controls ??
 						(

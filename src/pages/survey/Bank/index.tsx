@@ -1,64 +1,169 @@
-import {Checkbox, HTMLTable, Menu, MenuItem} from '@blueprintjs/core';
-import {ReactElement, useCallback, useEffect, useState} from 'react';
-import {ApiError} from '../../../api/errors/symfony';
+import {Blockquote, Checkbox, HTMLTable, Menu, MenuItem} from '@blueprintjs/core';
+import * as React from 'react';
+import {PureComponent, ReactElement, useCallback, useState} from 'react';
 import {BankSurvey, SurveyBankModel} from '../../../api/Survey/Models/SurveyBankModel';
 import {Classes as GMClasses} from '../../../classes';
 import {ControlsMenu} from '../../../components/ControlsMenu';
+import {DeleteDialog} from '../../../components/DeleteDialog';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {LinkButton} from '../../../components/LinkButton';
+import {LinkedMenuItem} from '../../../components/NavHeader/LinkedMenuItem';
 import {NonIdealState} from '../../../components/NonIdealState';
 import {ObjectList} from '../../../components/ObjectList';
 import {PageHeader} from '../../../components/PageHeader';
 import {Spacing} from '../../../Styles/variables';
 import {toaster} from '../../../toaster';
+import {allSettled, isRejectedResult} from '../../../utility/promise';
 
-export function Bank(): ReactElement {
-	// Also used to derive our loading state. The component is loading when `surveys` is null.
-	const [surveys, setSurveys] = useState<BankSurvey[] | null>(null);
-	const [recurringSurvey, setRecurringSurvey] = useState<BankSurvey | null>(null);
-
-	useEffect(() => {
-		SurveyBankModel.list()
-			.then(response => {
-				const surveys = response.data;
-
-				if (surveys.length > 0)
-					setRecurringSurvey(surveys.shift()!);
-
-				setSurveys(surveys);
-			})
-			.catch(error => {
-				if (error instanceof ApiError)
-					toaster.error(error.message);
-				else
-					toaster.showUnhandledErrorMessage();
-			});
-	}, []);
-
-	if (surveys === null)
-		return <FrameLoadingSpinner />;
-	else if (!recurringSurvey)
-		return <NonIdealState title="No items found." />;
-
-	return (
-		<>
-			<div className={GMClasses.PAGE_WRAPPER}>
-				<PageHeader title="Survey Bank" />
-			</div>
-
-			<BankTable title="Recurring Survey" items={[recurringSurvey]} />
-
-			<BankTable title="Rotating Surveys" items={surveys} showWeek={true} />
-		</>
-	);
+interface State {
+	// Also used to derive our loading state. If `surveys` is null, the component has not finished loading yet.
+	surveys: BankSurvey[] | null,
+	recurringSurvey: BankSurvey | null,
+	deleteTargets: BankSurvey[] | null,
 }
+
+export class Bank extends PureComponent<{}, State> {
+	public state: Readonly<State> = {
+		surveys: null,
+		recurringSurvey: null,
+		deleteTargets: null,
+	};
+
+	public async componentDidMount(): Promise<void> {
+		await this.refresh();
+	}
+
+	public render(): ReactElement {
+		if (this.state.surveys === null)
+			return <FrameLoadingSpinner />;
+		else if (this.state.recurringSurvey === null)
+			return <NonIdealState title="No items found." />;
+
+		return (
+			<>
+				<div className={GMClasses.PAGE_WRAPPER}>
+					<PageHeader title="Survey Bank">
+						<LinkButton to="/survey/bank/new" intent="primary" icon="add" text="Create New Survey" />
+					</PageHeader>
+				</div>
+
+				<BankTable
+					title="Recurring Survey"
+					items={[this.state.recurringSurvey]}
+					onDelete={this.onItemDelete}
+					onBulkDelete={this.onBulkItemDelete}
+				/>
+
+				<BankTable
+					title="Rotating Surveys"
+					items={this.state.surveys}
+					showWeek={true}
+					onDelete={this.onItemDelete}
+					onBulkDelete={this.onBulkItemDelete}
+				/>
+
+				<DeleteDialog
+					isOpen={this.state.deleteTargets !== null}
+					onConfirm={this.onItemDeleteConfirm}
+					onCancel={this.onItemDeleteCancel}
+					subject="DELETE"
+				>
+					{this.state.deleteTargets?.length === 1 && (
+						<>
+							<p>
+								You are about to permanently delete the
+								{this.state.deleteTargets[0].week === 0 ? (
+									<> recurring survey</>
+								) : (
+									<> survey bank item for Week #{this.state.deleteTargets[0].week}</>
+								)} with the following prompt(s).
+							</p>
+
+							{this.state.deleteTargets[0].questions.map(q => (
+								<Blockquote key={q.id}>
+									{q.prompt}
+								</Blockquote>
+							))}
+						</>
+					)}
+
+					{(this.state.deleteTargets?.length ?? 0) > 1 && (
+						<p>
+							You are about to delete several survey bank items.
+						</p>
+					)}
+
+					<p>
+						This action cannot be reversed. To confirm, please type "DELETE" in the box below, then click
+						"Confirm."
+					</p>
+				</DeleteDialog>
+			</>
+		);
+	}
+
+	private onBulkItemDelete: BulkDeleteFn = items => this.setState({
+		deleteTargets: items,
+	});
+
+	private onItemDelete: ItemDeleteFn = item => this.setState({
+		deleteTargets: [item],
+	});
+
+	private onItemDeleteConfirm = async () => {
+		if (!this.state.deleteTargets || this.state.deleteTargets.length === 0)
+			return;
+
+		const promises = this.state.deleteTargets.map(target => SurveyBankModel.delete(target.id));
+		const results = await allSettled(promises);
+		const failures = results.filter(isRejectedResult);
+
+		if (failures.length > 0)
+			toaster.warning('Some survey bank items could not be deleted. Please try again later.');
+		else
+			toaster.success('Your selected survey bank items have been deleted.');
+
+		this.setState({
+			deleteTargets: null,
+		});
+
+		// noinspection ES6MissingAwait
+		this.refresh();
+	};
+
+	private onItemDeleteCancel = () => this.setState({
+		deleteTargets: null,
+	});
+
+	private refresh = async () => {
+		this.setState({
+			surveys: null,
+			recurringSurvey: null,
+		});
+
+		const surveys = await SurveyBankModel.list().then(r => r.data);
+		surveys.sort((a, b) => a.week - b.week);
+
+		const recurringSurvey = surveys.shift() ?? null;
+
+		this.setState({
+			recurringSurvey,
+			surveys,
+		});
+	};
+}
+
+type BulkDeleteFn = (items: BankSurvey[]) => void;
 
 interface BankTableProps {
 	title: string,
 	items: BankSurvey[],
+	onDelete: ItemDeleteFn,
+	onBulkDelete?: BulkDeleteFn,
 	showWeek?: boolean,
 }
 
-function BankTable({title, items, showWeek}: BankTableProps): ReactElement {
+function BankTable({title, items, showWeek, onDelete, onBulkDelete}: BankTableProps): ReactElement {
 	const [selected, setSelected] = useState<BankSurvey[]>([]);
 
 	const onSelectAllClick = useCallback(() => {
@@ -70,16 +175,29 @@ function BankTable({title, items, showWeek}: BankTableProps): ReactElement {
 		});
 	}, [items]);
 
-	const onItemDeleteClick = useCallback<ItemDeleteFn>(item => {
-
-	}, []);
-
 	const onItemSelectClick = useCallback<ItemSelectFn>(item => {
-
+		setSelected(selected => {
+			if (selected.includes(item))
+				return selected.filter(value => value !== item);
+			else
+				return [...selected, item];
+		});
 	}, []);
+
+	const onBulkDeleteClick = useCallback(() => {
+		if (selected.length < 1)
+			return;
+
+		onBulkDelete?.(selected);
+	}, [onBulkDelete, selected]);
 
 	return (
-		<ObjectList title={title} items={items}>
+		<ObjectList
+			title={title}
+			items={items}
+			onBulkDeleteClick={onBulkDeleteClick}
+			bulkDeleteDisabled={selected.length === 0}
+		>
 			{items => (
 				<HTMLTable striped={true}>
 					<thead>
@@ -102,7 +220,7 @@ function BankTable({title, items, showWeek}: BankTableProps): ReactElement {
 								key={item.id}
 								item={item}
 								selected={selected.includes(item)}
-								onDelete={onItemDeleteClick}
+								onDelete={onDelete}
 								onSelect={onItemSelectClick}
 								showWeek={showWeek}
 							/>
@@ -149,8 +267,8 @@ function TableItem({item, selected, onSelect, onDelete, showWeek}: TableItemProp
 			<td style={{textAlign: 'right'}}>
 				<ControlsMenu>
 					<Menu>
-						<MenuItem icon="delete" text="Delete" />
-						<MenuItem text="Testing" />
+						<LinkedMenuItem to={`/survey/bank/${item.id}`} icon="edit" text="Edit" />
+						<MenuItem intent="danger" icon="delete" text="Delete" onClick={onDeleteClick} />
 					</Menu>
 				</ControlsMenu>
 			</td>
