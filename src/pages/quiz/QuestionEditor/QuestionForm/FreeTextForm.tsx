@@ -1,11 +1,11 @@
-import * as React from 'react';
-import {FormProps, FreeTextSaveHandler} from './index';
-import {FreeTextQuestion} from '../../../../../Api/Quiz/Models/Questions';
 import {Button, H3, InputGroup} from '@blueprintjs/core';
-import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import {replaceByIndex} from '../../../../../utility/array';
-import {FormControls} from '../../../../FormControls';
+import * as React from 'react';
+import {ValidationFailures} from '../../../../api/errors/symfony';
+import {FreeTextQuestion} from '../../../../api/Quiz/Models/Questions';
+import {FormControls} from '../../../../components/FormControls';
+import {ValidationAwareFormGroup} from '../../../../components/ValidationAwareFormGroup';
+import {replaceByIndex} from '../../../../utility/array';
+import {FormProps, FreeTextSaveHandler} from './index';
 
 type Props = FormProps<FreeTextQuestion, FreeTextSaveHandler>;
 

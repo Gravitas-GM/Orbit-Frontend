@@ -4,6 +4,8 @@ import {Permission} from '../../api/permissions';
 import {Routes} from '../../components/Router/Routes';
 import {withPermissionRestriction} from '../../components/Router/withPermissionRestriction';
 import {QuizHistoryPage} from './History';
+import {QuestionEditorPage} from './QuestionEditor';
+import {QuestionListPage} from './QuestionList';
 import {Interstitial} from './Quiz/Interstitial';
 import {QuizResultsPage} from './Results';
 import {QuizSettings} from './Settings';
@@ -18,9 +20,14 @@ export function QuizRoutes(): React.ReactElement {
 
 			{withPermissionRestriction(Permission.Admin, (
 				<>
+					<Route path="questions" element={<QuestionListPage />} />
+					<Route path="questions/:question" element={<QuestionEditorPage />} />
+
 					<Route path="history" element={<QuizHistoryPage />} />
+
 					<Route path="tags" element={<TagListPage />} />
 					<Route path="tags/:tag" element={<TagEditor />} />
+
 					<Route path="settings" element={<QuizSettings />} />
 				</>
 			))}

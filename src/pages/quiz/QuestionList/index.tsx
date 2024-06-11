@@ -1,31 +1,33 @@
-import * as React from 'react';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {history} from '../../../../history';
-import {Question, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
-import {toaster} from '../../../../toaster';
-import {ObjectList} from '../../../ObjectList';
 import {Blockquote, Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
-import {LinkButton} from '../../../LinkButton';
-import {DeleteDialog, DeleteSubject} from '../../../DeleteDialog';
-import {renderKindLabel} from '../../../../utility/string';
-import {allSettled, isRejectedResult} from '../../../../utility/promise';
-import {Spacing} from '../../../../Styles/variables';
+import * as React from 'react';
+import {Navigate} from 'react-router-dom';
+import {Question, QuestionModel} from '../../../api/Quiz/Models/Questions';
+import {DeleteDialog, DeleteSubject} from '../../../components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {LinkButton} from '../../../components/LinkButton';
+import {ObjectList} from '../../../components/ObjectList';
+import {Spacing} from '../../../Styles/variables';
+import {toaster} from '../../../toaster';
+import {allSettled, isRejectedResult} from '../../../utility/promise';
+import {renderKindLabel} from '../../../utility/string';
 
-interface IState {
-	questions: Question[];
-	loading: boolean;
-	deleteTargets: Question[];
-	deleteSubject: string | undefined;
-	selectedItems: Question[];
+interface State {
+	questions: Question[],
+	loading: boolean,
+	deleteTargets: Question[],
+	deleteSubject: string | undefined,
+	selectedItems: Question[],
+	redirect: string | null,
 }
 
-export class QuestionListPage extends React.PureComponent<{}, IState> {
-	public state: Readonly<IState> = {
+export class QuestionListPage extends React.PureComponent<{}, State> {
+	public state: Readonly<State> = {
 		loading: true,
 		questions: [],
 		deleteTargets: [],
 		deleteSubject: undefined,
 		selectedItems: [],
+		redirect: null,
 	};
 
 	public async componentDidMount() {
@@ -39,7 +41,10 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 			});
 		} catch (error) {
 			toaster.error('Failed to fetch questions');
-			history.push('/');
+
+			this.setState({
+				redirect: '/',
+			});
 
 			return;
 		}
@@ -48,6 +53,8 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 	public render() {
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
+		else if (this.state.redirect !== null)
+			return <Navigate to={this.state.redirect} />;
 
 		return (
 			<section className="gm-page-wrapper">
@@ -111,9 +118,9 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 
 					{
 						this.state.deleteTargets.length === 1 &&
-							<Blockquote>
-								{this.state.deleteTargets[0]?.prompt}
-							</Blockquote>
+						<Blockquote>
+							{this.state.deleteTargets[0]?.prompt}
+						</Blockquote>
 					}
 
 					<p>
@@ -174,7 +181,7 @@ export class QuestionListPage extends React.PureComponent<{}, IState> {
 				await QuestionModel.delete(item.id);
 
 				return item;
-			})
+			}),
 		);
 
 		let failureCount = 0;

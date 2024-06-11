@@ -1,16 +1,15 @@
 import * as React from 'react';
-import {Button, ControlGroup, Intent, TextArea} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, ControlGroup, Intent, MenuItem, TextArea} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import {Link} from 'react-router-dom';
-import {isValidationFailureError, ValidationFailures} from '../../../../Api/errors/symfony';
-import {Question, QuestionCreate, QuestionKind} from '../../../../Api/Quiz/Models/Questions';
-import {QuestionTag} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Spacing} from '../../../../Styles/variables';
-import {toaster} from '../../../../toaster';
-import {Select} from '../../../Select/Select';
-import {renderKindLabel, ucwords} from '../../../../utility/string';
-import {ValidationAwareFormGroup} from '../../../ValidationAwareFormGroup';
+import {isValidationFailureError, ValidationFailures} from '../../../api/errors/symfony';
+import {Question, QuestionCreate, QuestionKind} from '../../../api/Quiz/Models/Questions';
+import {QuestionTag} from '../../../api/Quiz/Models/QuestionTags';
+import {Select} from '../../../components/Select/Select';
+import {ValidationAwareFormGroup} from '../../../components/ValidationAwareFormGroup';
+import {Spacing} from '../../../Styles/variables';
+import {toaster} from '../../../toaster';
+import {renderKindLabel, ucwords} from '../../../utility/string';
 import {QuestionForm} from './QuestionForm';
 import './AnswerForm.scss';
 
@@ -64,7 +63,7 @@ export class AnswerForm extends React.PureComponent<IProps, IState> {
 					>
 						<TextArea
 							fill={true}
-							growVertically={true}
+							autoResize={true}
 							name="prompt"
 							placeholder="Is this sentence true?"
 							value={this.state.prompt}

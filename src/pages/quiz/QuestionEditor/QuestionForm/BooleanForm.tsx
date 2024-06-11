@@ -1,9 +1,9 @@
-import * as React from 'react';
-import {BooleanSaveHandler, FormProps} from './index';
 import {ControlGroup, H3, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
-import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
-import {FormControls} from '../../../../FormControls';
-import {BooleanQuestion} from '../../../../../Api/Quiz/Models/Questions';
+import * as React from 'react';
+import {BooleanQuestion} from '../../../../api/Quiz/Models/Questions';
+import {FormControls} from '../../../../components/FormControls';
+import {ValidationAwareFormGroup} from '../../../../components/ValidationAwareFormGroup';
+import {BooleanSaveHandler, FormProps} from './index';
 
 type Props = FormProps<BooleanQuestion, BooleanSaveHandler>;
 

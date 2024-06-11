@@ -1,14 +1,15 @@
 import * as React from 'react';
-import {PageHeader} from '../../../PageHeader';
-import {FrameLoadingSpinner} from '../../../FrameLoadingSpinner';
-import {Redirect, RouteComponentProps} from 'react-router';
-import {QuestionTag, QuestionTagModel} from '../../../../Api/Quiz/Models/QuestionTags';
-import {Question, QuestionCreate, QuestionModel} from '../../../../Api/Quiz/Models/Questions';
+import {Navigate} from 'react-router-dom';
+import {Question, QuestionCreate, QuestionModel} from '../../../api/Quiz/Models/Questions';
+import {QuestionTag, QuestionTagModel} from '../../../api/Quiz/Models/QuestionTags';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {PageHeader} from '../../../components/PageHeader';
+import {withRouteParams, WithRouteParamsProps} from '../../../components/Router/withRouteParams';
+import {toaster} from '../../../toaster';
 import {AnswerForm} from './AnswerForm';
-import {toaster} from '../../../../toaster';
 import './QuestionEditor.scss';
 
-interface IState {
+interface State {
 	loading: boolean;
 	processing: boolean;
 	redirect: boolean;
@@ -17,12 +18,12 @@ interface IState {
 	selectedTag?: QuestionTag;
 }
 
-interface RouteProps {
+interface RouteParams {
 	question?: string;
 }
 
-export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<RouteProps>, IState> {
-	public state: Readonly<IState> = {
+class QuestionEditorPage extends React.PureComponent<WithRouteParamsProps<RouteParams>, State> {
+	public state: Readonly<State> = {
 		loading: true,
 		processing: false,
 		redirect: false,
@@ -38,9 +39,12 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 			})),
 		];
 
-		const idParam = this.props.match.params.question;
+		const idParam = this.props.params.question;
 
-		if (idParam) {
+		if (!idParam)
+			throw new Error('Cannot load editor without an ID argument');
+
+		if (idParam !== 'new') {
 			promises.push(QuestionModel.read(idParam).then(r => this.setState({
 				question: r.data,
 			})));
@@ -67,11 +71,11 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 		else if (this.state.redirect)
-			return <Redirect to="/quiz/questions" />;
+			return <Navigate to="/quiz/questions" />;
 
 		return (
 			<section className="gm-page-wrapper">
-				<PageHeader title={this.props.match.params.question ? `Edit Question` : `New Question`} />
+				<PageHeader title={this.props.params.question !== 'new' ? `Edit Question` : `New Question`} />
 
 				<AnswerForm
 					tags={this.state.tags}
@@ -110,5 +114,8 @@ export class QuestionEditorPage extends React.PureComponent<RouteComponentProps<
 		this.setState({
 			redirect: true,
 		});
-	}
+	};
 }
+
+const Wrapped = withRouteParams(QuestionEditorPage);
+export {Wrapped as QuestionEditorPage};
