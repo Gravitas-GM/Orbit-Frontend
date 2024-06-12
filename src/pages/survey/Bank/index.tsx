@@ -1,12 +1,13 @@
-import {Blockquote, Checkbox, HTMLTable, Menu, MenuItem} from '@blueprintjs/core';
+import {Blockquote, Button, Checkbox, HTMLTable, Menu, MenuItem} from '@blueprintjs/core';
 import * as React from 'react';
 import {PureComponent, ReactElement, useCallback, useState} from 'react';
+import {Navigate} from 'react-router-dom';
+import {isApiErrorResponse} from '../../../api/errors/symfony';
 import {BankSurvey, SurveyBankModel} from '../../../api/Survey/Models/SurveyBankModel';
 import {Classes as GMClasses} from '../../../classes';
 import {ControlsMenu} from '../../../components/ControlsMenu';
 import {DeleteDialog} from '../../../components/DeleteDialog';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
-import {LinkButton} from '../../../components/LinkButton';
 import {LinkedMenuItem} from '../../../components/NavHeader/LinkedMenuItem';
 import {NonIdealState} from '../../../components/NonIdealState';
 import {ObjectList} from '../../../components/ObjectList';
@@ -20,6 +21,8 @@ interface State {
 	surveys: BankSurvey[] | null,
 	recurringSurvey: BankSurvey | null,
 	deleteTargets: BankSurvey[] | null,
+	processing: boolean,
+	redirect: string | null,
 }
 
 export class Bank extends PureComponent<{}, State> {
@@ -27,6 +30,8 @@ export class Bank extends PureComponent<{}, State> {
 		surveys: null,
 		recurringSurvey: null,
 		deleteTargets: null,
+		processing: false,
+		redirect: null,
 	};
 
 	public async componentDidMount(): Promise<void> {
@@ -36,6 +41,8 @@ export class Bank extends PureComponent<{}, State> {
 	public render(): ReactElement {
 		if (this.state.surveys === null)
 			return <FrameLoadingSpinner />;
+		else if (this.state.redirect !== null)
+			return <Navigate to={this.state.redirect} />;
 		else if (this.state.recurringSurvey === null)
 			return <NonIdealState title="No items found." />;
 
@@ -43,7 +50,13 @@ export class Bank extends PureComponent<{}, State> {
 			<>
 				<div className={GMClasses.PAGE_WRAPPER}>
 					<PageHeader title="Survey Bank">
-						<LinkButton to="/survey/bank/new" intent="primary" icon="add" text="Create New Survey" />
+						<Button
+							intent="primary"
+							icon="add"
+							text="Create New Survey"
+							onClick={this.onNewBankItemClick}
+							loading={this.state.processing}
+						/>
 					</PageHeader>
 				</div>
 
@@ -134,6 +147,37 @@ export class Bank extends PureComponent<{}, State> {
 	private onItemDeleteCancel = () => this.setState({
 		deleteTargets: null,
 	});
+
+	private onNewBankItemClick = async () => {
+		if (this.state.processing)
+			return;
+
+		this.setState({
+			processing: true,
+		});
+
+		let id: number;
+
+		try {
+			const response = await SurveyBankModel.create({});
+			id = response.data.id;
+		} catch (error) {
+			if (isApiErrorResponse(error))
+				toaster.error(error.error.message);
+			else
+				toaster.showUnhandledErrorMessage();
+
+			return;
+		} finally {
+			this.setState({
+				processing: false,
+			});
+		}
+
+		this.setState({
+			redirect: '/survey/bank/' + id,
+		});
+	};
 
 	private refresh = async () => {
 		this.setState({
@@ -261,7 +305,10 @@ function TableItem({item, selected, onSelect, onDelete, showWeek}: TableItemProp
 			{showWeek && <td>Week #{item.week}</td>}
 
 			<td>
-				{item.questions.map(question => <div>{question.prompt}</div>)}
+				{item.questions.length > 0 ?
+					item.questions.map(question => <div key={question.id}>{question.prompt}</div>) :
+					<>&mdash;</>
+				}
 			</td>
 
 			<td style={{textAlign: 'right'}}>

@@ -53,7 +53,7 @@ function BankQuestionList({params}: WithRouteParamsProps<RouteParams>): ReactEle
 		<>
 			<SurveyList
 				survey={survey}
-				baseUri="/survey/bank/questions"
+				baseUri={`/survey/bank/${params.bank}/questions`}
 				onQuestionDelete={onQuestionDelete}
 			/>
 
