@@ -1,6 +1,6 @@
 import {Button, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {Navigate} from 'react-router-dom';
+import {Navigate, RelativeRoutingType} from 'react-router-dom';
 import {ConfirmDialog} from './ConfirmDialog';
 import './FormControls.scss';
 import {Prompt} from './Router/Prompt';
@@ -10,10 +10,18 @@ interface Props {
 	loading: boolean;
 	dirty: boolean;
 	redirectPath: string;
+	redirectRelative?: RelativeRoutingType,
 	children?: React.ReactNode;
 }
 
-export function FormControls({onSaveClick, loading, children, dirty, redirectPath}: Props): React.ReactElement {
+export function FormControls({
+	onSaveClick,
+	loading,
+	children,
+	dirty,
+	redirectPath,
+	redirectRelative,
+}: Props): React.ReactElement {
 	const [redirect, setRedirect] = React.useState(false);
 	const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -29,7 +37,7 @@ export function FormControls({onSaveClick, loading, children, dirty, redirectPat
 	const onDialogCancelClick = React.useCallback(() => setShowConfirmDialog(false), []);
 
 	if (redirect)
-		return <Navigate to={redirectPath} />;
+		return <Navigate to={redirectPath} relative={redirectRelative} />;
 
 	return (
 		<div id="form-controls">

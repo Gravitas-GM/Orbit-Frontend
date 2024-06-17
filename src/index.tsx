@@ -22,3 +22,4 @@ root.render(
 		<RouterProvider router={router} />
 	</React.StrictMode>,
 );
+export {Grid} from './components/Grid';

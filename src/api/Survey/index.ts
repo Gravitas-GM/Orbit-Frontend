@@ -1,5 +1,6 @@
 import axios, {TypedAxiosInstance} from 'restyped-axios';
 import {Config} from '../../config';
+import {ucwords} from '../../utility/string';
 import {attachResponseHandlers} from '../errors/symfony';
 import {Entity} from '../index';
 import {SurveyBankEndpoints} from './Models/SurveyBankModel';
@@ -14,7 +15,11 @@ export enum QuestionKind {
 	Scale = 'scale',
 }
 
-export interface BaseQuestion extends Entity {
+export function getKindDisplayName(kind: QuestionKind): string {
+	return ucwords(kind);
+}
+
+interface BaseQuestion extends Entity {
 	kind: QuestionKind,
 	prompt: string,
 }
@@ -34,6 +39,8 @@ export interface BaseScaleQuestion extends BaseQuestion {
 	endValue: number,
 	stepAmount: number,
 }
+
+export type Question = BaseFreeTextQuestion | BaseChoiceQuestion | BaseScaleQuestion;
 
 export function init(): TypedAxiosInstance<Endpoints> {
 	const client = axios.create<Endpoints>({

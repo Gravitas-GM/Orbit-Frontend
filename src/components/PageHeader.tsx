@@ -1,20 +1,26 @@
 import {H2} from '@blueprintjs/core';
-import React from 'react';
+import {ComponentType, ReactElement, ReactNode} from 'react';
 import './PageHeader.scss';
 import {useTitle} from '../hooks/useTitle';
 
 interface IProps {
 	title?: string,
-	children?: React.ReactNode,
+	children?: ReactNode,
 	setPageTitle?: boolean,
+	headerComponent?: ComponentType<{ children: ReactNode }>,
 }
 
-export function PageHeader({title, children, setPageTitle = true}: IProps): React.ReactElement {
+export function PageHeader({
+	title,
+	children,
+	headerComponent: HeaderComponent = H2,
+	setPageTitle = true,
+}: IProps): ReactElement {
 	useTitle(setPageTitle ? title : undefined);
 
 	return (
 		<header className="header-container">
-			{title && <H2>{title}</H2>}
+			{title && <HeaderComponent>{title}</HeaderComponent>}
 			{children}
 		</header>
 	);
