@@ -40,7 +40,7 @@ function QuestionEditor({params}: WithRouteParamsProps<RouteParams>): ReactEleme
 			})
 			.catch(error => {
 				toaster.showApiErrorMessage(error);
-				setRedirect('..');
+				setRedirect('../..');
 			});
 	}, [params.question]);
 
@@ -88,7 +88,7 @@ function QuestionEditor({params}: WithRouteParamsProps<RouteParams>): ReactEleme
 	], [params.bank, isNew]);
 
 	if (redirect !== null)
-		return <Navigate to={redirect} />;
+		return <Navigate to={redirect} relative="path" />;
 	else if (loading)
 		return <FrameLoadingSpinner />;
 
@@ -96,7 +96,7 @@ function QuestionEditor({params}: WithRouteParamsProps<RouteParams>): ReactEleme
 		<div className={Classes.PAGE_WRAPPER}>
 			<Breadcrumbs items={breadcrumbs} />
 
-			<PageHeader title={`${question ? 'Edit' : 'New'} Survey Question`} />
+			<PageHeader title={`${question ? 'Edit' : 'New'} Bank Question`} />
 			<Editor question={question} onSave={onSave} validation={validation} />
 		</div>
 	);

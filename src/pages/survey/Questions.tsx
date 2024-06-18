@@ -3,7 +3,7 @@ import {ReactElement, useCallback, useState} from 'react';
 import {BankSurvey} from '../../api/Survey/Models/SurveyBankModel';
 import {BankQuestion} from '../../api/Survey/Models/SurveyBankQuestionModel';
 import {Survey} from '../../api/Survey/Models/SurveyModel';
-import {SurveyQuestion} from '../../api/Survey/Models/SurveyQuestion';
+import {SurveyQuestion} from '../../api/Survey/Models/SurveyQuestionModel';
 import {ControlsMenu} from '../../components/ControlsMenu';
 import {DeleteDialog} from '../../components/DeleteDialog';
 import {LinkedMenuItem} from '../../components/NavHeader/LinkedMenuItem';
@@ -11,7 +11,7 @@ import {ObjectList} from '../../components/ObjectList';
 import {Spacing} from '../../Styles/variables';
 import {ucwords} from '../../utility/string';
 
-export type DeleteFn<Parent extends Surveys> = (item: Array<QuestionItem<Parent>>) => Promise<void>;
+export type DeleteFn<Parent extends Surveys> = (items: Array<QuestionItem<Parent>>) => Promise<void>;
 
 type Surveys = Survey | BankSurvey;
 

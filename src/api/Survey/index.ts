@@ -6,8 +6,9 @@ import {Entity} from '../index';
 import {SurveyBankEndpoints} from './Models/SurveyBankModel';
 import {SurveyBankQuestionEndpoints} from './Models/SurveyBankQuestionModel';
 import {SurveyEndpoints} from './Models/SurveyModel';
+import {SurveyQuestionEndpoints} from './Models/SurveyQuestionModel';
 
-type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SurveyBankQuestionEndpoints;
+type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SurveyBankQuestionEndpoints & SurveyQuestionEndpoints;
 
 export enum QuestionKind {
 	FreeText = 'free text',

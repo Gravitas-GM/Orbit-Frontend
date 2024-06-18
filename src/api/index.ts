@@ -61,6 +61,10 @@ export interface QueryDocument {
 
 export type Projection = { [key: string]: true } | { [key: string]: false };
 
+export interface Identity {
+	id: string,
+}
+
 export type Queryable = {
 	q?: QueryDocument;
 };

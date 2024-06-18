@@ -2,7 +2,7 @@ import {parseApiTimestamp} from '../../../utility/date';
 import {Account} from '../../Hub/Models/Accounts';
 import {Create, Entity, Projectable, Projection, QueryDocument, Stub, surveyClient} from '../../index';
 import {QuestionKind} from '../index';
-import {SurveyQuestion} from './SurveyQuestion';
+import {SurveyQuestion} from './SurveyQuestionModel';
 
 export interface SurveyEndpoints {
 	'/surveys': {
