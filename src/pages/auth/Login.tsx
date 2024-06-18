@@ -4,6 +4,7 @@ import {Navigate} from 'react-router-dom';
 import {isAuthenticated, login} from '../../api';
 import {ApiError} from '../../api/errors/symfony';
 import {Token} from '../../api/jwt';
+import {withTitle} from '../../hooks/useTitle';
 import {ForgotPasswordDialog} from './ForgotPasswordDialog';
 import {StartActivationDialog} from './StartActivationDialog';
 import {withLocation, WithLocationProps} from '../../components/Router/withLocation';
@@ -169,5 +170,5 @@ class Login extends React.PureComponent<WithLocationProps, State> {
 	};
 }
 
-const WrappedLogin = withLocation(Login);
+const WrappedLogin = withTitle('Login', withLocation(Login));
 export {WrappedLogin as Login};

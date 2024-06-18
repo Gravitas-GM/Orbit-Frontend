@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {ReactElement} from 'react';
 import {Route} from 'react-router';
 import {FrameLoadingSpinner} from './components/FrameLoadingSpinner';
 import {NavHeader} from './components/NavHeader';
@@ -13,7 +13,7 @@ import {QuizRoutes} from './pages/quiz';
 import {SurveyRoutes} from './pages/survey';
 import {UserRoutes} from './pages/users';
 
-export const Layout: React.FC = () => {
+export function Layout(): ReactElement {
 	const {token} = useToken();
 	const session = useSession();
 
@@ -48,6 +48,4 @@ export const Layout: React.FC = () => {
 			</div>
 		</div>
 	);
-};
-
-Layout.displayName = 'Layout';
+}

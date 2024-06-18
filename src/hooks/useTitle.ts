@@ -1,4 +1,5 @@
-import {useEffect, useMemo} from 'react';
+import {ComponentType, useEffect, useMemo} from 'react';
+import {wrap} from '../utility/component';
 
 export function useTitle(title?: string, skipPrefix = false): void {
 	const titleValue = useMemo(() => {
@@ -19,4 +20,10 @@ export function useTitle(title?: string, skipPrefix = false): void {
 			document.title = oldValue;
 		};
 	}, [titleValue]);
+}
+
+export function withTitle<Props>(title: string, Component: ComponentType<Props>) {
+	return wrap('WithTitle', Component, () => {
+		useTitle(title);
+	});
 }

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {ReactElement} from 'react';
 import {Route, Routes} from 'react-router-dom';
 import {GlobalContexts} from './contexts';
 import {Layout} from './Layout';
@@ -7,7 +7,7 @@ import {Login} from './pages/auth/Login';
 import {PasswordReset} from './pages/auth/PasswordReset';
 import {NotFound} from './pages/error/NotFound';
 
-export function App(): React.ReactElement {
+export function App(): ReactElement {
 	return (
 		<div id="app-root">
 			<GlobalContexts>

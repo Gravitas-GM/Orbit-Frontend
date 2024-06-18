@@ -16,12 +16,13 @@ export type DeleteFn<Parent extends Surveys> = (item: Array<QuestionItem<Parent>
 type Surveys = Survey | BankSurvey;
 
 interface Props<T extends Surveys> {
+	title: string,
 	survey: T,
 	baseUri: string,
 	onQuestionDelete: DeleteFn<T>,
 }
 
-export function Questions<T extends Surveys>({survey, baseUri, onQuestionDelete}: Props<T>): ReactElement {
+export function Questions<T extends Surveys>({survey, baseUri, onQuestionDelete, title}: Props<T>): ReactElement {
 	const [selected, setSelected] = useState<Array<QuestionItem<T>>>([]);
 	const [deleteTargets, setDeleteTargets] = useState<Array<QuestionItem<T>>>([]);
 
@@ -52,7 +53,7 @@ export function Questions<T extends Surveys>({survey, baseUri, onQuestionDelete}
 		<>
 			<ObjectList
 				items={survey.questions}
-				title="Survey Questions"
+				title={title}
 				setPageTitle={true}
 				onBulkDeleteClick={onBulkDeleteClick}
 				bulkDeleteDisabled={selected.length === 0}

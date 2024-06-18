@@ -61,6 +61,7 @@ function QuestionList({params}: WithRouteParamsProps<RouteParams>): ReactElement
 			</div>
 
 			<Questions
+				title="Bank Survey Questions"
 				survey={survey}
 				baseUri={`/survey/bank/${params.bank}/questions`}
 				onQuestionDelete={onQuestionsDelete}
