@@ -1,14 +1,17 @@
 import {Intent, Spinner, SpinnerProps} from '@blueprintjs/core';
-import * as React from 'react';
 import './FrameLoadingSpinner.scss';
+import {ReactElement} from 'react';
+import {useTitle} from '../hooks/useTitle';
 import {classNames} from '../utility/dom';
 
-export const FrameLoadingSpinner: React.FC<SpinnerProps> = ({intent, className, ...props}) => (
-	<Spinner
-		intent={intent || Intent.PRIMARY}
-		className={classNames(classNames, 'frame-loading-spinner')}
-		{...props}
-	/>
-);
+export function FrameLoadingSpinner({intent, className, ...props}: SpinnerProps): ReactElement {
+	useTitle('Loading...');
 
-FrameLoadingSpinner.displayName = 'FrameLoadingSpinner';
+	return (
+		<Spinner
+			intent={intent || Intent.PRIMARY}
+			className={classNames(classNames, 'frame-loading-spinner')}
+			{...props}
+		/>
+	);
+}
