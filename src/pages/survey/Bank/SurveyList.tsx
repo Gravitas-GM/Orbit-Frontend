@@ -3,7 +3,7 @@ import * as React from 'react';
 import {PureComponent, ReactElement, useCallback, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {isApiErrorResponse} from '../../../api/errors/symfony';
-import {BankSurvey, SurveyBankModel} from '../../../api/Survey/Models/SurveyBankModel';
+import {BankSurvey, SurveyBankModel} from '../../../api/Survey/Models/SurveyBank';
 import {Classes as GMClasses} from '../../../classes';
 import {ControlsMenu} from '../../../components/ControlsMenu';
 import {DeleteDialog} from '../../../components/DeleteDialog';

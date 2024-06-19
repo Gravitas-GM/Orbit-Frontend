@@ -1,6 +1,6 @@
 import {Create, Id, Projectable, Projection, Stub, surveyClient, Update} from '../../index';
 import {BaseChoiceQuestion, BaseFreeTextQuestion, BaseScaleQuestion, Question} from '../index';
-import {BankSurvey} from './SurveyBankModel';
+import {BankSurvey} from './SurveyBank';
 
 export interface SurveyBankQuestionEndpoints {
 	'/survey-bank/questions': {

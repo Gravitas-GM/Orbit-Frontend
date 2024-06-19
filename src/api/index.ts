@@ -1,4 +1,3 @@
-import {debug} from '../utility/debug';
 import * as gameCatalogApi from './Game-Catalog';
 import * as gameStateApi from './Game-State';
 import * as hubApi from './Hub';
@@ -11,6 +10,31 @@ import * as surveyApi from './Survey';
 export interface Entity {
 	id: number,
 }
+
+export enum WeekDay {
+	Sunday,
+	Monday,
+	Tuesday,
+	Wednesday,
+	Thursday,
+	Friday,
+	Saturday,
+}
+
+// Typescript enums with sequential-only numeric values also include a reverse mapping of value => key. Since we don't
+// usually want those when trying to obtain all the enum variants, we filter down to only items with numeric values.
+// This constant should be used in such places instead of a call to `Object.values()`.
+export const WEEK_DAY_VALUES = Object.values(WeekDay).filter(item => typeof item === 'number') as WeekDay[];
+
+export const WEEK_DAY_NAMES: {[key in WeekDay]: string} = {
+	[WeekDay.Sunday]: 'Sunday',
+	[WeekDay.Monday]: 'Monday',
+	[WeekDay.Tuesday]: 'Tuesday',
+	[WeekDay.Wednesday]: 'Wednesday',
+	[WeekDay.Thursday]: 'Thursday',
+	[WeekDay.Friday]: 'Friday',
+	[WeekDay.Saturday]: 'Saturday',
+};
 
 /**
  * Used to define a type that is a stub of it's full signature. Normally used for related object fields in API
@@ -97,5 +121,3 @@ export async function login(username: string, password: string) {
 export function isAuthenticated() {
 	return tokenStorage.getToken()?.isValid();
 }
-
-export type ListFn<T> = (projection?: Projection, query?: QueryDocument) => Promise<T[]>;

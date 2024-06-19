@@ -2,7 +2,7 @@ import {BreadcrumbProps} from '@blueprintjs/core';
 import {ReactElement, useCallback, useEffect, useMemo, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {ApiError, ValidationFailures} from '../../../api/errors/symfony';
-import {BankQuestion, SurveyBankQuestionModel} from '../../../api/Survey/Models/SurveyBankQuestionModel';
+import {BankQuestion, SurveyBankQuestionModel} from '../../../api/Survey/Models/SurveyBankQuestion';
 import {Classes} from '../../../classes';
 import {Breadcrumbs} from '../../../components/Breadcrumbs';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';

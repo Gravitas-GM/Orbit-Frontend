@@ -1,9 +1,9 @@
 import {BreadcrumbProps} from '@blueprintjs/core';
 import {ReactElement, useCallback, useEffect, useMemo, useState} from 'react';
 import {Navigate} from 'react-router-dom';
-import {ValidationFailures} from '../../../api/errors/symfony';
+import {ApiError, ValidationFailures} from '../../../api/errors/symfony';
 import {Question} from '../../../api/Survey';
-import {SurveyQuestionModel} from '../../../api/Survey/Models/SurveyQuestionModel';
+import {SurveyQuestionModel} from '../../../api/Survey/Models/SurveyQuestion';
 import {Classes} from '../../../classes';
 import {Breadcrumbs} from '../../../components/Breadcrumbs';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
@@ -35,12 +35,29 @@ function QuestionEditor({params}: WithRouteParamsProps<RouteParams>): ReactEleme
 			})
 			.catch(error => {
 				toaster.showApiErrorMessage(error);
+				setRedirect('../..');
 			});
 	}, [params.question]);
 
-	const onSave = useCallback<SaveFn>(async question => {
+	const onSave = useCallback<SaveFn>(async data => {
+		try {
+			if (question)
+				await SurveyQuestionModel.updateInNext(question.id, data);
+			else
+				await SurveyQuestionModel.createInNext(data);
+		} catch (error) {
+			if (error instanceof ApiError && error.isValidationFailure())
+				setValidation(error.context.failures);
+			else
+				setValidation(null);
+
+			toaster.showApiErrorMessage(error);
+
+			return false;
+		}
+
 		return true;
-	}, []);
+	}, [question]);
 
 	const isNew = question === null;
 

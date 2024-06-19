@@ -1,5 +1,5 @@
 import {Create, Entity, Id, Projectable, Projection, Queryable, QueryDocument, surveyClient, Update} from '../../index';
-import {BankQuestion} from './SurveyBankQuestionModel';
+import {BankQuestion} from './SurveyBankQuestion';
 
 export interface SurveyBankEndpoints {
 	'/survey-bank': {

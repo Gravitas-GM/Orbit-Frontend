@@ -1,6 +1,6 @@
 import {Id, Identity, Projectable, Projection, Stub, surveyClient} from '../../index';
 import {BaseChoiceQuestion, BaseFreeTextQuestion, BaseScaleQuestion, Question} from '../index';
-import {Survey} from './SurveyModel';
+import {Survey} from './Survey';
 
 export interface SurveyQuestionEndpoints {
 	'/surveys/next/questions/:id': {

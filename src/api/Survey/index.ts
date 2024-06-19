@@ -3,12 +3,17 @@ import {Config} from '../../config';
 import {ucwords} from '../../utility/string';
 import {attachResponseHandlers} from '../errors/symfony';
 import {Entity} from '../index';
-import {SurveyBankEndpoints} from './Models/SurveyBankModel';
-import {SurveyBankQuestionEndpoints} from './Models/SurveyBankQuestionModel';
-import {SurveyEndpoints} from './Models/SurveyModel';
-import {SurveyQuestionEndpoints} from './Models/SurveyQuestionModel';
+import {SettingsEndpoints} from './Models/Settings';
+import {SurveyEndpoints} from './Models/Survey';
+import {SurveyBankEndpoints} from './Models/SurveyBank';
+import {SurveyBankQuestionEndpoints} from './Models/SurveyBankQuestion';
+import {SurveyQuestionEndpoints} from './Models/SurveyQuestion';
 
-type Endpoints = SurveyBankEndpoints & SurveyEndpoints & SurveyBankQuestionEndpoints & SurveyQuestionEndpoints;
+type Endpoints = SurveyBankEndpoints
+	& SurveyEndpoints
+	& SurveyBankQuestionEndpoints
+	& SurveyQuestionEndpoints
+	& SettingsEndpoints;
 
 export enum QuestionKind {
 	FreeText = 'free text',

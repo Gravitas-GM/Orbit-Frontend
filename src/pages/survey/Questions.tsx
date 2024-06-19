@@ -1,9 +1,9 @@
 import {Blockquote, Checkbox, Classes, HTMLTable, Menu, MenuItem} from '@blueprintjs/core';
 import {ReactElement, useCallback, useState} from 'react';
-import {BankSurvey} from '../../api/Survey/Models/SurveyBankModel';
-import {BankQuestion} from '../../api/Survey/Models/SurveyBankQuestionModel';
-import {Survey} from '../../api/Survey/Models/SurveyModel';
-import {SurveyQuestion} from '../../api/Survey/Models/SurveyQuestionModel';
+import {BankSurvey} from '../../api/Survey/Models/SurveyBank';
+import {BankQuestion} from '../../api/Survey/Models/SurveyBankQuestion';
+import {Survey} from '../../api/Survey/Models/Survey';
+import {SurveyQuestion} from '../../api/Survey/Models/SurveyQuestion';
 import {ControlsMenu} from '../../components/ControlsMenu';
 import {DeleteDialog} from '../../components/DeleteDialog';
 import {LinkedMenuItem} from '../../components/NavHeader/LinkedMenuItem';

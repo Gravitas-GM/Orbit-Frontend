@@ -1,8 +1,8 @@
 import {ReactElement, useCallback, useEffect, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {ApiError} from '../../../api/errors/symfony';
-import {Survey, SurveyModel} from '../../../api/Survey/Models/SurveyModel';
-import {SurveyQuestionModel} from '../../../api/Survey/Models/SurveyQuestionModel';
+import {Survey, SurveyModel} from '../../../api/Survey/Models/Survey';
+import {SurveyQuestionModel} from '../../../api/Survey/Models/SurveyQuestion';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {withRouteParams} from '../../../components/Router/withRouteParams';
 import {toaster} from '../../../toaster';

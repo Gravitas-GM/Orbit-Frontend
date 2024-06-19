@@ -8,12 +8,15 @@ import {withRoleRestriction} from '../../components/Router/withRoleRestriction';
 import {BankRoutes} from './Bank';
 import {QuestionEditor as LocalQuestionEditor} from './Local/QuestionEditor';
 import {QuestionList as LocalQuestionList} from './Local/QuestionList';
+import {Settings} from './Settings';
 
 export function SurveyRoutes(): ReactElement {
 	return (
 		<Routes>
 			{withPermissionRestriction(Permission.Admin, (
 				<>
+					<Route path="settings" element={<Settings />} />
+
 					<Route path="next" element={<LocalQuestionList />} />
 					<Route path="next/questions/:question" element={<LocalQuestionEditor />} />
 				</>
