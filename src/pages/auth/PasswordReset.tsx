@@ -1,7 +1,6 @@
 import {Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {tokenStorage} from '../../api';
 import {isValidationFailureError, ValidationFailures} from '../../api/errors/symfony';
 import {PasswordResetModel} from '../../api/Hub/Models/PasswordReset';
 import {Token} from '../../api/jwt';
@@ -37,7 +36,7 @@ class PasswordReset extends React.PureComponent<Props, State> {
 			return;
 		}
 
-		tokenStorage.setToken(new Token(rawToken));
+		this.props.setToken(new Token(rawToken));
 	}
 
 	public render(): JSX.Element {

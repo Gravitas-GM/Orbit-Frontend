@@ -1,16 +1,57 @@
-import {hubApiClient, pointTrackingClient, gameCatalogClient, gameStateClient} from './index';
+import {gameCatalogClient, gameStateClient, hubApiClient, pointTrackingClient} from './index';
 import {Permission} from './permissions';
 import {Role} from './roles';
 
 export type TokenRefreshedFn = (token: Token | null) => void;
 
+export interface TokenEvents {
+	changed: [token: Token | null],
+}
+
+type Listener<T extends keyof TokenEvents> = (...args: TokenEvents[T]) => void;
+
+type Listeners = {
+	[K in keyof TokenEvents]?: Array<Listener<K>>
+};
+
 export class TokenStorage {
 	protected storageKey: string;
 	protected token: Token | null = null;
 	protected refreshTaskId: number | null = null;
+	protected listeners: Listeners = {};
 
 	public constructor(storageKey: string = 'api.auth_token') {
 		this.storageKey = storageKey;
+	}
+
+	public addEventListener<Event extends keyof TokenEvents>(event: Event, listener: Listener<Event>): void {
+		const listeners = this.getListenersForEvent(event);
+
+		if (!listeners.includes(listener))
+			listeners.push(listener);
+	}
+
+	public removeEventListener<Event extends keyof TokenEvents>(event: Event, listener: Listener<Event>): void {
+		const listeners = this.getListenersForEvent(event);
+		const index = listeners.indexOf(listener);
+
+		if (index !== -1)
+			listeners.splice(index, 1);
+	}
+
+	private getListenersForEvent<Event extends keyof TokenEvents>(event: Event): Array<Listener<Event>> {
+		const listeners = this.listeners[event];
+
+		if (listeners)
+			return listeners;
+
+		this.listeners[event] = [];
+		return this.listeners[event]!;
+	}
+
+	private dispatchEvent<Event extends keyof TokenEvents>(event: Event, ...args: TokenEvents[Event]): void {
+		for (const listener of this.getListenersForEvent(event))
+			listener(...args);
 	}
 
 	public initialize() {
@@ -24,7 +65,7 @@ export class TokenStorage {
 		return this.token;
 	}
 
-	public setToken(token: Token | null, refreshCallback?: TokenRefreshedFn) {
+	public setToken(token: Token | null) {
 		if (token && (!token.isValid() || token.getTimeToLive() < 5))
 			token = null;
 
@@ -46,11 +87,13 @@ export class TokenStorage {
 			gameCatalogClient.defaults.headers.authorization = `Bearer ${token.jwt}`;
 
 			window.localStorage.setItem(this.storageKey, token.jwt);
-			this.scheduleRefreshTask(refreshCallback);
+			this.scheduleRefreshTask();
 		}
+
+		this.dispatchEvent('changed', this.token);
 	}
 
-	protected scheduleRefreshTask(callback?: TokenRefreshedFn) {
+	protected scheduleRefreshTask() {
 		const token = this.getToken();
 
 		if (!token)
@@ -60,9 +103,7 @@ export class TokenStorage {
 
 		window.setTimeout(async () => {
 			const response = await hubApiClient.get('/auth/refresh');
-
 			this.setToken(new Token(response.data.token));
-			callback?.(this.token);
 		}, Math.max((token.getTimeToLive() - 60) * 1000, 1));
 	}
 
@@ -100,6 +141,6 @@ export class Token {
 	}
 
 	public getTimeToLive() {
-		return this.body.exp - Math.ceil(Date.now() / 1000);
+		return this.body.exp - Math.floor(Date.now() / 1000);
 	}
 }

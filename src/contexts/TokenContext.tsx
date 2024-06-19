@@ -11,14 +11,14 @@ export interface State {
 	setToken: SetTokenFn,
 }
 
-export const TokenContext = React.createContext<State>({
+export const TokenContext = createContext<State>({
 	token: null,
 	setToken: () => {
 	},
 });
 
 export function useToken(): State {
-	return React.useContext(TokenContext);
+	return useContext(TokenContext);
 }
 
 export interface WithTokenProps {
@@ -26,23 +26,27 @@ export interface WithTokenProps {
 	setToken: SetTokenFn,
 }
 
-export function withToken<P extends WithTokenProps>(component: React.ComponentType<P>) {
+export function withToken<P extends WithTokenProps>(component: ComponentType<P>) {
 	return wrap('withToken', component, () => useToken());
 }
 
-export function TokenManager({children}: ManagerProps): React.ReactElement {
-	const [token, setToken] = React.useState<Token | null>(() => tokenStorage.getToken());
+export function TokenManager({children}: ManagerProps): ReactElement {
+	const [token, setToken] = useState<Token | null>(() => tokenStorage.getToken());
 
-	const onTokenRefreshed = React.useCallback<TokenRefreshedFn>(token => {
+	const onTokenChanged = useCallback<TokenRefreshedFn>(token => {
 		setToken(token);
 	}, []);
 
-	const setTokenFn = React.useCallback<SetTokenFn>(token => {
-		tokenStorage.setToken(token, onTokenRefreshed);
-		setToken(token);
-	}, [onTokenRefreshed]);
+	useEffect(() => {
+		tokenStorage.addEventListener('changed', onTokenChanged);
+		return () => tokenStorage.removeEventListener('changed', onTokenChanged);
+	}, [onTokenChanged]);
 
-	const state = React.useMemo<State>(() => ({
+	const setTokenFn = useCallback<SetTokenFn>(token => {
+		tokenStorage.setToken(token);
+	}, [onTokenChanged]);
+
+	const state = useMemo<State>(() => ({
 		token,
 		setToken: setTokenFn,
 	}), [token]);
