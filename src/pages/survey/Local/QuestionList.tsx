@@ -45,9 +45,9 @@ function QuestionList(): ReactElement {
 				setSurvey(response.data);
 			})
 			.catch(error => {
-				if (error instanceof ApiError && error.isNotFound()) {
-					toaster.warning('Next week\'s survey isn\'t ready for your account yet. Check back later!');
-				} else
+				if (error instanceof ApiError && error.isNotFound())
+					toaster.showSurveyNotReadyWarning('next');
+				else
 					toaster.showApiErrorMessage(error);
 
 				setRedirect('/');

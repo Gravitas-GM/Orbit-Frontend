@@ -1,4 +1,6 @@
 import {ReactElement, useCallback, useEffect, useState} from 'react';
+import {Navigate} from 'react-router-dom';
+import {ApiError} from '../../../api/errors/symfony';
 import {SurveyModel} from '../../../api/Survey/Models/Survey';
 import {SurveyQuestion} from '../../../api/Survey/Models/SurveyQuestion';
 import {Classes} from '../../../classes';
@@ -10,6 +12,7 @@ import {ChangeFn, Question} from './Question';
 export function Form(): ReactElement {
 	// Also used to derive loading state; a `null` value means the component is still loading.
 	const [questions, setQuestions] = useState<SurveyQuestion[] | null>(null);
+	const [redirect, setRedirect] = useState<string | null>(null);
 
 	useEffect(() => {
 		SurveyModel.readCurrent()
@@ -17,22 +20,22 @@ export function Form(): ReactElement {
 				setQuestions(response.data.questions.sort((a, b) => a.sort - b.sort));
 			})
 			.catch(error => {
-				toaster.showApiErrorMessage(error);
+				if (error instanceof ApiError && error.isNotFound())
+					toaster.showSurveyNotReadyWarning('current');
+				else
+					toaster.showApiErrorMessage(error);
+
+				setRedirect('/');
 			});
 	}, []);
 
-	const onResponseChange: ChangeFn = useCallback((question, args) => {
+	const onResponseChange: ChangeFn = useCallback((index, args) => {
 		setQuestions(questions => {
 			if (!questions)
 				return questions;
 
-			const index = questions.indexOf(question);
-
-			if (index === -1)
-				throw new Error('Could not find question index; something must be very wrong.');
-
 			questions[index] = {
-				...question,
+				...questions[index],
 				...args,
 			};
 
@@ -40,7 +43,9 @@ export function Form(): ReactElement {
 		});
 	}, []);
 
-	if (questions === null)
+	if (redirect !== null)
+		return <Navigate to={redirect} />;
+	else if (questions === null)
 		return <FrameLoadingSpinner />;
 
 	return (

@@ -68,4 +68,12 @@ export namespace toaster {
 	}
 
 	// endregion
+
+	// region Warning Messages
+	export function showSurveyNotReadyWarning(surveyType: 'current' | 'next'): void {
+		const survey = surveyType === 'current' ? 'This' : 'Next';
+		warning(`${survey} week's survey isn't ready for your account yet. Check back later!`);
+	}
+
+	// endregion
 }

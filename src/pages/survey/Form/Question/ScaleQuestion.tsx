@@ -1,17 +1,15 @@
 import {Slider} from '@blueprintjs/core';
-import {ReactElement, useCallback} from 'react';
+import {ReactElement, useCallback, useState} from 'react';
 import {SurveyScaleQuestion} from '../../../../api/Survey/Models/SurveyQuestion';
 import {QuestionProps} from './index';
 
 type Props = QuestionProps<SurveyScaleQuestion>;
 type SliderChangeFn = (value: number) => void;
 
-export function ScaleQuestion({question, onChange}: Props): ReactElement {
-	const onSliderChange: SliderChangeFn = useCallback(value => {
-		onChange(question, {
-			response: value,
-		});
-	}, [question, onChange]);
+export function ScaleQuestion({question}: Props): ReactElement {
+	const [value, setValue] = useState(question.startValue);
+
+	const onChange: SliderChangeFn = useCallback(setValue, []);
 
 	return (
 		<Slider
@@ -19,8 +17,8 @@ export function ScaleQuestion({question, onChange}: Props): ReactElement {
 			max={question.endValue}
 			stepSize={question.stepAmount}
 			showTrackFill={false}
-			value={3}
-			onChange={onSliderChange}
+			value={value}
+			onChange={onChange}
 		/>
 	);
 }
