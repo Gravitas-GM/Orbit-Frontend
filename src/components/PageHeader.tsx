@@ -1,5 +1,5 @@
-import {H2} from '@blueprintjs/core';
-import {ComponentType, ReactElement, ReactNode} from 'react';
+import {EntityTitle, H2, IconName, MaybeElement} from '@blueprintjs/core';
+import {FC, ReactElement, ReactNode} from 'react';
 import './PageHeader.scss';
 import {useTitle} from '../hooks/useTitle';
 
@@ -7,20 +7,24 @@ interface IProps {
 	title?: string,
 	children?: ReactNode,
 	setPageTitle?: boolean,
-	headerComponent?: ComponentType<{ children: ReactNode }>,
+	heading?: FC,
+	icon?: IconName | MaybeElement,
+	subtitle?: ReactNode,
 }
 
 export function PageHeader({
 	title,
 	children,
-	headerComponent: HeaderComponent = H2,
+	icon,
+	subtitle,
+	heading = H2,
 	setPageTitle = true,
 }: IProps): ReactElement {
 	useTitle(setPageTitle ? title : undefined);
 
 	return (
 		<header className="header-container">
-			{title && <HeaderComponent>{title}</HeaderComponent>}
+			{title && <EntityTitle title={title} heading={heading} icon={icon} subtitle={subtitle} />}
 			{children}
 		</header>
 	);

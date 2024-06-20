@@ -1,3 +1,5 @@
+import {AxiosError} from 'axios';
+import {toaster} from '../toaster';
 import {gameCatalogClient, gameStateClient, hubApiClient, pointTrackingClient} from './index';
 import {Permission} from './permissions';
 import {Role} from './roles';
@@ -102,8 +104,22 @@ export class TokenStorage {
 		this.clearRefreshTask();
 
 		window.setTimeout(async () => {
-			const response = await hubApiClient.get('/auth/refresh');
-			this.setToken(new Token(response.data.token));
+			let rawToken: string;
+
+			try {
+				rawToken = await hubApiClient.get('/auth/refresh').then(r => r.data.token);
+			} catch (error) {
+				if (error instanceof AxiosError && error.status === 401)
+					toaster.info('You have been logged out.');
+				else
+					toaster.showApiErrorMessage(error);
+
+				this.setToken(null);
+
+				return;
+			}
+
+			this.setToken(new Token(rawToken));
 		}, Math.max((token.getTimeToLive() - 60) * 1000, 1));
 	}
 

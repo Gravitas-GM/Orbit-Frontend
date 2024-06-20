@@ -53,7 +53,7 @@ export function ChoiceQuestion({question, save, onDirtyChange, validation}: Prop
 
 	return (
 		<div>
-			<PageHeader title="Choices" headerComponent={H3}>
+			<PageHeader title="Choices" heading={H3}>
 				<div>
 					<Button intent="primary" icon="add" text="Add Item" onClick={onAddButtonClick} />
 				</div>

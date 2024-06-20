@@ -17,6 +17,13 @@ export interface SurveyEndpoints {
 		},
 	},
 
+	'/surveys/current': {
+		GET: {
+			query: Projectable,
+			response: Survey,
+		},
+	},
+
 	'/surveys/next': {
 		GET: {
 			query: Projectable,
@@ -76,8 +83,16 @@ export class SurveyModel {
 		return response;
 	}
 
-	public static create(submission: SubmissionPayload, projection?: Projection) {
+	public static submit(submission: SubmissionPayload, projection?: Projection) {
 		return surveyClient.put('/surveys', submission, {
+			params: {
+				p: projection,
+			},
+		});
+	}
+
+	public static readCurrent(projection?: Projection) {
+		return surveyClient.get('/surveys/current', {
 			params: {
 				p: projection,
 			},

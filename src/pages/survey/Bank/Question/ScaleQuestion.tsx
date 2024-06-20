@@ -38,7 +38,7 @@ export function ScaleQuestion({onDirtyChange, question, save, validation}: Props
 
 	return (
 		<div>
-			<PageHeader title="Scale" headerComponent={H3} />
+			<PageHeader title="Scale" heading={H3} />
 
 			<Grid columns={3}>
 				<ValidationAwareFormGroup label="Start Value" labelFor="startValue" failures={validation} fill={true}>

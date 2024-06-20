@@ -28,6 +28,7 @@ export function getKindDisplayName(kind: QuestionKind): string {
 interface BaseQuestion extends Entity {
 	kind: QuestionKind,
 	prompt: string,
+	sort: number,
 }
 
 export interface BaseFreeTextQuestion extends BaseQuestion {
