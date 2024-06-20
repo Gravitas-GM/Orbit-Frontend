@@ -9,7 +9,6 @@ import {ControlsMenu} from '../../../components/ControlsMenu';
 import {DeleteDialog} from '../../../components/DeleteDialog';
 import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {LinkedMenuItem} from '../../../components/NavHeader/LinkedMenuItem';
-import {NonIdealState} from '../../../components/NonIdealState';
 import {ObjectList} from '../../../components/ObjectList';
 import {PageHeader} from '../../../components/PageHeader';
 import {Spacing} from '../../../Styles/variables';
@@ -18,18 +17,23 @@ import {allSettled, isRejectedResult} from '../../../utility/promise';
 
 interface State {
 	// Also used to derive our loading state. If `surveys` is null, the component has not finished loading yet.
-	surveys: BankSurvey[] | null,
-	recurringSurvey: BankSurvey | null,
+	surveys: BankSurvey[],
+
+	// There can never be more than one recurring survey, but we store it as an array of either zero or one element so
+	// we don't have to constantly rebuild the array to pass it down to `BankTable`.
+	recurringSurvey: BankSurvey[],
 	deleteTargets: BankSurvey[] | null,
+	loading: boolean,
 	processing: boolean,
 	redirect: string | null,
 }
 
 export class SurveyList extends PureComponent<{}, State> {
 	public state: Readonly<State> = {
-		surveys: null,
-		recurringSurvey: null,
+		surveys: [],
+		recurringSurvey: [],
 		deleteTargets: null,
+		loading: true,
 		processing: false,
 		redirect: null,
 	};
@@ -39,12 +43,10 @@ export class SurveyList extends PureComponent<{}, State> {
 	}
 
 	public render(): ReactElement {
-		if (this.state.surveys === null)
+		if (this.state.loading)
 			return <FrameLoadingSpinner />;
 		else if (this.state.redirect !== null)
 			return <Navigate to={this.state.redirect} />;
-		else if (this.state.recurringSurvey === null)
-			return <NonIdealState title="No items found." />;
 
 		return (
 			<>
@@ -62,7 +64,7 @@ export class SurveyList extends PureComponent<{}, State> {
 
 				<BankTable
 					title="Recurring Survey"
-					items={[this.state.recurringSurvey]}
+					items={this.state.recurringSurvey}
 					onDelete={this.onItemDelete}
 					onBulkDelete={this.onBulkItemDelete}
 				/>
@@ -181,18 +183,28 @@ export class SurveyList extends PureComponent<{}, State> {
 
 	private refresh = async () => {
 		this.setState({
-			surveys: null,
-			recurringSurvey: null,
+			surveys: [],
+			recurringSurvey: [],
+			loading: true,
 		});
 
-		const surveys = await SurveyBankModel.list().then(r => r.data);
+		let surveys: BankSurvey[];
+
+		try {
+			surveys = await SurveyBankModel.list().then(r => r.data);
+		} catch (error) {
+			toaster.showApiErrorMessage(error);
+			return;
+		}
+
 		surveys.sort((a, b) => a.week - b.week);
 
 		const recurringSurvey = surveys.shift() ?? null;
 
 		this.setState({
-			recurringSurvey,
+			recurringSurvey: recurringSurvey ? [recurringSurvey] : [],
 			surveys,
+			loading: false,
 		});
 	};
 }
