@@ -1,17 +1,18 @@
 import {Button, Intent} from '@blueprintjs/core';
 import * as React from 'react';
+import {ReactEventHandler} from 'react';
 import {Navigate, RelativeRoutingType} from 'react-router-dom';
 import {ConfirmDialog} from './ConfirmDialog';
 import './FormControls.scss';
 import {Prompt} from './Router/Prompt';
 
 interface Props {
-	onSaveClick: () => void;
-	loading: boolean;
-	dirty: boolean;
-	redirectPath: string;
+	onSaveClick: ReactEventHandler,
+	loading: boolean,
+	dirty: boolean,
+	redirectPath: string,
 	redirectRelative?: RelativeRoutingType,
-	children?: React.ReactNode;
+	children?: React.ReactNode,
 }
 
 export function FormControls({

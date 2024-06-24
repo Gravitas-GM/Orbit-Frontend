@@ -8,12 +8,14 @@ import {SurveyEndpoints} from './Models/Survey';
 import {SurveyBankEndpoints} from './Models/SurveyBank';
 import {SurveyBankQuestionEndpoints} from './Models/SurveyBankQuestion';
 import {SurveyQuestionEndpoints} from './Models/SurveyQuestion';
+import {SurveySubmissionEndpoints} from './Models/SurveySubmission';
 
 type Endpoints = SurveyBankEndpoints
 	& SurveyEndpoints
 	& SurveyBankQuestionEndpoints
 	& SurveyQuestionEndpoints
-	& SettingsEndpoints;
+	& SettingsEndpoints
+	& SurveySubmissionEndpoints;
 
 export enum QuestionKind {
 	FreeText = 'free text',

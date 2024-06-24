@@ -1,6 +1,7 @@
 import {Id, Identity, Projectable, Projection, Stub, surveyClient} from '../../index';
 import {BaseChoiceQuestion, BaseFreeTextQuestion, BaseScaleQuestion, Question} from '../index';
 import {Survey} from './Survey';
+import {ChoiceResponse, FreeTextResponse, ScaleResponse} from './SurveySubmission';
 
 export interface SurveyQuestionEndpoints {
 	'/surveys/next/questions/:id': {
@@ -26,6 +27,10 @@ export type SurveyChoiceQuestion = WithSurvey<BaseChoiceQuestion>;
 export type SurveyScaleQuestion = WithSurvey<BaseScaleQuestion>;
 
 export type SurveyQuestion = SurveyFreeTextQuestion | SurveyChoiceQuestion | SurveyScaleQuestion;
+
+export type AsResponse<T extends SurveyQuestion> = T extends SurveyFreeTextQuestion ? FreeTextResponse :
+	T extends SurveyChoiceQuestion ? ChoiceResponse :
+		T extends SurveyScaleQuestion ? ScaleResponse : never;
 
 export class SurveyQuestionModel {
 	public static readFromNext(id: Id, projection?: Projection) {

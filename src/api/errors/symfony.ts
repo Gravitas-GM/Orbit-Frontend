@@ -45,6 +45,7 @@ export const ErrorCodes = {
 	AccessDenied: 'access_denied',
 	NotFound: 'not_found',
 	QuizNotReady: 'quiz.not_ready',
+	SurveyAlreadySubmitted: 'survey.already_submitted',
 };
 
 export class ApiError<Context extends {} = {}> extends Error {
@@ -74,6 +75,10 @@ export class ApiError<Context extends {} = {}> extends Error {
 
 	public isQuizNotReady(): boolean {
 		return this.code === ErrorCodes.QuizNotReady;
+	}
+
+	public isSurveyAlreadySubmitted(): boolean {
+		return this.code === ErrorCodes.SurveyAlreadySubmitted;
 	}
 }
 
