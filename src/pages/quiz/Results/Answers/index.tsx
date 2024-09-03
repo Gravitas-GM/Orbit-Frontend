@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {QuestionResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {QuestionResponse} from '../../../../api/Quiz/Models/QuizSubmissions';
 import {Answer} from './Answer';
 import './index.scss';
 

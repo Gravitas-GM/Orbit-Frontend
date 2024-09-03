@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Classes} from '../../classes';
-import {PageHeader} from '../../Components/PageHeader';
+import {PageHeader} from '../../components/PageHeader';
 import {classNames} from '../../utility/dom';
 import {AdminCards, GameCards, PointsCards, QuizCards} from './cards';
 

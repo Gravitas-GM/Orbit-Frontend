@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {UserClaimPointsDialog} from '../../../Components/UserClaimPointsDialog';
+import {UserClaimPointsDialog} from '../../../components/UserClaimPointsDialog';
 import {NavCard, NavCardGroup} from './index';
 
 export function PointsCards(): React.ReactElement {

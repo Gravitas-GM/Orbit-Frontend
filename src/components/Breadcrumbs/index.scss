@@ -1,0 +1,10 @@
+@import '../../variables';
+
+a > .#{$ns}-breadcrumb {
+	color: inherit !important;
+	text-decoration: inherit !important;
+
+	&:hover {
+		text-decoration: inherit !important;
+	}
+}

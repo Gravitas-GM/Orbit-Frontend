@@ -1,6 +1,6 @@
 import {FormGroup, H3, Icon, Intent, Radio} from '@blueprintjs/core';
 import * as React from 'react';
-import {BooleanResponse} from '../../../../Api/Quiz/Models/QuizSubmissions';
+import {BooleanResponse} from '../../../../api/Quiz/Models/QuizSubmissions';
 
 interface OptionProps extends Props {
 	label: string,

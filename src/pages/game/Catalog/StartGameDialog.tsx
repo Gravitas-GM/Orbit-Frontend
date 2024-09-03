@@ -1,6 +1,6 @@
 import {Button, Classes, Dialog, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {Game} from '../../../Api/Game-Catalog/Models/Games';
+import {Game} from '../../../api/Game-Catalog/Models/Games';
 
 interface Props {
 	isOpen: boolean;

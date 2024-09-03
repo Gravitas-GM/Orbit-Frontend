@@ -1,7 +1,7 @@
 import {Location} from 'history';
 
 function hasFromState(value: any): value is { from: { pathname: string } | string } {
-	return typeof value === 'object' && 'from' in value;
+	return value !== null && typeof value === 'object' && 'from' in value;
 }
 
 export function getPreviousPathFromState(location: Location, def: string = '/') {

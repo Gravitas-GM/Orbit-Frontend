@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Route, Routes} from 'react-router-dom';
-import {Permission} from '../../Api/permissions';
-import {withPermissionRestriction} from '../../Components/Router/withPermissionRestriction';
+import {Route} from 'react-router-dom';
+import {Permission} from '../../api/permissions';
+import {Routes} from '../../components/Router/Routes';
+import {withPermissionRestriction} from '../../components/Router/withPermissionRestriction';
 import {GameBoard} from './Board';
 import {CatalogListPage} from './Catalog';
 import {GameInfo} from './Catalog/GameInfo';

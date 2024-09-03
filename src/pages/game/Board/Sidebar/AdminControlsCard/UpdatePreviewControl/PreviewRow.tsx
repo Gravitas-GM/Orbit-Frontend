@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {Board} from '../../../../../../api/Game-Catalog/Models/Boards';
 import {
 	PlayerChanged,
 	PlayerCreated,
@@ -7,7 +7,7 @@ import {
 	PlayerMoved,
 	PlayerUpdate,
 	UpdateResultType,
-} from '../../../../../../Api/Game-State/Models/Games';
+} from '../../../../../../api/Game-State/Models/Games';
 import {formatNumber, ucwords} from '../../../../../../utility/string';
 
 interface Props {

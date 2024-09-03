@@ -10,15 +10,15 @@ import {
 	Intent,
 	NumericInput,
 } from '@blueprintjs/core';
-import {PointSourceItem, PointSourceModel} from '../../../Api/Point-Tracking/Models/Sources';
+import {PointSourceItem, PointSourceModel} from '../../../api/Point-Tracking/Models/Sources';
 import {withAppUser, WithAppUserProps} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
-import {DeleteDialog, DeleteSubject} from '../../../Components/DeleteDialog';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
+import {DeleteDialog, DeleteSubject} from '../../../components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {replace} from '../../../utility/array';
 import {AssignPointsDialog} from './AssignPointsDialog';
 import {Classes as GmClasses} from '../../../classes';
-import {ObjectList} from '../../../Components/ObjectList';
+import {ObjectList} from '../../../components/ObjectList';
 import {TableItem} from './TableItem';
 import {allSettled, isRejectedResult} from '../../../utility/promise';
 import {Spacing} from '../../../Styles/variables';

@@ -1,6 +1,6 @@
 import {Button, Intent} from '@blueprintjs/core';
 import React, {useCallback, useState} from 'react';
-import {Board} from '../../../../../../Api/Game-Catalog/Models/Boards';
+import {Board} from '../../../../../../api/Game-Catalog/Models/Boards';
 import {UpdatePreviewDialog} from './UpdatePreviewDialog';
 
 interface Props {

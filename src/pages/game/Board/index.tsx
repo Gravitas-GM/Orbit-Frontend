@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {isNotFoundError} from '../../../Api/errors';
-import {ApiError} from '../../../Api/errors/rocket';
-import {Board, BoardModel} from '../../../Api/Game-Catalog/Models/Boards';
-import {Stage} from '../../../Api/Game-Catalog/Models/Stages';
+import {isNotFoundError} from '../../../api/errors';
+import {ApiError} from '../../../api/errors/rocket';
+import {Board, BoardModel} from '../../../api/Game-Catalog/Models/Boards';
+import {Stage} from '../../../api/Game-Catalog/Models/Stages';
 import {
 	GamesModel,
 	GameStartPayload,
@@ -15,11 +15,11 @@ import {
 	PlayerMoved,
 	PlayerState,
 	UpdateResultType,
-} from '../../../Api/Game-State/Models/Games';
-import {HistoryItem, HistoryModel} from '../../../Api/Game-State/Models/History';
-import {Permission} from '../../../Api/permissions';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {IsGranted} from '../../../Components/Security/IsGranted';
+} from '../../../api/Game-State/Models/Games';
+import {HistoryItem, HistoryModel} from '../../../api/Game-State/Models/History';
+import {Permission} from '../../../api/permissions';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {IsGranted} from '../../../components/Security/IsGranted';
 import {SessionContext} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
 import {replace} from '../../../utility/array';

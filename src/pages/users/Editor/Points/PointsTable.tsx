@@ -1,7 +1,7 @@
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
-import {PointItem} from '../../../../Api/Point-Tracking/Models/Points';
-import {NonIdealState} from '../../../../Components/NonIdealState';
+import {PointItem} from '../../../../api/Point-Tracking/Models/Points';
+import {NonIdealState} from '../../../../components/NonIdealState';
 import {Spacing} from '../../../../Styles/variables';
 import {formatDateTime} from '../../../../utility/date';
 import {formatNumber, ucwords} from '../../../../utility/string';

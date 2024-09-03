@@ -1,11 +1,11 @@
-import * as React from 'react';
-import {FormProps, MultipleChoiceSaveHandler} from './index';
-import {MultipleChoiceQuestion} from '../../../../../Api/Quiz/Models/Questions';
 import {Button, ControlGroup, FormGroup, H3, InputGroup, Radio} from '@blueprintjs/core';
-import {ValidationAwareFormGroup} from '../../../../ValidationAwareFormGroup';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import {replaceByIndex} from '../../../../../utility/array';
-import {FormControls} from '../../../../FormControls';
+import * as React from 'react';
+import {ValidationFailures} from '../../../../api/errors/symfony';
+import {MultipleChoiceQuestion} from '../../../../api/Quiz/Models/Questions';
+import {FormControls} from '../../../../components/FormControls';
+import {ValidationAwareFormGroup} from '../../../../components/ValidationAwareFormGroup';
+import {replaceByIndex} from '../../../../utility/array';
+import {FormProps, MultipleChoiceSaveHandler} from './index';
 
 type Props = FormProps<MultipleChoiceQuestion, MultipleChoiceSaveHandler>;
 

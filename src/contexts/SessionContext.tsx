@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {User, UserModel} from '../Api/Hub/Models/Users';
-import {Token} from '../Api/jwt';
-import {isPermissionGranted, MatchQuery, Permission} from '../Api/permissions';
-import {isRoleGranted, Role} from '../Api/roles';
+import {User, UserModel} from '../api/Hub/Models/Users';
+import {Token} from '../api/jwt';
+import {isPermissionGranted, MatchQuery, Permission} from '../api/permissions';
+import {isRoleGranted, Role} from '../api/roles';
 import {toaster} from '../toaster';
 import {wrap} from '../utility/component';
 import {ManagerProps} from './index';

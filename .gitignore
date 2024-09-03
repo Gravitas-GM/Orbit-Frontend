@@ -1,8 +1,10 @@
 /**/.DS_Store
 /node_modules
+/yarn-error.log
 
 # Build files
 /.cache
+/.parcel-cache
 /dist
 
 /.env.local

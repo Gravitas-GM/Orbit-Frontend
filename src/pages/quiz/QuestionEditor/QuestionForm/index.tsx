@@ -1,16 +1,16 @@
 import * as React from 'react';
+import './index.scss';
+import {ValidationFailures} from '../../../../api/errors/symfony';
 import {
 	BooleanQuestion,
 	FreeTextQuestion,
 	MultipleChoiceQuestion,
 	Question,
 	QuestionKind,
-} from '../../../../../Api/Quiz/Models/Questions';
+} from '../../../../api/Quiz/Models/Questions';
 import {BooleanForm} from './BooleanForm';
-import {ValidationFailures} from '../../../../../Api/errors/symfony';
-import './index.scss';
-import {MultipleChoiceForm} from './MultipleChoiceForm';
 import {FreeTextForm} from './FreeTextForm';
+import {MultipleChoiceForm} from './MultipleChoiceForm';
 
 export interface FormProps<TQuestion extends Question, THandler> {
 	onSave: THandler;

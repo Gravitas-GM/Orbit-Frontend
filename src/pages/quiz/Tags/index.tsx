@@ -1,12 +1,12 @@
 import {Button, Checkbox, HTMLTable, Intent} from '@blueprintjs/core';
 import * as React from 'react';
 import {Navigate} from 'react-router-dom';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {QuestionTag, QuestionTagModel} from '../../../Api/Quiz/Models/QuestionTags';
-import {DeleteDialog, DeleteSubject} from '../../../Components/DeleteDialog';
-import {FrameLoadingSpinner} from '../../../Components/FrameLoadingSpinner';
-import {LinkButton} from '../../../Components/LinkButton';
-import {ObjectList} from '../../../Components/ObjectList';
+import {User, UserModel} from '../../../api/Hub/Models/Users';
+import {QuestionTag, QuestionTagModel} from '../../../api/Quiz/Models/QuestionTags';
+import {DeleteDialog, DeleteSubject} from '../../../components/DeleteDialog';
+import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
+import {LinkButton} from '../../../components/LinkButton';
+import {ObjectList} from '../../../components/ObjectList';
 import {Spacing} from '../../../Styles/variables';
 import {toaster} from '../../../toaster';
 import {allSettled, isRejectedResult} from '../../../utility/promise';

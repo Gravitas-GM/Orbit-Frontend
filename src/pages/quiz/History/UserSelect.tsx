@@ -1,10 +1,9 @@
-import {Button} from '@blueprintjs/core';
-import {MenuItem2 as MenuItem} from '@blueprintjs/popover2';
+import {Button, MenuItem} from '@blueprintjs/core';
 import {ItemRenderer} from '@blueprintjs/select';
 import * as React from 'react';
-import {User} from '../../../Api/Hub/Models/Users';
-import {Permission} from '../../../Api/permissions';
-import {Select} from '../../../Components/Select/Select';
+import {User} from '../../../api/Hub/Models/Users';
+import {Permission} from '../../../api/permissions';
+import {Select} from '../../../components/Select/Select';
 import {withPermissions, WithPermissionsProps} from '../../../contexts/SessionContext';
 
 interface Props extends WithPermissionsProps {

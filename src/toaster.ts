@@ -1,12 +1,14 @@
-import {Intent, IToastProps, Position, Toaster} from '@blueprintjs/core';
-import {NextBoardResult} from './Api/Game-State/Models/Games';
+import {Intent, OverlayToaster, Position, ToastProps} from '@blueprintjs/core';
+import {ApiError as RocketApiError} from './api/errors/rocket';
+import {ApiError as SymfonyApiError} from './api/errors/symfony';
+import {NextBoardResult} from './api/Game-State/Models/Games';
 
 export namespace toaster {
-	const toaster = Toaster.create({
+	const toaster = OverlayToaster.create({
 		position: Position.BOTTOM_LEFT,
 	});
 
-	export function show(props: IToastProps) {
+	export function show(props: ToastProps) {
 		toaster.show(props);
 	}
 
@@ -50,6 +52,12 @@ export namespace toaster {
 	}
 
 	// region Error Messages
+	export function showApiErrorMessage(e: any) {
+		if (e instanceof SymfonyApiError || e instanceof RocketApiError)
+			error(e.message);
+		else
+			showUnhandledErrorMessage();
+	}
 
 	export function showUnhandledErrorMessage() {
 		error('An error occurred while processing your request. Please try again.');
@@ -57,6 +65,14 @@ export namespace toaster {
 
 	export function showValidationFailedErrorMessage() {
 		error('One or more fields did not pass validation.');
+	}
+
+	// endregion
+
+	// region Warning Messages
+	export function showSurveyNotReadyWarning(surveyType: 'current' | 'next'): void {
+		const survey = surveyType === 'current' ? 'This' : 'Next';
+		warning(`${survey} week's survey isn't ready for your account yet. Check back later!`);
 	}
 
 	// endregion

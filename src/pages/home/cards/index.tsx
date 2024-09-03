@@ -1,8 +1,8 @@
 import {Card, H4, Icon, IconProps} from '@blueprintjs/core';
 import * as React from 'react';
 import {LinkProps} from 'react-router-dom';
-import {Cards} from '../../../Components/Cards';
-import {MaybeLink} from '../../../Components/MaybeLink';
+import {Cards} from '../../../components/Cards';
+import {MaybeLink} from '../../../components/MaybeLink';
 import {IconSize} from '../../../IconSize';
 import {Spacing} from '../../../Styles/variables';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {ValidationFailures} from '../../../../Api/errors/symfony';
-import {QuestionKind} from '../../../../Api/Quiz/Models/Questions';
+import {ValidationFailures} from '../../../../api/errors/symfony';
+import {QuestionKind} from '../../../../api/Quiz/Models/Questions';
 import {BooleanQuestion} from './BooleanQuestion';
 import {FreeTextQuestion} from './FreeTextQuestion';
 import {QuizItem} from './index';

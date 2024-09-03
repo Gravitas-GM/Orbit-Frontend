@@ -1,9 +1,9 @@
 import {ControlGroup, FormGroup, InputGroup, Radio, RadioGroup} from '@blueprintjs/core';
 import * as React from 'react';
-import {isValidationFailureError, ValidationFailures} from '../../../Api/errors/symfony';
-import {User, UserModel} from '../../../Api/Hub/Models/Users';
-import {Permission} from '../../../Api/permissions';
-import {FormControls} from '../../../Components/FormControls';
+import {isValidationFailureError, ValidationFailures} from '../../../api/errors/symfony';
+import {User, UserModel} from '../../../api/Hub/Models/Users';
+import {Permission} from '../../../api/permissions';
+import {FormControls} from '../../../components/FormControls';
 import {withPermissions, WithPermissionsProps} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
 

@@ -1,7 +1,7 @@
 import {Icon} from '@blueprintjs/core';
 import * as React from 'react';
-import {PlayerState} from '../../../../../Api/Game-State/Models/Games';
-import {NonIdealState} from '../../../../../Components/NonIdealState';
+import {PlayerState} from '../../../../../api/Game-State/Models/Games';
+import {NonIdealState} from '../../../../../components/NonIdealState';
 import {Spacing} from '../../../../../Styles/variables';
 import {GameCard} from '../GameCard/GameCard';
 

@@ -16,8 +16,8 @@ export function isRejectedResult(result: any): result is PromiseRejectedResult {
 	return typeof result === 'object' && result.status === 'rejected';
 }
 
-type PromiseSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
-type AllSettledResult<T> = Array<PromiseSettledResult<T extends PromiseLike<infer U> ? U : T>>;
+export type PromiseSettledResult<T> = PromiseFulfilledResult<T> | PromiseRejectedResult;
+export type AllSettledResult<T> = Array<PromiseSettledResult<T extends PromiseLike<infer U> ? U : T>>;
 
 export function allSettled<T>(promises: T[]): Promise<AllSettledResult<T>> {
 	// If the browser supports Promise.allSettled(), use that instead of our polyfill. Lines are @ts-ignored because

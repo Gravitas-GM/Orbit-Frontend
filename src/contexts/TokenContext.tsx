@@ -1,6 +1,7 @@
-import * as React from 'react';
-import {tokenStorage} from '../Api';
-import {Token, TokenRefreshedFn} from '../Api/jwt';
+import {ComponentType, createContext, ReactElement, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {tokenStorage} from '../api';
+import {Token, TokenRefreshedFn} from '../api/jwt';
+import {wrap} from '../utility/component';
 import {ManagerProps} from './index';
 
 export type SetTokenFn = (token: Token | null) => void;
@@ -10,29 +11,42 @@ export interface State {
 	setToken: SetTokenFn,
 }
 
-export const TokenContext = React.createContext<State>({
+export const TokenContext = createContext<State>({
 	token: null,
 	setToken: () => {
 	},
 });
 
 export function useToken(): State {
-	return React.useContext(TokenContext);
+	return useContext(TokenContext);
 }
 
-export function TokenManager({children}: ManagerProps): React.ReactElement {
-	const [token, setToken] = React.useState<Token | null>(() => tokenStorage.getToken());
+export interface WithTokenProps {
+	token: Token | null,
+	setToken: SetTokenFn,
+}
 
-	const onTokenRefreshed = React.useCallback<TokenRefreshedFn>(token => {
+export function withToken<P extends WithTokenProps>(component: ComponentType<P>) {
+	return wrap('withToken', component, () => useToken());
+}
+
+export function TokenManager({children}: ManagerProps): ReactElement {
+	const [token, setToken] = useState<Token | null>(() => tokenStorage.getToken());
+
+	const onTokenChanged = useCallback<TokenRefreshedFn>(token => {
 		setToken(token);
 	}, []);
 
-	const setTokenFn = React.useCallback<SetTokenFn>(token => {
-		tokenStorage.setToken(token, onTokenRefreshed);
-		setToken(token);
-	}, [onTokenRefreshed]);
+	useEffect(() => {
+		tokenStorage.addEventListener('changed', onTokenChanged);
+		return () => tokenStorage.removeEventListener('changed', onTokenChanged);
+	}, [onTokenChanged]);
 
-	const state = React.useMemo<State>(() => ({
+	const setTokenFn = useCallback<SetTokenFn>(token => {
+		tokenStorage.setToken(token);
+	}, [onTokenChanged]);
+
+	const state = useMemo<State>(() => ({
 		token,
 		setToken: setTokenFn,
 	}), [token]);

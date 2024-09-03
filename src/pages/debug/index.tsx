@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Route, Routes} from 'react-router-dom';
-import {Permission} from '../../Api/permissions';
+import {Route} from 'react-router-dom';
+import {Permission} from '../../api/permissions';
+import {Routes} from '../../components/Router/Routes';
 import {Config} from '../../config';
 import {usePermissions} from '../../contexts/SessionContext';
 import {DebugControls} from './DebugControls';
