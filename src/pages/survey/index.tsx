@@ -9,15 +9,19 @@ import {BankRoutes} from './Bank';
 import {Form} from './Form';
 import {QuestionEditor as LocalQuestionEditor} from './Local/QuestionEditor';
 import {QuestionList as LocalQuestionList} from './Local/QuestionList';
+import {SurveyResults} from './Results/SurveyResults';
 import {Settings} from './Settings';
 
 export function SurveyRoutes(): ReactElement {
 	return (
 		<Routes>
 			<Route index={true} element={<Form />} />
+			<Route path="results" element={<SurveyResults />} />
 
 			{withPermissionRestriction(Permission.Admin, (
 				<>
+					<Route path="results/:survey" element={<SurveyResults />} />
+
 					<Route path="settings" element={<Settings />} />
 
 					<Route path="next" element={<LocalQuestionList />} />
