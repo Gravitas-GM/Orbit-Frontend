@@ -20,6 +20,7 @@ export interface SettingsEndpoints {
 export interface Settings {
 	surveyRefreshDay: WeekDay,
 	userSurveyReminder: boolean,
+	rewardSourceId: string | null,
 }
 
 export type SettingsUpdatePayload = Partial<Settings>;

@@ -3,7 +3,8 @@ import {ItemRenderer} from '@blueprintjs/select';
 import {ChangeEventHandler, PureComponent, ReactElement} from 'react';
 import {WEEK_DAY_NAMES, WEEK_DAY_VALUES, WeekDay} from '../../api';
 import {ApiError, ValidationFailures} from '../../api/errors/symfony';
-import {SettingsModel} from '../../api/Survey/Models/Settings';
+import {PointSourceItem, PointSourceModel} from '../../api/Point-Tracking/Models/Sources';
+import {Settings as SurveySettings, SettingsModel} from '../../api/Survey/Models/Settings';
 import {Classes} from '../../classes';
 import {FormControls} from '../../components/FormControls';
 import {FrameLoadingSpinner} from '../../components/FrameLoadingSpinner';
@@ -12,10 +13,13 @@ import {ItemSelectFn, Select} from '../../components/Select/Select';
 import {ValidationAwareFormGroup} from '../../components/ValidationAwareFormGroup';
 import {withAppUser, WithAppUserProps} from '../../contexts/SessionContext';
 import {toaster} from '../../toaster';
+import {compareStrings, renderSourcePointValue} from '../../utility/string';
 
 interface State {
 	refreshDay: WeekDay,
 	surveyReminderEnabled: boolean,
+	rewardSource: PointSourceItem | null,
+	rewardSources: PointSourceItem[],
 	validation: ValidationFailures | null,
 	dirty: boolean,
 	loading: boolean,
@@ -26,6 +30,8 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 	public state: Readonly<State> = {
 		refreshDay: WeekDay.Sunday,
 		surveyReminderEnabled: false,
+		rewardSource: null,
+		rewardSources: [],
 		validation: null,
 		dirty: false,
 		loading: true,
@@ -33,19 +39,34 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 	};
 
 	public async componentDidMount(): Promise<void> {
-		try {
-			const settings = await SettingsModel.read(this.props.user.account.id).then(r => r.data);
+		let sources: PointSourceItem[];
 
-			this.setState({
-				refreshDay: settings.surveyRefreshDay,
-				surveyReminderEnabled: settings.userSurveyReminder,
-			});
+		try {
+			sources = await PointSourceModel.list(this.props.user.account.id).then(r => r.data);
+		} catch (error) {
+			toaster.showApiErrorMessage(error);
+			return;
+		}
+
+		let settings: SurveySettings;
+
+		try {
+			settings = await SettingsModel.read(this.props.user.account.id).then(r => r.data);
 		} catch (error) {
 			toaster.showApiErrorMessage(error);
 			return;
 		}
 
 		this.setState({
+			rewardSources: sources.sort((a, b) => compareStrings(a.name, b.name)),
+		});
+
+		const rewardSource = sources.find(source => source.id.$oid === settings.rewardSourceId) ?? null;
+
+		this.setState({
+			refreshDay: settings.surveyRefreshDay,
+			surveyReminderEnabled: settings.userSurveyReminder,
+			rewardSource,
 			loading: false,
 		});
 	}
@@ -91,6 +112,26 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 						</div>
 					</ValidationAwareFormGroup>
 
+					<ValidationAwareFormGroup labelFor="rewardSourceId" failures={this.state.validation}>
+						<Select
+							items={this.state.rewardSources}
+							itemRenderer={this.renderPointSourceItem}
+							onItemSelect={this.onRewardSourceSelected}
+							fill={true}
+						>
+							<Button
+								rightIcon="caret-down"
+								text={
+									this.state.rewardSource ?
+										renderSourcePointValue(this.state.rewardSource) :
+										'No source selected'
+								}
+								alignText="left"
+								fill={true}
+							/>
+						</Select>
+					</ValidationAwareFormGroup>
+
 					<FormControls
 						onSaveClick={this.onSave}
 						loading={this.state.saving}
@@ -115,6 +156,19 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 		/>
 	);
 
+	private renderPointSourceItem: ItemRenderer<PointSourceItem> = (item, props) => (
+		<MenuItem
+			key={item.id.$oid}
+			text={renderSourcePointValue(item)}
+			selected={item === this.state.rewardSource}
+			active={props.modifiers.active}
+			disabled={props.modifiers.disabled}
+			onClick={props.handleClick}
+			onFocus={props.handleFocus}
+			roleStructure="listoption"
+		/>
+	);
+
 	private onRefreshDaySelect: ItemSelectFn<WeekDay> = item => this.setState({
 		refreshDay: item,
 		dirty: true,
@@ -122,6 +176,11 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 
 	private onSurveyReminderChange: ChangeEventHandler<HTMLInputElement> = event => this.setState({
 		surveyReminderEnabled: event.currentTarget.checked,
+		dirty: true,
+	});
+
+	private onRewardSourceSelected: ItemSelectFn<PointSourceItem> = item => this.setState({
+		rewardSource: item,
 		dirty: true,
 	});
 
@@ -137,6 +196,7 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 			await SettingsModel.update(this.props.user.account.id, {
 				userSurveyReminder: this.state.surveyReminderEnabled,
 				surveyRefreshDay: this.state.refreshDay,
+				rewardSourceId: this.state.rewardSource?.id.$oid,
 			});
 		} catch (error) {
 			if (error instanceof ApiError && error.isValidationFailure()) {
@@ -157,6 +217,10 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 				saving: false,
 			});
 		}
+
+		this.setState({
+			dirty: false,
+		});
 
 		toaster.success('Settings saved.');
 	};
