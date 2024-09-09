@@ -127,7 +127,7 @@ fi
 
 echo
 echo "Building project files..."
-yarn build --log-level 1
+yarn build --log-level warn
 
 bucketUrl="s3://${bucket}"
 
