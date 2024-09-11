@@ -30,7 +30,6 @@ export function getKindDisplayName(kind: QuestionKind): string {
 interface BaseQuestion extends Entity {
 	kind: QuestionKind,
 	prompt: string,
-	sort: number,
 }
 
 export interface BaseFreeTextQuestion extends BaseQuestion {
@@ -42,11 +41,14 @@ export interface BaseChoiceQuestion extends BaseQuestion {
 	choices: string[],
 }
 
+export type ScaleQuestionLabels = {[key: string]: string};
+
 export interface BaseScaleQuestion extends BaseQuestion {
 	kind: QuestionKind.Scale,
 	startValue: number,
 	endValue: number,
 	stepAmount: number,
+	labels: ScaleQuestionLabels | null,
 }
 
 export type Question = BaseFreeTextQuestion | BaseChoiceQuestion | BaseScaleQuestion;
