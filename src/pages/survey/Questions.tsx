@@ -105,7 +105,7 @@ export function Questions<T extends Surveys>({survey, baseUri, onQuestionDelete,
 					</p>
 
 					{deleteTargets.map(item => (
-						<Blockquote>{item.prompt}</Blockquote>
+						<Blockquote key={item.id}>{item.prompt}</Blockquote>
 					))}
 
 					<p>

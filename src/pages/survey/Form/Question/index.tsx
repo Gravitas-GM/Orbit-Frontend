@@ -7,6 +7,7 @@ import {ResponseChangeFn} from '../index';
 import {ChoiceQuestion} from './ChoiceQuestion';
 import {FreeTextQuestion} from './FreeTextQuestion';
 import {ScaleQuestion} from './ScaleQuestion';
+import './index.scss';
 
 export interface QuestionProps<T extends SurveyQuestion> {
 	index: number,
@@ -34,6 +35,7 @@ export function Question<T extends SurveyQuestion>({index, question, validation,
 				min={question.startValue}
 				max={question.endValue}
 				stepSize={question.stepAmount}
+				labels={question.labels}
 				onChange={onChange}
 			/>
 		);
@@ -41,7 +43,12 @@ export function Question<T extends SurveyQuestion>({index, question, validation,
 		throw new Error(`Unrecognized question kind`);
 
 	return (
-		<ValidationAwareFormGroup label={question.prompt} labelFor={`response[${index}]`} failures={validation}>
+		<ValidationAwareFormGroup
+			label={question.prompt}
+			labelFor={`response[${index}]`}
+			failures={validation}
+			className="survey-prompt"
+		>
 			{content}
 		</ValidationAwareFormGroup>
 	);
