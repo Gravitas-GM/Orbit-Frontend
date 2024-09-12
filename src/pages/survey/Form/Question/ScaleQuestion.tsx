@@ -15,7 +15,7 @@ interface Props extends QuestionProps<SurveyScaleQuestion> {
 }
 
 export function ScaleQuestion({index, onChange, labels, ...sliderProps}: Props): ReactElement {
-	const [value, setValue] = useState(sliderProps.min);
+	const [value, setValue] = useState(Math.ceil(sliderProps.max / sliderProps.stepSize / 2));
 
 	const onValueChange: SliderChangeFn = useCallback(value => {
 		setValue(value);
