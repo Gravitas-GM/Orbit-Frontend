@@ -1,5 +1,5 @@
 import {Button, MenuItem, Switch} from '@blueprintjs/core';
-import {ItemRenderer} from '@blueprintjs/select';
+import {ItemListPredicate, ItemPredicate, ItemRenderer} from '@blueprintjs/select';
 import {ChangeEventHandler, PureComponent, ReactElement} from 'react';
 import {WEEK_DAY_NAMES, WEEK_DAY_VALUES, WeekDay} from '../../api';
 import {ApiError, ValidationFailures} from '../../api/errors/symfony';
@@ -112,12 +112,19 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 						</div>
 					</ValidationAwareFormGroup>
 
-					<ValidationAwareFormGroup labelFor="rewardSourceId" failures={this.state.validation}>
+					<ValidationAwareFormGroup
+						label="Reward Point Source"
+						labelFor="rewardSourceId"
+						failures={this.state.validation}
+					>
 						<Select
 							items={this.state.rewardSources}
 							itemRenderer={this.renderPointSourceItem}
+							itemListPredicate={this.filterRewardSource}
 							onItemSelect={this.onRewardSourceSelected}
 							fill={true}
+							noResults={<MenuItem text="No items found." />}
+							resetOnClose={true}
 						>
 							<Button
 								rightIcon="caret-down"
@@ -168,6 +175,11 @@ class Settings extends PureComponent<WithAppUserProps, State> {
 			roleStructure="listoption"
 		/>
 	);
+
+	private filterRewardSource: ItemListPredicate<PointSourceItem> = (query, items) => {
+		query = query.toLocaleLowerCase();
+		return items.filter(item => item.name.toLocaleLowerCase().includes(query));
+	};
 
 	private onRefreshDaySelect: ItemSelectFn<WeekDay> = item => this.setState({
 		refreshDay: item,

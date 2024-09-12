@@ -23,6 +23,9 @@ body {
 	.settings-title-container {
 		display: flex;
 
+		padding-top: $spacing-large;
+		gap: $spacing-large;
+
 		h2 {
 			flex: 1;
 		}
@@ -30,9 +33,6 @@ body {
 		.#{$ns}-button {
 			height: $spacing-xlarge;
 		}
-
-		padding-top: $spacing-large;
-		gap: $spacing-large;
 	}
 
 	.main-frame {
@@ -90,9 +90,13 @@ a.plain-link {
 	}
 }
 
-.#{$ns}-popover2 {
-	max-height: 300px;
-	overflow-y: auto;
+.#{$ns}-select-popover {
+	.#{$ns}-popover-content {
+		ul {
+			max-height: 300px;
+			overflow-y: scroll;
+		}
+	}
 }
 
 .empty-state-wrapper {

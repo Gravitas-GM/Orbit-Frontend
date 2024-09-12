@@ -1,16 +1,16 @@
 @import '../../variables';
 
 #nav-header {
-	.nav-link {
-		color: $white;
-		padding: 0 $spacing-medium 0 $spacing-medium;
-		text-decoration: none;
-	}
-
 	background: $gm-navbar-background-color;
 	height: $gm-nav-header-height;
 
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+
+	.nav-link {
+		color: $white;
+		padding: 0 $spacing-medium 0 $spacing-medium;
+		text-decoration: none;
+	}
 }

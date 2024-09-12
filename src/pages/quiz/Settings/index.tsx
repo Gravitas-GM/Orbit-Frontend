@@ -105,7 +105,6 @@ class QuizSettings extends React.PureComponent<WithAppUserProps, State> {
 								fill={true}
 								text={ucwords(this.state.frequency)}
 								rightIcon="caret-down"
-								placeholder="Select quiz frequency"
 								alignText="left"
 							/>
 						</Select>
