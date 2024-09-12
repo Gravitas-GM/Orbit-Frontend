@@ -102,7 +102,10 @@ export function Form(): ReactElement {
 		}
 
 		toaster.success('Your survey has been submitted successfully.');
-		setRedirect('/survey/results');
+
+		// Until the results page is complete, redirect the user to the home page after submitting the survey.
+		// setRedirect('/survey/results');
+		setRedirect('/');
 	}, [questions, responses]);
 
 	if (redirect !== null)
