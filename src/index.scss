@@ -90,7 +90,7 @@ a.plain-link {
 	}
 }
 
-.#{$ns}-select-popover {
+.#{$ns}-select-popover, .#{$ns}-multi-select-popover {
 	.#{$ns}-popover-content {
 		ul {
 			max-height: 300px;
