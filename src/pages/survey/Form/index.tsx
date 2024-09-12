@@ -11,6 +11,7 @@ import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {PageHeader} from '../../../components/PageHeader';
 import {toaster} from '../../../toaster';
 import {Question} from './Question';
+import './index.scss';
 
 export type Response<T extends SurveyResponse = SurveyResponse> = T['response'];
 export type ResponseChangeFn<T extends SurveyResponse = SurveyResponse> = (index: number, value: Response<T>) => void;
@@ -110,7 +111,7 @@ export function Form(): ReactElement {
 		return <FrameLoadingSpinner />;
 
 	return (
-		<div className={Classes.PAGE_WRAPPER}>
+		<div className={Classes.PAGE_WRAPPER} id="survey-form">
 			<PageHeader title="Survey" subtitle="Your answers are anonymous." />
 
 			<form onSubmit={onSave}>
