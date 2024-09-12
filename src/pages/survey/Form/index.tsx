@@ -11,6 +11,7 @@ import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
 import {PageHeader} from '../../../components/PageHeader';
 import {toaster} from '../../../toaster';
 import {Question} from './Question';
+import './index.scss';
 
 export type Response<T extends SurveyResponse = SurveyResponse> = T['response'];
 export type ResponseChangeFn<T extends SurveyResponse = SurveyResponse> = (index: number, value: Response<T>) => void;
@@ -101,7 +102,10 @@ export function Form(): ReactElement {
 		}
 
 		toaster.success('Your survey has been submitted successfully.');
-		setRedirect('/survey/results');
+
+		// Until the results page is complete, redirect the user to the home page after submitting the survey.
+		// setRedirect('/survey/results');
+		setRedirect('/');
 	}, [questions, responses]);
 
 	if (redirect !== null)
@@ -110,7 +114,7 @@ export function Form(): ReactElement {
 		return <FrameLoadingSpinner />;
 
 	return (
-		<div className={Classes.PAGE_WRAPPER}>
+		<div className={Classes.PAGE_WRAPPER} id="survey-form">
 			<PageHeader title="Survey" subtitle="Your answers are anonymous." />
 
 			<form onSubmit={onSave}>
