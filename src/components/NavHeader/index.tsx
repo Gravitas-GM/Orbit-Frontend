@@ -46,7 +46,7 @@ export function NavHeader(): React.ReactElement | null {
 						<Button text="Quiz" minimal={true} rightIcon="caret-down" />
 					</Popover>
 
-					<Popover content={<SurveyMenu />}>
+					<Popover content={<SurveyMenu />} placement="bottom">
 						<Button text="Survey" minimal={true} rightIcon="caret-down" />
 					</Popover>
 
