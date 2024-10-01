@@ -1,0 +1,21 @@
+@import '../../variables';
+
+.radial-graph {
+	.segment {
+		transform-origin: center;
+		opacity: 0.8;
+
+		&:hover {
+			opacity: 1.0;
+			cursor: pointer;
+		}
+
+		@for $index from 1 to length($gm-accessible-colors) {
+			$color: nth($gm-accessible-colors, $index);
+
+			&:nth-of-type(#{$index}) {
+				fill: $color;
+			}
+		}
+	}
+}

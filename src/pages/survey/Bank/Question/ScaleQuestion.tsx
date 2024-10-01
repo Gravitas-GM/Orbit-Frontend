@@ -55,6 +55,7 @@ export function ScaleQuestion({onDirtyChange, question, save, validation}: Props
 		const baseLabels = question?.labels ?? {};
 		const labels: NullableLabels = {};
 
+		// TODO Breaks if start > end /tyler
 		for (let i = startValue; i <= endValue; i += stepAmount)
 			labels[i] = baseLabels[i] ?? null;
 

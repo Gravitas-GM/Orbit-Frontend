@@ -3,13 +3,13 @@ import {FC, ReactElement, ReactNode} from 'react';
 import './PageHeader.scss';
 import {useTitle} from '../hooks/useTitle';
 
-interface IProps {
+interface Props {
 	title?: string,
 	children?: ReactNode,
 	setPageTitle?: boolean,
 	heading?: FC,
 	icon?: IconName | MaybeElement,
-	subtitle?: ReactNode,
+	subtitle?: ReactElement | string,
 }
 
 export function PageHeader({
@@ -19,7 +19,7 @@ export function PageHeader({
 	subtitle,
 	heading = H2,
 	setPageTitle = true,
-}: IProps): ReactElement {
+}: Props): ReactElement {
 	useTitle(setPageTitle ? title : undefined);
 
 	return (

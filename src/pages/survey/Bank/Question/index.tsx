@@ -22,8 +22,8 @@ export interface QuestionFormProps<T extends Question> {
 	validation: ValidationFailures | null,
 }
 
-export type QuestionSaveFn<T extends Question = Question> = SaveFn<Omit<T, 'prompt' | 'id'>>;
-export type QuestionSaveHandlerFn = () => Omit<Question, 'prompt' | 'id'>;
+export type QuestionSaveFn<T extends Question = Question> = SaveFn<Omit<T, 'prompt' | 'id' | 'summary' | 'responses'>>;
+export type QuestionSaveHandlerFn = () => Omit<Question, 'prompt' | 'id' | 'summary' | 'responses'>;
 
 export type DirtyChangeFn = (dirty: boolean) => void;
 

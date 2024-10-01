@@ -1,0 +1,32 @@
+#survey-responses {
+	.free-text {
+		width: 800px;
+
+		.group {
+			display: flex;
+			justify-content: space-evenly;
+			margin-bottom: 75px;
+
+			.prompt, .keyword {
+				text-align: center;
+				border: solid thin;
+				border-radius: 100px;
+				width: 175px;
+				height: 175px;
+				align-content: center;
+				padding: 10px;
+				font-size: 1.3rem;
+			}
+
+			.prompt {
+				border: none;
+				width: 300px;
+			}
+
+			.keyword {
+				overflow: clip;
+				text-overflow: ellipsis;
+			}
+		}
+	}
+}

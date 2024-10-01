@@ -42,10 +42,18 @@ export interface SurveyEndpoints {
 	},
 }
 
-export interface Survey extends Entity {
+export interface Survey<Summarized extends boolean = false> extends Entity {
 	account: Stub<Account>,
 	startedDate: Date,
-	questions: SurveyQuestion[],
+	questions: Array<SurveyQuestion<Summarized>>,
+	summarized: Summarized,
+}
+
+export function isSurveySummarized(value: any): value is Survey<true> {
+	if (value === null)
+		return false;
+
+	return typeof value === 'object' && 'summarized' in value && value.summarized;
 }
 
 export interface Submission extends Entity {

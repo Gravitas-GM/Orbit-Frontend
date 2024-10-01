@@ -1,11 +1,11 @@
 import {Slider} from '@blueprintjs/core';
-import {ReactElement, ReactNode, useCallback, useState} from 'react';
+import {ReactElement, useCallback, useState} from 'react';
 import {ScaleQuestionLabels} from '../../../../api/Survey';
 import {SurveyScaleQuestion} from '../../../../api/Survey/Models/SurveyQuestion';
 import {QuestionProps} from './index';
 
 type SliderChangeFn = (value: number) => void;
-type SliderLabelRenderer = (value: number) => ReactNode;
+type SliderLabelRenderer = (value: number) => ReactElement | string;
 
 interface Props extends QuestionProps<SurveyScaleQuestion> {
 	min: number,
@@ -24,9 +24,9 @@ export function ScaleQuestion({index, onChange, labels, ...sliderProps}: Props):
 
 	const renderLabel = useCallback<SliderLabelRenderer>(value => {
 		if (!labels)
-			return value;
+			return value.toString(10);
 
-		return labels[value] ?? value;
+		return labels[value] ?? value.toString(10);
 	}, [labels]);
 
 	return (

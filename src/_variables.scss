@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/lib/scss/variables";
+@import '~@blueprintjs/core/lib/scss/variables';
 
 //spacings
 $spacing-pixel: 1px;
@@ -10,7 +10,7 @@ $spacing-xlarge: 24px;
 $spacing-xxlarge: 48px;
 
 // colors
-$orbit-blue: #0b2540;
+$orbit-blue: #0B2540;
 
 $pt-app-background-color: $dark-gray4;
 $gm-main-frame-background-color: $gray4;
@@ -34,3 +34,16 @@ $pt-progress-bar-height: 8px;
 $pt-normal-line-height: $pt-font-size * $pt-line-height;
 $pt-small-line-height: $pt-font-size-small * $pt-line-height;
 $pt-large-line-height: $pt-font-size-large * $pt-line-height;
+
+// Colors from Paul Tol's Muted colorset from the R Project.
+// https://cran.r-project.org/web/packages/khroma/vignettes/tol.html#muted
+$gm-accessible-colors: (
+	#332288,
+	#DDCC77,
+	#117733,
+	#88CCEE,
+	#882255,
+	#44AA99,
+	#999933,
+	#AA4499,
+);
