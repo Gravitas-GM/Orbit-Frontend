@@ -1,20 +1,65 @@
 @import '../../variables';
 
 .radial-graph {
-	.segment {
-		transform-origin: center;
-		opacity: 0.8;
+	display: flex;
 
-		&:hover {
-			opacity: 1.0;
-			cursor: pointer;
+	svg {
+		flex-grow: 1;
+
+		.focused-label {
+			fill: $pt-dark-text-color;
+			font-size: 6px;
+			text-anchor: middle;
+			dominant-baseline: middle;
+
+			&:first-of-type {
+				font-size: 8px;
+			}
 		}
 
-		@for $index from 1 to length($gm-accessible-colors) {
-			$color: nth($gm-accessible-colors, $index);
+		.segment {
+			// This keeps the segments in a clockwise order, to match the top-to-bottom order of the items in the
+			// legend. Fixing the actual math that renders the segments required a lot more effort than I'm willing to
+			// give right now, especially when a simple mirror of the segments achieves the same thing.
+			transform: scaleX(-1);
+			transform-origin: center;
 
-			&:nth-of-type(#{$index}) {
-				fill: $color;
+			opacity: 0.8;
+			cursor: pointer;
+
+			&.active, &:hover {
+				opacity: 1.0;
+			}
+
+			@for $index from 1 to length($gm-accessible-colors) {
+				$color: nth($gm-accessible-colors, $index);
+
+				&:nth-of-type(#{$index}) {
+					fill: $color;
+				}
+			}
+		}
+	}
+
+	.legend {
+		margin-left: 30px;
+
+		.legend-item {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			margin-bottom: 10px;
+			font-size: 1.3rem;
+
+			.color {
+				width: 28px;
+				height: 28px;
+			}
+
+			@for $index from 1 to length($gm-accessible-colors) {
+				&:nth-of-type(#{$index}) .color {
+					background-color: nth($gm-accessible-colors, $index);
+				}
 			}
 		}
 	}

@@ -19,18 +19,18 @@ export function FreeTextResponse({question}: Props): ReactElement {
 	return (
 		<div className="free-text">
 			<Group>
-				<Keyword text={items[0]} />
+				<Keyword index={0} text={items[0]} />
 			</Group>
 
 			<Group>
-				<Keyword text={items[1]} />
+				<Keyword index={1} text={items[1]} />
 				<Prompt text={question.prompt} />
-				<Keyword text={items[2]} />
+				<Keyword index={2} text={items[2]} />
 			</Group>
 
 			<Group>
-				<Keyword text={items[3]} />
-				<Keyword text={items[4]} />
+				<Keyword index={3} text={items[3]} />
+				<Keyword index={4} text={items[4]} />
 			</Group>
 		</div>
 	);
@@ -54,8 +54,9 @@ function Prompt({text}: PromptProps): ReactElement {
 
 interface KeywordProps {
 	text: ReactNode,
+	index: number,
 }
 
-function Keyword({text}: KeywordProps): ReactElement {
-	return <div className="keyword">{text}</div>;
+function Keyword({text, index}: KeywordProps): ReactElement {
+	return <div className={`keyword keyword--${index}`}>{text}</div>;
 }

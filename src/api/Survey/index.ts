@@ -74,14 +74,15 @@ export interface ScaleResponseSummary extends BaseResponseSummary {
 	average: number,
 	median: number,
 	mode: number,
+	frequencies: { [key: number]: number },
 }
 
 export interface FreeTextResponseSummary extends BaseResponseSummary {
-	frequencies: {[key: string]: number},
+	frequencies: { [key: string]: number },
 }
 
 export interface ChoiceResponseSummary extends BaseResponseSummary {
-	frequencies: {[key: number]: number},
+	frequencies: { [key: number]: number },
 }
 
 export type ResponseSummary = ScaleResponseSummary | FreeTextResponseSummary | ChoiceResponseSummary;
