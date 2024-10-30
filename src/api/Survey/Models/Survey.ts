@@ -45,7 +45,9 @@ export interface SurveyEndpoints {
 export interface Survey<Summarized extends boolean = false> extends Entity {
 	account: Stub<Account>,
 	startedDate: Date,
+	completedDate: Date | null,
 	questions: Array<SurveyQuestion<Summarized>>,
+	submissions: Submission[],
 	summarized: Summarized,
 }
 
@@ -146,6 +148,7 @@ export class SurveyModel {
 
 	protected static denormalize(survey: Survey): Survey {
 		survey.startedDate = parseApiTimestamp(survey.startedDate);
+		survey.completedDate = survey.completedDate ? parseApiTimestamp(survey.completedDate) : null;
 
 		return survey;
 	}

@@ -7,6 +7,7 @@ import {withPermissionRestriction} from '../../components/Router/withPermissionR
 import {withRoleRestriction} from '../../components/Router/withRoleRestriction';
 import {BankRoutes} from './Bank';
 import {Form} from './Form';
+import {History} from './History';
 import {QuestionEditor as LocalQuestionEditor} from './Local/QuestionEditor';
 import {QuestionList as LocalQuestionList} from './Local/QuestionList';
 import {SurveyResults} from './Results/SurveyResults';
@@ -20,6 +21,7 @@ export function SurveyRoutes(): ReactElement {
 
 			{withPermissionRestriction(Permission.Admin, (
 				<>
+					<Route path="history" element={<History />} />
 					<Route path="results/:survey" element={<SurveyResults />} />
 
 					<Route path="settings" element={<Settings />} />
