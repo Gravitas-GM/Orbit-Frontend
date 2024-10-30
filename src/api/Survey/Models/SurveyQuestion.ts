@@ -33,20 +33,23 @@ export interface SurveyQuestionEndpoints {
 	},
 }
 
-type WithSurvey<T extends Question> = T & {
+type WithSurvey<T extends Question<any>> = T & {
 	survey: Stub<Survey>,
 };
 
-export type SurveyFreeTextQuestion = WithSurvey<BaseFreeTextQuestion>;
-export type SurveyChoiceQuestion = WithSurvey<BaseChoiceQuestion>;
-export type SurveyScaleQuestion = WithSurvey<BaseScaleQuestion>;
+export type SurveyFreeTextQuestion<Summarized extends boolean = false> = WithSurvey<BaseFreeTextQuestion<Summarized>>;
+export type SurveyChoiceQuestion<Summarized extends boolean = false> = WithSurvey<BaseChoiceQuestion<Summarized>>;
+export type SurveyScaleQuestion<Summarized extends boolean = false> = WithSurvey<BaseScaleQuestion<Summarized>>;
 
-export type SurveyQuestion = SurveyFreeTextQuestion | SurveyChoiceQuestion | SurveyScaleQuestion;
+export type SurveyQuestion<Summarized extends boolean = false> =
+	SurveyFreeTextQuestion<Summarized>
+	| SurveyChoiceQuestion<Summarized>
+	| SurveyScaleQuestion<Summarized>;
 
 export type SurveyQuestionCreatePayload = Create<SurveyQuestion, keyof SurveyQuestion, 'survey'>;
 export type SurveyQuestionUpdatePayload = Update<SurveyQuestion, 'survey'>;
 
-export type AsResponse<T extends SurveyQuestion> = T extends SurveyFreeTextQuestion ? FreeTextResponse :
+export type AsResponse<T extends SurveyQuestion<any>> = T extends SurveyFreeTextQuestion ? FreeTextResponse :
 	T extends SurveyChoiceQuestion ? ChoiceResponse :
 		T extends SurveyScaleQuestion ? ScaleResponse : never;
 

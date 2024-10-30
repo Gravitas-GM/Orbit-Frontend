@@ -1,0 +1,11 @@
+@import '../../../../variables';
+
+#survey-responses {
+	.question-item {
+		margin-top: $pt-grid-size * 3;
+
+		> h3 {
+			margin-bottom: $pt-grid-size * 3;
+		}
+	}
+}

@@ -42,10 +42,20 @@ export interface SurveyEndpoints {
 	},
 }
 
-export interface Survey extends Entity {
+export interface Survey<Summarized extends boolean = false> extends Entity {
 	account: Stub<Account>,
 	startedDate: Date,
-	questions: SurveyQuestion[],
+	completedDate: Date | null,
+	questions: Array<SurveyQuestion<Summarized>>,
+	submissions: Submission[],
+	summarized: Summarized,
+}
+
+export function isSurveySummarized(value: any): value is Survey<true> {
+	if (value === null)
+		return false;
+
+	return typeof value === 'object' && 'summarized' in value && value.summarized;
 }
 
 export interface Submission extends Entity {
@@ -138,6 +148,7 @@ export class SurveyModel {
 
 	protected static denormalize(survey: Survey): Survey {
 		survey.startedDate = parseApiTimestamp(survey.startedDate);
+		survey.completedDate = survey.completedDate ? parseApiTimestamp(survey.completedDate) : null;
 
 		return survey;
 	}
