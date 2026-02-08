@@ -1,35 +1,38 @@
 import * as React from 'react';
-import {Navigate} from 'react-router-dom';
-import {isNotFoundError} from '../../../api/errors';
-import {ApiError} from '../../../api/errors/rocket';
-import {Board, BoardModel} from '../../../api/Game-Catalog/Models/Boards';
-import {Stage} from '../../../api/Game-Catalog/Models/Stages';
+import { Navigate } from 'react-router-dom';
+import type { Id } from '../../../api';
+import { isNotFoundError } from '../../../api/errors';
+import { ApiError } from '../../../api/errors/rocket';
+import { Board, BoardModel } from '../../../api/Game-Catalog/Models/Boards';
+import { Stage } from '../../../api/Game-Catalog/Models/Stages';
 import {
 	GamesModel,
 	GameStartPayload,
 	GameState,
 	getNewPointsFromPlayerUpdate,
+	getPlayerIdFromPlayerUpdate,
 	isGameStartError,
 	NextBoardResult,
+	PlayerUpdate,
 	PlayerCreated,
 	PlayerMoved,
 	PlayerState,
 	UpdateResultType,
 } from '../../../api/Game-State/Models/Games';
-import {HistoryItem, HistoryModel} from '../../../api/Game-State/Models/History';
-import {Permission} from '../../../api/permissions';
-import {FrameLoadingSpinner} from '../../../components/FrameLoadingSpinner';
-import {IsGranted} from '../../../components/Security/IsGranted';
-import {SessionContext} from '../../../contexts/SessionContext';
-import {toaster} from '../../../toaster';
-import {replace} from '../../../utility/array';
-import {PlayArea} from './PlayArea';
-import {GameAnnouncement} from './PlayArea/GameAnnouncement';
-import {Sidebar} from './Sidebar';
-import {AdminControlsCard} from './Sidebar/AdminControlsCard';
-import {LogHistoryCard} from './Sidebar/LogHistoryCard';
-import {PlayerStatsCard} from './Sidebar/PlayerStatsCard';
-import {TopRankedPlayersCard} from './Sidebar/TopRankedPlayersCard';
+import { HistoryItem, HistoryModel } from '../../../api/Game-State/Models/History';
+import { Permission } from '../../../api/permissions';
+import { FrameLoadingSpinner } from '../../../components/FrameLoadingSpinner';
+import { IsGranted } from '../../../components/Security/IsGranted';
+import { SessionContext } from '../../../contexts/SessionContext';
+import { toaster } from '../../../toaster';
+import { replace } from '../../../utility/array';
+import { PlayArea } from './PlayArea';
+import { GameAnnouncement } from './PlayArea/GameAnnouncement';
+import { Sidebar } from './Sidebar';
+import { AdminControlsCard } from './Sidebar/AdminControlsCard';
+import { LogHistoryCard } from './Sidebar/LogHistoryCard';
+import { PlayerStatsCard } from './Sidebar/PlayerStatsCard';
+import { TopRankedPlayersCard } from './Sidebar/TopRankedPlayersCard';
 
 export type PlayerAnnouncement = PlayerCreated | PlayerMoved;
 
@@ -41,6 +44,21 @@ export function getPlayerStage(player: PlayerAnnouncement): Stage {
 		case UpdateResultType.CREATED:
 			return player.initial_stage.stage;
 	}
+}
+
+export function getPlayerStageIndex(player: PlayerAnnouncement): number {
+	switch (player.type) {
+		case UpdateResultType.MOVED:
+			return player.new_stage.index;
+
+		case UpdateResultType.CREATED:
+			return player.initial_stage.index;
+	}
+}
+
+export function getPlayerStageFromBoard(player: PlayerAnnouncement, board: Board): Stage {
+	const index = getPlayerStageIndex(player);
+	return board.stages[index] ?? getPlayerStage(player);
 }
 
 interface State {
@@ -109,7 +127,7 @@ export class GameBoard extends React.PureComponent<{}, State> {
 							position: 'absolute',
 						}}
 					>
-						<GameAnnouncement player={this.state.movingPlayer} />
+						<GameAnnouncement player={this.state.movingPlayer} board={this.state.board!} />
 					</div>
 				</div>
 
@@ -137,8 +155,10 @@ export class GameBoard extends React.PureComponent<{}, State> {
 						<IsGranted match={Permission.Admin}>
 							<AdminControlsCard
 								board={this.state.board!}
+								players={this.state.gameState!.players}
 								goToNextBoard={this.goToNextBoard}
 								startNewGame={this.startNewGame}
+								hidePlayerFromBoard={this.hidePlayerFromBoard}
 							/>
 						</IsGranted>
 					</Sidebar>
@@ -165,7 +185,7 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			return;
 		}
 
-		this.setState(({history}) => ({
+		this.setState(({ history }) => ({
 			loadingHistory: false,
 			history: [...(history ?? []), ...items],
 		}));
@@ -208,7 +228,7 @@ export class GameBoard extends React.PureComponent<{}, State> {
 				toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({redirect: true});
+				this.setState({ redirect: true });
 
 			return;
 		}
@@ -221,21 +241,31 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			toaster.showUnhandledErrorMessage();
 
 			if (redirect)
-				this.setState({redirect: true});
+				this.setState({ redirect: true });
 
 			return;
 		}
 
 		const history = await this.fetchNextHistory();
-
-		const currentPlayer = this.getCurrentPlayer(gameState.players);
+		const stages = [...board.stages].sort((a, b) => a.requiredPoints - b.requiredPoints);
+		const stageNameById = new Map<Id, string>(
+			stages.map(stage => [stage.id, stage.name] as [Id, string]),
+		);
+		const players = gameState.players.map(player => ({
+			...player,
+			current_stage_name: stageNameById.get(player.current_stage_id) ?? player.current_stage_name,
+		}));
+		const currentPlayer = this.getCurrentPlayer(players);
 
 		this.setState({
 			board: {
 				...board,
-				stages: board.stages.sort((a, b) => a.requiredPoints - b.requiredPoints),
+				stages,
 			},
-			gameState,
+			gameState: {
+				...gameState,
+				players,
+			},
 			history,
 			currentPlayer,
 			loading: false,
@@ -270,6 +300,20 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			toaster.notifyNextBoardResult(result.status);
 		else
 			toaster.showUnhandledErrorMessage();
+	};
+
+	private hidePlayerFromBoard = async (playerId: number) => {
+		try {
+			await GamesModel.hidePlayerFromBoard(this.context!.user.account.id, playerId);
+			await this.fetchGameState(false);
+			toaster.success('Player removed from board.');
+		} catch (error) {
+			// This endpoint can return plain status codes, so it may not always convert to ApiError.
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('Could not find that player on the board.');
+			else
+				toaster.showApiErrorMessage(error);
+		}
 	};
 
 	private startNewGame = async (payload: GameStartPayload) => {
@@ -339,10 +383,26 @@ export class GameBoard extends React.PureComponent<{}, State> {
 		}
 
 		toaster.success('New game started successfully');
+		const stages = [...board.stages].sort((a, b) => a.requiredPoints - b.requiredPoints);
+		const stageNameById = new Map<Id, string>(
+			stages.map(stage => [stage.id, stage.name] as [Id, string]),
+		);
+		const players = gameState.players.map(player => ({
+			...player,
+			current_stage_name: stageNameById.get(player.current_stage_id) ?? player.current_stage_name,
+		}));
+		const currentPlayer = this.getCurrentPlayer(players);
 
 		this.setState({
-			board,
-			gameState,
+			board: {
+				...board,
+				stages,
+			},
+			gameState: {
+				...gameState,
+				players,
+			},
+			currentPlayer,
 			loading: false,
 		});
 	};
@@ -355,14 +415,10 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			processing: true,
 		});
 
-		let playerAnnouncements: PlayerAnnouncement[];
+		let updates: PlayerUpdate[];
 
 		try {
-			playerAnnouncements = await GamesModel.update(this.context!.user.account.id).then(
-				response => response.data.filter(player =>
-					player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED,
-				) as PlayerAnnouncement[],
-			);
+			updates = await GamesModel.update(this.context!.user.account.id).then(r => r.data);
 		} catch (error) {
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('There are currently no active games for your account.');
@@ -376,14 +432,51 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			return;
 		}
 
+		const playerAnnouncements = updates.filter(player =>
+			player.type === UpdateResultType.CREATED || player.type === UpdateResultType.MOVED,
+		) as PlayerAnnouncement[];
+
+		const changedCount = updates.filter(u => u.type === UpdateResultType.CHANGED).length;
+		const deletedCount = updates.filter(u => u.type === UpdateResultType.DELETED).length;
+
 		if (playerAnnouncements.length > 0)
 			toaster.success('Game is ready to play!');
-		else if (playerAnnouncements.length === 0)
-			toaster.success('All players are moved.');
+		else if (changedCount > 0 || deletedCount > 0)
+			toaster.success('Board updated.');
+		else
+			toaster.success('No updates available.');
 
-		this.setState({
-			playerAnnouncements: new PlayerMovementSet(playerAnnouncements),
-			processing: false,
+		this.setState(state => {
+			let players = state.gameState!.players;
+
+			for (const update of updates) {
+				switch (update.type) {
+					case UpdateResultType.DELETED: {
+						const deletedId = getPlayerIdFromPlayerUpdate(update);
+						players = players.filter(p => p.hub_id !== deletedId);
+						break;
+					}
+
+					case UpdateResultType.CHANGED: {
+						const changedId = update.player.hub_id;
+						players = players.map(p => p.hub_id === changedId
+							? { ...p, current_points: update.new_point_total }
+							: p,
+						);
+						break;
+					}
+				}
+			}
+
+			return {
+				playerAnnouncements: new PlayerMovementSet(playerAnnouncements),
+				processing: false,
+				gameState: {
+					...state.gameState!,
+					players,
+				},
+				currentPlayer: this.getCurrentPlayer(players),
+			};
 		});
 	};
 
@@ -393,7 +486,7 @@ export class GameBoard extends React.PureComponent<{}, State> {
 		if (!movingPlayer)
 			return;
 
-		const movingPlayerStage = getPlayerStage(movingPlayer);
+		const movingPlayerStage = getPlayerStageFromBoard(movingPlayer, this.state.board!);
 
 		if (!movingPlayerStage) {
 			toaster.error('Could not find player\'s stage');
@@ -425,6 +518,7 @@ export class GameBoard extends React.PureComponent<{}, State> {
 				...state.gameState!,
 				players,
 			},
+			currentPlayer: this.getCurrentPlayer(players),
 		}));
 
 		if (this.state.playerAnnouncements.isEmpty()) {

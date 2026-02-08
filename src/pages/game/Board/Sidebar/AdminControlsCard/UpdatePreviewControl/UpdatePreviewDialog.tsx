@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import {Board} from '../../../../../../api/Game-Catalog/Models/Boards';
 import {
 	GamesModel,
+		getPlayerIdFromPlayerUpdate,
 	getNewPointsFromPlayerUpdate,
 	PlayerUpdate,
 	UpdateResultType,
@@ -78,13 +79,13 @@ export function UpdatePreviewDialog({board, onClose}: Props): React.ReactElement
 					</thead>
 
 					<tbody>
-						{updateData.map(
-							update => <PreviewRow
+						{updateData.map(update => (
+							<PreviewRow
 								board={board}
 								update={update}
-								key={update.player.hub_id}
-							/>,
-						)}
+								key={getPlayerIdFromPlayerUpdate(update)}
+							/>
+						))}
 					</tbody>
 				</HTMLTable>
 			</div>

@@ -3,4 +3,9 @@
 .game-stage-container {
 	position: absolute;
 	overflow: hidden;
+	box-sizing: border-box;
+
+	// Move markers into the open space below the stage name in the board artwork.
+	// Uses a responsive clamp so the offset scales reasonably with different screen sizes.
+	padding-top: clamp(18px, 2.2vw, 44px);
 }

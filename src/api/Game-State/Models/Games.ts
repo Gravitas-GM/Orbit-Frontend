@@ -31,15 +31,22 @@ export interface GamesEndpoints {
 			params: Id;
 			response: PlayerUpdate[];
 		};
-	}
+	};
 
 	'/games/accounts/:account/next': {
 		POST: {
 			params: Id;
 			response: void;
 		};
-	}
-}
+	};
+
+	'/games/accounts/:account/players/:player/hide': {
+		POST: {
+			params: Id;
+			response: void;
+		};
+	};
+};
 
 export enum UpdateResultType {
 	CREATED = 'created',
@@ -71,7 +78,10 @@ export interface PlayerMoved {
 
 export interface PlayerDeleted {
 	type: UpdateResultType.DELETED,
-	player: Player,
+		// NOTE: Backend currently returns only `player_id` for deleted updates.
+		// Keep `player` optional for forward/backward compatibility.
+		player_id: number,
+		player?: Player,
 }
 
 export type PlayerUpdate = PlayerCreated | PlayerChanged | PlayerMoved | PlayerDeleted;
@@ -157,15 +167,39 @@ export class GamesModel {
 		return gameStateClient.post<'/games/accounts/:account/next'>(`/games/accounts/${account}/next`);
 	}
 
+	public static hidePlayerFromBoard(account: Id, player: Id) {
+		return gameStateClient.post<'/games/accounts/:account/players/:player/hide'>(
+			`/games/accounts/${account}/players/${player}/hide`,
+		);
+	}
+
 	public static deleteGameState(accountId: Id) {
 		return gameStateClient.delete<'/games/accounts/:account'>(`/games/accounts/${accountId}`);
 	}
 
 	private static denormalizePlayerUpdate(playerUpdate: PlayerUpdate) {
+			// Normalize deleted updates so we always have a usable id.
+			if (playerUpdate.type === UpdateResultType.DELETED) {
+				const deleted: any = playerUpdate;
+				if (typeof deleted.player_id === 'undefined' && deleted.player && typeof deleted.player.hub_id !== 'undefined')
+					deleted.player_id = deleted.player.hub_id;
+			}
+
 		if (playerUpdate.type === UpdateResultType.CREATED || playerUpdate.type === UpdateResultType.MOVED)
 			playerUpdate.history_item = denormalizeHistoryItem(playerUpdate.history_item);
 
 		return playerUpdate;
+	}
+}
+
+
+export function getPlayerIdFromPlayerUpdate(update: PlayerUpdate): number {
+	switch (update.type) {
+		case UpdateResultType.DELETED:
+			return update.player_id ?? update.player?.hub_id ?? 0;
+
+		default:
+			return update.player.hub_id;
 	}
 }
 
