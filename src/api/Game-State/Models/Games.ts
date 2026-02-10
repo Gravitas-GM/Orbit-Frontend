@@ -46,6 +46,20 @@ export interface GamesEndpoints {
 			response: void;
 		};
 	};
+
+	'/games/accounts/:account/players/:player/unhide': {
+		POST: {
+			params: Id;
+			response: void;
+		};
+	};
+
+	'/games/accounts/:account/players/hidden': {
+		GET: {
+			params: Id;
+			response: HiddenPlayerState[];
+		};
+	};
 };
 
 export enum UpdateResultType {
@@ -110,6 +124,11 @@ export interface PlayerState {
 	current_points: number,
 }
 
+export interface HiddenPlayerState {
+	hub_id: Id,
+	user_name: string,
+}
+
 export interface StageDescriptor {
 	stage: Stage,
 	index: number,
@@ -170,6 +189,18 @@ export class GamesModel {
 	public static hidePlayerFromBoard(account: Id, player: Id) {
 		return gameStateClient.post<'/games/accounts/:account/players/:player/hide'>(
 			`/games/accounts/${account}/players/${player}/hide`,
+		);
+	}
+
+	public static unhidePlayerFromBoard(account: Id, player: Id) {
+		return gameStateClient.post<'/games/accounts/:account/players/:player/unhide'>(
+			`/games/accounts/${account}/players/${player}/unhide`,
+		);
+	}
+
+	public static hiddenPlayers(account: Id) {
+		return gameStateClient.get<'/games/accounts/:account/players/hidden'>(
+			`/games/accounts/${account}/players/hidden`,
 		);
 	}
 

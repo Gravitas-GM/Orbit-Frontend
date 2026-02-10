@@ -156,9 +156,11 @@ export class GameBoard extends React.PureComponent<{}, State> {
 							<AdminControlsCard
 								board={this.state.board!}
 								players={this.state.gameState!.players}
+								accountId={this.context!.user.account.id}
 								goToNextBoard={this.goToNextBoard}
 								startNewGame={this.startNewGame}
 								hidePlayerFromBoard={this.hidePlayerFromBoard}
+								unhidePlayerFromBoard={this.unhidePlayerFromBoard}
 							/>
 						</IsGranted>
 					</Sidebar>
@@ -311,6 +313,20 @@ export class GameBoard extends React.PureComponent<{}, State> {
 			// This endpoint can return plain status codes, so it may not always convert to ApiError.
 			if (error instanceof ApiError && error.isNotFound())
 				toaster.warning('Could not find that player on the board.');
+			else
+				toaster.showApiErrorMessage(error);
+		}
+	};
+
+	private unhidePlayerFromBoard = async (playerId: number) => {
+		try {
+			await GamesModel.unhidePlayerFromBoard(this.context!.user.account.id, playerId);
+			await this.fetchGameState(false);
+			toaster.success('Player restored to board.');
+		} catch (error) {
+			// This endpoint can return plain status codes, so it may not always convert to ApiError.
+			if (error instanceof ApiError && error.isNotFound())
+				toaster.warning('Could not find that hidden player.');
 			else
 				toaster.showApiErrorMessage(error);
 		}

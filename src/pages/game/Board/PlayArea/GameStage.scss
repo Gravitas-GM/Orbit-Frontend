@@ -5,7 +5,21 @@
 	overflow: hidden;
 	box-sizing: border-box;
 
-	// Move markers into the open space below the stage name in the board artwork.
-	// Uses a responsive clamp so the offset scales reasonably with different screen sizes.
-	padding-top: clamp(18px, 2.2vw, 44px);
+	// Markers should live in the "player area" at the bottom of each stage.
+	// Using flex keeps this consistent across all boards without hard-coded offsets.
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-end;
+	align-content: flex-end;
+
+	// Keep markers off the edges a bit.
+	padding: 0 clamp(6px, 0.9vw, 18px) clamp(10px, 1.4vw, 28px);
+	gap: clamp(4px, 0.6vw, 10px);
+
+	// Blueprint's Popover renders a wrapper element as the direct child.
+	// Ensure those wrappers don't stretch oddly under flex.
+	> .bp5-popover-wrapper {
+		flex: 0 0 auto;
+	}
 }
