@@ -2,10 +2,15 @@
 
 #game-board .player-button {
 	margin: $spacing-xsmall;
-	border-radius: $spacing-xxlarge;
-	padding: $spacing-medium;
+	border-radius: 50%;
+	padding: 0;
+	min-width: unset;
+	min-height: unset;
 
-	width: 40px;
+	width: clamp(22px, 25cqw, 40px);
+	aspect-ratio: 1 / 1;
+	font-size: clamp(9px, 7cqw, 14px);
+
 	background-color: #eef2f1;
 	color: #0b2540;
 	border-color: #0b2540;

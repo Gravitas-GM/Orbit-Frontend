@@ -4,6 +4,7 @@
 	position: absolute;
 	overflow: hidden;
 	box-sizing: border-box;
+	container-type: inline-size;
 
 	// Markers should live in the "player area" at the bottom of each stage.
 	// Using flex keeps this consistent across all boards without hard-coded offsets.
