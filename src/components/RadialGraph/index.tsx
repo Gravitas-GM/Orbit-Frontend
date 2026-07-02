@@ -34,6 +34,14 @@ export function RadialGraph({segments, size = 400}: Props): ReactElement {
 	}, [items]);
 
 	const defs: SegmentDefinition[] = useMemo(() => {
+		if (sum <= 0) {
+			return items.map(item => ({
+				...item,
+				ratio: 0,
+				offset: 0,
+			}));
+		}
+
 		return items.map((item, index) => ({
 			...item,
 			ratio: item.value / sum,

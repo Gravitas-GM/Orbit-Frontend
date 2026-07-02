@@ -62,6 +62,7 @@ export class UsersList extends React.PureComponent<{}, State> {
 					items={this.state.users}
 					title="Users"
 					onItemFilter={this.onItemFilter}
+					searchPlaceholder="Search name or email"
 				>
 					{items => (
 						<HTMLTable striped={true}>
@@ -115,7 +116,8 @@ export class UsersList extends React.PureComponent<{}, State> {
 	}
 
 	private onItemFilter = (user: User, searchText: string) =>
-		renderUserName(user).toLocaleLowerCase().includes(searchText);
+		renderUserName(user).toLocaleLowerCase().includes(searchText) ||
+		user.emailAddress.toLocaleLowerCase().includes(searchText);
 
 	private onBeginDeleteButtonClick = (item: User) => this.setState({
 		deleteTarget: item,

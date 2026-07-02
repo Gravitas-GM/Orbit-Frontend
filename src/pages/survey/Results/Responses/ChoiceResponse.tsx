@@ -8,8 +8,24 @@ interface Props {
 }
 
 export function ChoiceResponse({question}: Props): ReactElement {
+	const frequencies = useMemo(() => {
+		const summaryFrequencies = {...question.summary.frequencies};
+		const summaryTotal = Object.values(summaryFrequencies).reduce((accum, value) => accum + value, 0);
+
+		if (summaryTotal > 0 || question.responses.length === 0)
+			return summaryFrequencies;
+
+		return question.responses.reduce((accum, item) => {
+			accum[item.response] = (accum[item.response] ?? 0) + 1;
+			return accum;
+		}, question.choices.reduce((accum, _, index) => {
+			accum[index] = 0;
+			return accum;
+		}, {} as {[key: number]: number}));
+	}, [question.choices, question.responses, question.summary.frequencies]);
+
 	const segments = useMemo(() => {
-		return Object.entries(question.summary.frequencies).reduce((accum, [key, value]) => {
+		return Object.entries(frequencies).reduce((accum, [key, value]) => {
 			accum.push({
 				label: question.choices[parseInt(key, 10)] ?? `Choice #${key}`,
 				value,
@@ -17,7 +33,7 @@ export function ChoiceResponse({question}: Props): ReactElement {
 
 			return accum;
 		}, [] as ItemDefinition[]);
-	}, [question.summary.frequencies]);
+	}, [frequencies, question.choices]);
 
 	return (
 		<>
