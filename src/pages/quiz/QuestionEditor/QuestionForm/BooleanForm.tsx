@@ -37,8 +37,8 @@ export class BooleanForm extends React.PureComponent<Props, State> {
 
 				<ValidationAwareFormGroup label="Answer" labelFor="answer" failures={this.props.validationFailures}>
 					<RadioGroup onChange={this.onAnswerChange} selectedValue={+answer} inline={true}>
-						<Radio label={trueLabel.length > 0 ? trueLabel : 'True'} value={+false} />
-						<Radio label={falseLabel.length > 0 ? falseLabel : 'False'} value={+true} />
+						<Radio label={trueLabel.length > 0 ? trueLabel : 'True'} value={+true} />
+						<Radio label={falseLabel.length > 0 ? falseLabel : 'False'} value={+false} />
 					</RadioGroup>
 				</ValidationAwareFormGroup>
 

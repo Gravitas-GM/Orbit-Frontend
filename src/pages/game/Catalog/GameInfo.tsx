@@ -25,7 +25,7 @@ interface Props extends WithRouteParamsProps<RouteProps> {
 
 interface State {
 	game: Game | null;
-	redirect: boolean;
+	redirect: string | null;
 	processing: boolean;
 	showStartGameDialog: boolean;
 }
@@ -33,7 +33,7 @@ interface State {
 class GameInfo extends React.PureComponent<Props, State> {
 	public state: Readonly<State> = {
 		game: null,
-		redirect: false,
+		redirect: null,
 		processing: false,
 		showStartGameDialog: false,
 	};
@@ -48,7 +48,7 @@ class GameInfo extends React.PureComponent<Props, State> {
 			toaster.showUnhandledErrorMessage();
 
 			this.setState({
-				redirect: true,
+				redirect: '/game/catalog',
 			});
 
 			return;
@@ -61,7 +61,7 @@ class GameInfo extends React.PureComponent<Props, State> {
 
 	public render() {
 		if (this.state.redirect)
-			return <Navigate to="/catalog" />;
+			return <Navigate to={this.state.redirect} />;
 		else if (this.state.game === null)
 			return <FrameLoadingSpinner />;
 
@@ -172,6 +172,7 @@ class GameInfo extends React.PureComponent<Props, State> {
 		this.setState({
 			processing: false,
 			showStartGameDialog: false,
+			redirect: '/game',
 		});
 	};
 }
