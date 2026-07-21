@@ -156,7 +156,7 @@ class LeaderboardInner extends React.PureComponent<Props, State> {
 		} catch (error) {
 			// The GameState API can return a response with a 404 status code if a game does not exist for the
 			// account. In those cases, just silently ignore the error.
-			if (error instanceof ApiError && error.isNotFound())
+			if (!(error instanceof ApiError) || !error.isNotFound())
 				hasError = true;
 		}
 
