@@ -81,7 +81,7 @@ class QuizResultsPage extends React.PureComponent<WithRouteParamsProps<RoutePara
 
 export const renderScore = (item: QuizSubmission) => (
 	<span>
-		{Math.floor(item.correctCount / item.questionCount * 100)}% ({item.correctCount} / {item.questionCount})
+		{item.questionCount ? Math.floor(item.correctCount / item.questionCount * 100) : 0}% ({item.correctCount} / {item.questionCount})
 	</span>
 );
 

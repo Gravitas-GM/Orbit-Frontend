@@ -35,6 +35,7 @@ export class FreeTextForm extends React.PureComponent<Props, State> {
 
 				{this.state.answers.map((text, index) => (
 					<AnswerItem
+							key={index}
 						text={text}
 						index={index}
 						validationFailures={this.props.validationFailures}
