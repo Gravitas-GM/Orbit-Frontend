@@ -2,7 +2,7 @@
 
 > First "what's built vs. not built" reference for the app. Compiled 2026-07-17 from a code audit of every feature area (`src/pages/*`) and the API layer (`src/api/*`). File:line citations point at the current code.
 >
-> **TL;DR:** This is a substantially-built, working product across all five areas — not a skeleton. Rough maturity order: **Quiz ≈ Game > Users/Home/Auth > Survey**. The Survey *Results* page is the single most unfinished piece; the biggest structural gaps are authoring UIs (game catalog, user creation, account management); and there are a handful of real bugs worth fixing before building anything new.
+> **TL;DR:** This is a substantially-built, working product across all five areas — not a skeleton. Rough maturity order: **Quiz ≈ Game > Users/Home/Auth > Survey**. The Survey *Results* page is the single most unfinished piece; the biggest *buildable* structural gap is game-catalog authoring (user/account creation look like gaps but are backend-blocked by design — SERVICE-role-only — see "Not built"); and there are a handful of real bugs worth fixing before building anything new.
 
 ## Vision vs. built (from the founder's "New Culture Software" spec)
 
@@ -25,6 +25,31 @@ The original product vision (`orbit_features.pdf`, 2026-07) describes **five sys
 
 **Bottom line:** ~60% of the envisioned product exists (the three core weekly-engagement systems). The two entirely-missing systems (Peer Recognition, Employee Sharing) plus the reminder engine are the largest greenfield builds ahead.
 
+## Live QA pass (running app, 2026-07-17)
+
+Hands-on click-through of the running app against the test backend, logged in as an admin. Complements the code audit with real runtime behavior.
+
+| Area | Live result |
+|------|-------------|
+| Home dashboard | ✅ Renders; all card groups present (no Survey group — nav only) |
+| Game Board | ✅ Renders (board, log, player stats, admin controls) |
+| Leaderboard | ✅ Clean empty state, **no spurious error toast** (confirms the 404-handling fix) |
+| Game Catalog + detail | ✅ (verified during bug fixes: list, detail, start-game → board) |
+| Sources (points) | ✅ Full list, search, add/delete/edit |
+| Quiz — Questions | ✅ (verified during bug fixes; True/False fix confirmed end-to-end) |
+| Quiz — History | ✅ Submission table, scores, "Show All Users" filter, timed-out flag |
+| Quiz — Settings | ✅ All fields populated (frequency, timer, count, reward source) |
+| Users list | ✅ Renders; **no "Add User" button** — later confirmed *intentional*: user creation is SERVICE-role-only in the Hub API (provisioned via Slack), not a buildable UI gap. See "Not built" below. |
+| **Take A Quiz** (`/quiz`) | ✅ Redirects to Home when no quiz is ready, **with a toast message** (`toaster.info`) — correct behavior; the toast just faded before it was noticed in the first live pass. Not a bug. |
+| **Survey (all pages)** | ❌ **Completely non-functional** — every survey page hangs on an **infinite loading spinner** with no error. The backend `survey.test.api.happyorbit.com` has no DNS record, so nothing loads. Not just "Results unfinished" — the whole section is dead in test. |
+
+**Cross-cutting (console):**
+- **React 18 warning** on every page: the app boots with the legacy `ReactDOM.render` instead of `createRoot`, so it silently runs in React 17 compatibility mode. Tech debt; one-line fix at the entry point.
+
+**Takeaways beyond the code audit:**
+1. Survey is the worst offender live — an infinite spinner is a worse experience than a broken page. First fix when the survey backend/test-env is restored: give every survey page a load timeout + error state so it fails visibly instead of hanging.
+2. "Take A Quiz" needs a "no quiz available right now" message instead of a silent bounce to Home.
+
 ## Area maturity at a glance
 
 | Area | State | Headline |
@@ -39,9 +64,10 @@ The original product vision (`orbit_features.pdf`, 2026-07) describes **five sys
 ## Confirmed bugs (fix before building new features)
 
 1. ~~**Quiz True/False editor is inverted.** `src/pages/quiz/QuestionEditor/QuestionForm/BooleanForm.tsx:39-41` — selecting "True" stores `answer = false` and vice-versa.~~ **FIXED 2026-07-17** — swapped the radio `value` props so True→`+true`/False→`+false`, matching the (correct) quiz-taking and results sides. Verified end-to-end against the DB: read (answer=1→"True" shown, answer=0→"False" shown) and write (selecting "False" now stores `0`).
-2. **Survey Results is effectively non-functional.**
-   - Post-submit redirect to Results is commented out; users go to `/` instead. `src/pages/survey/Form/index.tsx:106-108`
-   - History's per-survey results links use `SurveyModel.read()` (non-summarized), but the responses view shows "not available yet" unless the survey is summarized. `src/pages/survey/Results/SurveyResults.tsx:19` + `Results/Responses/index.tsx:15-16`. Only the current week renders. *(High — whole sub-feature dark.)*
+2. **Survey Results — smaller than first thought (corrected after reading the backend, 2026-07-17).**
+   - `Orbit-Survey` serves `/surveys/{id}` (historical) with the **same serializer** as `/surveys/results` (current) — `SurveyController::readPrevious`/`results` + shared `createSerializerContext`. `summarized` = "questions have summary data" (`Survey::isSummarized`), set by an async `SurveySummarizer` when a survey completes. **No new backend endpoint needed** — historical results render for any summarized survey. The earlier "needs a backend endpoint" was a wrong inference from the frontend alone.
+   - **Real, confirmed frontend gap:** post-submit redirect to Results is commented out — users go to `/` instead of results. `src/pages/survey/Form/index.tsx:106-108`. Fix = re-enable it + degrade gracefully when a survey isn't summarized yet.
+   - Caveat: can't verify live until the survey **test** backend exists (no DNS/deployment); likely already works in production.
 3. ~~**Game "Start Game" from catalog detail dead-ends.**~~ **FIXED 2026-07-17** — after a successful start, `confirmStartGame` now redirects to `/game`. Verified: confirming "Start Game" navigates to the board showing the started game. `src/pages/game/Catalog/GameInfo.tsx`.
 4. ~~**Game catalog error-redirect is broken** (`/catalog` instead of `/game/catalog`).~~ **FIXED 2026-07-17** — `redirect` state now holds the target path; error path sends to `/game/catalog`. Verified: a bad game ID lands on the catalog list. `src/pages/game/Catalog/GameInfo.tsx`.
 5. **Leaderboard 404 handling is backwards vs. its own comment.** A 404 (no active game) flips the error flag instead of being ignored; other errors are swallowed. `src/pages/game/Leaderboard/index.tsx:154-161`.
@@ -63,8 +89,8 @@ The original product vision (`orbit_features.pdf`, 2026-07) describes **five sys
 
 **Authoring / admin:**
 - **Game catalog authoring** — games, boards, stages, board images are **read-only** (`GameModel`/`BoardModel`/`StageModel` expose only `list`/`read`). No way to create/edit a game in-app despite the catalog being admin-gated. *(Biggest structural gap.)*
-- **User creation** — `UserModel.create` / `PUT /users` exists but no "Add User" UI. New users apparently come from the Slack integration (email is "only updatable via Slack").
-- **Account creation/management** — `AccountModel.create/delete` defined, no UI at all.
+- **User creation** — ⚠️ **NOT a buildable frontend gap — backend-blocked by design (confirmed live 2026-07-22).** `UserModel.create` / `PUT /users` exists in the frontend layer, but the Hub API decorates the create (and delete) route with `#[IsGranted(FirewallRole::SERVICE)]` — a **service-to-service role no human admin holds**. Building an "Add User" dialog and clicking Create returns **403**. Users are provisioned by the **Slack integration** (which has the SERVICE role); that's why the email is "only updatable via Slack" and why there's no "Add User" button. Intentional, not missing.
+- **Account creation/management** — ⚠️ **Same backend block.** `AccountModel.create/delete` defined in the frontend, but Hub's `/accounts` list, create, **and** delete all require `#[IsGranted(FirewallRole::SERVICE)]`. Not buildable as an admin UI.
 - **Survey "week" assignment** — rotating-survey week numbers are display-only; new bank items are created with an empty payload; can't set which week maps to which survey. `src/pages/survey/Bank/SurveyList.tsx:164,317`.
 - **Fine-grained roles/permissions** — only an admin Yes/No toggle; `permissions.ts` defines just `Admin`. No permission-editing UI.
 
