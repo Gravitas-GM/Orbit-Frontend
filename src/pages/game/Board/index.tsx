@@ -476,7 +476,11 @@ export class GameBoard extends React.PureComponent<{}, State> {
 					case UpdateResultType.CHANGED: {
 						const changedId = update.player.hub_id;
 						players = players.map(p => p.hub_id === changedId
-							? { ...p, current_points: update.new_point_total }
+							? {
+								...p,
+								user_name: update.player.user_name,
+								current_points: update.new_point_total,
+							}
 							: p,
 						);
 						break;
