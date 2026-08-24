@@ -4,6 +4,7 @@ import {isValidationFailureError, ValidationFailures} from '../../../api/errors/
 import {User, UserModel} from '../../../api/Hub/Models/Users';
 import {Permission} from '../../../api/permissions';
 import {FormControls} from '../../../components/FormControls';
+import {ValidationAwareFormGroup} from '../../../components/ValidationAwareFormGroup';
 import {withPermissions, WithPermissionsProps} from '../../../contexts/SessionContext';
 import {toaster} from '../../../toaster';
 
@@ -47,13 +48,13 @@ class UserTab extends React.PureComponent<Props, State> {
 		return (
 			<form>
 				<ControlGroup fill={true} style={{gap: 10}}>
-					<FormGroup label="First Name" labelFor="firstName">
+					<ValidationAwareFormGroup label="First Name" labelFor="firstName" failures={this.state.validationFailures}>
 						<InputGroup name="firstName" value={this.state.firstName} onChange={this.onFirstNameChange} />
-					</FormGroup>
+					</ValidationAwareFormGroup>
 
-					<FormGroup label="Last Name" labelFor="lastName">
+					<ValidationAwareFormGroup label="Last Name" labelFor="lastName" failures={this.state.validationFailures}>
 						<InputGroup name="lastName" value={this.state.lastName} onChange={this.onLastNameChange} />
-					</FormGroup>
+					</ValidationAwareFormGroup>
 
 					<FormGroup label="Email Address" labelFor="emailAddress" helperText="Can only be updated via Slack">
 						<InputGroup name="emailAddress" disabled={true} value={this.props.user.emailAddress} />

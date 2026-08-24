@@ -35,6 +35,7 @@ export class MultipleChoiceForm extends React.PureComponent<Props, State> {
 
 				{this.state.choices.map((text, index) => (
 					<ChoiceItem
+							key={index}
 						isRemovable={this.state.choices.length > 1}
 						text={text}
 						index={index}
