@@ -1,0 +1,92 @@
+name: Deploy to production
+
+# Mirrors bin/deploy.sh, which remains usable for manual deploys from a laptop.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never let two deploys race each other onto the bucket. A newer commit waits
+# for the one in flight rather than interleaving uploads with it.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  BUCKET: app.happyorbit.com
+  DISTRIBUTION: E1LSJZ7Z7OZ3KY
+  AWS_REGION: us-west-2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write   # required to request the OIDC token
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Hashed assets go up first, WITHOUT --delete. Uploading them before
+      # index.html means the new index.html never references a bundle that
+      # isn't in the bucket yet, and keeping the old bundles means users who
+      # are mid-session on the previous index.html don't 404.
+      - name: Upload hashed assets
+        run: |
+          aws s3 sync dist/ "s3://${BUCKET}" \
+            --exclude index.html \
+            --cache-control "public,max-age=31536000,immutable" \
+            --no-progress
+
+      # index.html last: it is the file that actually switches the site over.
+      # no-cache so CloudFront revalidates rather than serving a stale shell.
+      - name: Upload index.html
+        run: |
+          aws s3 cp dist/index.html "s3://${BUCKET}/index.html" \
+            --cache-control "no-cache" \
+            --content-type "text/html; charset=utf-8" \
+            --no-progress
+
+      - name: Invalidate CloudFront
+        run: |
+          id=$(aws cloudfront create-invalidation \
+            --distribution-id "${DISTRIBUTION}" \
+            --paths '/*' \
+            --query 'Invalidation.Id' --output text)
+          echo "Created invalidation ${id}"
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "${DISTRIBUTION}" --id "${id}"
+          echo "Invalidation ${id} completed"
+
+      # Fails the job if the deployed bundles don't contain what we just built,
+      # so a silently-partial upload can't look like a green deploy.
+      - name: Verify deployed bundle
+        run: |
+          expected=$(grep -oE 'index\.[a-f0-9]+\.js' dist/index.html | head -1)
+          echo "Expecting live index.html to reference ${expected}"
+          live=$(curl -fsSL "https://${BUCKET}/index.html")
+          if echo "${live}" | grep -q "${expected}"; then
+            echo "Live index.html references ${expected}"
+          else
+            echo "Live index.html does NOT reference ${expected}" >&2
+            echo "${live}" | grep -oE 'index\.[a-f0-9]+\.js' >&2
+            exit 1
+          fi
